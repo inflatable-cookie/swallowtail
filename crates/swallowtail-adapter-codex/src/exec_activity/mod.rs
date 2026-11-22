@@ -4,13 +4,16 @@ mod subagent;
 use crate::exec_events::malformed_stream;
 use semver::Version;
 use serde_json::Value;
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 use swallowtail_core::{ActivityDisclosure, ProviderActivityRef};
 use swallowtail_runtime::{
     ActivityAssistantPhase, ActivityId, ActivityKind, ActivityLabel, ActivityLifecyclePhase,
     ActivityNamespace, ActivityObservation, ActivityOperationId, ActivityStatus, RuntimeFailure,
     RuntimeRunId,
 };
+
+/// Maximum number of tracked item records retained per exec run.
+const MAX_TRACKED_ACTIVITY_ENTRIES: usize = 2048;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 struct ItemIdentity {
@@ -19,22 +22,84 @@ struct ItemIdentity {
     disclosure: ActivityDisclosure,
 }
 
+struct TrackedItem {
+    activity_id: ActivityId,
+    identity: ItemIdentity,
+    label: Option<ActivityLabel>,
+    active: bool,
+}
+
+/// Bounded table of tracked exec items that preserves in-flight item identity,
+/// minted IDs, and labels through completion. Completed items are evicted FIFO
+/// when capacity is reached; if every slot is still active, inserting a new
+/// item fails explicitly rather than evicting an in-flight record.
+struct TrackedItemTable {
+    entries: HashMap<String, TrackedItem>,
+    order: VecDeque<String>,
+    capacity: usize,
+}
+
+impl TrackedItemTable {
+    fn new(capacity: usize) -> Self {
+        Self {
+            entries: HashMap::new(),
+            order: VecDeque::new(),
+            capacity,
+        }
+    }
+
+    fn get_mut(&mut self, key: &str) -> Option<&mut TrackedItem> {
+        self.entries.get_mut(key)
+    }
+
+    fn insert(&mut self, key: String, item: TrackedItem) -> Result<(), RuntimeFailure> {
+        if let Some(existing) = self.entries.get_mut(&key) {
+            *existing = item;
+            return Ok(());
+        }
+        while self.entries.len() >= self.capacity {
+            let Some(evict_index) = self
+                .order
+                .iter()
+                .position(|candidate| self.entries.get(candidate).is_some_and(|e| !e.active))
+            else {
+                return Err(crate::exec::failure(
+                    "swallowtail.codex.exec.activity_capacity_exceeded",
+                    "Codex exec exceeded the bounded active activity capacity",
+                ));
+            };
+            if let Some(evicted_key) = self.order.remove(evict_index) {
+                self.entries.remove(&evicted_key);
+            }
+        }
+        self.entries.insert(key.clone(), item);
+        self.order.push_back(key);
+        Ok(())
+    }
+}
+
 pub(crate) struct ExecActivityProjection {
     operation_id: ActivityOperationId,
     qualified_version: Version,
-    identities: HashMap<String, ItemIdentity>,
-    labels: HashMap<String, ActivityLabel>,
+    items: TrackedItemTable,
     provider_thread_id: Option<String>,
     next_minted_id: u64,
 }
 
 impl ExecActivityProjection {
     pub(crate) fn new(run_id: RuntimeRunId, qualified_version: Version) -> Self {
+        Self::with_item_capacity(run_id, qualified_version, MAX_TRACKED_ACTIVITY_ENTRIES)
+    }
+
+    fn with_item_capacity(
+        run_id: RuntimeRunId,
+        qualified_version: Version,
+        item_capacity: usize,
+    ) -> Self {
         Self {
             operation_id: ActivityOperationId::Run(run_id),
             qualified_version,
-            identities: HashMap::new(),
-            labels: HashMap::new(),
+            items: TrackedItemTable::new(item_capacity),
             provider_thread_id: None,
             next_minted_id: 0,
         }
@@ -81,19 +146,30 @@ impl ExecActivityProjection {
             &self.qualified_version,
             self.provider_thread_id.as_deref(),
         )?;
-        if let Some(existing) = self.identities.get(provider_id) {
-            if existing != &projection.identity {
+        let active = phase != ActivityLifecyclePhase::Completed;
+        let (activity_id, label) = if let Some(existing) = self.items.get_mut(provider_id) {
+            if existing.identity != projection.identity {
                 return Err(malformed_stream());
             }
+            if let Some(label) = projection.label {
+                existing.label = Some(label);
+            }
+            existing.active = active;
+            (existing.activity_id.clone(), existing.label.clone())
         } else {
-            self.identities
-                .insert(provider_id.to_owned(), projection.identity.clone());
-        }
-        if let Some(label) = projection.label {
-            self.labels.insert(provider_id.to_owned(), label);
-        }
-        let activity_id = ActivityId::new(format!("codex-exec:item:{provider_id}"))
-            .map_err(|_| malformed_stream())?;
+            let activity_id = self.mint_activity_id(provider_id)?;
+            let label = projection.label;
+            self.items.insert(
+                provider_id.to_owned(),
+                TrackedItem {
+                    activity_id: activity_id.clone(),
+                    identity: projection.identity.clone(),
+                    label: label.clone(),
+                    active,
+                },
+            )?;
+            (activity_id, label)
+        };
         let mut observation = ActivityObservation::new(
             activity_id,
             self.operation_id.clone(),
@@ -107,7 +183,7 @@ impl ExecActivityProjection {
         .with_provider_activity_ref(
             ProviderActivityRef::new(provider_id).map_err(|_| malformed_stream())?,
         );
-        if let Some(label) = self.labels.get(provider_id).cloned() {
+        if let Some(label) = label {
             observation = observation
                 .with_label(label)
                 .map_err(|_| malformed_stream())?;
@@ -134,6 +210,16 @@ impl ExecActivityProjection {
                 .map_err(|_| malformed_stream())?;
         }
         Ok(observation)
+    }
+
+    fn mint_activity_id(&mut self, provider_id: &str) -> Result<ActivityId, RuntimeFailure> {
+        let preferred = format!("codex-exec:item:{provider_id}");
+        ActivityId::new(preferred)
+            .or_else(|_| {
+                self.next_minted_id = self.next_minted_id.saturating_add(1);
+                ActivityId::new(format!("codex-exec:minted-{}", self.next_minted_id))
+            })
+            .map_err(|_| malformed_stream())
     }
 
     fn project_unknown_event(
@@ -167,3 +253,136 @@ fn required_text<'a>(value: &'a Value, field: &str) -> Result<&'a str, RuntimeFa
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod bounded_tests {
+    use super::ExecActivityProjection;
+    use semver::Version;
+    use serde_json::json;
+    use swallowtail_runtime::RuntimeRunId;
+
+    #[test]
+    fn oversized_provider_item_id_uses_minted_id_and_preserves_identity_across_turnover() {
+        let mut projection = ExecActivityProjection::with_item_capacity(
+            RuntimeRunId::new("exec-run-cap").expect("run id"),
+            Version::new(0, 164, 0),
+            3,
+        );
+        let long_id = format!("mcp-{}", "x".repeat(300));
+        let started = projection
+            .project(
+                "item.started",
+                &json!({
+                    "item": {
+                        "id": long_id,
+                        "type": "mcp_tool_call",
+                        "server": "github",
+                        "tool": "search",
+                        "status": "in_progress"
+                    }
+                }),
+            )
+            .expect("oversized provider item id must mint fallback activity id");
+        let started_id = started[0].activity_id().clone();
+        assert!(
+            started_id.as_str().starts_with("codex-exec:minted-"),
+            "expected minted id, got {}",
+            started_id.as_str()
+        );
+        let started_label = started[0].label().cloned();
+        assert_eq!(
+            started_label.as_ref().map(|label| label.as_str()),
+            Some("github.search")
+        );
+
+        // Cycle more completed items than table capacity to trigger FIFO eviction.
+        for idx in 0..5 {
+            let short_id = format!("cmd-{idx}");
+            projection
+                .project(
+                    "item.started",
+                    &json!({
+                        "item": {
+                            "id": short_id,
+                            "type": "command_execution",
+                            "command": format!("echo {idx}"),
+                            "status": "in_progress"
+                        }
+                    }),
+                )
+                .expect("unrelated item starts");
+            projection
+                .project(
+                    "item.completed",
+                    &json!({
+                        "item": {
+                            "id": short_id,
+                            "type": "command_execution",
+                            "command": format!("echo {idx}"),
+                            "status": "completed",
+                            "exit_code": 0
+                        }
+                    }),
+                )
+                .expect("unrelated item completes");
+        }
+
+        let completed = projection
+            .project(
+                "item.completed",
+                &json!({
+                    "item": {
+                        "id": long_id,
+                        "type": "mcp_tool_call",
+                        "server": "github",
+                        "tool": "search",
+                        "status": "completed"
+                    }
+                }),
+            )
+            .expect("in-flight oversized item completes cleanly");
+        assert_eq!(completed[0].activity_id(), &started_id);
+        assert_eq!(completed[0].label(), started_label.as_ref());
+    }
+
+    #[test]
+    fn exceeding_capacity_with_all_active_items_returns_explicit_overflow_error() {
+        let mut projection = ExecActivityProjection::with_item_capacity(
+            RuntimeRunId::new("exec-run-overflow").expect("run id"),
+            Version::new(0, 164, 0),
+            2,
+        );
+        for idx in 0..2 {
+            projection
+                .project(
+                    "item.started",
+                    &json!({
+                        "item": {
+                            "id": format!("active-{idx}"),
+                            "type": "command_execution",
+                            "command": "sleep 1",
+                            "status": "in_progress"
+                        }
+                    }),
+                )
+                .expect("active item fits within capacity");
+        }
+        let overflow = projection
+            .project(
+                "item.started",
+                &json!({
+                    "item": {
+                        "id": "active-overflow",
+                        "type": "command_execution",
+                        "command": "sleep 1",
+                        "status": "in_progress"
+                    }
+                }),
+            )
+            .expect_err("all-active overflow must fail explicitly");
+        assert_eq!(
+            overflow.diagnostic().code(),
+            "swallowtail.codex.exec.activity_capacity_exceeded"
+        );
+    }
+}

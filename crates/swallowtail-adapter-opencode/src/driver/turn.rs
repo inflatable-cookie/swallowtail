@@ -97,7 +97,7 @@ async fn pump_turn(pump: TurnPump) {
     let mut usage: Option<swallowtail_runtime::TokenUsage> = None;
     let mut usage_part_ids = BTreeSet::new();
     let mut activity = crate::activity::OpenCodeActivityProjection::new(turn_id);
-    let mut status = loop {
+    let status = loop {
         match next_signal(&mut subscription, &mut deadline_wait).await {
             TurnSignal::Deadline => {
                 let abort = cancellation.request_bounded().await;
@@ -346,7 +346,24 @@ async fn pump_turn(pump: TurnPump) {
         callbacks.abandon(reason);
     }
     let cleanup = CleanupOutcome::merge(status.1, stream_cleanup);
-    let activity_status = match &status.0 {
+    let final_status = finalize_turn_events(&mut activity, &events, sequence, status.0, usage);
+    events.mark_terminal();
+    let mut outcome = TerminalOutcome::new(final_status, cleanup);
+    if let Some(output) = output {
+        outcome = outcome.with_output(output);
+    }
+    terminal_flag.store(true, Ordering::SeqCst);
+    let _ = terminal.complete(outcome);
+}
+
+fn finalize_turn_events(
+    activity: &mut crate::activity::OpenCodeActivityProjection,
+    events: &swallowtail_runtime::RuntimeEventSender,
+    mut sequence: u64,
+    mut status: TerminalStatus,
+    usage: Option<swallowtail_runtime::TokenUsage>,
+) -> TerminalStatus {
+    let activity_status = match &status {
         TerminalStatus::Detached => None,
         TerminalStatus::Completed => Some(swallowtail_runtime::ActivityStatus::Completed),
         TerminalStatus::Cancelled | TerminalStatus::TimedOut => {
@@ -361,38 +378,38 @@ async fn pump_turn(pump: TurnPump) {
         match activity.complete(activity_status) {
             Ok(observations) => {
                 for observation in observations {
-                    if let Err(error) = events.send(RuntimeEvent::new(
-                        sequence,
-                        RuntimeEventKind::Activity(observation),
-                    )) {
-                        status.0 = TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                    // Best-effort delivery at terminalization: if the consumer
+                    // dropped or closed the event stream early, preserve the
+                    // authentic terminal status instead of replacing it with a
+                    // channel-closed RuntimeFailed.
+                    if events
+                        .send(RuntimeEvent::new(
+                            sequence,
+                            RuntimeEventKind::Activity(observation),
+                        ))
+                        .is_err()
+                    {
                         break;
                     }
                     sequence += 1;
                 }
             }
             Err(error) => {
-                status.0 = TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                if matches!(status, TerminalStatus::Completed) {
+                    status = TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                }
             }
         }
-    };
-    if let Some(usage) = usage
-        && let Err(error) = events.send(RuntimeEvent::new(
+    }
+    if let Some(usage) = usage {
+        let _ = events.send(RuntimeEvent::new(
             sequence,
             RuntimeEventKind::ProviderObservation(
                 swallowtail_runtime::ProviderObservation::Usage(usage),
             ),
-        ))
-    {
-        status.0 = TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+        ));
     }
-    events.mark_terminal();
-    let mut outcome = TerminalOutcome::new(status.0, cleanup);
-    if let Some(output) = output {
-        outcome = outcome.with_output(output);
-    }
-    terminal_flag.store(true, Ordering::SeqCst);
-    let _ = terminal.complete(outcome);
+    status
 }
 
 fn project_event(

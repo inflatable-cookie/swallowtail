@@ -119,11 +119,12 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 let _ = materialization.release().await;
                 return Err(error);
             }
+            let deadline = request.deadline().expect("validated turn deadline");
             let deadline_task = match spawn_deadline(
                 &services,
                 Arc::clone(&self.connection),
                 Arc::clone(&turn),
-                request.deadline().expect("validated turn deadline"),
+                deadline,
             ) {
                 Ok(task) => task,
                 Err(error) => {
@@ -149,10 +150,15 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                     "mimeType": "image/png"
                 }]);
             }
-            let response = self
-                .connection
-                .command(id, PiSdkSidecarCommand::Prompt, params)
-                .await;
+            let response = crate::driver::run_before_deadline(
+                self.connection
+                    .command(id, PiSdkSidecarCommand::Prompt, params),
+                Some(deadline),
+                &services,
+                "swallowtail.pi.sdk-sidecar.prompt_timed_out",
+                "Pi SDK sidecar prompt timed out before acceptance",
+            )
+            .await;
             match response {
                 Ok(response) if response.success => Ok(Box::new(PiSdkSidecarTurnHandle::new(
                     request.turn_id().clone(),
@@ -292,9 +298,18 @@ fn spawn_deadline(
                 if timed_out {
                     deadline_turn.mark_timed_out();
                     let id = format!("deadline-abort:{}", deadline_turn.runtime_id().as_str());
-                    let _ = connection
+                    let abort = connection
                         .command(id, PiSdkSidecarCommand::Abort, json!({}))
                         .await;
+                    if !matches!(abort, Ok(response) if response.success) {
+                        let diagnostic = swallowtail_core::SafeDiagnostic::new(
+                            "swallowtail.pi.sdk-sidecar.deadline_abort_failed",
+                            "Pi SDK sidecar could not abort the turn after its deadline elapsed",
+                        );
+                        if connection.close_on_rejected_abort(&deadline_turn, diagnostic) {
+                            let _ = connection.force_stop().await;
+                        }
+                    }
                 }
             }),
         )

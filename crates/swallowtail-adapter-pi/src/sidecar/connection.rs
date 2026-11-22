@@ -197,7 +197,7 @@ impl SidecarConnection {
         if let Some(active_turn) = active_turn
             && !active_turn.is_finished()
         {
-            active_turn.fail_connection(diagnostic);
+            active_turn.fail_rejected_abort(diagnostic);
         }
         true
     }

@@ -152,7 +152,10 @@ fn project_opencode_page(
         }};
         candidates.push(ProviderSessionCandidate::new(plan, candidate_id, provider_ref, display, Some(observation.updated_at), activity, availability).map_err(catalogue_projection)?);
     }
-    let cursor = (raw_len == limit as usize && !candidates.is_empty()).then(|| start.saturating_add(limit).to_string());
+    let cursor = (raw_len == limit as usize)
+        .then(|| start.checked_add(limit))
+        .flatten()
+        .map(|next| next.to_string());
     Ok((candidates, cursor))
 }
 

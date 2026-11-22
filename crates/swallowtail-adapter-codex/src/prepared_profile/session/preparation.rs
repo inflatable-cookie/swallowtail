@@ -7,10 +7,9 @@ use crate::prepared_profile::plan::{
     model_route, require_driver, requirements,
 };
 use crate::prepared_profile::session_capabilities::{
-    behavior_revision, session_capabilities, supports_harness_mode,
+    session_capabilities, supports_harness_mode, supports_workspace_roots,
 };
 use crate::registered_tools::CodexRegisteredToolBinding;
-use crate::selection::CODEX_APP_SERVER_WORKSPACE_BEHAVIOR;
 use crate::{CodexPreparedDriver, CodexPreparedIntegration, codex_bounded_workspace_capability};
 use swallowtail_core::Diagnostic;
 use swallowtail_core::{
@@ -35,9 +34,7 @@ pub(super) fn prepare_session(
     input: CodexSessionProfileInput,
 ) -> Result<CodexPreparedSession, PreparationFailure> {
     require_driver(prepared, CodexPreparedDriver::AppServer)?;
-    if kind == CodexPreparedSessionKind::BoundedWorkspace
-        && behavior_revision(prepared) != Some(CODEX_APP_SERVER_WORKSPACE_BEHAVIOR)
-    {
+    if kind == CodexPreparedSessionKind::BoundedWorkspace && !supports_workspace_roots(prepared) {
         return Err(failure(
             "swallowtail.codex.preparation.workspace_version_unsupported",
             "Prepared Codex version does not support bounded workspace roots",

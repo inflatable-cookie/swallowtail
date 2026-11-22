@@ -133,13 +133,25 @@ pub(super) async fn run_controlled_rpc<T>(
         }
     };
     if let Err(control) = control_before_dispatch(operation, cancellation, deadline, services) {
-        let cleanup = cancel_and_release(&connection, task, resource).await;
+        let cleanup = cancel_and_release(
+            &connection,
+            task,
+            resource,
+            close_budget(services, deadline),
+        )
+        .await;
         return Err(cleanup_or(cleanup, control));
     }
     let deadline_wait = match deadline_wait(deadline, services) {
         Ok(wait) => wait,
         Err(error) => {
-            let cleanup = cancel_and_release(&connection, task, resource).await;
+            let cleanup = cancel_and_release(
+                &connection,
+                task,
+                resource,
+                close_budget(services, deadline),
+            )
+            .await;
             return Err(cleanup_or(cleanup, error));
         }
     };

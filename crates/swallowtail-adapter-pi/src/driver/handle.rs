@@ -615,4 +615,60 @@ mod tests {
             .set_active_turn(turn3)
             .expect("connection must stay open after a late refusal for an already-settled turn");
     }
+
+    #[test]
+    fn rejected_abort_resolves_terminal_outcome_with_cancel_rejected_diagnostic() {
+        use swallowtail_runtime::TerminalStatus;
+
+        let services = HostServices::new(
+            ExecutionHostId::new("pi.rpc.cancel-rejected-test").expect("host id is valid"),
+        );
+        let connection = PiConnection::new(
+            Arc::new(RefusingStdin),
+            Arc::new(DummyTaskService),
+            Arc::new(DummyTimeService),
+            services,
+        );
+        let (turn, events, callbacks, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("turn-cancel-rejected").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+            Arc::downgrade(&connection),
+            false,
+        )
+        .expect("turn constructs");
+        connection
+            .set_active_turn(Arc::clone(&turn))
+            .expect("turn attaches");
+        let active: ActiveSlot = Arc::new(Mutex::new(None));
+        let mut handle = PiTurnHandle::new(
+            RuntimeTurnId::new("turn-cancel-rejected").expect("turn id is valid"),
+            events,
+            callbacks,
+            Box::pin(terminal),
+            super::PiTurnBinding {
+                connection,
+                turn,
+                active,
+                attachment: SharedAttachmentMaterialization::default(),
+                command_dispositions: false,
+            },
+        );
+        let terminal_fut = handle
+            .take_terminal_outcome()
+            .expect("terminal outcome future is present");
+        let cancel_err = futures_executor::block_on(handle.cancellation().request())
+            .expect_err("failed abort must return error");
+        assert_eq!(cancel_err.diagnostic().code(), "test.stdin_refused");
+
+        let outcome = futures_executor::block_on(terminal_fut);
+        assert!(
+            matches!(
+                outcome.status(),
+                TerminalStatus::RuntimeFailed(diagnostic)
+                    if diagnostic.code() == "swallowtail.pi.rpc.cancel_rejected"
+            ),
+            "rejected abort must resolve with cancel_rejected diagnostic, got {:?}",
+            outcome.status()
+        );
+    }
 }

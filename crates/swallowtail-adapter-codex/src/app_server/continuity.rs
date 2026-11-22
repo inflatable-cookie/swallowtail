@@ -98,8 +98,14 @@ impl CodexAppServerDriver {
             ),
             Controlled::Deadline => failure(bound.timed_out.0, bound.timed_out.1),
         };
-        let _ = connection.cancel_session().await;
-        let _ = task.join().await;
+        let _ = cancel_connection(
+            &connection,
+            task,
+            close_budget(services, bound.deadline),
+            "swallowtail.codex.app_server.cancel_cleanup_failed",
+            "Codex app-server cancellation cleanup failed",
+        )
+        .await;
         Err(error)
     }
 
@@ -321,6 +327,38 @@ pub(crate) async fn close_connection(
         ))
     } else {
         connection.cleanup_outcome()
+    }
+}
+
+pub(crate) async fn cancel_connection(
+    connection: &Arc<RpcConnection>,
+    task: AppServerTask,
+    budget: CloseBudget,
+    failure_code: &'static str,
+    failure_message: &'static str,
+) -> CleanupOutcome {
+    match connection.cancel_session().await {
+        Ok(()) => {
+            if task.join().await.is_err() {
+                CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
+                    failure_code,
+                    failure_message,
+                ))
+            } else {
+                connection.cleanup_outcome()
+            }
+        }
+        Err(_) => {
+            // If `force_stop` was refused while stdout is still open, joining
+            // unconditionally would hang forever. Fall back to bounded close
+            // (stdin EOF + escalation + pump abort) and still report
+            // cancellation failure.
+            let _ = close_connection(connection, task, budget).await;
+            CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
+                failure_code,
+                failure_message,
+            ))
+        }
     }
 }
 

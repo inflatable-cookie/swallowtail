@@ -119,11 +119,12 @@ impl InteractiveSessionHandle for PiSessionHandle {
                 let _ = materialization.release().await;
                 return Err(error);
             }
+            let deadline = request.deadline().expect("validated turn deadline");
             let deadline_task = match spawn_deadline(
                 &services,
                 Arc::clone(&self.connection),
                 Arc::clone(&turn),
-                request.deadline().expect("validated turn deadline"),
+                deadline,
             ) {
                 Ok(task) => task,
                 Err(error) => {
@@ -147,7 +148,14 @@ impl InteractiveSessionHandle for PiSessionHandle {
                     "mimeType": "image/png"
                 }]);
             }
-            let response = self.connection.command(id.clone(), "prompt", payload).await;
+            let response = crate::driver::run_before_deadline(
+                self.connection.command(id.clone(), "prompt", payload),
+                Some(deadline),
+                &services,
+                "swallowtail.pi.rpc.prompt_timed_out",
+                "Pi RPC prompt timed out before acceptance",
+            )
+            .await;
             let accepted = match response {
                 Ok(response) if response.success => {
                     match parse_command_disposition(
@@ -315,9 +323,18 @@ fn spawn_deadline(
             if timed_out {
                 deadline_turn.mark_timed_out();
                 let id = format!("deadline-abort:{}", deadline_turn.runtime_id().as_str());
-                let _ = connection
+                let abort = connection
                     .command(id.clone(), "abort", json!({"id": id, "type": "abort"}))
                     .await;
+                if !matches!(abort, Ok(response) if response.success) {
+                    let diagnostic = swallowtail_core::SafeDiagnostic::new(
+                        "swallowtail.pi.rpc.deadline_abort_failed",
+                        "Pi RPC could not abort the turn after its deadline elapsed",
+                    );
+                    if connection.close_on_rejected_abort(&deadline_turn, diagnostic) {
+                        let _ = connection.force_stop().await;
+                    }
+                }
             }
         }),
     )

@@ -164,7 +164,7 @@ impl PiConnection {
         if let Some(active_turn) = active_turn
             && !active_turn.is_finished()
         {
-            active_turn.fail_connection(diagnostic.clone());
+            active_turn.fail_rejected_abort(diagnostic.clone());
         }
         self.fail_pending(RuntimeFailure::new(diagnostic));
         true

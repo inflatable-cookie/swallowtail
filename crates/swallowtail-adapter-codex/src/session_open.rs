@@ -1,4 +1,5 @@
-use crate::process_close::AppServerTask;
+use crate::app_server::cancel_connection;
+use crate::process_close::{AppServerTask, close_budget};
 use crate::rpc::{RpcConnection, failure};
 use crate::session::CodexSessionHandle;
 use crate::session_access::CodexSessionAccess;
@@ -150,8 +151,14 @@ impl PendingSessionOpen {
     }
 
     async fn abort(self) {
-        let _ = self.connection.cancel_session().await;
-        let _ = self.task.join().await;
+        let _ = cancel_connection(
+            &self.connection,
+            self.task,
+            close_budget(self.connection.services(), None),
+            "swallowtail.codex.app_server.cancel_cleanup_failed",
+            "Codex app-server cancellation cleanup failed",
+        )
+        .await;
         let _ = self.access.release().await;
     }
 }
@@ -280,6 +287,133 @@ mod tests {
                     RecordedHostCall::WorkingResourceRelease,
                 ]
             );
+        });
+    }
+
+    #[test]
+    fn abort_with_refused_force_stop_and_open_stdout_does_not_hang() {
+        use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
+        use swallowtail_runtime::{
+            BoxFuture, HostServices, JoinedTask, ProcessExit, ProcessHandle, ProcessInputChunk,
+            ProcessOutputChunk, ScopedTaskService,
+        };
+
+        struct RefusingOpenStdout;
+
+        impl ProcessHandle for RefusingOpenStdout {
+            fn write_stdin(
+                &self,
+                _: ProcessInputChunk,
+            ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn read_output(
+                &self,
+            ) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+                Box::pin(std::future::pending())
+            }
+            fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async {
+                    Err(RuntimeFailure::new(SafeDiagnostic::new(
+                        "test.force_stop_refused",
+                        "force stop refused",
+                    )))
+                })
+            }
+            fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+                Box::pin(std::future::pending())
+            }
+        }
+
+        struct JoinOnDropThread(Option<std::thread::JoinHandle<()>>);
+        impl Drop for JoinOnDropThread {
+            fn drop(&mut self) {
+                if let Some(handle) = self.0.take() {
+                    let _ = handle.join();
+                }
+            }
+        }
+        impl JoinedTask for JoinOnDropThread {
+            fn join(mut self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+                let handle = self.0.take();
+                Box::pin(async move {
+                    if let Some(handle) = handle {
+                        let _ = handle.join();
+                    }
+                    Ok(())
+                })
+            }
+        }
+
+        struct ThreadTaskService;
+        impl ScopedTaskService for ThreadTaskService {
+            fn spawn(
+                &self,
+                _scope: ScopeId,
+                task: BoxFuture<'static, ()>,
+            ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+                Ok(Box::new(JoinOnDropThread(Some(std::thread::spawn(
+                    move || {
+                        block_on(task);
+                    },
+                )))))
+            }
+        }
+
+        block_on(async {
+            let plan = bounded_workspace_plan();
+            let services = HostServices::new(
+                ExecutionHostId::new("codex.open.refused-cancel").expect("host id"),
+            );
+            let process: Arc<dyn ProcessHandle> = Arc::new(RefusingOpenStdout);
+            let connection = RpcConnection::new(process, services.clone());
+            let pump_connection = Arc::clone(&connection);
+            let task = AppServerTask::spawn(
+                Arc::new(ThreadTaskService),
+                ScopeId::new("codex-open-refused-cancel").unwrap(),
+                Box::pin(async move { pump_connection.pump().await }),
+            )
+            .expect("task spawns");
+            let recording = RecordingHostServices::for_host(
+                plan.execution_host_id().clone(),
+                RecordingOutcome::Succeed,
+            );
+            let resource = WorkingResourceRef::new("workspace.main").unwrap();
+            let access = CodexSessionAccess::prepare(
+                &plan,
+                &codex_bounded_workspace_access_policy(),
+                &resource,
+                ScopeId::new("codex-open-refused-access").unwrap(),
+                recording.services(),
+            )
+            .await
+            .expect("access prepares");
+            let input = CodexSessionInput::for_open(
+                &plan,
+                &SessionOptions::default(),
+                recording.services(),
+            )
+            .expect("input prepares");
+            let pending = PendingSessionOpen::new(
+                RequestId::new("open-refused-cancel").unwrap(),
+                connection,
+                task,
+                input,
+                false,
+                access,
+            );
+            let err = pending
+                .finish(&plan, Err(failure("test.open_failed", "open failed")), None)
+                .await
+                .err()
+                .expect("failed open returns error without hanging");
+            assert_eq!(err.diagnostic().code(), "test.open_failed");
         });
     }
 }

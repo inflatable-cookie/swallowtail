@@ -541,4 +541,51 @@ mod tests {
             .set_active_turn(turn3)
             .expect("connection must stay open after a late refusal for an already-settled turn");
     }
+
+    #[test]
+    fn sidecar_rejected_abort_resolves_terminal_outcome_with_cancel_rejected_diagnostic() {
+        use swallowtail_runtime::TerminalStatus;
+
+        let services = HostServices::new(
+            ExecutionHostId::new("pi.sidecar.cancel-rejected-test").expect("host id is valid"),
+        );
+        let connection = SidecarConnection::new(Arc::new(RefusingStdin), services);
+        let (turn, events, terminal) = SidecarActiveTurn::new(
+            RuntimeTurnId::new("sidecar-cancel-rejected").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+        )
+        .expect("turn constructs");
+        connection
+            .set_active_turn(Arc::clone(&turn))
+            .expect("turn attaches");
+        let active: ActiveSlot = Arc::new(Mutex::new(None));
+        let mut handle = PiSdkSidecarTurnHandle::new(
+            RuntimeTurnId::new("sidecar-cancel-rejected").expect("turn id is valid"),
+            events,
+            Box::pin(terminal),
+            super::PiSdkSidecarTurnBinding {
+                connection,
+                turn,
+                active,
+                attachment: SharedAttachmentMaterialization::default(),
+            },
+        );
+        let terminal_fut = handle
+            .take_terminal_outcome()
+            .expect("terminal outcome future is present");
+        let cancel_err = futures_executor::block_on(handle.cancellation().request())
+            .expect_err("failed abort must return error");
+        assert_eq!(cancel_err.diagnostic().code(), "test.stdin_refused");
+
+        let outcome = futures_executor::block_on(terminal_fut);
+        assert!(
+            matches!(
+                outcome.status(),
+                TerminalStatus::RuntimeFailed(diagnostic)
+                    if diagnostic.code() == "swallowtail.pi.sdk-sidecar.cancel_rejected"
+            ),
+            "rejected sidecar abort must resolve with cancel_rejected diagnostic, got {:?}",
+            outcome.status()
+        );
+    }
 }

@@ -65,16 +65,19 @@ impl CancellationControl for TurnCancellation {
                 ),
                 Err(error) => error,
             };
-            // A turn that could not be aborted may still be running on the
-            // provider. Record the refusal and close the connection immediately
-            // so late events can never be assigned to a replacement turn and
-            // the turn's deadline watcher wakes cleanly.
-            self.rejected.store(true, Ordering::SeqCst);
-            self.connection
-                .close_on_rejected_abort(swallowtail_core::SafeDiagnostic::new(
+            // A turn that could not be aborted while still active may still be
+            // running on the provider. Scope connection closure to this exact
+            // unfinished turn so a late refusal after settlement cannot
+            // terminate a replacement turn.
+            if self.connection.close_on_rejected_abort(
+                &self.turn,
+                swallowtail_core::SafeDiagnostic::new(
                     "swallowtail.pi.sdk-sidecar.cancel_rejected",
                     "Pi could not abort the active turn",
-                ));
+                ),
+            ) {
+                self.rejected.store(true, Ordering::SeqCst);
+            }
             Err(error)
         })
     }
@@ -412,5 +415,130 @@ mod tests {
             next_err.diagnostic().code(),
             "swallowtail.pi.sdk-sidecar.cancel_rejected"
         );
+    }
+
+    struct HeldRefusingStdin {
+        release: Mutex<Option<futures_channel::oneshot::Receiver<()>>>,
+    }
+
+    impl ProcessHandle for HeldRefusingStdin {
+        fn write_stdin(&self, _: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            let receiver = self.release.lock().expect("release lock").take();
+            Box::pin(async move {
+                if let Some(receiver) = receiver {
+                    let _ = receiver.await;
+                }
+                Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "test.late_abort_refused",
+                    "late abort refused",
+                )))
+            })
+        }
+
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+
+    #[test]
+    fn sidecar_late_abort_refusal_after_original_turn_settles_preserves_replacement_turn() {
+        use std::task::{Context, Poll, Waker};
+
+        let (release_tx, release_rx) = futures_channel::oneshot::channel();
+        let services = HostServices::new(
+            ExecutionHostId::new("pi.sidecar.late-refusal-test").expect("host id is valid"),
+        );
+        let connection = SidecarConnection::new(
+            Arc::new(HeldRefusingStdin {
+                release: Mutex::new(Some(release_rx)),
+            }),
+            services,
+        );
+        let (turn1, events1, terminal1) = SidecarActiveTurn::new(
+            RuntimeTurnId::new("sidecar-turn-1").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+        )
+        .expect("turn1 constructs");
+        connection
+            .set_active_turn(Arc::clone(&turn1))
+            .expect("turn1 attaches");
+        let active: ActiveSlot = Arc::new(Mutex::new(None));
+        let handle1 = PiSdkSidecarTurnHandle::new(
+            RuntimeTurnId::new("sidecar-turn-1").expect("turn id is valid"),
+            events1,
+            Box::pin(terminal1),
+            super::PiSdkSidecarTurnBinding {
+                connection: Arc::clone(&connection),
+                turn: Arc::clone(&turn1),
+                active,
+                attachment: SharedAttachmentMaterialization::default(),
+            },
+        );
+
+        // 1. Start abort on turn1; it suspends before the refusal arrives.
+        let mut cancel_fut = handle1.cancellation().request();
+        let waker = Waker::noop();
+        let mut cx = Context::from_waker(waker);
+        assert!(
+            matches!(cancel_fut.as_mut().poll(&mut cx), Poll::Pending),
+            "abort should remain in-flight while turn1 settles"
+        );
+
+        // 2. Original turn1 settles and clears the slot before the abort refusal arrives.
+        turn1.fail_connection(SafeDiagnostic::new("test.settled", "turn1 settled"));
+        connection.clear_active_turn(&turn1);
+
+        // 3. Replacement turn2 is admitted onto the healthy connection.
+        let (turn2, _events2, _terminal2) = SidecarActiveTurn::new(
+            RuntimeTurnId::new("sidecar-turn-2").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+        )
+        .expect("turn2 constructs");
+        connection
+            .set_active_turn(Arc::clone(&turn2))
+            .expect("replacement turn2 must admit after turn1 settled");
+
+        // 4. Late abort refusal for turn1 resolves.
+        release_tx.send(()).expect("release sends");
+        let cancel_err = futures_executor::block_on(cancel_fut)
+            .expect_err("late abort refusal still returns its error to caller");
+        assert_eq!(cancel_err.diagnostic().code(), "test.late_abort_refused");
+
+        // 5. Replacement turn2 and the shared connection must remain intact.
+        assert!(
+            !turn2.is_finished(),
+            "late refusal for turn1 must not terminate replacement turn2"
+        );
+        drop(cancel_err);
+        let close1 = futures_executor::block_on(Box::new(handle1).close());
+        assert_eq!(close1, CleanupOutcome::NotApplicable);
+
+        // 6. Once turn2 finishes, a subsequent turn3 can still be admitted.
+        turn2.fail_connection(SafeDiagnostic::new("test.done", "turn2 done"));
+        connection.clear_active_turn(&turn2);
+        let (turn3, _events3, _terminal3) = SidecarActiveTurn::new(
+            RuntimeTurnId::new("sidecar-turn-3").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+        )
+        .expect("turn3 constructs");
+        connection
+            .set_active_turn(turn3)
+            .expect("connection must stay open after a late refusal for an already-settled turn");
     }
 }

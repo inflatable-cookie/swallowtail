@@ -65,6 +65,37 @@ impl BoundedIgnoredResponses {
     }
 }
 
+#[derive(Default)]
+struct PumpStop {
+    stopped: AtomicBool,
+    waker: Mutex<Option<Waker>>,
+}
+
+impl PumpStop {
+    fn signal(&self) {
+        self.stopped.store(true, Ordering::SeqCst);
+        if let Some(waker) = self.waker.lock().expect("pump-stop lock poisoned").take() {
+            waker.wake();
+        }
+    }
+
+    fn is_stopped(&self) -> bool {
+        self.stopped.load(Ordering::SeqCst)
+    }
+
+    fn poll_stopped(&self, context: &mut Context<'_>) -> Poll<()> {
+        if self.stopped.load(Ordering::SeqCst) {
+            return Poll::Ready(());
+        }
+        *self.waker.lock().expect("pump-stop lock poisoned") = Some(context.waker().clone());
+        if self.stopped.load(Ordering::SeqCst) {
+            Poll::Ready(())
+        } else {
+            Poll::Pending
+        }
+    }
+}
+
 pub(crate) struct RpcConnection {
     process: Arc<dyn ProcessHandle>,
     services: HostServices,
@@ -77,6 +108,7 @@ pub(crate) struct RpcConnection {
     closing: AtomicBool,
     session_cancelled: AtomicBool,
     closed: AtomicBool,
+    pump_stop: PumpStop,
     cleanup: Mutex<Option<CleanupOutcome>>,
     stderr_tail: Mutex<Vec<u8>>,
 }
@@ -95,6 +127,7 @@ impl RpcConnection {
             closing: AtomicBool::new(false),
             session_cancelled: AtomicBool::new(false),
             closed: AtomicBool::new(false),
+            pump_stop: PumpStop::default(),
             cleanup: Mutex::new(None),
             stderr_tail: Mutex::new(Vec::new()),
         })
@@ -274,6 +307,12 @@ impl RpcConnection {
     pub(crate) async fn cancel_session(&self) -> Result<(), RuntimeFailure> {
         self.session_cancelled.store(true, Ordering::SeqCst);
         self.process.force_stop().await
+    }
+
+    /// Signals a stuck pump loop to exit cleanly after force-stop refusal so
+    /// the owning task can always be joined before returning.
+    pub(crate) fn abort_pump(&self) {
+        self.pump_stop.signal();
     }
 
     pub(crate) fn cleanup_outcome(&self) -> CleanupOutcome {

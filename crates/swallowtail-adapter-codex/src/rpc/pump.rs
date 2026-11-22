@@ -2,8 +2,21 @@ impl RpcConnection {
     pub(crate) async fn pump(self: Arc<Self>) {
         let mut pending_bytes = Vec::new();
         let mut protocol_failure = None;
+        let mut pump_aborted = false;
         loop {
-            match self.process.read_output().await {
+            let mut read = self.process.read_output();
+            let next = std::future::poll_fn(|context| {
+                if self.pump_stop.poll_stopped(context).is_ready() {
+                    return Poll::Ready(None);
+                }
+                read.as_mut().poll(context).map(Some)
+            })
+            .await;
+            let Some(output) = next else {
+                pump_aborted = true;
+                break;
+            };
+            match output {
                 Ok(Some(chunk)) if chunk.stream() == ProcessOutputStream::Stdout => {
                     let mut lines = Vec::new();
                     let scanned = swallowtail_runtime::scan_lines(
@@ -44,7 +57,8 @@ impl RpcConnection {
                 }
             }
         }
-        if protocol_failure.is_none()
+        if !pump_aborted
+            && protocol_failure.is_none()
             && !pending_bytes.is_empty()
             && let Err(error) = self.dispatch(&pending_bytes).await
         {
@@ -55,7 +69,24 @@ impl RpcConnection {
         if protocol_failure.is_some() {
             let _ = self.process.force_stop().await;
         }
-        let exit = self.process.wait().await;
+        let exit = if pump_aborted || self.pump_stop.is_stopped() {
+            Err(failure(
+                "swallowtail.codex.app_server.process_cleanup_failed",
+                "Codex app-server pump was aborted before process exit",
+            ))
+        } else {
+            let mut wait = self.process.wait();
+            std::future::poll_fn(|context| {
+                if self.pump_stop.poll_stopped(context).is_ready() {
+                    return Poll::Ready(Err(failure(
+                        "swallowtail.codex.app_server.process_cleanup_failed",
+                        "Codex app-server pump was aborted before process exit",
+                    )));
+                }
+                wait.as_mut().poll(context)
+            })
+            .await
+        };
         {
             // Setting `closed` under the pending lock orders it against
             // request registration: a request either lands before this drain

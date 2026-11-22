@@ -137,24 +137,37 @@ impl PiConnection {
         Ok(())
     }
 
-    /// Closes the connection to any further commands or turns when an active
-    /// turn's abort was rejected, ensuring late events from the still-running
-    /// provider turn can never be misattributed to a replacement turn.
-    pub(crate) fn close_on_rejected_abort(&self, diagnostic: SafeDiagnostic) {
+    /// Closes the connection to any further commands or turns when `turn`'s
+    /// abort was rejected while `turn` is still the active unfinished turn.
+    ///
+    /// If `turn` already settled (or a replacement turn now owns the slot),
+    /// the late refusal is ignored so it cannot terminate a replacement turn.
+    pub(crate) fn close_on_rejected_abort(
+        &self,
+        turn: &Arc<ActiveTurn>,
+        diagnostic: SafeDiagnostic,
+    ) -> bool {
+        let mut active = self.active_turn.lock().expect("Pi active lock poisoned");
+        let is_current_unfinished = !turn.is_finished()
+            && active
+                .as_ref()
+                .is_some_and(|current| Arc::ptr_eq(current, turn));
+        if !is_current_unfinished {
+            return false;
+        }
         {
             let _pending = self.pending.lock().expect("Pi pending lock poisoned");
             self.closed.store(true, Ordering::SeqCst);
         }
-        if let Some(turn) = self
-            .active_turn
-            .lock()
-            .expect("Pi active lock poisoned")
-            .as_ref()
-            && !turn.is_finished()
+        let active_turn = active.take();
+        drop(active);
+        if let Some(active_turn) = active_turn
+            && !active_turn.is_finished()
         {
-            turn.fail_connection(diagnostic.clone());
+            active_turn.fail_connection(diagnostic.clone());
         }
         self.fail_pending(RuntimeFailure::new(diagnostic));
+        true
     }
 
     pub(crate) fn clear_active_turn(&self, turn: &Arc<ActiveTurn>) {

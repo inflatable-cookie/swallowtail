@@ -374,14 +374,29 @@ mod tests {
 
     struct ThreadTaskService;
 
-    struct ThreadJoined(std::thread::JoinHandle<()>);
+    /// Models `LocalJoinedTask::drop`: synchronously joins the worker thread on
+    /// drop if it was not explicitly joined, so dropping an unfinished pump
+    /// would block forever instead of detaching.
+    struct JoinOnDropThread(Option<std::thread::JoinHandle<()>>);
 
-    impl JoinedTask for ThreadJoined {
-        fn join(self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+    impl Drop for JoinOnDropThread {
+        fn drop(&mut self) {
+            if let Some(handle) = self.0.take() {
+                let _ = handle.join();
+            }
+        }
+    }
+
+    impl JoinedTask for JoinOnDropThread {
+        fn join(mut self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            let handle = self.0.take();
             Box::pin(async move {
-                self.0.join().map_err(|_| {
-                    RuntimeFailure::new(SafeDiagnostic::new("test.panicked", "task panicked"))
-                })
+                if let Some(handle) = handle {
+                    handle.join().map_err(|_| {
+                        RuntimeFailure::new(SafeDiagnostic::new("test.panicked", "task panicked"))
+                    })?;
+                }
+                Ok(())
             })
         }
     }
@@ -392,9 +407,11 @@ mod tests {
             _scope: ScopeId,
             task: BoxFuture<'static, ()>,
         ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
-            Ok(Box::new(ThreadJoined(std::thread::spawn(move || {
-                futures_executor::block_on(task);
-            }))))
+            Ok(Box::new(JoinOnDropThread(Some(std::thread::spawn(
+                move || {
+                    futures_executor::block_on(task);
+                },
+            )))))
         }
     }
 
@@ -458,7 +475,7 @@ mod tests {
             1,
             "fallback attempts stdin close before escalating"
         );
-        // Release the background pump thread so the test exits cleanly.
-        process.signal_eof();
+        // Note: stdout was never signalled EOF and `JoinOnDropThread` joins on
+        // drop, proving the pump was aborted and joined cleanly before return.
     }
 }

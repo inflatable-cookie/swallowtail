@@ -311,7 +311,9 @@ pub(crate) async fn close_connection(
     budget: CloseBudget,
 ) -> CleanupOutcome {
     let close = connection.close_input().await;
-    let join = task.join_or_escalate(connection.process(), budget).await;
+    let join = task
+        .join_or_escalate_with_abort(connection.process(), budget, || connection.abort_pump())
+        .await;
     if close.is_err() || join.is_err() {
         CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
             "swallowtail.codex.app_server.close_failed",

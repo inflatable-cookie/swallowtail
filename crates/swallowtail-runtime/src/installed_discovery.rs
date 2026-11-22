@@ -473,13 +473,13 @@ async fn stop_and_classify(
 }
 
 /// Stops, force-stops and reaps the child, reporting `false` if that does not
-/// finish within [`TEARDOWN_BUDGET`] or any step fails.
+/// finish within [`TEARDOWN_BUDGET`], neither stop step succeeds, or reaping fails.
 async fn bounded_teardown(process: &dyn ProcessHandle, services: &HostServices) -> bool {
     let teardown = async {
         let graceful = process.request_stop().await;
         let forced = process.force_stop().await;
         let waited = process.wait().await;
-        graceful.is_ok() && forced.is_ok() && waited.is_ok()
+        (graceful.is_ok() || forced.is_ok()) && waited.is_ok()
     };
     let Some(time) = services.time() else {
         return teardown.await;
@@ -790,6 +790,82 @@ mod tests {
         .expect("the bounded probe reports an outcome");
 
         assert_eq!(outcome.status(), DiscoveryStatus::TimedOut);
+        assert_eq!(
+            outcome.diagnostic().map(SafeDiagnostic::code),
+            Some(codes.timed_out)
+        );
+    }
+
+    #[test]
+    fn a_child_that_exits_on_request_stop_is_not_misclassified_when_force_stop_errors() {
+        struct ExitedBeforeForceStopProcess;
+        impl crate::ProcessHandle for ExitedBeforeForceStopProcess {
+            fn write_stdin(
+                &self,
+                _chunk: crate::ProcessInputChunk,
+            ) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(std::future::ready(Ok(())))
+            }
+
+            fn close_stdin(&self) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(std::future::ready(Ok(())))
+            }
+
+            fn read_output(
+                &self,
+            ) -> crate::BoxFuture<'_, Result<Option<crate::ProcessOutputChunk>, RuntimeFailure>>
+            {
+                Box::pin(std::future::pending())
+            }
+
+            fn request_stop(&self) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(std::future::ready(Ok(())))
+            }
+
+            fn force_stop(&self) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(std::future::ready(Err(failure("fixture.already_exited"))))
+            }
+
+            fn wait(&self) -> crate::BoxFuture<'_, Result<crate::ProcessExit, RuntimeFailure>> {
+                Box::pin(std::future::ready(Ok(crate::ProcessExit::new(
+                    true,
+                    Some(0),
+                ))))
+            }
+        }
+        impl crate::ProcessService for ExitedBeforeForceStopProcess {
+            fn start(
+                &self,
+                _scope: crate::ScopeId,
+                _request: crate::ProcessRequest,
+            ) -> crate::BoxFuture<'static, Result<Box<dyn crate::ProcessHandle>, RuntimeFailure>>
+            {
+                Box::pin(std::future::ready(Ok(
+                    Box::new(ExitedBeforeForceStopProcess) as Box<dyn crate::ProcessHandle>,
+                )))
+            }
+        }
+
+        let codes = fixture_codes();
+        let services = HostServices::new(host_id())
+            .with_task(Arc::new(InlineTask))
+            .with_time(Arc::new(ImmediateDeadline))
+            .with_process(Arc::new(ExitedBeforeForceStopProcess));
+        let outcome = block(Box::pin(probe_installed_executable_version(
+            fixture_request(),
+            services,
+            fixture_claim(),
+            |_| None,
+            codes,
+            "Fixture harness",
+        )))
+        .expect("the bounded probe reports an outcome");
+
+        assert_eq!(
+            outcome.status(),
+            DiscoveryStatus::TimedOut,
+            "a child that stopped on request_stop and reaped cleanly must not be misclassified as CleanupFailed when force_stop errors on the already-exited process"
+        );
         assert_eq!(
             outcome.diagnostic().map(SafeDiagnostic::code),
             Some(codes.timed_out)

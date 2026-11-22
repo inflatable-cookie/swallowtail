@@ -477,3 +477,88 @@ fn mcp_placement_zeroizes_url_and_header_values_on_wipe() {
     drop(placement);
     drop(cloned);
 }
+
+#[test]
+fn duplicate_correlation_id_does_not_clobber_live_waiter() {
+    use std::sync::Mutex;
+
+    struct SingleResponseProcess {
+        output: Mutex<Option<Vec<u8>>>,
+    }
+
+    impl ProcessHandle for SingleResponseProcess {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            let chunk = self
+                .output
+                .lock()
+                .expect("output lock")
+                .take()
+                .map(|bytes| {
+                    ProcessOutputChunk::new(swallowtail_runtime::ProcessOutputStream::Stdout, bytes)
+                });
+            Box::pin(async move { Ok(chunk) })
+        }
+
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+
+    block_on(async {
+        let process: Arc<dyn ProcessHandle> = Arc::new(SingleResponseProcess {
+            output: Mutex::new(Some(
+                b"{\"jsonrpc\":\"2.0\",\"id\":42,\"result\":{\"ok\":true}}\n".to_vec(),
+            )),
+        });
+        let transport = AcpTransport::stdio(
+            process,
+            FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES),
+        );
+        let host = ExecutionHostId::new("local").expect("valid host");
+        let connection = AcpConnection::new(
+            transport,
+            HostServices::new(host),
+            test_diagnostics(),
+            Arc::new(StandardAcpHooks),
+        );
+
+        let live_waiter = connection
+            .begin_request_with_id(42, "test/method", json!({}))
+            .await
+            .expect("first request with id 42 succeeds");
+        let duplicate_err = connection
+            .begin_request_with_id(42, "test/method", json!({}))
+            .await
+            .err()
+            .expect("duplicate correlation id must be rejected");
+        assert_eq!(
+            duplicate_err.diagnostic().code(),
+            "swallowtail.test.acp.limit"
+        );
+
+        Arc::clone(&connection).pump().await;
+        let response = live_waiter
+            .await
+            .expect("duplicate id rejection must not clobber the live waiter");
+        assert_eq!(response, json!({"ok": true}));
+    });
+}

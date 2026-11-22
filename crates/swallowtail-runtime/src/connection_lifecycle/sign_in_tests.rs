@@ -2162,12 +2162,45 @@ fn cleanup_session_async_bounds_wedged_teardown_and_retains_pending_stop_and_loo
         "swallowtail.sign_in.cleanup_timed_out"
     );
 
-    // 1b. Deadline-free session on a host with NO TimeService port fails closed on pending
-    // cleanup instead of hanging, and succeeds when cleanup resolves immediately.
-    let no_time_wedged_services =
-        HostServices::new(host_id()).with_process(Arc::new(WedgedStopProcess));
-    let no_time_wedged_session = block_on(start_sign_in_async(
-        &no_time_wedged_services,
+    // 1b. Deadline-free session on a host with NO TimeService awaits genuinely async
+    // cleanup ports directly instead of failing closed on the first Poll::Pending.
+    struct AsyncYieldStopProcess;
+    impl ProcessHandle for AsyncYieldStopProcess {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            yield_once_then(|| Ok(()))
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            yield_once_then(|| Ok(()))
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            yield_once_then(|| Ok(ProcessExit::new(true, Some(0))))
+        }
+    }
+    impl ProcessService for AsyncYieldStopProcess {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            Box::pin(async { Ok(Box::new(AsyncYieldStopProcess) as Box<dyn ProcessHandle>) })
+        }
+    }
+    let no_time_async_services =
+        HostServices::new(host_id()).with_process(Arc::new(AsyncYieldStopProcess));
+    let no_time_async_session = block_on(start_sign_in_async(
+        &no_time_async_services,
         SignInStartRequest::new(
             scope(),
             instance_id(),
@@ -2188,15 +2221,13 @@ fn cleanup_session_async_bounds_wedged_teardown_and_retains_pending_stop_and_loo
         ),
     ))
     .expect("deadline-free delegated start succeeds without TimeService");
-    let no_time_err = block_on(cancel_sign_in_async(
-        no_time_wedged_session,
-        &no_time_wedged_services,
-    ))
-    .expect_err("pending cleanup without TimeService must fail closed instead of hanging");
-    assert_eq!(no_time_err.kind(), SignInFailureKind::HostPort);
     assert_eq!(
-        no_time_err.diagnostic().code(),
-        "swallowtail.sign_in.cleanup_timed_out"
+        block_on(cancel_sign_in_async(
+            no_time_async_session,
+            &no_time_async_services,
+        ))
+        .expect("async cleanup without TimeService awaits genuinely async ports to completion"),
+        SignInStatus::Cancelled
     );
 
     // 2. Missing loopback_callback on cleanup HostServices still releases the lease via the
@@ -2599,4 +2630,412 @@ fn cleanup_session_async_bounds_wedged_teardown_and_retains_pending_stop_and_loo
         1,
         "retained stop future must not be dropped and restarted"
     );
+}
+
+#[test]
+fn await_cleanup_budget_never_repolls_completed_timer_on_early_ready() {
+    use std::future::Future;
+    use std::pin::Pin;
+    use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
+    use std::task::{Context, Poll};
+
+    struct PanicOnRepollTimer {
+        deadline: Deadline,
+        completed: bool,
+        advance_clock: Option<Arc<AtomicU64>>,
+        polls_before_ready: usize,
+    }
+
+    impl Future for PanicOnRepollTimer {
+        type Output = crate::DeadlineObservation;
+
+        fn poll(mut self: Pin<&mut Self>, context: &mut Context<'_>) -> Poll<Self::Output> {
+            assert!(
+                !self.completed,
+                "completed budget timer future must never be polled a second time"
+            );
+            if self.polls_before_ready > 0 {
+                self.polls_before_ready -= 1;
+                context.waker().wake_by_ref();
+                return Poll::Pending;
+            }
+            self.completed = true;
+            if let Some(clock) = &self.advance_clock {
+                clock.store(self.deadline.instant().ticks(), Ordering::SeqCst);
+            }
+            Poll::Ready(crate::DeadlineObservation::new(
+                self.deadline,
+                self.deadline.instant(),
+            ))
+        }
+    }
+
+    struct YieldNTimes {
+        remaining: usize,
+    }
+
+    impl Future for YieldNTimes {
+        type Output = Result<(), RuntimeFailure>;
+
+        fn poll(mut self: Pin<&mut Self>, context: &mut Context<'_>) -> Poll<Self::Output> {
+            if self.remaining == 0 {
+                Poll::Ready(Ok(()))
+            } else {
+                self.remaining -= 1;
+                context.waker().wake_by_ref();
+                Poll::Pending
+            }
+        }
+    }
+
+    // Case A: Fixed clock where wait_until returns Ready without advancing time, while
+    // cleanup yields multiple times before completing. Must never repoll a completed timer.
+    struct FixedPanicTimerTime;
+    impl TimeService for FixedPanicTimerTime {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(1)
+        }
+        fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, crate::DeadlineObservation> {
+            Box::pin(PanicOnRepollTimer {
+                deadline,
+                completed: false,
+                advance_clock: None,
+                polls_before_ready: 0,
+            })
+        }
+    }
+
+    struct MultiYieldStopProcess;
+    impl ProcessHandle for MultiYieldStopProcess {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(YieldNTimes { remaining: 3 })
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+    impl ProcessService for MultiYieldStopProcess {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            Box::pin(async { Ok(Box::new(MultiYieldStopProcess) as Box<dyn ProcessHandle>) })
+        }
+    }
+
+    let fixed_services = HostServices::new(host_id())
+        .with_process(Arc::new(MultiYieldStopProcess))
+        .with_time(Arc::new(FixedPanicTimerTime));
+    let session = block_on(start_sign_in_async(
+        &fixed_services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        ),
+    ))
+    .expect("delegated start succeeds");
+    assert_eq!(
+        block_on(cancel_sign_in_async(session, &fixed_services))
+            .expect("multi-yield cleanup completes without repolling completed timer"),
+        SignInStatus::Cancelled
+    );
+
+    // Case B: Spurious early wake on first timer followed by a re-armed timer that
+    // actually advances the clock to the deadline. Must re-arm and time out cleanly
+    // without ever repolling the first completed timer.
+    struct SpuriousEarlyWakeTime {
+        now: Arc<AtomicU64>,
+        arms: AtomicUsize,
+    }
+    impl TimeService for SpuriousEarlyWakeTime {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(self.now.load(Ordering::SeqCst))
+        }
+        fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, crate::DeadlineObservation> {
+            let arm = self.arms.fetch_add(1, Ordering::SeqCst);
+            if arm == 0 {
+                // First timer resolves early without advancing `now`.
+                Box::pin(PanicOnRepollTimer {
+                    deadline,
+                    completed: false,
+                    advance_clock: None,
+                    polls_before_ready: 0,
+                })
+            } else {
+                // Re-armed timer yields once then advances `now` to the deadline.
+                Box::pin(PanicOnRepollTimer {
+                    deadline,
+                    completed: false,
+                    advance_clock: Some(Arc::clone(&self.now)),
+                    polls_before_ready: 1,
+                })
+            }
+        }
+    }
+
+    struct HangingStopProcess;
+    impl ProcessHandle for HangingStopProcess {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+    impl ProcessService for HangingStopProcess {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            Box::pin(async { Ok(Box::new(HangingStopProcess) as Box<dyn ProcessHandle>) })
+        }
+    }
+
+    let spurious_time = Arc::new(SpuriousEarlyWakeTime {
+        now: Arc::new(AtomicU64::new(1)),
+        arms: AtomicUsize::new(0),
+    });
+    let spurious_services = HostServices::new(host_id())
+        .with_process(Arc::new(HangingStopProcess))
+        .with_time(spurious_time.clone());
+    let session = block_on(start_sign_in_async(
+        &spurious_services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        ),
+    ))
+    .expect("delegated start succeeds");
+    let err = block_on(cancel_sign_in_async(session, &spurious_services))
+        .expect_err("re-armed timer must still time out wedged cleanup");
+    assert_eq!(err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        err.diagnostic().code(),
+        "swallowtail.sign_in.cleanup_timed_out"
+    );
+    assert!(
+        spurious_time.arms.load(Ordering::SeqCst) >= 2,
+        "spurious early wake must re-arm the budget timer"
+    );
+}
+
+#[test]
+fn process_cleanup_surfaces_runtime_failures_in_sync_and_async_paths() {
+    use std::sync::atomic::{AtomicBool, Ordering};
+
+    #[derive(Clone, Copy)]
+    enum FailStage {
+        RequestStop,
+        ForceStop,
+        Wait,
+    }
+
+    struct FailingCleanupProcess {
+        stage: FailStage,
+        force_called: Arc<AtomicBool>,
+        wait_called: Arc<AtomicBool>,
+    }
+
+    impl ProcessHandle for FailingCleanupProcess {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            if matches!(self.stage, FailStage::RequestStop) {
+                Box::pin(async {
+                    Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                        "fixture.request_stop_failed",
+                        "request_stop failed",
+                    )))
+                })
+            } else {
+                Box::pin(async { Ok(()) })
+            }
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.force_called.store(true, Ordering::SeqCst);
+            if matches!(self.stage, FailStage::ForceStop) {
+                Box::pin(async {
+                    Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                        "fixture.force_stop_failed",
+                        "force_stop failed",
+                    )))
+                })
+            } else {
+                Box::pin(async { Ok(()) })
+            }
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            self.wait_called.store(true, Ordering::SeqCst);
+            if matches!(self.stage, FailStage::Wait) {
+                Box::pin(async {
+                    Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                        "fixture.wait_failed",
+                        "wait failed",
+                    )))
+                })
+            } else {
+                Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+            }
+        }
+    }
+
+    impl ProcessService for FailingCleanupProcess {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            let handle = FailingCleanupProcess {
+                stage: self.stage,
+                force_called: Arc::clone(&self.force_called),
+                wait_called: Arc::clone(&self.wait_called),
+            };
+            Box::pin(async move { Ok(Box::new(handle) as Box<dyn ProcessHandle>) })
+        }
+    }
+
+    let delegated_request = || {
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        )
+    };
+
+    for (stage, expected_code) in [
+        (FailStage::RequestStop, "fixture.request_stop_failed"),
+        (FailStage::ForceStop, "fixture.force_stop_failed"),
+        (FailStage::Wait, "fixture.wait_failed"),
+    ] {
+        // Sync path: cancel_sign_in surfaces the failure, still runs remaining teardown
+        // stages, and retains the failure across a retry.
+        let force_called = Arc::new(AtomicBool::new(false));
+        let wait_called = Arc::new(AtomicBool::new(false));
+        let services = HostServices::new(host_id())
+            .with_process(Arc::new(FailingCleanupProcess {
+                stage,
+                force_called: Arc::clone(&force_called),
+                wait_called: Arc::clone(&wait_called),
+            }))
+            .with_time(Arc::new(FixedTime(1)));
+        let session = start_sign_in(&services, delegated_request()).expect("sync start succeeds");
+        let (err, returned_session) =
+            cancel_sign_in(session, &services).expect_err("sync cancel must surface process error");
+        assert_eq!(err.kind(), SignInFailureKind::HostPort);
+        assert_eq!(err.diagnostic().code(), expected_code);
+        assert!(force_called.load(Ordering::SeqCst), "force_stop still ran");
+        assert!(wait_called.load(Ordering::SeqCst), "wait still ran");
+
+        let (retry_err, _) = cancel_sign_in(returned_session, &services)
+            .expect_err("sync retry must retain process cleanup failure");
+        assert_eq!(retry_err.diagnostic().code(), expected_code);
+
+        // Async path: cancel_sign_in_async surfaces the failure and still runs remaining stages.
+        let force_called_async = Arc::new(AtomicBool::new(false));
+        let wait_called_async = Arc::new(AtomicBool::new(false));
+        let async_services = HostServices::new(host_id())
+            .with_process(Arc::new(FailingCleanupProcess {
+                stage,
+                force_called: Arc::clone(&force_called_async),
+                wait_called: Arc::clone(&wait_called_async),
+            }))
+            .with_time(Arc::new(FixedTime(1)));
+        let async_session = block_on(start_sign_in_async(&async_services, delegated_request()))
+            .expect("async start succeeds");
+        let async_err = block_on(cancel_sign_in_async(async_session, &async_services))
+            .expect_err("async cancel must surface process error");
+        assert_eq!(async_err.kind(), SignInFailureKind::HostPort);
+        assert_eq!(async_err.diagnostic().code(), expected_code);
+        assert!(
+            force_called_async.load(Ordering::SeqCst),
+            "async force_stop still ran"
+        );
+        assert!(
+            wait_called_async.load(Ordering::SeqCst),
+            "async wait still ran"
+        );
+    }
 }

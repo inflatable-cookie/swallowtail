@@ -1401,6 +1401,7 @@ fn cleanup_session_now(
 ) -> Result<(), SignInFailure> {
     let _ = take_pending_poll(session);
     let mut pending_cleanup = release_loopback_now(session, services)?;
+    let mut process_failure: Option<SignInFailure> = None;
     let mut cleanup = take_pending_process_cleanup(session)
         .or_else(|| session.process.take().map(PendingProcessCleanup::start));
     while let Some(stage) = cleanup.take() {
@@ -1408,37 +1409,57 @@ fn cleanup_session_now(
             PendingProcessCleanup::RequestStop {
                 process,
                 mut future,
-            } => {
-                if poll_box_future_once(&mut future).is_pending() {
+            } => match poll_box_future_once(&mut future) {
+                Poll::Pending => {
                     set_pending_process_cleanup(
                         session,
                         PendingProcessCleanup::RequestStop { process, future },
                     );
                     pending_cleanup = true;
-                } else {
+                }
+                Poll::Ready(Ok(())) => {
                     cleanup = Some(PendingProcessCleanup::force_stop(process));
                 }
-            }
+                Poll::Ready(Err(failure)) => {
+                    process_failure.get_or_insert_with(|| SignInFailure::from_port(failure));
+                    cleanup = Some(PendingProcessCleanup::force_stop(process));
+                }
+            },
             PendingProcessCleanup::ForceStop {
                 process,
                 mut future,
-            } => {
-                if poll_box_future_once(&mut future).is_pending() {
+            } => match poll_box_future_once(&mut future) {
+                Poll::Pending => {
                     set_pending_process_cleanup(
                         session,
                         PendingProcessCleanup::ForceStop { process, future },
                     );
                     pending_cleanup = true;
-                } else {
+                }
+                Poll::Ready(Ok(())) => {
                     cleanup = Some(PendingProcessCleanup::wait(process));
                 }
-            }
-            PendingProcessCleanup::Wait(mut future) => {
-                if poll_box_future_once(&mut future).is_pending() {
+                Poll::Ready(Err(failure)) => {
+                    process_failure.get_or_insert_with(|| SignInFailure::from_port(failure));
+                    cleanup = Some(PendingProcessCleanup::wait(process));
+                }
+            },
+            PendingProcessCleanup::Wait(mut future) => match poll_box_future_once(&mut future) {
+                Poll::Pending => {
                     set_pending_process_cleanup(session, PendingProcessCleanup::Wait(future));
                     pending_cleanup = true;
                 }
-            }
+                Poll::Ready(Ok(_)) => {}
+                Poll::Ready(Err(failure)) => {
+                    process_failure.get_or_insert_with(|| SignInFailure::from_port(failure));
+                }
+            },
+        }
+    }
+    if let Some(failure) = process_failure {
+        session.cleanup_failure = Some(failure.clone());
+        if !pending_cleanup {
+            return Err(failure);
         }
     }
     if pending_cleanup {
@@ -1477,33 +1498,52 @@ async fn cleanup_session_async(
 ) -> Result<(), SignInFailure> {
     let _ = take_pending_poll(session);
     let loopback_result = release_loopback_async(session, services).await;
-    let mut process_incomplete = false;
+    let mut process_failure: Option<SignInFailure> = None;
     let mut cleanup = take_pending_process_cleanup(session)
         .or_else(|| session.process.take().map(PendingProcessCleanup::start));
     while let Some(stage) = cleanup.take() {
         match stage {
             PendingProcessCleanup::RequestStop { process, future } => {
-                if await_cleanup_budget(future, services).await.is_none() {
-                    process_incomplete = true;
+                match await_cleanup_budget(future, services).await {
+                    None => {
+                        process_failure.get_or_insert_with(cleanup_timed_out_failure);
+                    }
+                    Some(Err(failure)) => {
+                        process_failure.get_or_insert_with(|| SignInFailure::from_port(failure));
+                    }
+                    Some(Ok(())) => {}
                 }
                 cleanup = Some(PendingProcessCleanup::force_stop(process));
             }
             PendingProcessCleanup::ForceStop { process, future } => {
-                if await_cleanup_budget(future, services).await.is_none() {
-                    process_incomplete = true;
+                match await_cleanup_budget(future, services).await {
+                    None => {
+                        process_failure.get_or_insert_with(cleanup_timed_out_failure);
+                    }
+                    Some(Err(failure)) => {
+                        process_failure.get_or_insert_with(|| SignInFailure::from_port(failure));
+                    }
+                    Some(Ok(())) => {}
                 }
                 cleanup = Some(PendingProcessCleanup::wait(process));
             }
             PendingProcessCleanup::Wait(future) => {
-                if await_cleanup_budget(future, services).await.is_none() {
-                    process_incomplete = true;
+                match await_cleanup_budget(future, services).await {
+                    None => {
+                        process_failure.get_or_insert_with(cleanup_timed_out_failure);
+                    }
+                    Some(Err(failure)) => {
+                        process_failure.get_or_insert_with(|| SignInFailure::from_port(failure));
+                    }
+                    Some(Ok(_)) => {}
                 }
             }
         }
     }
     loopback_result?;
-    if process_incomplete {
-        return Err(cleanup_timed_out_failure());
+    if let Some(failure) = process_failure {
+        session.cleanup_failure = Some(failure.clone());
+        return Err(failure);
     }
     Ok(())
 }
@@ -1590,17 +1630,38 @@ async fn await_cleanup_budget<T>(
     services: &HostServices,
 ) -> Option<T> {
     let Some(time) = services.time() else {
-        return poll_now_or_pending(future);
+        return Some(future.await);
     };
     let deadline = Deadline::at(time.now().saturating_add_duration(CLEANUP_TEARDOWN_BUDGET));
-    let mut budget = time.wait_until(deadline);
+    let mut budget = Some(time.wait_until(deadline));
     let mut future = std::pin::pin!(future);
     std::future::poll_fn(|context| {
         if let Poll::Ready(value) = future.as_mut().poll(context) {
             return Poll::Ready(Some(value));
         }
-        if budget.as_mut().poll(context).is_ready() && time.now() >= deadline.instant() {
+        if time.now() >= deadline.instant() {
             return Poll::Ready(None);
+        }
+        if let Some(active_budget) = budget.as_mut()
+            && active_budget.as_mut().poll(context).is_ready()
+        {
+            if time.now() >= deadline.instant() {
+                return Poll::Ready(None);
+            }
+            // The timer resolved before the monotonic clock reached the deadline
+            // (for example, a spurious early wake or a fixed test clock). Drop
+            // the completed timer so it is never polled again; re-arm once to
+            // register the waker for a real clock, and drop it if the fresh
+            // timer also resolves immediately without advancing time.
+            let mut rearmed = time.wait_until(deadline);
+            if rearmed.as_mut().poll(context).is_ready() {
+                if time.now() >= deadline.instant() {
+                    return Poll::Ready(None);
+                }
+                budget = None;
+            } else {
+                budget = Some(rearmed);
+            }
         }
         Poll::Pending
     })

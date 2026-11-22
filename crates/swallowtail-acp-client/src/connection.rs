@@ -4,7 +4,7 @@ use crate::turn::AcpTurnSink;
 use futures_channel::oneshot;
 use serde_json::{Value, json};
 use std::{
-    collections::BTreeMap,
+    collections::{BTreeMap, BTreeSet},
     future::Future,
     pin::Pin,
     sync::{
@@ -21,6 +21,7 @@ use swallowtail_runtime::{
 };
 
 const MAXIMUM_PENDING_REQUESTS: usize = 32;
+const MAXIMUM_ABANDONED_REQUESTS: usize = 256;
 
 /// Disposition returned by [`AcpConnectionHooks::on_session_update`].
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -100,6 +101,22 @@ impl AcpConnectionHooks for StandardAcpHooks {}
 struct PendingState {
     closed: bool,
     requests: BTreeMap<u64, oneshot::Sender<Result<Value, RuntimeFailure>>>,
+    abandoned: BTreeSet<u64>,
+}
+
+impl PendingState {
+    fn prune_canceled(&mut self) {
+        let mut canceled_ids = Vec::new();
+        self.requests.retain(|&id, sender| {
+            if sender.is_canceled() {
+                canceled_ids.push(id);
+                false
+            } else {
+                true
+            }
+        });
+        self.abandoned.extend(canceled_ids);
+    }
 }
 
 /// Future resolving to the correlated JSON-RPC response of an in-flight ACP request.
@@ -157,6 +174,7 @@ impl AcpConnection {
             pending: Mutex::new(PendingState {
                 closed: false,
                 requests: BTreeMap::new(),
+                abandoned: BTreeSet::new(),
             }),
             session_id: Mutex::new(None),
             active_turn: Mutex::new(None),
@@ -271,8 +289,11 @@ impl AcpConnection {
             if pending.closed {
                 return Err((self.diagnostics.connection_closed)());
             }
+            pending.prune_canceled();
             if pending.requests.len() >= MAXIMUM_PENDING_REQUESTS
+                || pending.abandoned.len() >= MAXIMUM_ABANDONED_REQUESTS
                 || pending.requests.contains_key(&id)
+                || pending.abandoned.contains(&id)
             {
                 return Err((self.diagnostics.correlation_limit)());
             }
@@ -465,6 +486,7 @@ impl AcpConnection {
         let pending = {
             let mut state = self.pending.lock().expect("ACP pending lock poisoned");
             state.closed = true;
+            state.abandoned.clear();
             std::mem::take(&mut state.requests)
         };
         for (_, sender) in pending {
@@ -490,15 +512,21 @@ impl AcpConnection {
         result: Result<Value, RpcError>,
     ) -> Result<(), RuntimeFailure> {
         let id = id.as_u64().ok_or_else(self.diagnostics.malformed)?;
-        let sender = self
-            .pending
-            .lock()
-            .expect("ACP pending lock poisoned")
-            .requests
-            .remove(&id)
-            .ok_or_else(self.diagnostics.unknown_response)?;
+        let sender = {
+            let mut pending = self.pending.lock().expect("ACP pending lock poisoned");
+            if let Some(sender) = pending.requests.remove(&id) {
+                Some(sender)
+            } else if pending.abandoned.remove(&id) {
+                None
+            } else {
+                return Err((self.diagnostics.unknown_response)());
+            }
+        };
         self.hooks.on_response(id, &result);
-        let _ = sender.send(result.map_err(|error| (self.diagnostics.classify_rpc_error)(&error)));
+        if let Some(sender) = sender {
+            let _ =
+                sender.send(result.map_err(|error| (self.diagnostics.classify_rpc_error)(&error)));
+        }
         Ok(())
     }
 

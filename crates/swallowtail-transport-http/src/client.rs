@@ -334,7 +334,7 @@ where
             return Err(error);
         }
         if cancelled.load(Ordering::SeqCst) {
-            return Ok(());
+            return Err(StreamError::Transport(TransportError::Cancelled));
         }
         result.map_err(|_| StreamError::Transport(TransportError::Transport))?;
     }

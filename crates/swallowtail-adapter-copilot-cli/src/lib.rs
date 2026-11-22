@@ -11,6 +11,7 @@
 #![recursion_limit = "256"]
 
 mod access;
+#[cfg(test)]
 mod acp_activity;
 mod command;
 mod connection;

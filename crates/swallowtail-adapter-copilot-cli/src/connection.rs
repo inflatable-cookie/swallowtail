@@ -16,7 +16,7 @@ use swallowtail_runtime::{BoxFuture, CleanupOutcome, HostServices, ProcessHandle
 const RECEIVE_FRAMING_LIMITS: FramingLimits =
     FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES);
 
-fn copilot_diagnostics() -> AcpDiagnostics {
+pub(crate) fn copilot_diagnostics() -> AcpDiagnostics {
     AcpDiagnostics {
         route_name: "copilot-cli.acp",
         activity: AcpActivityConfig {

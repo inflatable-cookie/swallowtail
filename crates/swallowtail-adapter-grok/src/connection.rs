@@ -23,7 +23,7 @@ const MAXIMUM_RECEIVE_BUFFER_BYTES: usize = 32 * 1024 * 1024;
 const RECEIVE_FRAMING_LIMITS: FramingLimits =
     FramingLimits::new(MAXIMUM_RECEIVE_FRAME_BYTES, MAXIMUM_RECEIVE_BUFFER_BYTES);
 
-fn grok_diagnostics() -> AcpDiagnostics {
+pub(crate) fn grok_diagnostics() -> AcpDiagnostics {
     AcpDiagnostics {
         route_name: "grok-build.acp",
         activity: GROK_ACTIVITY_CONFIG,

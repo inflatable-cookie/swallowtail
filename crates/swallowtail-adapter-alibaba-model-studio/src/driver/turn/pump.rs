@@ -77,9 +77,34 @@ pub(super) async fn pump_turn(
                 return uncertain(provider_status(result), false);
             }
             Signal::Item(Err(error)) => {
+                let _ = subscription.close().await;
+                if error.diagnostic().code()
+                    == "swallowtail.alibaba_model_studio.connection_cancelled"
+                {
+                    let reason = cancellation.reason();
+                    if reason == 1 {
+                        if let Some(output) = completed_output {
+                            return TerminalOutcome::new(
+                                TerminalStatus::Completed,
+                                CleanupOutcome::Clean,
+                            )
+                            .with_output(output);
+                        }
+                        return uncertain(TerminalStatus::Cancelled, true);
+                    }
+                    if reason == 2 {
+                        if let Some(output) = completed_output {
+                            return TerminalOutcome::new(
+                                TerminalStatus::Completed,
+                                CleanupOutcome::Clean,
+                            )
+                            .with_output(output);
+                        }
+                        return uncertain(TerminalStatus::TimedOut, true);
+                    }
+                }
                 emit_wire_debug(&services, &error, "http.pump.transport");
                 cancellation.fail_remote_uncertain();
-                let _ = subscription.close().await;
                 return uncertain(
                     TerminalStatus::ProviderFailed(error.diagnostic().clone()),
                     false,
@@ -306,4 +331,160 @@ fn emit_wire_debug(services: &HostServices, error: &RuntimeFailure, stage: &'sta
         diagnostic.code(),
         diagnostic.message(),
     );
+}
+
+#[cfg(test)]
+mod tests {
+    use super::pump_turn;
+    use crate::driver::lifecycle::TurnCancellation;
+    use crate::protocol::{ConversationRef, TurnOptions, WireRequest};
+    use crate::transport::CurlTransport;
+    use futures_executor::block_on;
+    use std::io::{Read, Write};
+    use std::net::TcpListener;
+    use std::sync::atomic::AtomicBool;
+    use std::sync::{Arc, mpsc};
+    use std::thread;
+    use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
+    use swallowtail_runtime::{
+        BlockingJob, BlockingWorkService, BoxFuture, CancellationControl, HostServices,
+        OperationContent, RuntimeFailure, RuntimeTurnId, ScopeId, TerminalStatus,
+        runtime_event_channel,
+    };
+
+    const SUCCESS_SSE: &str =
+        include_str!("../../../tests/fixtures/model-studio-2026-07-22/success.sse");
+
+    struct SignalingBlocking {
+        done: mpsc::Sender<()>,
+    }
+
+    impl BlockingWorkService for SignalingBlocking {
+        fn run(
+            &self,
+            _scope: ScopeId,
+            job: BlockingJob,
+        ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            let done = self.done.clone();
+            let (tx, rx) = futures_channel::oneshot::channel();
+            thread::spawn(move || {
+                let result = job();
+                let _ = done.send(());
+                let _ = tx.send(result);
+            });
+            Box::pin(async move {
+                rx.await.unwrap_or_else(|_| {
+                    Err(RuntimeFailure::new(SafeDiagnostic::new(
+                        "fixture.blocking_panicked",
+                        "fixture blocking worker panicked",
+                    )))
+                })
+            })
+        }
+    }
+
+    #[test]
+    fn cancellation_plus_decode_error_after_completed_reports_provider_failed() {
+        let listener = TcpListener::bind("127.0.0.1:0").expect("listener binds");
+        let endpoint = format!("http://{}", listener.local_addr().expect("addr exists"));
+        let server = thread::spawn(move || {
+            let (mut stream, _) = listener.accept().expect("accepts");
+            let mut buf = [0_u8; 4096];
+            let _ = stream.read(&mut buf);
+            let mut payload = format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nX-Request-Id: req_decode_1\r\nConnection: close\r\n\r\n{SUCCESS_SSE}"
+            )
+            .into_bytes();
+            // Leave a trailing unterminated frame so all SUCCESS_SSE frames (including
+            // response.completed) are delivered regardless of TCP segmentation, and EOF
+            // triggers SseDecoder::finish()'s decode error afterwards.
+            payload.extend_from_slice(b"data: trailing-unterminated-frame");
+            let _ = stream.write_all(&payload);
+            let _ = stream.flush();
+        });
+
+        let (done_tx, done_rx) = mpsc::channel();
+        let services = HostServices::new(ExecutionHostId::new("test-host").expect("valid host"))
+            .with_blocking_work(Arc::new(SignalingBlocking { done: done_tx }));
+        let cancelled = Arc::new(AtomicBool::new(false));
+        let conversation = ConversationRef::new("conv_fixture_01").expect("valid conversation");
+        let wire = WireRequest::response(
+            &conversation,
+            &OperationContent::new("hello").expect("valid content"),
+            &TurnOptions::frozen(),
+        )
+        .expect("valid request");
+        let subscription = CurlTransport
+            .subscribe(
+                ScopeId::new("alibaba:test").expect("valid scope"),
+                endpoint,
+                b"fixture-secret".to_vec(),
+                wire,
+                &services,
+                Arc::clone(&cancelled),
+            )
+            .expect("subscription starts");
+
+        // Wait until the worker has buffered all SUCCESS frames and recorded StreamError::Decode.
+        done_rx
+            .recv()
+            .expect("blocking worker finished with decode failure");
+
+        // Now request cancellation so cancellation.reason() == 1 before pump_turn runs.
+        let cancellation = Arc::new(TurnCancellation::new(
+            cancelled,
+            Arc::new(AtomicBool::new(true)),
+            Arc::new(AtomicBool::new(false)),
+        ));
+        block_on(cancellation.request()).expect("cancellation accepted");
+
+        let (events, stream) = runtime_event_channel(64).expect("event channel opens");
+        events
+            .send(swallowtail_runtime::RuntimeEvent::new(
+                0,
+                swallowtail_runtime::RuntimeEventKind::Started,
+            ))
+            .expect("started event sends");
+        let outcome = block_on(pump_turn(
+            subscription,
+            events.clone(),
+            cancellation,
+            None,
+            RuntimeTurnId::new("turn-decode-after-completed").expect("valid turn id"),
+            services,
+        ));
+        events.mark_terminal();
+        server.join().expect("server joins");
+
+        let saw_output_available = futures_executor::block_on_stream(stream)
+            .map(|event| event.expect("event succeeds"))
+            .any(|event| {
+                matches!(
+                    event.kind(),
+                    swallowtail_runtime::RuntimeEventKind::OutputAvailable
+                )
+            });
+        assert!(
+            saw_output_available,
+            "pump must have observed response.completed and emitted OutputAvailable before the decode failure"
+        );
+
+        match outcome.status() {
+            TerminalStatus::ProviderFailed(diagnostic) => {
+                assert_eq!(
+                    diagnostic.code(),
+                    "swallowtail.alibaba_model_studio.protocol_invalid",
+                    "trailing unterminated SSE frame must surface the decoder diagnostic"
+                );
+                assert!(
+                    diagnostic.message().contains("disconnected SSE event"),
+                    "expected SseDecoder::finish diagnostic, got: {}",
+                    diagnostic.message()
+                );
+            }
+            other => panic!(
+                "decode error after response.completed must remain ProviderFailed even when cancelled, got {other:?}"
+            ),
+        }
+    }
 }

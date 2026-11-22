@@ -1,37 +1,42 @@
-use crate::failure::{failure, malformed};
+use crate::connection::copilot_diagnostics;
+use crate::failure::failure;
+#[cfg(test)]
+use crate::failure::malformed;
 use serde_json::Value;
-use std::sync::{
-    Arc, Mutex,
-    atomic::{AtomicBool, AtomicU64, Ordering},
+use std::sync::Arc;
+#[cfg(test)]
+use std::sync::Mutex;
+use swallowtail_acp_client::{
+    AcpTurnSink, ActiveTurn as SharedActiveTurn, ActiveTurnConfig, StopReasonPolicy,
+    UsageProgressPolicy,
 };
-use swallowtail_core::{ExtensionNamespace, ProviderRequestRef};
-use swallowtail_protocol_acp::{AcpMessageRole, AcpSessionUpdate};
 use swallowtail_runtime::{
-    BoxEventStream, CleanupOutcome, OperationContent, ProviderRequestObservation, RuntimeEvent,
-    RuntimeEventKind, RuntimeFailure, RuntimeTurnId, TerminalOutcome, TerminalOutcomeFuture,
-    TerminalOutcomeSender, TerminalStatus, runtime_event_channel, terminal_outcome_channel,
+    BoxEventStream, ProviderRequestObservation, RuntimeFailure, RuntimeTurnId,
+    TerminalOutcomeFuture,
 };
-
-const EVENT_CAPACITY: usize = 128;
-const MAXIMUM_OUTPUT_BYTES: usize = 4 * 1024 * 1024;
-
-mod content;
-
-use content::text_content;
 
 pub(crate) struct ActiveTurn {
-    runtime_id: RuntimeTurnId,
-    session_id: String,
-    events: swallowtail_runtime::RuntimeEventSender,
-    terminal: TerminalOutcomeSender,
-    sequence: AtomicU64,
-    output: Mutex<String>,
-    activity: Mutex<crate::acp_activity::AcpActivityProjection>,
-    provider_observation: Mutex<Option<ProviderRequestObservation>>,
+    inner: Arc<SharedActiveTurn>,
     #[cfg(test)]
-    assessment_permission_action: Option<crate::assessment::CopilotCliAssessmentAction>,
-    cancelled: AtomicBool,
-    finished: AtomicBool,
+    assessment: Option<AssessmentTracker>,
+}
+
+#[cfg(test)]
+struct AssessmentTracker {
+    action: crate::assessment::CopilotCliAssessmentAction,
+    activity: Mutex<crate::acp_activity::AcpActivityProjection>,
+}
+
+fn turn_config() -> ActiveTurnConfig {
+    ActiveTurnConfig::new(copilot_diagnostics())
+        .with_stop_reason_policy(StopReasonPolicy::Standard)
+        .with_usage_progress_policy(UsageProgressPolicy::Silent)
+        .with_content_unsupported(|| {
+            failure(
+                "swallowtail.copilot-cli.acp.content_unsupported",
+                "Copilot CLI returned unsupported ACP content",
+            )
+        })
 }
 
 impl ActiveTurn {
@@ -39,25 +44,14 @@ impl ActiveTurn {
         runtime_id: RuntimeTurnId,
         session_id: String,
     ) -> Result<(Arc<Self>, BoxEventStream, TerminalOutcomeFuture), RuntimeFailure> {
-        let (events, stream) = runtime_event_channel(EVENT_CAPACITY)?;
-        events.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
-        let (terminal, future) = terminal_outcome_channel();
+        let (inner, stream, future) = SharedActiveTurn::new(runtime_id, session_id, turn_config())?;
         Ok((
             Arc::new(Self {
-                runtime_id: runtime_id.clone(),
-                session_id,
-                events,
-                terminal,
-                sequence: AtomicU64::new(1),
-                output: Mutex::new(String::new()),
-                activity: Mutex::new(crate::acp_activity::AcpActivityProjection::new(runtime_id)),
-                provider_observation: Mutex::new(None),
+                inner,
                 #[cfg(test)]
-                assessment_permission_action: None,
-                cancelled: AtomicBool::new(false),
-                finished: AtomicBool::new(false),
+                assessment: None,
             }),
-            Box::pin(stream),
+            stream,
             future,
         ))
     }
@@ -68,38 +62,33 @@ impl ActiveTurn {
         session_id: String,
         action: crate::assessment::CopilotCliAssessmentAction,
     ) -> Result<(Arc<Self>, BoxEventStream, TerminalOutcomeFuture), RuntimeFailure> {
-        let (events, stream) = runtime_event_channel(EVENT_CAPACITY)?;
-        events.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
-        let (terminal, future) = terminal_outcome_channel();
+        let (inner, stream, future) =
+            SharedActiveTurn::new(runtime_id.clone(), session_id, turn_config())?;
         Ok((
             Arc::new(Self {
-                runtime_id: runtime_id.clone(),
-                session_id,
-                events,
-                terminal,
-                sequence: AtomicU64::new(1),
-                output: Mutex::new(String::new()),
-                activity: Mutex::new(crate::acp_activity::AcpActivityProjection::new(runtime_id)),
-                provider_observation: Mutex::new(None),
-                assessment_permission_action: Some(action),
-                cancelled: AtomicBool::new(false),
-                finished: AtomicBool::new(false),
+                inner,
+                assessment: Some(AssessmentTracker {
+                    action,
+                    activity: Mutex::new(crate::acp_activity::AcpActivityProjection::new(
+                        runtime_id,
+                    )),
+                }),
             }),
-            Box::pin(stream),
+            stream,
             future,
         ))
     }
 
     pub(crate) fn session_id(&self) -> &str {
-        &self.session_id
+        self.inner.session_id()
     }
 
     pub(crate) fn is_finished(&self) -> bool {
-        self.finished.load(Ordering::SeqCst)
+        self.inner.is_finished()
     }
 
     pub(crate) fn mark_cancelled(&self) {
-        self.cancelled.store(true, Ordering::SeqCst);
+        self.inner.mark_cancelled();
     }
 
     pub(crate) fn observe_permission(
@@ -108,8 +97,12 @@ impl ActiveTurn {
         _tool_call_id: &str,
     ) -> Result<ProviderRequestObservation, RuntimeFailure> {
         #[cfg(test)]
-        if let Some(action) = self.assessment_permission_action {
-            let activity = self.activity.lock().expect("turn activity lock poisoned");
+        if let Some(assessment) = &self.assessment {
+            let activity = assessment
+                .activity
+                .lock()
+                .expect("turn activity lock poisoned");
+            let action = assessment.action;
             let action_is_pending = _tool_call_id == action.tool_call_id
                 && activity.is_pending_execute_for_assessment(
                     _tool_call_id,
@@ -124,209 +117,61 @@ impl ActiveTurn {
                 ));
             }
         }
-        let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
-        let callback_id = swallowtail_runtime::CallbackId::new(format!(
-            "{}:permission:{sequence}",
-            self.runtime_id.as_str()
-        ))
-        .map_err(|_| malformed())?;
-        let provider_request_ref = ProviderRequestRef::new(match provider_request_id {
-            Value::String(value) => format!("acp:{value}"),
-            Value::Number(value) => format!("acp:{value}"),
-            _ => return Err(malformed()),
-        })
-        .map_err(|_| malformed())?;
-        let observation = ProviderRequestObservation::new(
-            callback_id,
-            ExtensionNamespace::new("acp/session/request-permission")
-                .expect("static namespace is valid"),
-            provider_request_ref.clone(),
-        );
-        *self
-            .provider_observation
-            .lock()
-            .expect("permission observation lock poisoned") = Some(observation.clone());
-        self.mark_cancelled();
-        self.emit(
-            RuntimeEventKind::ProviderObservation(
-                swallowtail_runtime::ProviderObservation::RequestCorrelation(provider_request_ref),
-            ),
-            None,
-        )?;
-        Ok(observation)
+        self.inner.observe_permission(provider_request_id)
     }
 
     pub(crate) fn handle_update(&self, params: &Value) -> Result<(), RuntimeFailure> {
-        let decoded =
-            swallowtail_protocol_acp::decode_session_update(params).map_err(|_| malformed())?;
-        self.verify_session(decoded.session_id.as_str())?;
-        match &decoded.update {
-            AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Agent => {
-                let text = text_content(&message.content)?;
-                self.append_output(text)?;
-                self.emit_content(RuntimeEventKind::OutputDelta, text)?;
-            }
-            AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Thought => {
-                self.emit_content(
-                    RuntimeEventKind::ReasoningProgress,
-                    text_content(&message.content)?,
-                )?;
-            }
-            AcpSessionUpdate::CurrentMode(_)
-            | AcpSessionUpdate::Message(_)
-            | AcpSessionUpdate::Plan(_)
-            | AcpSessionUpdate::AvailableCommands(_)
-            | AcpSessionUpdate::ConfigOptions(_)
-            | AcpSessionUpdate::SessionInfo { .. } => {
-                self.emit(RuntimeEventKind::Progress, None)?
-            }
-            AcpSessionUpdate::Usage(_) => {}
-            AcpSessionUpdate::ToolCall(_)
-            | AcpSessionUpdate::ToolCallUpdate(_)
-            | AcpSessionUpdate::Unknown { .. } => {}
-        }
-        let observations = self
-            .activity
-            .lock()
-            .expect("turn activity lock poisoned")
-            .project(&decoded.update)?;
-        for observation in observations {
-            self.emit(RuntimeEventKind::Activity(observation), None)?;
+        self.inner.handle_update(params)?;
+        #[cfg(test)]
+        if let Some(assessment) = &self.assessment {
+            let decoded =
+                swallowtail_protocol_acp::decode_session_update(params).map_err(|_| malformed())?;
+            let _ = assessment
+                .activity
+                .lock()
+                .expect("turn activity lock poisoned")
+                .project(&decoded.update)?;
         }
         Ok(())
     }
 
     pub(crate) fn finish_prompt(&self, stop_reason: &str) {
-        let status = if let Some(observation) = self
-            .provider_observation
-            .lock()
-            .expect("permission observation lock poisoned")
-            .clone()
-        {
-            TerminalStatus::ProviderRequestObserved(observation)
-        } else {
-            match stop_reason {
-                "end_turn" => TerminalStatus::Completed,
-                "cancelled" if self.cancelled.load(Ordering::SeqCst) => TerminalStatus::Cancelled,
-                "cancelled" => TerminalStatus::Cancelled,
-                "max_tokens" => {
-                    TerminalStatus::ProviderFailed(swallowtail_core::SafeDiagnostic::new(
-                        "swallowtail.copilot-cli.acp.prompt_stopped",
-                        "Copilot CLI stopped before completing the turn",
-                    ))
-                }
-                _ => TerminalStatus::RuntimeFailed(
-                    failure(
-                        "swallowtail.copilot-cli.acp.stop_reason_unsupported",
-                        "Copilot CLI returned an unsupported ACP stop reason",
-                    )
-                    .diagnostic()
-                    .clone(),
-                ),
-            }
-        };
-        self.finish(status);
+        self.inner.finish_prompt(stop_reason);
     }
 
     pub(crate) fn fail(&self, error: &RuntimeFailure) {
-        self.finish(TerminalStatus::RuntimeFailed(error.diagnostic().clone()));
-    }
-
-    fn finish(&self, status: TerminalStatus) {
-        if self.finished.swap(true, Ordering::SeqCst) {
-            return;
-        }
-        if let Ok(observations) = self
-            .activity
-            .lock()
-            .expect("turn activity lock poisoned")
-            .complete(&status)
-        {
-            for observation in observations {
-                let _ = self.emit(RuntimeEventKind::Activity(observation), None);
-            }
-        }
-        let output = self
-            .output
-            .lock()
-            .expect("turn output lock poisoned")
-            .clone();
-        let mut outcome = TerminalOutcome::new(status, CleanupOutcome::NotApplicable);
-        if let Ok(content) = OperationContent::new(output) {
-            let _ = self.emit(RuntimeEventKind::OutputAvailable, Some(content.clone()));
-            outcome = outcome.with_output(content);
-        }
-        self.events.mark_terminal();
-        let _ = self.terminal.complete(outcome);
-    }
-
-    fn append_output(&self, text: &str) -> Result<(), RuntimeFailure> {
-        let mut output = self.output.lock().expect("turn output lock poisoned");
-        if output.len().saturating_add(text.len()) > MAXIMUM_OUTPUT_BYTES {
-            return Err(failure(
-                "swallowtail.copilot-cli.acp.output_limit_exceeded",
-                "Copilot CLI output exceeded the adapter limit",
-            ));
-        }
-        output.push_str(text);
-        Ok(())
-    }
-
-    fn emit_content(&self, kind: RuntimeEventKind, text: &str) -> Result<(), RuntimeFailure> {
-        match OperationContent::new(text) {
-            Ok(content) => self.emit(kind, Some(content)),
-            Err(_) if text.trim().is_empty() => Ok(()),
-            Err(_) => Err(malformed()),
-        }
-    }
-
-    fn emit(
-        &self,
-        kind: RuntimeEventKind,
-        content: Option<OperationContent>,
-    ) -> Result<(), RuntimeFailure> {
-        let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
-        let event = match content {
-            Some(content) => RuntimeEvent::with_content(sequence, kind, content),
-            None => RuntimeEvent::new(sequence, kind),
-        };
-        self.events.send(event)
-    }
-
-    fn verify_session(&self, session_id: &str) -> Result<(), RuntimeFailure> {
-        if session_id == self.session_id {
-            Ok(())
-        } else {
-            Err(failure(
-                "swallowtail.copilot-cli.acp.session_mismatch",
-                "Copilot CLI update does not match the active session",
-            ))
-        }
+        self.inner.fail(error);
     }
 }
 
-impl swallowtail_acp_client::AcpTurnSink for ActiveTurn {
+impl AcpTurnSink for ActiveTurn {
     fn session_id(&self) -> &str {
         self.session_id()
     }
+
     fn is_finished(&self) -> bool {
         self.is_finished()
     }
+
     fn mark_cancelled(&self) {
         self.mark_cancelled();
     }
+
     fn observe_permission(
         &self,
         provider_request_id: &Value,
     ) -> Result<ProviderRequestObservation, RuntimeFailure> {
         self.observe_permission(provider_request_id, "")
     }
+
     fn handle_update(&self, params: &Value) -> Result<(), RuntimeFailure> {
         self.handle_update(params)
     }
+
     fn finish_prompt(&self, stop_reason: &str) {
         self.finish_prompt(stop_reason);
     }
+
     fn fail(&self, error: &RuntimeFailure) {
         self.fail(error);
     }

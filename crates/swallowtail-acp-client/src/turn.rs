@@ -2,6 +2,7 @@ use crate::activity::{AcpActivityProjection, text_content};
 use crate::connection::AcpConnection;
 use crate::diagnostics::{AcpDiagnostics, StopReasonPolicy, UsageProgressPolicy};
 use serde_json::{Value, json};
+use std::collections::VecDeque;
 use std::sync::{
     Arc, Mutex,
     atomic::{AtomicBool, Ordering},
@@ -123,53 +124,126 @@ impl ActiveTurnConfig {
     }
 }
 
-struct EventEmission {
-    next_sequence: u64,
-    terminal: bool,
-    events: RuntimeEventSender,
+enum PendingEvent {
+    Reserved(u64),
+    Event(Box<RuntimeEvent>),
+    Terminal(TerminalOutcome),
 }
 
-impl EventEmission {
-    fn emit(
-        &mut self,
-        kind: RuntimeEventKind,
-        content: Option<OperationContent>,
-    ) -> Result<(), RuntimeFailure> {
-        if self.terminal {
-            return Ok(());
-        }
-        let sequence = self.next_sequence;
-        let event = match content {
-            Some(content) => RuntimeEvent::with_content(sequence, kind, content),
-            None => RuntimeEvent::new(sequence, kind),
-        };
-        self.next_sequence = sequence + 1;
-        self.events.send(event)
-    }
+struct TurnState {
+    next_sequence: u64,
+    terminal: bool,
+    output: String,
+    activity: AcpActivityProjection,
+    provider_observation: Option<ProviderRequestObservation>,
+    outbox: VecDeque<PendingEvent>,
+    flushing: bool,
+}
 
-    fn emit_with<F>(&mut self, build: F) -> Result<(), RuntimeFailure>
-    where
-        F: FnOnce(u64) -> Result<RuntimeEventKind, RuntimeFailure>,
-    {
-        if self.terminal {
-            return Ok(());
-        }
-        let sequence = self.next_sequence;
-        let kind = build(sequence)?;
-        self.next_sequence = sequence + 1;
-        self.events.send(RuntimeEvent::new(sequence, kind))
-    }
-
+impl TurnState {
     fn allocate_sequence(&mut self) -> u64 {
         let sequence = self.next_sequence;
         self.next_sequence = sequence + 1;
         sequence
     }
 
-    fn mark_terminal(&mut self) {
-        if !self.terminal {
-            self.terminal = true;
-            self.events.mark_terminal();
+    fn push_event(&mut self, kind: RuntimeEventKind, content: Option<OperationContent>) {
+        let sequence = self.allocate_sequence();
+        let event = match content {
+            Some(content) => RuntimeEvent::with_content(sequence, kind, content),
+            None => RuntimeEvent::new(sequence, kind),
+        };
+        self.outbox.push_back(PendingEvent::Event(Box::new(event)));
+    }
+
+    fn push_content(
+        &mut self,
+        kind: RuntimeEventKind,
+        text: &str,
+        malformed: fn() -> RuntimeFailure,
+    ) -> Result<(), RuntimeFailure> {
+        match OperationContent::new(text) {
+            Ok(content) => {
+                self.push_event(kind, Some(content));
+                Ok(())
+            }
+            Err(_) if text.trim().is_empty() => Ok(()),
+            Err(_) => Err(malformed()),
+        }
+    }
+
+    fn append_output(
+        &mut self,
+        text: &str,
+        output_limit_exceeded: fn() -> RuntimeFailure,
+    ) -> Result<(), RuntimeFailure> {
+        if self.output.len().saturating_add(text.len()) > MAXIMUM_OUTPUT_BYTES {
+            return Err(output_limit_exceeded());
+        }
+        self.output.push_str(text);
+        Ok(())
+    }
+
+    fn finish_locked(&mut self, status: TerminalStatus) -> bool {
+        if self.terminal {
+            return false;
+        }
+        self.terminal = true;
+        if let Ok(observations) = self.activity.complete(&status) {
+            for observation in observations {
+                self.push_event(RuntimeEventKind::Activity(observation), None);
+            }
+        }
+        let output = self.output.clone();
+        let mut outcome = TerminalOutcome::new(status, CleanupOutcome::NotApplicable);
+        if let Ok(content) = OperationContent::new(output) {
+            self.push_event(RuntimeEventKind::OutputAvailable, Some(content.clone()));
+            outcome = outcome.with_output(content);
+        }
+        self.outbox.push_back(PendingEvent::Terminal(outcome));
+        true
+    }
+}
+
+struct FlushGuard<'a> {
+    state: &'a Mutex<TurnState>,
+    active: bool,
+}
+
+impl Drop for FlushGuard<'_> {
+    fn drop(&mut self) {
+        if self.active {
+            let mut state = self
+                .state
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            state.flushing = false;
+        }
+    }
+}
+
+struct ReservationGuard<'a> {
+    turn: &'a ActiveTurn,
+    sequence: u64,
+    active: bool,
+}
+
+impl Drop for ReservationGuard<'_> {
+    fn drop(&mut self) {
+        if self.active {
+            {
+                let mut state = self
+                    .turn
+                    .state
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner);
+                if let Some(position) = state.outbox.iter().position(
+                    |item| matches!(item, PendingEvent::Reserved(seq) if *seq == self.sequence),
+                ) {
+                    state.outbox.remove(position);
+                }
+            }
+            let _ = self.turn.flush_outbox();
         }
     }
 }
@@ -179,13 +253,13 @@ pub struct ActiveTurn {
     config: ActiveTurnConfig,
     runtime_id: RuntimeTurnId,
     session_id: String,
-    emission: Mutex<EventEmission>,
+    events: RuntimeEventSender,
     terminal: TerminalOutcomeSender,
-    output: Mutex<String>,
-    activity: Mutex<AcpActivityProjection>,
-    provider_observation: Mutex<Option<ProviderRequestObservation>>,
+    state: Mutex<TurnState>,
     cancelled: AtomicBool,
     finished: AtomicBool,
+    #[cfg(test)]
+    before_update_flush: Mutex<Option<Arc<dyn Fn() + Send + Sync>>>,
 }
 
 impl ActiveTurn {
@@ -203,24 +277,33 @@ impl ActiveTurn {
                 config,
                 runtime_id: runtime_id.clone(),
                 session_id,
-                emission: Mutex::new(EventEmission {
+                events,
+                terminal,
+                state: Mutex::new(TurnState {
                     next_sequence: 1,
                     terminal: false,
-                    events,
+                    output: String::new(),
+                    activity: AcpActivityProjection::new(runtime_id, config.diagnostics.activity),
+                    provider_observation: None,
+                    outbox: VecDeque::new(),
+                    flushing: false,
                 }),
-                terminal,
-                output: Mutex::new(String::new()),
-                activity: Mutex::new(AcpActivityProjection::new(
-                    runtime_id,
-                    config.diagnostics.activity,
-                )),
-                provider_observation: Mutex::new(None),
                 cancelled: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
+                #[cfg(test)]
+                before_update_flush: Mutex::new(None),
             }),
             Box::pin(stream),
             future,
         ))
+    }
+
+    #[cfg(test)]
+    pub(crate) fn set_before_update_flush(&self, hook: Option<Arc<dyn Fn() + Send + Sync>>) {
+        *self
+            .before_update_flush
+            .lock()
+            .expect("test update flush hook lock poisoned") = hook;
     }
 
     /// Returns whether the turn has been marked cancelled.
@@ -239,75 +322,112 @@ impl ActiveTurn {
     where
         F: FnOnce(u64) -> Result<RuntimeEventKind, RuntimeFailure>,
     {
-        self.emission
-            .lock()
-            .expect("turn event emission lock poisoned")
-            .emit_with(build)
+        let sequence = {
+            let mut state = self.state.lock().expect("turn state lock poisoned");
+            if state.terminal {
+                return Ok(());
+            }
+            let sequence = state.allocate_sequence();
+            state.outbox.push_back(PendingEvent::Reserved(sequence));
+            sequence
+        };
+        let mut guard = ReservationGuard {
+            turn: self,
+            sequence,
+            active: true,
+        };
+        let built = build(sequence);
+        guard.active = false;
+        let result = match built {
+            Ok(kind) => {
+                let mut state = self.state.lock().expect("turn state lock poisoned");
+                if let Some(position) = state.outbox.iter().position(
+                    |item| matches!(item, PendingEvent::Reserved(seq) if *seq == sequence),
+                ) {
+                    state.outbox[position] =
+                        PendingEvent::Event(Box::new(RuntimeEvent::new(sequence, kind)));
+                }
+                Ok(())
+            }
+            Err(error) => {
+                let mut state = self.state.lock().expect("turn state lock poisoned");
+                if let Some(position) = state.outbox.iter().position(
+                    |item| matches!(item, PendingEvent::Reserved(seq) if *seq == sequence),
+                ) {
+                    state.outbox.remove(position);
+                }
+                Err(error)
+            }
+        };
+        let flush_result = self.flush_outbox();
+        result.and(flush_result)
+    }
+
+    fn flush_outbox(&self) -> Result<(), RuntimeFailure> {
+        {
+            let mut state = self.state.lock().expect("turn state lock poisoned");
+            if state.flushing
+                || matches!(state.outbox.front(), None | Some(PendingEvent::Reserved(_)))
+            {
+                return Ok(());
+            }
+            state.flushing = true;
+        }
+        let mut guard = FlushGuard {
+            state: &self.state,
+            active: true,
+        };
+        let mut first_error = None;
+        loop {
+            let next = {
+                let mut state = self.state.lock().expect("turn state lock poisoned");
+                match state.outbox.front() {
+                    Some(PendingEvent::Event(_) | PendingEvent::Terminal(_)) => {
+                        state.outbox.pop_front()
+                    }
+                    None | Some(PendingEvent::Reserved(_)) => {
+                        state.flushing = false;
+                        guard.active = false;
+                        None
+                    }
+                }
+            };
+            let Some(item) = next else {
+                break;
+            };
+            match item {
+                PendingEvent::Event(event) => {
+                    if let Err(error) = self.events.send(*event)
+                        && first_error.is_none()
+                    {
+                        first_error = Some(error);
+                    }
+                }
+                PendingEvent::Terminal(outcome) => {
+                    self.events.mark_terminal();
+                    let _ = self.terminal.complete(outcome);
+                }
+                PendingEvent::Reserved(_) => unreachable!("reserved entries halt flushing above"),
+            }
+        }
+        match first_error {
+            Some(error) => Err(error),
+            None => Ok(()),
+        }
     }
 
     fn finish(&self, status: TerminalStatus) {
-        if self.finished.swap(true, Ordering::SeqCst) {
-            return;
-        }
-        let observations = self
-            .activity
-            .lock()
-            .expect("turn activity lock poisoned")
-            .complete(&status)
-            .ok()
-            .unwrap_or_default();
-        let output = self
-            .output
-            .lock()
-            .expect("turn output lock poisoned")
-            .clone();
-        let mut outcome = TerminalOutcome::new(status, CleanupOutcome::NotApplicable);
-        let output_content = OperationContent::new(output).ok();
-        if let Some(content) = &output_content {
-            outcome = outcome.with_output(content.clone());
-        }
-        {
-            let mut emission = self
-                .emission
-                .lock()
-                .expect("turn event emission lock poisoned");
-            for observation in observations {
-                let _ = emission.emit(RuntimeEventKind::Activity(observation), None);
+        let transitioned = {
+            let mut state = self.state.lock().expect("turn state lock poisoned");
+            let transitioned = state.finish_locked(status);
+            if transitioned {
+                self.finished.store(true, Ordering::SeqCst);
             }
-            if let Some(content) = output_content {
-                let _ = emission.emit(RuntimeEventKind::OutputAvailable, Some(content));
-            }
-            emission.mark_terminal();
+            transitioned
+        };
+        if transitioned {
+            let _ = self.flush_outbox();
         }
-        let _ = self.terminal.complete(outcome);
-    }
-
-    fn append_output(&self, text: &str) -> Result<(), RuntimeFailure> {
-        let mut output = self.output.lock().expect("turn output lock poisoned");
-        if output.len().saturating_add(text.len()) > MAXIMUM_OUTPUT_BYTES {
-            return Err((self.config.diagnostics.output_limit_exceeded)());
-        }
-        output.push_str(text);
-        Ok(())
-    }
-
-    fn emit_content(&self, kind: RuntimeEventKind, text: &str) -> Result<(), RuntimeFailure> {
-        match OperationContent::new(text) {
-            Ok(content) => self.emit(kind, Some(content)),
-            Err(_) if text.trim().is_empty() => Ok(()),
-            Err(_) => Err((self.config.diagnostics.malformed)()),
-        }
-    }
-
-    fn emit(
-        &self,
-        kind: RuntimeEventKind,
-        content: Option<OperationContent>,
-    ) -> Result<(), RuntimeFailure> {
-        self.emission
-            .lock()
-            .expect("turn event emission lock poisoned")
-            .emit(kind, content)
     }
 
     fn verify_session(&self, session_id: &str) -> Result<(), RuntimeFailure> {
@@ -337,38 +457,38 @@ impl AcpTurnSink for ActiveTurn {
         provider_request_id: &Value,
     ) -> Result<ProviderRequestObservation, RuntimeFailure> {
         let malformed = self.config.diagnostics.malformed;
-        let sequence = self
-            .emission
-            .lock()
-            .expect("turn event emission lock poisoned")
-            .allocate_sequence();
-        let callback_id = CallbackId::new(format!(
-            "{}:permission:{sequence}",
-            self.runtime_id.as_str()
-        ))
-        .map_err(|_| malformed())?;
         let provider_request_ref = ProviderRequestRef::new(match provider_request_id {
             Value::String(value) => format!("acp:{value}"),
             Value::Number(value) => format!("acp:{value}"),
             _ => return Err(malformed()),
         })
         .map_err(|_| malformed())?;
-        let observation = ProviderRequestObservation::new(
-            callback_id,
-            (self.config.diagnostics.permission_namespace)(),
-            provider_request_ref.clone(),
-        );
-        *self
-            .provider_observation
-            .lock()
-            .expect("permission observation lock poisoned") = Some(observation.clone());
-        self.mark_cancelled();
-        self.emit(
-            RuntimeEventKind::ProviderObservation(ProviderObservation::RequestCorrelation(
-                provider_request_ref,
-            )),
-            None,
-        )?;
+        let observation = {
+            let mut state = self.state.lock().expect("turn state lock poisoned");
+            let sequence = state.allocate_sequence();
+            let callback_id = CallbackId::new(format!(
+                "{}:permission:{sequence}",
+                self.runtime_id.as_str()
+            ))
+            .map_err(|_| malformed())?;
+            let observation = ProviderRequestObservation::new(
+                callback_id,
+                (self.config.diagnostics.permission_namespace)(),
+                provider_request_ref.clone(),
+            );
+            state.provider_observation = Some(observation.clone());
+            self.mark_cancelled();
+            if !state.terminal {
+                state.push_event(
+                    RuntimeEventKind::ProviderObservation(ProviderObservation::RequestCorrelation(
+                        provider_request_ref,
+                    )),
+                    None,
+                );
+            }
+            observation
+        };
+        self.flush_outbox()?;
         Ok(observation)
     }
 
@@ -378,82 +498,98 @@ impl AcpTurnSink for ActiveTurn {
         let decoded =
             swallowtail_protocol_acp::decode_session_update(params).map_err(|_| malformed())?;
         self.verify_session(decoded.session_id.as_str())?;
-        match &decoded.update {
-            AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Agent => {
-                let text = text_content(&message.content, content_unsupported)?;
-                self.append_output(text)?;
-                self.emit_content(RuntimeEventKind::OutputDelta, text)?;
+        {
+            let mut state = self.state.lock().expect("turn state lock poisoned");
+            if state.terminal {
+                return Ok(());
             }
-            AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Thought => {
-                self.emit_content(
-                    RuntimeEventKind::ReasoningProgress,
-                    text_content(&message.content, content_unsupported)?,
-                )?;
-            }
-            AcpSessionUpdate::CurrentMode(_)
-            | AcpSessionUpdate::Message(_)
-            | AcpSessionUpdate::Plan(_)
-            | AcpSessionUpdate::AvailableCommands(_)
-            | AcpSessionUpdate::ConfigOptions(_)
-            | AcpSessionUpdate::SessionInfo { .. } => {
-                self.emit(RuntimeEventKind::Progress, None)?;
-            }
-            AcpSessionUpdate::Usage(_) => {
-                if self.config.usage_progress_policy == UsageProgressPolicy::EmitProgress {
-                    self.emit(RuntimeEventKind::Progress, None)?;
+            match &decoded.update {
+                AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Agent => {
+                    let text = text_content(&message.content, content_unsupported)?;
+                    state.append_output(text, self.config.diagnostics.output_limit_exceeded)?;
+                    state.push_content(RuntimeEventKind::OutputDelta, text, malformed)?;
                 }
+                AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Thought => {
+                    let text = text_content(&message.content, content_unsupported)?;
+                    state.push_content(RuntimeEventKind::ReasoningProgress, text, malformed)?;
+                }
+                AcpSessionUpdate::CurrentMode(_)
+                | AcpSessionUpdate::Message(_)
+                | AcpSessionUpdate::Plan(_)
+                | AcpSessionUpdate::AvailableCommands(_)
+                | AcpSessionUpdate::ConfigOptions(_)
+                | AcpSessionUpdate::SessionInfo { .. } => {
+                    state.push_event(RuntimeEventKind::Progress, None);
+                }
+                AcpSessionUpdate::Usage(_) => {
+                    if self.config.usage_progress_policy == UsageProgressPolicy::EmitProgress {
+                        state.push_event(RuntimeEventKind::Progress, None);
+                    }
+                }
+                AcpSessionUpdate::ToolCall(_)
+                | AcpSessionUpdate::ToolCallUpdate(_)
+                | AcpSessionUpdate::Unknown { .. } => {}
             }
-            AcpSessionUpdate::ToolCall(_)
-            | AcpSessionUpdate::ToolCallUpdate(_)
-            | AcpSessionUpdate::Unknown { .. } => {}
+            let observations = state.activity.project(&decoded.update)?;
+            for observation in observations {
+                state.push_event(RuntimeEventKind::Activity(observation), None);
+            }
         }
-        let observations = self
-            .activity
-            .lock()
-            .expect("turn activity lock poisoned")
-            .project(&decoded.update)?;
-        for observation in observations {
-            self.emit(RuntimeEventKind::Activity(observation), None)?;
+        #[cfg(test)]
+        {
+            let hook = self
+                .before_update_flush
+                .lock()
+                .expect("test update flush hook lock poisoned")
+                .clone();
+            if let Some(hook) = hook {
+                hook();
+            }
         }
-        Ok(())
+        self.flush_outbox()
     }
 
     fn finish_prompt(&self, stop_reason: &str) {
-        let status = if let Some(observation) = self
-            .provider_observation
-            .lock()
-            .expect("permission observation lock poisoned")
-            .clone()
-        {
-            TerminalStatus::ProviderRequestObserved(observation)
-        } else {
-            match stop_reason {
-                "end_turn" => TerminalStatus::Completed,
-                "cancelled" => TerminalStatus::Cancelled,
-                "auth_required" if self.config.auth_required_stop.is_some() => {
-                    let diagnostic = self
-                        .config
-                        .auth_required_stop
-                        .expect("auth_required_stop checked above");
-                    TerminalStatus::ProviderFailed(diagnostic())
+        let transitioned = {
+            let mut state = self.state.lock().expect("turn state lock poisoned");
+            let status = if let Some(observation) = state.provider_observation.clone() {
+                TerminalStatus::ProviderRequestObserved(observation)
+            } else {
+                match stop_reason {
+                    "end_turn" => TerminalStatus::Completed,
+                    "cancelled" => TerminalStatus::Cancelled,
+                    "auth_required" if self.config.auth_required_stop.is_some() => {
+                        let diagnostic = self
+                            .config
+                            .auth_required_stop
+                            .expect("auth_required_stop checked above");
+                        TerminalStatus::ProviderFailed(diagnostic())
+                    }
+                    "max_tokens" => {
+                        TerminalStatus::ProviderFailed((self.config.diagnostics.prompt_stopped)())
+                    }
+                    "max_turn_requests" | "refusal"
+                        if self.config.stop_reason_policy
+                            == StopReasonPolicy::ExtendedProviderStops =>
+                    {
+                        TerminalStatus::ProviderFailed((self.config.diagnostics.prompt_stopped)())
+                    }
+                    _ => TerminalStatus::RuntimeFailed(
+                        (self.config.diagnostics.stop_reason_unsupported)()
+                            .diagnostic()
+                            .clone(),
+                    ),
                 }
-                "max_tokens" => {
-                    TerminalStatus::ProviderFailed((self.config.diagnostics.prompt_stopped)())
-                }
-                "max_turn_requests" | "refusal"
-                    if self.config.stop_reason_policy
-                        == StopReasonPolicy::ExtendedProviderStops =>
-                {
-                    TerminalStatus::ProviderFailed((self.config.diagnostics.prompt_stopped)())
-                }
-                _ => TerminalStatus::RuntimeFailed(
-                    (self.config.diagnostics.stop_reason_unsupported)()
-                        .diagnostic()
-                        .clone(),
-                ),
+            };
+            let transitioned = state.finish_locked(status);
+            if transitioned {
+                self.finished.store(true, Ordering::SeqCst);
             }
+            transitioned
         };
-        self.finish(status);
+        if transitioned {
+            let _ = self.flush_outbox();
+        }
     }
 
     fn fail(&self, error: &RuntimeFailure) {

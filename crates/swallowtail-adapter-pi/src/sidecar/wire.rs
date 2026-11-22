@@ -11,9 +11,6 @@ pub(crate) use decode::decode_usage;
 use replay::PiSdkReplayItem;
 
 const MAXIMUM_RECORD_BYTES: usize = 1024 * 1024;
-/// Outbound commands may carry a bounded 1 MiB PNG attachment base64-encoded
-/// to ~1.33 MiB plus prompt text and JSON framing.
-const MAXIMUM_COMMAND_RECORD_BYTES: usize = 2 * 1024 * 1024;
 const MAXIMUM_COMMAND_ID_BYTES: usize = 128;
 const MAXIMUM_FAILURE_CODE_BYTES: usize = 96;
 const MAXIMUM_FAILURE_MESSAGE_BYTES: usize = 512;
@@ -206,7 +203,7 @@ pub(crate) fn encode_command(
     });
     let mut bytes = serde_json::to_vec(&record)
         .map_err(|_| failure(PiSdkSidecarProtocolFailureKind::MalformedJson))?;
-    if bytes.len() + 1 > MAXIMUM_COMMAND_RECORD_BYTES {
+    if bytes.len() + 1 > MAXIMUM_RECORD_BYTES {
         return Err(failure(PiSdkSidecarProtocolFailureKind::RecordTooLarge));
     }
     bytes.push(b'\n');

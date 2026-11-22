@@ -889,63 +889,216 @@ fn active_turn_finish_with_status_and_emit_event() {
 }
 
 #[test]
-fn active_turn_serializes_concurrent_updates_and_terminal_completion() {
+fn active_turn_serializes_projection_and_output_with_terminal_publication() {
     use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
     use std::sync::Barrier;
+    use swallowtail_runtime::RuntimeEventKind;
 
-    for iteration in 0..16 {
-        let (turn, events, terminal) = ActiveTurn::new(
-            RuntimeTurnId::new(format!("turn-race-{iteration}")).expect("valid turn id"),
-            "sess-race".to_owned(),
-            ActiveTurnConfig::new(test_diagnostics()),
-        )
-        .expect("turn creates");
+    let (turn, events, terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-interleave").expect("valid turn id"),
+        "sess-interleave".to_owned(),
+        ActiveTurnConfig::new(test_diagnostics()),
+    )
+    .expect("turn creates");
 
-        let barrier = Arc::new(Barrier::new(3));
-        let updater = {
-            let turn = Arc::clone(&turn);
-            let barrier = Arc::clone(&barrier);
-            std::thread::spawn(move || {
-                barrier.wait();
-                for chunk in 0..32 {
-                    let params = json!({
-                        "sessionId": "sess-race",
-                        "update": {
-                            "sessionUpdate": "agent_message_chunk",
-                            "content": { "type": "text", "text": format!("c{chunk}-") }
-                        }
-                    });
-                    let _ = turn.handle_update(&params);
-                }
-            })
-        };
-        let finisher = {
-            let turn = Arc::clone(&turn);
-            let barrier = Arc::clone(&barrier);
-            std::thread::spawn(move || {
-                barrier.wait();
-                turn.finish_prompt("end_turn");
-            })
-        };
-        barrier.wait();
-        updater.join().expect("updater thread joins");
-        finisher.join().expect("finisher thread joins");
-
-        let outcome = block_on(terminal);
-        assert_eq!(outcome.status(), &TerminalStatus::Completed);
-
-        let collected: Vec<_> = futures_executor::block_on_stream(events)
-            .map(|event| event.expect("runtime event must stay strictly ordered"))
-            .collect();
-        assert!(!collected.is_empty());
-        for (expected, event) in collected.iter().enumerate() {
-            assert_eq!(
-                event.sequence(),
-                expected as u64,
-                "events must have contiguous monotonic sequence numbers without post-terminal races"
-            );
+    // Start an open tool call and emit an initial message chunk.
+    turn.handle_update(&json!({
+        "sessionId": "sess-interleave",
+        "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "tool-1",
+            "title": "Read file",
+            "kind": "read",
+            "status": "in_progress"
         }
+    }))
+    .expect("tool start succeeds");
+    turn.handle_update(&json!({
+        "sessionId": "sess-interleave",
+        "update": {
+            "sessionUpdate": "agent_message_chunk",
+            "content": { "type": "text", "text": "hello " }
+        }
+    }))
+    .expect("first chunk succeeds");
+
+    // Force the exact interleaving where an update commits its activity completion
+    // and pauses before flushing, while `finish_prompt` runs concurrently.
+    let reached_before_flush = Arc::new(Barrier::new(2));
+    let release_flush = Arc::new(Barrier::new(2));
+    {
+        let reached = Arc::clone(&reached_before_flush);
+        let release = Arc::clone(&release_flush);
+        turn.set_before_update_flush(Some(Arc::new(move || {
+            reached.wait();
+            release.wait();
+        })));
     }
+
+    let updater = {
+        let turn = Arc::clone(&turn);
+        std::thread::spawn(move || {
+            turn.handle_update(&json!({
+                "sessionId": "sess-interleave",
+                "update": {
+                    "sessionUpdate": "tool_call_update",
+                    "toolCallId": "tool-1",
+                    "status": "completed"
+                }
+            }))
+            .expect("tool completion update must succeed")
+        })
+    };
+
+    // Wait until the tool completion has updated projection & enqueued its event,
+    // but has not flushed yet. Now call `finish_prompt`.
+    reached_before_flush.wait();
+    turn.set_before_update_flush(None);
+    turn.finish_prompt("end_turn");
+    release_flush.wait();
+    updater.join().expect("updater thread joins");
+
+    // A late update arriving after terminal must not mutate finalized output or emit events.
+    turn.handle_update(&json!({
+        "sessionId": "sess-interleave",
+        "update": {
+            "sessionUpdate": "agent_message_chunk",
+            "content": { "type": "text", "text": "late-ignored" }
+        }
+    }))
+    .expect("late post-terminal update is ignored cleanly");
+
+    let outcome = block_on(terminal);
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(
+        outcome.output().map(OperationContent::as_str),
+        Some("hello ")
+    );
+
+    let collected: Vec<_> = futures_executor::block_on_stream(events)
+        .map(|event| event.expect("runtime event must stay strictly ordered"))
+        .collect();
+    for (expected, event) in collected.iter().enumerate() {
+        assert_eq!(
+            event.sequence(),
+            expected as u64,
+            "events must have contiguous monotonic sequence numbers"
+        );
+    }
+
+    let tool_started = collected
+        .iter()
+        .filter(|event| {
+            matches!(
+                event.kind(),
+                RuntimeEventKind::Activity(obs)
+                    if obs.phase() == ActivityLifecyclePhase::Started
+                        && obs.kind() == &ActivityKind::ProviderOwnedTool
+            )
+        })
+        .count();
+    let tool_completed = collected
+        .iter()
+        .filter(|event| {
+            matches!(
+                event.kind(),
+                RuntimeEventKind::Activity(obs)
+                    if obs.phase() == ActivityLifecyclePhase::Completed
+                        && obs.status() == ActivityStatus::Completed
+                        && obs.kind() == &ActivityKind::ProviderOwnedTool
+            )
+        })
+        .count();
+    assert_eq!(tool_started, 1, "tool must emit Started");
+    assert_eq!(
+        tool_completed, 1,
+        "tool completion must publish before terminal and never be dropped"
+    );
+
+    let deltas: String = collected
+        .iter()
+        .filter_map(|event| {
+            if matches!(event.kind(), RuntimeEventKind::OutputDelta) {
+                event.content().map(OperationContent::as_str)
+            } else {
+                None
+            }
+        })
+        .collect();
+    let output_available: Vec<&str> = collected
+        .iter()
+        .filter_map(|event| {
+            if matches!(event.kind(), RuntimeEventKind::OutputAvailable) {
+                event.content().map(OperationContent::as_str)
+            } else {
+                None
+            }
+        })
+        .collect();
+    assert_eq!(deltas, "hello ");
+    assert_eq!(output_available, vec!["hello "]);
+}
+
+#[test]
+fn active_turn_emit_event_allows_reentrant_calls_and_recovers_from_builder_panic() {
+    use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
+    use swallowtail_runtime::RuntimeEventKind;
+
+    // 1. Re-entrant builder calling `emit_event` and `finish_with_status` must not deadlock.
+    let (turn, events, terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-reentrant").expect("valid turn id"),
+        "sess-reentrant".to_owned(),
+        ActiveTurnConfig::new(test_diagnostics()),
+    )
+    .expect("turn creates");
+
+    let inner_turn = Arc::clone(&turn);
+    turn.emit_event(|outer_seq| {
+        assert_eq!(outer_seq, 1);
+        inner_turn
+            .emit_event(|inner_seq| {
+                assert_eq!(inner_seq, 2);
+                Ok(RuntimeEventKind::Progress)
+            })
+            .expect("re-entrant emit_event must succeed without deadlocking");
+        inner_turn.finish_with_status(TerminalStatus::TimedOut);
+        Ok(RuntimeEventKind::Progress)
+    })
+    .expect("outer emit_event succeeds");
+
+    let outcome = block_on(terminal);
+    assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
+    let collected: Vec<_> = futures_executor::block_on_stream(events)
+        .map(|event| event.expect("runtime event is valid"))
+        .collect();
+    assert_eq!(collected.len(), 3);
+    assert_eq!(collected[0].sequence(), 0);
+    assert_eq!(collected[1].sequence(), 1);
+    assert_eq!(collected[2].sequence(), 2);
+
+    // 2. A panicking builder must not poison the turn state or wedge later completion.
+    let (panic_turn, panic_events, panic_terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-panic").expect("valid turn id"),
+        "sess-panic".to_owned(),
+        ActiveTurnConfig::new(test_diagnostics()),
+    )
+    .expect("turn creates");
+
+    let panicked = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        let _ = panic_turn.emit_event(|_| -> Result<RuntimeEventKind, RuntimeFailure> {
+            panic!("simulated builder panic");
+        });
+    }));
+    assert!(panicked.is_err());
+
+    panic_turn.finish_prompt("end_turn");
+    let panic_outcome = block_on(panic_terminal);
+    assert_eq!(panic_outcome.status(), &TerminalStatus::Completed);
+    let panic_collected: Vec<_> = futures_executor::block_on_stream(panic_events)
+        .map(|event| event.expect("post-panic events remain valid"))
+        .collect();
+    assert_eq!(panic_collected.len(), 1);
+    assert_eq!(panic_collected[0].sequence(), 0);
 }
 
 #[test]

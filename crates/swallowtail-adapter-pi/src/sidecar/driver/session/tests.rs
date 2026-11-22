@@ -610,7 +610,7 @@ fn sidecar_already_expired_prompt_deadline_makes_zero_writes_and_keeps_session_u
         output: Mutex::new((
             false,
             Some(
-                b"{\"type\":\"response\",\"id\":\"prompt:sidecar-valid\",\"command\":\"prompt\",\"success\":true}\n"
+                b"{\"type\":\"response\",\"id\":\"prompt:w-1\",\"command\":\"prompt\",\"success\":true}\n"
                     .to_vec(),
             ),
         )),
@@ -716,9 +716,9 @@ fn sidecar_deadline_abort_after_deferred_settlement_resolves_timed_out() {
             chunk: ProcessInputChunk,
         ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
             let text = String::from_utf8_lossy(chunk.bytes());
-            if text.contains("deadline-abort:sidecar-deferred-deadline") {
+            if text.contains("deadline-abort:w-1") {
                 self.push_line(
-                    b"{\"type\":\"response\",\"id\":\"deadline-abort:sidecar-deferred-deadline\",\"command\":\"abort\",\"success\":true}\n"
+                    b"{\"type\":\"response\",\"id\":\"deadline-abort:w-1\",\"command\":\"abort\",\"success\":true}\n"
                         .to_vec(),
                 );
             }
@@ -1301,4 +1301,136 @@ fn sidecar_long_caller_ids_produce_bounded_wire_command_ids() {
             wire_id.len()
         );
     }
+
+    // 3. Mixed short/long caller IDs must never collide with connection-owned
+    // wire IDs or block native abort:
+    // - Short turn ID `"w-1"` followed by an oversized (>128-byte) turn ID;
+    // - Steer command with caller ID `"abort:w-4"` (matching the generated wire
+    //   ID format);
+    // - Duplicate caller command ID still fails with `command_id_reused`;
+    // - Native `abort` still dispatches and succeeds on the wire.
+    let mixed_host = ExecutionHostId::new("pi.sidecar.mixed-ids").expect("host id");
+    let mixed_process = Arc::new(EchoingWireProcess::new());
+    let mixed_services = HostServices::new(mixed_host.clone())
+        .with_task(Arc::new(ThreadTaskService))
+        .with_time(Arc::new(PendingClock));
+    let mixed_conn = SidecarConnection::new(
+        Arc::clone(&mixed_process) as Arc<dyn ProcessHandle>,
+        mixed_services.clone(),
+    );
+    let pump_mixed_conn = Arc::clone(&mixed_conn);
+    let mixed_pump_task = Box::new(ThreadJoinedTask(Some(std::thread::spawn(move || {
+        futures_executor::block_on(pump_mixed_conn.pump());
+    }))));
+    let mixed_active: super::ActiveSlot = Arc::new(Mutex::new(None));
+    let mixed_binding = SessionResumeBinding::new(
+        SessionRef::new("sidecar-mixed-ids").expect("session ref"),
+        ConfiguredInstanceId::new("pi.sidecar.inst").expect("instance id"),
+        mixed_host.clone(),
+        ModelRouteId::new("pi.route").expect("route id"),
+        ModelId::new("pi-model").expect("model id"),
+        WorkingResourceRef::new("workspace.main").expect("resource"),
+        SessionAccessPolicy::read_only(),
+    );
+    let mut mixed_session = PiSdkSidecarSessionHandle {
+        request_id: RequestId::new("w-1").expect("short request id"),
+        runtime_id: RuntimeSessionId::new("pi-sdk-sidecar:mixed-ids").expect("session id"),
+        execution_host_id: mixed_host,
+        binding: mixed_binding,
+        connection: Arc::clone(&mixed_conn),
+        cancellation: SessionCancellation::new(Arc::clone(&mixed_conn), Arc::clone(&mixed_active)),
+        pump_task: Some(mixed_pump_task),
+        services: mixed_services.clone(),
+        resource: None,
+        credential: None,
+        active: mixed_active,
+        completed_prompts: Arc::new(AtomicU32::new(0)),
+        image_attachments: false,
+    };
+
+    // Short turn `"w-1"` succeeds and finishes via native abort.
+    let short_req = TurnRequest::new(
+        RuntimeTurnId::new("w-1").expect("short turn id"),
+        OperationContent::new("short").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(100)));
+    let short_turn =
+        futures_executor::block_on(mixed_session.start_turn(short_req, mixed_services.clone()))
+            .expect("short turn id 'w-1' starts");
+    assert_eq!(
+        futures_executor::block_on(short_turn.cancellation().request())
+            .expect("short turn aborts cleanly"),
+        swallowtail_runtime::CancellationAcknowledgement::Requested
+    );
+    // Mark the short turn finished so a second turn can start on the same session.
+    {
+        let slot = mixed_session.active.lock().expect("active lock");
+        slot.as_ref()
+            .expect("active turn present")
+            .turn
+            .handle_event(crate::sidecar::wire::PiSdkSidecarEvent::Settled)
+            .expect("short turn settles as cancelled");
+    }
+    drop(short_turn);
+
+    // Oversized turn on the same connection must not collide with `"w-1"`.
+    let oversized_req = TurnRequest::new(
+        RuntimeTurnId::new("x".repeat(160)).expect("long turn id"),
+        OperationContent::new("long").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(200)));
+    let mut oversized_turn =
+        futures_executor::block_on(mixed_session.start_turn(oversized_req, mixed_services.clone()))
+            .expect("oversized turn starts after short turn 'w-1' without wire ID collision");
+
+    // A short steer caller ID matching the next generated abort wire ID must
+    // not collide with wire IDs or block native cancellation.
+    let colliding_caller_id = HarnessCommandId::new("abort:w-5").expect("command id");
+    let steer_resp = futures_executor::block_on(oversized_turn.schedule_harness_message(
+        HarnessScheduledMessage::new(
+            colliding_caller_id.clone(),
+            HarnessMessageClass::Steering,
+            OperationContent::new("steer").expect("content"),
+        ),
+    ))
+    .expect("steer with caller id 'abort:w-5' succeeds");
+    assert_eq!(steer_resp.command_id(), &colliding_caller_id);
+    assert_eq!(
+        steer_resp.acknowledgement(),
+        HarnessCommandAcknowledgement::Accepted
+    );
+
+    // Reusing the same caller command ID for follow-up is still rejected.
+    let duplicate_err = futures_executor::block_on(oversized_turn.schedule_harness_message(
+        HarnessScheduledMessage::new(
+            colliding_caller_id,
+            HarnessMessageClass::FollowUp,
+            OperationContent::new("duplicate").expect("content"),
+        ),
+    ))
+    .expect_err("duplicate caller command id must still be rejected");
+    assert_eq!(
+        duplicate_err.diagnostic().code(),
+        "swallowtail.pi.sdk-sidecar.command_id_reused"
+    );
+
+    // Native abort still dispatches cleanly without colliding with steer's caller ID.
+    assert_eq!(
+        futures_executor::block_on(oversized_turn.cancellation().request())
+            .expect("native abort must succeed after colliding caller steer ID"),
+        swallowtail_runtime::CancellationAcknowledgement::Requested
+    );
+    drop(oversized_turn);
+
+    let mixed_cleanup = futures_executor::block_on(Box::new(mixed_session).close(
+        SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(300))),
+        mixed_services,
+    ));
+    assert_eq!(mixed_cleanup, CleanupOutcome::Clean);
+    let mixed_ids = mixed_process.recorded_ids();
+    assert_eq!(
+        mixed_ids.iter().filter(|(cmd, _)| cmd == "abort").count(),
+        2,
+        "both short and oversized turns must reach native abort on the wire: {mixed_ids:?}"
+    );
 }

@@ -37,6 +37,7 @@ pub(crate) struct SidecarConnection {
     superseded_aborts: Mutex<BTreeSet<String>>,
     abandoned_close: Mutex<Option<String>>,
     used_ids: Mutex<BTreeSet<String>>,
+    used_caller_command_ids: Mutex<BTreeSet<String>>,
     next_wire_id: AtomicU64,
     active_turn: Mutex<Option<Arc<SidecarActiveTurn>>>,
     replay: Mutex<Option<ReplayCollector>>,
@@ -56,6 +57,7 @@ impl SidecarConnection {
             superseded_aborts: Mutex::new(BTreeSet::new()),
             abandoned_close: Mutex::new(None),
             used_ids: Mutex::new(BTreeSet::new()),
+            used_caller_command_ids: Mutex::new(BTreeSet::new()),
             next_wire_id: AtomicU64::new(1),
             active_turn: Mutex::new(None),
             replay: Mutex::new(None),
@@ -67,30 +69,35 @@ impl SidecarConnection {
         })
     }
 
-    /// Formats a prefixed wire command ID bounded to `MAXIMUM_COMMAND_ID_BYTES`.
+    /// Allocates a unique, bounded, connection-owned wire command ID.
     ///
-    /// Keeps short caller IDs verbatim so existing correlation expectations stay
-    /// intact, and falls back to a compact monotonic connection-scoped ID when
-    /// `"{prefix}:{caller_id}"` would exceed the wire limit.
-    pub(crate) fn bounded_command_id(&self, prefix: &str, caller_id: &str) -> String {
-        if !caller_id.is_empty() && prefix.len() + 1 + caller_id.len() <= MAXIMUM_COMMAND_ID_BYTES {
-            format!("{prefix}:{caller_id}")
-        } else {
-            let seq = self.next_wire_id.fetch_add(1, Ordering::SeqCst);
-            format!("{prefix}:w-{seq}")
-        }
+    /// All caller-derived commands (`prompt`, `abort`, `deadline-abort`,
+    /// `close`, `steer`, `follow-up`) use this namespace so no caller-supplied
+    /// identifier can collide with another command's wire ID or exceed
+    /// `MAXIMUM_COMMAND_ID_BYTES`.
+    pub(crate) fn next_command_id(&self, prefix: &str) -> String {
+        let seq = self.next_wire_id.fetch_add(1, Ordering::SeqCst);
+        let id = format!("{prefix}:w-{seq}");
+        debug_assert!(id.len() <= MAXIMUM_COMMAND_ID_BYTES);
+        id
     }
 
-    /// Bounds a caller-supplied command ID (e.g. `steer` / `follow_up`) to
-    /// `MAXIMUM_COMMAND_ID_BYTES`, preserving short IDs verbatim and falling
-    /// back to a compact monotonic connection-scoped ID when oversized.
-    pub(crate) fn bounded_raw_command_id(&self, fallback_prefix: &str, caller_id: &str) -> String {
-        if !caller_id.is_empty() && caller_id.len() <= MAXIMUM_COMMAND_ID_BYTES {
-            caller_id.to_owned()
-        } else {
-            let seq = self.next_wire_id.fetch_add(1, Ordering::SeqCst);
-            format!("{fallback_prefix}:w-{seq}")
+    /// Reserves a caller-supplied scheduled command ID independently of wire
+    /// IDs so duplicate caller command IDs are rejected without colliding with
+    /// connection-owned wire IDs.
+    pub(crate) fn reserve_caller_command_id(&self, caller_id: &str) -> Result<(), RuntimeFailure> {
+        if !self
+            .used_caller_command_ids
+            .lock()
+            .expect("sidecar caller command id lock poisoned")
+            .insert(caller_id.to_owned())
+        {
+            return Err(failure(
+                "swallowtail.pi.sdk-sidecar.command_id_reused",
+                "Pi SDK sidecar command id was reused",
+            ));
         }
+        Ok(())
     }
 
     pub(crate) fn services(&self) -> &HostServices {

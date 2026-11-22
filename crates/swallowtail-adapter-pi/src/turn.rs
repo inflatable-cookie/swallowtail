@@ -81,6 +81,8 @@ pub(crate) struct ActiveTurn {
     finished: AtomicBool,
     completed_prompts: Arc<AtomicU32>,
     finish_signal: Arc<Mutex<FinishedState>>,
+    #[cfg(test)]
+    after_abort_in_flight_check: Mutex<Option<Arc<dyn Fn() + Send + Sync>>>,
 }
 
 impl ActiveTurn {
@@ -122,6 +124,8 @@ impl ActiveTurn {
                 finished: AtomicBool::new(false),
                 completed_prompts,
                 finish_signal: Arc::new(Mutex::new(FinishedState::default())),
+                #[cfg(test)]
+                after_abort_in_flight_check: Mutex::new(None),
             }),
             stream,
             exchange,
@@ -225,6 +229,15 @@ impl ActiveTurn {
                         && !aborted.unwrap_or(false)
                         && state.abort_in_flight
                     {
+                        #[cfg(test)]
+                        if let Some(hook) = self
+                            .after_abort_in_flight_check
+                            .lock()
+                            .expect("Pi test hook lock poisoned")
+                            .clone()
+                        {
+                            hook();
+                        }
                         state.pending_settled = Some(PendingSettled { aborted });
                         return Ok(());
                     }
@@ -760,104 +773,93 @@ mod tests {
     #[test]
     fn settled_and_reconcile_abort_response_share_mutex_and_never_strand_turn() {
         use futures_util::FutureExt;
-        use std::sync::Barrier;
+        use std::sync::mpsc;
+        use std::time::Duration;
 
-        // 1. Deterministic lock-serialization proof: while `abort_state` is held
-        // during an in-flight abort transition, a concurrent `Settled` event
-        // cannot observe stale `abort_in_flight = true` and strand `pending_settled`.
-        {
+        // Force `reconcile_abort_response` to run while `handle_event(Settled)`
+        // is paused between checking `abort_in_flight` and writing
+        // `pending_settled`. Under one mutex `reconcile_abort_response` must
+        // block until `pending_settled` is stored, then drain it and finish the
+        // turn. If the check and write are ever separated again,
+        // `reconcile_abort_response` completes inside the window and strands
+        // the turn.
+        for success in [true, false] {
             let (turn, _events, _callbacks, terminal) = ActiveTurn::new(
-                RuntimeTurnId::new("pi-toctou-lock").expect("turn id is valid"),
+                RuntimeTurnId::new(format!("pi-toctou-gated-{success}")).expect("turn id is valid"),
                 Arc::new(AtomicU32::new(0)),
                 Weak::new(),
                 false,
             )
             .expect("turn constructs");
+            turn.add_usage(TokenUsage::new(Some(3), Some(2)))
+                .expect("usage recorded");
             turn.mark_abort_in_flight();
 
-            let mut guard = turn
-                .abort_state
+            let (checked_tx, checked_rx) = mpsc::channel();
+            let (reconcile_entering_tx, reconcile_entering_rx) = mpsc::channel();
+            let (reconcile_done_tx, reconcile_done_rx) = mpsc::channel();
+            let slipped_through = Arc::new(AtomicBool::new(false));
+            let slipped_hook = Arc::clone(&slipped_through);
+            let reconcile_done_rx = Mutex::new(reconcile_done_rx);
+            let reconcile_entering_rx = Mutex::new(reconcile_entering_rx);
+
+            *turn
+                .after_abort_in_flight_check
                 .lock()
-                .expect("Pi abort-settlement lock poisoned");
-            let entered = Arc::new(Barrier::new(2));
+                .expect("Pi test hook lock poisoned") = Some(Arc::new(move || {
+                checked_tx.send(()).expect("signal checked");
+                reconcile_entering_rx
+                    .lock()
+                    .expect("entering rx lock")
+                    .recv()
+                    .expect("reconcile entering");
+                if reconcile_done_rx
+                    .lock()
+                    .expect("done rx lock")
+                    .recv_timeout(Duration::from_millis(25))
+                    .is_ok()
+                {
+                    slipped_hook.store(true, Ordering::SeqCst);
+                }
+            }));
+
             let settled_turn = Arc::clone(&turn);
-            let entered_worker = Arc::clone(&entered);
             let settled_thread = std::thread::spawn(move || {
-                entered_worker.wait();
                 settled_turn
                     .handle_event(PiAgentEvent::Settled {
                         aborted: Some(false),
                     })
-                    .expect("settled handles cleanly");
+                    .expect("settled succeeds");
             });
-            entered.wait();
-            // Simulate `reconcile_abort_response(true)` completing under the lock.
-            guard.cancelled = true;
-            guard.abort_in_flight = false;
-            guard.abort_rejected = false;
-            assert!(guard.pending_settled.is_none());
-            drop(guard);
+
+            checked_rx.recv().expect("settled checked abort_in_flight");
+            reconcile_entering_tx
+                .send(())
+                .expect("notify reconcile entering");
+            turn.reconcile_abort_response(success)
+                .expect("reconcile succeeds");
+            let _ = reconcile_done_tx.send(());
 
             settled_thread.join().expect("settled thread joins");
-            assert!(turn.is_finished(), "turn must not be stranded");
+
+            assert!(
+                !slipped_through.load(Ordering::SeqCst),
+                "reconcile_abort_response must not complete between abort_in_flight check and pending_settled store (success={success})"
+            );
+            assert!(
+                turn.is_finished(),
+                "turn must not be stranded after gated interleaving (success={success})"
+            );
             assert!(!turn.has_pending_settled());
             let outcome = terminal
                 .now_or_never()
-                .expect("terminal outcome must already be ready");
-            assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
-        }
-
-        // 2. Concurrent race between `handle_event(Settled)` and
-        // `reconcile_abort_response` for both `success = true` and `false`.
-        for success in [true, false] {
-            for iteration in 0..64 {
-                let (turn, _events, _callbacks, terminal) = ActiveTurn::new(
-                    RuntimeTurnId::new(format!("pi-toctou-{success}-{iteration}"))
-                        .expect("turn id is valid"),
-                    Arc::new(AtomicU32::new(0)),
-                    Weak::new(),
-                    false,
-                )
-                .expect("turn constructs");
-                turn.add_usage(TokenUsage::new(Some(3), Some(2)))
-                    .expect("usage recorded");
-                turn.mark_abort_in_flight();
-
-                let barrier = Arc::new(Barrier::new(2));
-                let t1 = Arc::clone(&turn);
-                let b1 = Arc::clone(&barrier);
-                let h1 = std::thread::spawn(move || {
-                    b1.wait();
-                    t1.handle_event(PiAgentEvent::Settled {
-                        aborted: Some(false),
-                    })
-                    .expect("settled succeeds");
-                });
-                let t2 = Arc::clone(&turn);
-                let b2 = Arc::clone(&barrier);
-                let h2 = std::thread::spawn(move || {
-                    b2.wait();
-                    t2.reconcile_abort_response(success)
-                        .expect("reconcile succeeds");
-                });
-                h1.join().expect("settled thread joins");
-                h2.join().expect("reconcile thread joins");
-
-                assert!(
-                    turn.is_finished(),
-                    "turn stranded on success={success}, iteration={iteration}"
-                );
-                assert!(!turn.has_pending_settled());
-                let outcome = terminal
-                    .now_or_never()
-                    .expect("terminal outcome must be ready without stranding");
-                let expected = if success {
-                    TerminalStatus::Cancelled
-                } else {
-                    TerminalStatus::Completed
-                };
-                assert_eq!(outcome.status(), &expected);
-            }
+                .expect("terminal outcome must be ready without stranding");
+            let expected = if success {
+                TerminalStatus::Cancelled
+            } else {
+                TerminalStatus::Completed
+            };
+            assert_eq!(outcome.status(), &expected);
         }
     }
 }

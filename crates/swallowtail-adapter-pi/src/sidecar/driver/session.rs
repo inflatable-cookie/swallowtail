@@ -218,9 +218,7 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 dispatched: Arc::clone(&prompt_dispatched),
                 active: true,
             };
-            let id = self
-                .connection
-                .bounded_command_id("prompt", request.turn_id().as_str());
+            let id = self.connection.next_command_id("prompt");
             let mut params = json!({"text": request.content().as_str()});
             if let Some(attachment) = attachment {
                 params["images"] = json!([{
@@ -323,9 +321,7 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 {
                     active.turn.mark_cancelled();
                 }
-                let id = self
-                    .connection
-                    .bounded_command_id("close", self.request_id.as_str());
+                let id = self.connection.next_command_id("close");
                 let deadline = graceful_shutdown_deadline(&services, Some(request.deadline()));
                 let connection = &self.connection;
                 let process = stop_session_process(
@@ -411,8 +407,7 @@ fn spawn_deadline(
                 .await;
                 if timed_out {
                     deadline_turn.mark_timed_out();
-                    let id = connection
-                        .bounded_command_id("deadline-abort", deadline_turn.runtime_id().as_str());
+                    let id = connection.next_command_id("deadline-abort");
                     let abort = run_before_deadline(
                         connection.abort_command(id, json!({}), Arc::clone(&deadline_turn)),
                         grace_deadline(&deadline_services, ABORT_ACKNOWLEDGEMENT_GRACE_TICKS),

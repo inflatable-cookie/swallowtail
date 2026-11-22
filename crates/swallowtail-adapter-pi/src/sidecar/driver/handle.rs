@@ -48,9 +48,7 @@ impl TurnCancellation {
                 return Ok(CancellationAcknowledgement::AlreadyRequested);
             }
             self.turn.mark_abort_in_flight();
-            let id = self
-                .connection
-                .bounded_command_id("abort", self.turn.runtime_id().as_str());
+            let id = self.connection.next_command_id("abort");
             let abort = self
                 .connection
                 .abort_command(id, json!({}), Arc::clone(&self.turn));
@@ -216,14 +214,19 @@ impl TurnHandle for PiSdkSidecarTurnHandle {
                     HarnessCommandAcknowledgement::Rejected,
                 ));
             }
-            let (command, fallback_prefix) = match class {
+            if let Err(error) = self
+                .connection
+                .reserve_caller_command_id(message.command_id().as_str())
+            {
+                self.cancellation.turn.release_scheduling(class);
+                return Err(error);
+            }
+            let (command, wire_prefix) = match class {
                 HarnessMessageClass::Steering => (PiSdkSidecarCommand::Steer, "steer"),
                 HarnessMessageClass::FollowUp => (PiSdkSidecarCommand::FollowUp, "follow-up"),
                 HarnessMessageClass::Prompt => unreachable!(),
             };
-            let id = self
-                .connection
-                .bounded_raw_command_id(fallback_prefix, message.command_id().as_str());
+            let id = self.connection.next_command_id(wire_prefix);
             let result = self
                 .connection
                 .command(id, command, json!({"text": message.content().as_str()}))
@@ -793,7 +796,9 @@ mod tests {
         let services = HostServices::new(
             ExecutionHostId::new("pi.sidecar.abort-ack-eof-test").expect("host id is valid"),
         );
-        let ack_line = b"{\"type\":\"response\",\"id\":\"abort:sidecar-ack-eof\",\"command\":\"abort\",\"success\":true}\n".to_vec();
+        let ack_line =
+            b"{\"type\":\"response\",\"id\":\"abort:w-1\",\"command\":\"abort\",\"success\":true}\n"
+                .to_vec();
         let connection = SidecarConnection::new(
             Arc::new(AckThenEof {
                 response: Mutex::new(Some(ack_line)),
@@ -947,7 +952,8 @@ mod tests {
         );
         let lines = std::collections::VecDeque::from([
             b"{\"type\":\"event\",\"event\":\"agent_settled\"}\n".to_vec(),
-            b"{\"type\":\"response\",\"id\":\"abort:sidecar-settle-ack\",\"command\":\"abort\",\"success\":true}\n".to_vec(),
+            b"{\"type\":\"response\",\"id\":\"abort:w-1\",\"command\":\"abort\",\"success\":true}\n"
+                .to_vec(),
         ]);
         let connection = SidecarConnection::new(
             Arc::new(SettleThenAck {
@@ -1036,7 +1042,7 @@ mod tests {
         let services = HostServices::new(
             ExecutionHostId::new("pi.sidecar.abort-nack-eof-test").expect("host id is valid"),
         );
-        let nack_line = b"{\"type\":\"response\",\"id\":\"abort:sidecar-nack-eof\",\"command\":\"abort\",\"success\":false,\"failure\":{\"code\":\"abort_rejected\",\"message\":\"cannot abort\"}}\n".to_vec();
+        let nack_line = b"{\"type\":\"response\",\"id\":\"abort:w-1\",\"command\":\"abort\",\"success\":false,\"failure\":{\"code\":\"abort_rejected\",\"message\":\"cannot abort\"}}\n".to_vec();
         let connection = SidecarConnection::new(
             Arc::new(NackThenEof {
                 response: Mutex::new(Some(nack_line)),
@@ -1133,7 +1139,8 @@ mod tests {
         );
         let lines = std::collections::VecDeque::from([
             b"{\"type\":\"event\",\"event\":\"agent_settled\"}\n".to_vec(),
-            b"{\"type\":\"response\",\"id\":\"abort:sidecar-overflow\",\"command\":\"abort\",\"success\":true}\n".to_vec(),
+            b"{\"type\":\"response\",\"id\":\"abort:w-1\",\"command\":\"abort\",\"success\":true}\n"
+                .to_vec(),
         ]);
         let connection = SidecarConnection::new(
             Arc::new(SettleThenAck {

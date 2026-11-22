@@ -692,28 +692,29 @@ impl AcpTurnSink for ActiveTurn {
             {
                 Err(UpdateAdmissionError::OutputLimitExceeded)
             } else {
-                // Project onto a snapshot first so a rejected admission never
-                // mutates `state.activity`.
-                let mut next_activity = state.activity.snapshot();
-                match next_activity.project(&decoded.update) {
-                    Err(_) => Err(UpdateAdmissionError::ActivityMalformed),
-                    Ok(observations) => {
-                        let primary_count = usize::from(primary_event.is_some());
-                        let total_incoming = primary_count.saturating_add(observations.len());
-                        let next_has_output = !state.output.is_empty()
-                            || agent_text.is_some_and(|text| !text.is_empty());
-                        let next_terminal_reserve = next_activity
-                            .open_count()
-                            .saturating_add(usize::from(next_has_output));
-                        let downstream = self.buffered.load(Ordering::SeqCst);
-                        if let Err(error) = state.check_non_terminal_capacity(
-                            downstream,
-                            total_incoming,
-                            next_terminal_reserve,
-                        ) {
-                            Err(UpdateAdmissionError::SendFailed(error))
-                        } else {
-                            state.activity = next_activity;
+                // Pre-check capacity in O(log N) without cloning activity history
+                // so a rejected admission never mutates `state.activity`.
+                let (projected_observations, next_open_count) =
+                    state.activity.projected_capacity(&decoded.update);
+                let primary_count = usize::from(primary_event.is_some());
+                let total_incoming = primary_count.saturating_add(projected_observations);
+                let next_has_output =
+                    !state.output.is_empty() || agent_text.is_some_and(|text| !text.is_empty());
+                let next_terminal_reserve =
+                    next_open_count.saturating_add(usize::from(next_has_output));
+                let downstream = self.buffered.load(Ordering::SeqCst);
+                if let Err(error) = state.check_non_terminal_capacity(
+                    downstream,
+                    total_incoming,
+                    next_terminal_reserve,
+                ) {
+                    Err(UpdateAdmissionError::SendFailed(error))
+                } else {
+                    match state.activity.project(&decoded.update) {
+                        Err(_) => Err(UpdateAdmissionError::ActivityMalformed),
+                        Ok(observations) => {
+                            debug_assert_eq!(observations.len(), projected_observations);
+                            debug_assert_eq!(state.activity.open_count(), next_open_count);
                             if let Some(text) = agent_text {
                                 state.output.push_str(text);
                             }

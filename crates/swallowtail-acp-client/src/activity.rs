@@ -100,18 +100,105 @@ impl AcpActivityProjection {
         })
     }
 
-    pub(crate) fn snapshot(&self) -> Self {
-        Self {
-            config: self.config,
-            operation_id: self.operation_id.clone(),
-            open: self.open.clone(),
-            closed: self.closed.clone(),
-            next_id: self.next_id,
-        }
-    }
-
     pub(crate) fn open_count(&self) -> usize {
         self.open.len()
+    }
+
+    /// Computes `(observation_count, next_open_count)` for `update` without
+    /// mutating or cloning `open` / `closed` history.
+    pub(crate) fn projected_capacity(&self, update: &AcpSessionUpdate) -> (usize, usize) {
+        let open = self.open.len();
+        match update {
+            AcpSessionUpdate::Message(message) => {
+                if message.role == AcpMessageRole::User {
+                    return (0, open);
+                }
+                let Ok(text) = text_content(&message.content, self.config.malformed) else {
+                    return (0, open);
+                };
+                let label = match message.role {
+                    AcpMessageRole::Agent
+                        if self.config.message_classification
+                            == MessageClassification::ModeAndWarning
+                            && text.starts_with("[MODE_UPDATE]") =>
+                    {
+                        "mode-display"
+                    }
+                    AcpMessageRole::Agent => "assistant",
+                    AcpMessageRole::Thought
+                        if self.config.message_classification
+                            == MessageClassification::ModeAndWarning
+                            && text.starts_with("Warning:") =>
+                    {
+                        "warning"
+                    }
+                    AcpMessageRole::Thought => "thought",
+                    AcpMessageRole::User => unreachable!("user messages returned above"),
+                };
+                let provider_id = message.message_id.as_ref().map(|value| value.as_str());
+                let key = format!("{label}:{}", provider_id.unwrap_or("turn"));
+                let next_open = open.saturating_add(usize::from(!self.open.contains_key(&key)));
+                (1, next_open)
+            }
+            AcpSessionUpdate::Plan(_)
+                if self.config.plan_projection == PlanProjection::TaskList =>
+            {
+                let next_open = open.saturating_add(usize::from(!self.open.contains_key("plan")));
+                (1, next_open)
+            }
+            AcpSessionUpdate::ToolCall(call) => {
+                let key = format!("tool:{}", call.tool_call_id.as_str());
+                if self.closed.contains(&key) {
+                    return (0, open);
+                }
+                let status = tool_status(call.status);
+                if let Some(existing) = self.open.get(&key) {
+                    let reconciled = reconcile_status(existing.status, status);
+                    let next_open = if reconciled.is_terminal() {
+                        open.saturating_sub(1)
+                    } else {
+                        open
+                    };
+                    (1, next_open)
+                } else if status.is_terminal() {
+                    (2, open)
+                } else {
+                    (1, open.saturating_add(1))
+                }
+            }
+            AcpSessionUpdate::ToolCallUpdate(update) => {
+                let key = format!("tool:{}", update.tool_call_id.as_str());
+                if self.closed.contains(&key) {
+                    return (0, open);
+                }
+                if let Some(existing) = self.open.get(&key) {
+                    let reconciled = update.status.map_or(existing.status, |status| {
+                        reconcile_status(existing.status, tool_status(status))
+                    });
+                    let next_open = if reconciled.is_terminal() {
+                        open.saturating_sub(1)
+                    } else {
+                        open
+                    };
+                    (1, next_open)
+                } else if update
+                    .status
+                    .map(tool_status)
+                    .is_some_and(ActivityStatus::is_terminal)
+                {
+                    (2, open)
+                } else {
+                    (0, open)
+                }
+            }
+            AcpSessionUpdate::Unknown { .. } => (1, open),
+            AcpSessionUpdate::Plan(_)
+            | AcpSessionUpdate::AvailableCommands(_)
+            | AcpSessionUpdate::CurrentMode(_)
+            | AcpSessionUpdate::ConfigOptions(_)
+            | AcpSessionUpdate::SessionInfo { .. }
+            | AcpSessionUpdate::Usage(_) => (0, open),
+        }
     }
 
     fn malformed(&self) -> RuntimeFailure {

@@ -1240,44 +1240,82 @@ fn active_turn_emit_event_allows_reentrant_calls_and_recovers_from_builder_panic
         extra_err.diagnostic().code(),
         "swallowtail.event_buffer_rejected"
     );
-    // A non-terminal tool update exceeding capacity (2 + 125 + 1 + 1 = 129 > 128)
-    // must be rejected without mutating `state.activity`.
-    let rejected_tool_update = tool_turn
+    // Both a new tool_call (which would open a second tool in `state.activity`)
+    // and an agent_message_chunk (which would open AssistantMessage + append output)
+    // exceed capacity and must be rejected without mutating `state.activity` or `output`.
+    let rejected_new_tool = tool_turn
         .handle_update(&json!({
             "sessionId": "sess-rejected-tool",
             "update": {
-                "sessionUpdate": "tool_call_update",
-                "toolCallId": "tool-keep",
+                "sessionUpdate": "tool_call",
+                "toolCallId": "tool-rejected",
+                "title": "Rejected tool",
+                "kind": "read",
                 "status": "in_progress"
             }
         }))
-        .expect_err("tool update exceeding capacity must be rejected");
+        .expect_err("new tool_call exceeding capacity must be rejected");
     assert_eq!(
-        rejected_tool_update.diagnostic().code(),
+        rejected_new_tool.diagnostic().code(),
         "swallowtail.event_buffer_rejected"
     );
-    // Finish the turn while builders are still paused: abandoning reservations frees slots
-    // and the still-open tool emits its terminal completion cleanly.
+    let rejected_chunk = tool_turn
+        .handle_update(&json!({
+            "sessionId": "sess-rejected-tool",
+            "update": {
+                "sessionUpdate": "agent_message_chunk",
+                "content": { "type": "text", "text": "rejected-output" }
+            }
+        }))
+        .expect_err("agent_message_chunk exceeding capacity must be rejected");
+    assert_eq!(
+        rejected_chunk.diagnostic().code(),
+        "swallowtail.event_buffer_rejected"
+    );
+    // Finish the turn while builders are still paused: abandoning reservations frees slots,
+    // only `tool-keep` emits a terminal completion, and neither `tool-rejected` nor
+    // `AssistantMessage` / `OutputAvailable` appears.
     tool_turn.finish_prompt("end_turn");
     let tool_outcome = block_on(tool_terminal);
     assert_eq!(tool_outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(
+        tool_outcome.output(),
+        None,
+        "rejected agent_message_chunk must not mutate terminal output"
+    );
     let tool_collected: Vec<_> = tool_stream
         .map(|event| event.expect("every remaining event must succeed"))
         .collect();
+    let completed_tools: Vec<_> = tool_collected
+        .iter()
+        .filter_map(|event| match event.kind() {
+            RuntimeEventKind::Activity(obs)
+                if obs.phase() == ActivityLifecyclePhase::Completed
+                    && obs.kind() == &ActivityKind::ProviderOwnedTool =>
+            {
+                Some(
+                    obs.provider_activity_ref()
+                        .map(|r| r.as_provider_value().to_owned()),
+                )
+            }
+            _ => None,
+        })
+        .collect();
     assert_eq!(
-        tool_collected
-            .iter()
-            .filter(|event| {
-                matches!(
+        completed_tools,
+        vec![Some("tool-keep".to_owned())],
+        "only the admitted open tool must complete; rejected tool-rejected must not mutate state"
+    );
+    assert!(
+        !tool_collected.iter().any(|event| {
+            matches!(event.kind(), RuntimeEventKind::OutputAvailable)
+                || matches!(
                     event.kind(),
                     RuntimeEventKind::Activity(obs)
-                        if obs.phase() == ActivityLifecyclePhase::Completed
-                            && obs.kind() == &ActivityKind::ProviderOwnedTool
+                        if obs.kind() == &ActivityKind::AssistantMessage
                 )
-            })
-            .count(),
-        1,
-        "open tool must still emit its terminal completion after rejected update"
+        }),
+        "rejected agent_message_chunk must not emit AssistantMessage or OutputAvailable"
     );
     tool_builder_release.wait();
     for handle in paused_tool_builders {

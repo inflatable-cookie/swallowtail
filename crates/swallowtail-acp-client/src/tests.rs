@@ -1513,3 +1513,75 @@ fn reject_permission_forwards_tool_call_id_to_turn_sink() {
         Some("call-42")
     );
 }
+
+#[test]
+fn active_turn_rejected_plan_projection_does_not_leak_open_activity() {
+    use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
+    use swallowtail_runtime::RuntimeEventKind;
+
+    let (turn, events, terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-plan-reject").expect("valid turn id"),
+        "sess-plan-reject".to_owned(),
+        ActiveTurnConfig::new(test_diagnostics()),
+    )
+    .expect("turn creates");
+
+    let malformed_plan = json!({
+        "sessionId": "sess-plan-reject",
+        "update": {
+            "sessionUpdate": "plan",
+            "entries": [
+                {
+                    "content": "   ",
+                    "priority": "high",
+                    "status": "in_progress"
+                }
+            ]
+        }
+    });
+    let err = turn
+        .handle_update(&malformed_plan)
+        .expect_err("blank plan entry must fail task-list validation");
+    assert_eq!(err.diagnostic().code(), "swallowtail.test.acp.malformed");
+
+    turn.finish_prompt("end_turn");
+    let outcome = block_on(terminal);
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+
+    let collected: Vec<_> = futures_executor::block_on_stream(events)
+        .map(|event| event.expect("every emitted event must succeed"))
+        .collect();
+    assert!(
+        !collected.iter().any(|event| {
+            matches!(
+                event.kind(),
+                RuntimeEventKind::Progress
+                    | RuntimeEventKind::Activity(_)
+                    | RuntimeEventKind::OutputAvailable
+            )
+        }),
+        "failed plan projection must not emit Progress or leak an open Plan activity at terminal; got {collected:?}"
+    );
+
+    // Also verify AcpActivityProjection directly leaves no open activity on error.
+    let mut projection = AcpActivityProjection::new(
+        RuntimeTurnId::new("turn-plan-proj").expect("valid turn id"),
+        test_diagnostics().activity,
+    );
+    let decoded = decode_session_update(&malformed_plan).expect("plan payload decodes");
+    let proj_err = projection
+        .project(&decoded.update)
+        .expect_err("blank plan entry fails projection");
+    assert_eq!(
+        proj_err.diagnostic().code(),
+        "swallowtail.test.acp.malformed"
+    );
+    assert_eq!(projection.open_count(), 0);
+    assert!(
+        projection
+            .complete(&TerminalStatus::Completed)
+            .expect("complete succeeds")
+            .is_empty(),
+        "failed plan projection must not leave an open activity to complete"
+    );
+}

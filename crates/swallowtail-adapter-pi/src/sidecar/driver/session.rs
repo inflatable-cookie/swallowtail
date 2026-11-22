@@ -218,18 +218,6 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 dispatched: Arc::clone(&prompt_dispatched),
                 active: true,
             };
-            if let Err(error) = self
-                .connection
-                .reserve_caller_turn_id(request.turn_id().as_str())
-            {
-                guard.disarm();
-                turn.fail_connection(error.diagnostic().clone());
-                self.connection.clear_active_turn(&turn);
-                let _ = reap_finished(&self.active).await;
-                let _ = materialization.release().await;
-                return Err(error);
-            }
-            let id = self.connection.next_command_id("prompt");
             let mut params = json!({"text": request.content().as_str()});
             if let Some(attachment) = attachment {
                 params["images"] = json!([{
@@ -238,12 +226,19 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 }]);
             }
             let response = crate::driver::run_before_deadline(
-                self.connection.command_tracked(
-                    id,
-                    PiSdkSidecarCommand::Prompt,
-                    params,
-                    &prompt_dispatched,
-                ),
+                async {
+                    self.connection
+                        .reserve_caller_turn_id(request.turn_id().as_str())?;
+                    let id = self.connection.next_command_id("prompt");
+                    self.connection
+                        .command_tracked(
+                            id,
+                            PiSdkSidecarCommand::Prompt,
+                            params,
+                            &prompt_dispatched,
+                        )
+                        .await
+                },
                 Some(deadline),
                 &services,
                 "swallowtail.pi.sdk-sidecar.prompt_timed_out",

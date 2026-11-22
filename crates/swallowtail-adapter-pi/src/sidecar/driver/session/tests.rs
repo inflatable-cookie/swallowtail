@@ -1383,6 +1383,50 @@ fn sidecar_long_caller_ids_produce_bounded_wire_command_ids() {
         "local startup failure must not write a prompt to the sidecar"
     );
 
+    // If the deadline elapses during local preparation (before `run_before_deadline`
+    // polls the prompt command), the caller turn ID must still remain unconsumed.
+    struct AdvancingClock {
+        calls: std::sync::atomic::AtomicUsize,
+    }
+    impl TimeService for AdvancingClock {
+        fn now(&self) -> MonotonicInstant {
+            let call = self.calls.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            if call == 0 {
+                MonotonicInstant::from_ticks(0)
+            } else {
+                MonotonicInstant::from_ticks(100)
+            }
+        }
+        fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+            Box::pin(std::future::ready(DeadlineObservation::new(
+                deadline,
+                MonotonicInstant::from_ticks(100),
+            )))
+        }
+    }
+    let expiring_services = HostServices::new(mixed_session.execution_host_id.clone())
+        .with_task(Arc::new(ThreadTaskService))
+        .with_time(Arc::new(AdvancingClock {
+            calls: std::sync::atomic::AtomicUsize::new(0),
+        }));
+    let expiring_req = TurnRequest::new(
+        RuntimeTurnId::new("w-1").expect("short turn id"),
+        OperationContent::new("short").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(50)));
+    let expire_err =
+        futures_executor::block_on(mixed_session.start_turn(expiring_req, expiring_services))
+            .err()
+            .expect("deadline elapsed during local preparation must time out before dispatch");
+    assert_eq!(
+        expire_err.diagnostic().code(),
+        "swallowtail.pi.sdk-sidecar.prompt_timed_out"
+    );
+    assert!(
+        mixed_process.recorded_ids().is_empty(),
+        "pre-poll deadline expiry must not write a prompt to the sidecar"
+    );
+
     // Retry with the exact same turn ID `"w-1"` succeeds and finishes via native abort.
     let short_req = TurnRequest::new(
         RuntimeTurnId::new("w-1").expect("short turn id"),

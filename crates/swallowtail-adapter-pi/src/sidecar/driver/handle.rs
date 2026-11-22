@@ -1040,4 +1040,102 @@ mod tests {
             "swallowtail.pi.sdk-sidecar.abort_rejected"
         );
     }
+
+    #[test]
+    fn sidecar_reconcile_abort_response_activity_overflow_wakes_abort_waiter() {
+        use crate::sidecar::wire::PiSdkSidecarEvent;
+        use std::task::{Context, Poll, Waker};
+        use swallowtail_runtime::ProcessOutputStream;
+
+        struct SettleThenAck {
+            lines: Mutex<std::collections::VecDeque<Vec<u8>>>,
+        }
+        impl ProcessHandle for SettleThenAck {
+            fn write_stdin(
+                &self,
+                _: ProcessInputChunk,
+            ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn read_output(
+                &self,
+            ) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+                let line = self.lines.lock().expect("lines lock").pop_front();
+                Box::pin(async move {
+                    Ok(line
+                        .map(|bytes| ProcessOutputChunk::new(ProcessOutputStream::Stdout, bytes)))
+                })
+            }
+            fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+                Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+            }
+        }
+
+        let services = HostServices::new(
+            ExecutionHostId::new("pi.sidecar.reconcile-overflow-test").expect("host id is valid"),
+        );
+        let lines = std::collections::VecDeque::from([
+            b"{\"type\":\"event\",\"event\":\"agent_settled\"}\n".to_vec(),
+            b"{\"type\":\"response\",\"id\":\"abort:sidecar-overflow\",\"command\":\"abort\",\"success\":true}\n".to_vec(),
+        ]);
+        let connection = SidecarConnection::new(
+            Arc::new(SettleThenAck {
+                lines: Mutex::new(lines),
+            }),
+            services,
+        );
+        let (turn, events, terminal) = SidecarActiveTurn::new(
+            RuntimeTurnId::new("sidecar-overflow").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+        )
+        .expect("turn constructs");
+        connection
+            .set_active_turn(Arc::clone(&turn))
+            .expect("turn attaches");
+        let active: ActiveSlot = Arc::new(Mutex::new(None));
+        let mut handle = PiSdkSidecarTurnHandle::new(
+            RuntimeTurnId::new("sidecar-overflow").expect("turn id is valid"),
+            events,
+            Box::pin(terminal),
+            super::PiSdkSidecarTurnBinding {
+                connection: Arc::clone(&connection),
+                turn: Arc::clone(&turn),
+                active,
+                attachment: SharedAttachmentMaterialization::default(),
+            },
+        );
+        let _events = handle.take_events().expect("event stream is present");
+        let terminal_fut = handle
+            .take_terminal_outcome()
+            .expect("terminal outcome future is present");
+
+        turn.handle_event(PiSdkSidecarEvent::ToolStarted {
+            call_id: "call-1".to_owned(),
+            name: "read".to_owned(),
+        })
+        .expect("tool start emits activity");
+        for _ in 0..254 {
+            turn.handle_event(PiSdkSidecarEvent::Progress)
+                .expect("progress fills event buffer");
+        }
+
+        let mut cancel_fut = handle.cancellation().request();
+        let waker = Waker::noop();
+        let mut cx = Context::from_waker(waker);
+        assert!(matches!(cancel_fut.as_mut().poll(&mut cx), Poll::Pending));
+
+        futures_executor::block_on(Arc::clone(&connection).pump());
+
+        assert!(futures_executor::block_on(cancel_fut).is_err());
+        let _ = futures_executor::block_on(terminal_fut);
+    }
 }

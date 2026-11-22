@@ -112,8 +112,13 @@ impl SidecarConnection {
                     .remove(&response.id)
                     .expect("validated sidecar pending command exists");
                 drop(pending_commands);
-                if let Some(turn) = pending.abort_turn {
-                    turn.reconcile_abort_response(response.success)?;
+                if let Some(turn) = pending.abort_turn
+                    && let Err(error) = turn.reconcile_abort_response(response.success)
+                {
+                    pending
+                        .sender
+                        .complete(Err(RuntimeFailure::new(error.diagnostic().clone())));
+                    return Err(error);
                 }
                 Ok(Some((
                     pending.sender,

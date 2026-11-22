@@ -722,3 +722,182 @@ fn already_expired_prompt_deadline_makes_zero_writes_and_keeps_session_usable() 
     drop(turn);
     pump_thread.join().expect("pump joins");
 }
+
+#[test]
+fn deadline_abort_after_deferred_settlement_resolves_timed_out() {
+    use crate::protocol::PiAgentEvent;
+    use std::collections::VecDeque;
+    use std::sync::{Condvar, Mutex};
+    use swallowtail_runtime::{ProcessOutputStream, TerminalStatus};
+
+    struct HeldAbortProcess {
+        state: Mutex<(VecDeque<Vec<u8>>, bool)>,
+        changed: Condvar,
+    }
+    impl HeldAbortProcess {
+        fn push_line(&self, line: Vec<u8>) {
+            let mut state = self.state.lock().expect("process lock");
+            state.0.push_back(line);
+            self.changed.notify_all();
+        }
+        fn close_stdout(&self) {
+            let mut state = self.state.lock().expect("process lock");
+            state.1 = true;
+            self.changed.notify_all();
+        }
+    }
+    impl ProcessHandle for HeldAbortProcess {
+        fn write_stdin(
+            &self,
+            chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            let text = String::from_utf8_lossy(chunk.bytes());
+            if text.contains("deadline-abort:turn-deferred-deadline") {
+                self.push_line(
+                    b"{\"type\":\"response\",\"id\":\"deadline-abort:turn-deferred-deadline\",\"command\":\"abort\",\"success\":true}\n"
+                        .to_vec(),
+                );
+            }
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            let mut state = self.state.lock().expect("process lock");
+            loop {
+                if let Some(line) = state.0.pop_front() {
+                    return Box::pin(async move {
+                        Ok(Some(ProcessOutputChunk::new(
+                            ProcessOutputStream::Stdout,
+                            line,
+                        )))
+                    });
+                }
+                if state.1 {
+                    return Box::pin(async { Ok(None) });
+                }
+                state = self.changed.wait(state).expect("process lock");
+            }
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.close_stdout();
+            Box::pin(async { Ok(()) })
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.close_stdout();
+            Box::pin(async { Ok(()) })
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+
+    struct TriggeredTime {
+        fire_rx: Mutex<Option<futures_channel::oneshot::Receiver<()>>>,
+    }
+    impl TimeService for TriggeredTime {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(10)
+        }
+        fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+            let rx = self.fire_rx.lock().expect("time lock").take();
+            Box::pin(async move {
+                match rx {
+                    Some(rx) => {
+                        let _ = rx.await;
+                        DeadlineObservation::new(deadline, MonotonicInstant::from_ticks(10))
+                    }
+                    None => std::future::pending().await,
+                }
+            })
+        }
+    }
+
+    struct ThreadTaskService;
+    struct ThreadJoinedTask(Option<std::thread::JoinHandle<()>>);
+    impl JoinedTask for ThreadJoinedTask {
+        fn join(mut self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            let handle = self.0.take();
+            Box::pin(async move {
+                if let Some(handle) = handle {
+                    let _ = handle.join();
+                }
+                Ok(())
+            })
+        }
+    }
+    impl ScopedTaskService for ThreadTaskService {
+        fn spawn(
+            &self,
+            _scope: ScopeId,
+            task: BoxFuture<'static, ()>,
+        ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+            let handle = std::thread::spawn(move || futures_executor::block_on(task));
+            Ok(Box::new(ThreadJoinedTask(Some(handle))))
+        }
+    }
+
+    let (fire_tx, fire_rx) = futures_channel::oneshot::channel();
+    let time: Arc<dyn TimeService> = Arc::new(TriggeredTime {
+        fire_rx: Mutex::new(Some(fire_rx)),
+    });
+    let task_service: Arc<dyn ScopedTaskService> = Arc::new(ThreadTaskService);
+    let host = ExecutionHostId::new("pi.session.deferred-deadline").expect("host id");
+    let services = HostServices::new(host)
+        .with_task(Arc::clone(&task_service))
+        .with_time(Arc::clone(&time));
+    let process = Arc::new(HeldAbortProcess {
+        state: Mutex::new((VecDeque::new(), false)),
+        changed: Condvar::new(),
+    });
+    let connection = PiConnection::new(
+        Arc::clone(&process) as Arc<dyn ProcessHandle>,
+        task_service,
+        time,
+        services.clone(),
+    );
+    let (turn, _events, _callbacks, terminal_fut) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-deferred-deadline").expect("turn id"),
+        Arc::new(AtomicU32::new(0)),
+        Arc::downgrade(&connection),
+        false,
+    )
+    .expect("turn constructs");
+    connection
+        .set_active_turn(Arc::clone(&turn))
+        .expect("turn attaches");
+
+    let (arm_tx, arm_rx) = futures_channel::oneshot::channel();
+    let deadline_task = super::spawn_deadline(
+        &services,
+        Arc::clone(&connection),
+        Arc::clone(&turn),
+        Deadline::at(MonotonicInstant::from_ticks(10)),
+        arm_rx,
+    )
+    .expect("deadline task spawns");
+    arm_tx.send(()).expect("arm deadline task");
+
+    let pump_conn = Arc::clone(&connection);
+    let pump_thread = std::thread::spawn(move || futures_executor::block_on(pump_conn.pump()));
+
+    // Simulate an in-flight user abort whose reply never arrives, followed by
+    // provider settlement that gets deferred while abort_in_flight is true.
+    turn.mark_abort_in_flight();
+    turn.handle_event(PiAgentEvent::Settled {
+        aborted: Some(false),
+    })
+    .expect("settlement defers cleanly");
+    assert!(!turn.is_finished());
+
+    // Fire the turn deadline; deadline-abort succeeds without EOF and must
+    // flush the deferred settlement to TimedOut immediately.
+    fire_tx.send(()).expect("fire deadline");
+    let outcome = futures_executor::block_on(terminal_fut);
+    assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
+
+    futures_executor::block_on(deadline_task.join()).expect("deadline task joins");
+    process.close_stdout();
+    pump_thread.join().expect("pump joins");
+}

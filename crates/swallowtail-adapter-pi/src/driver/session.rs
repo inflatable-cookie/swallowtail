@@ -424,7 +424,11 @@ fn spawn_deadline(
                     ),
                 );
                 let abort = crate::driver::run_before_deadline(
-                    connection.command(id.clone(), "abort", json!({"id": id, "type": "abort"})),
+                    connection.abort_command(
+                        id.clone(),
+                        json!({"id": id, "type": "abort"}),
+                        Arc::clone(&deadline_turn),
+                    ),
                     Some(abort_deadline),
                     &deadline_services,
                     "swallowtail.pi.rpc.deadline_abort_timed_out",

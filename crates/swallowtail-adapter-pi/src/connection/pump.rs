@@ -108,8 +108,13 @@ impl PiConnection {
                     .remove(&response.id)
                     .expect("validated Pi pending command exists");
                 drop(pending_commands);
-                if let Some(turn) = pending.abort_turn {
-                    turn.reconcile_abort_response(response.success)?;
+                if let Some(turn) = pending.abort_turn
+                    && let Err(error) = turn.reconcile_abort_response(response.success)
+                {
+                    pending
+                        .sender
+                        .complete(Err(RuntimeFailure::new(error.diagnostic().clone())));
+                    return Err(error);
                 }
                 pending.sender.complete(Ok(CommandResult {
                     success: response.success,

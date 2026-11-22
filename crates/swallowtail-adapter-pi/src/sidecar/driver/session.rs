@@ -411,7 +411,7 @@ fn spawn_deadline(
                         ),
                     );
                     let abort = crate::driver::run_before_deadline(
-                        connection.command(id, PiSdkSidecarCommand::Abort, json!({})),
+                        connection.abort_command(id, json!({}), Arc::clone(&deadline_turn)),
                         Some(abort_deadline),
                         &deadline_services,
                         "swallowtail.pi.sdk-sidecar.deadline_abort_timed_out",

@@ -882,9 +882,20 @@ fn deadline_abort_after_deferred_settlement_resolves_timed_out() {
     let pump_conn = Arc::clone(&connection);
     let pump_thread = std::thread::spawn(move || futures_executor::block_on(pump_conn.pump()));
 
-    // Simulate an in-flight user abort whose reply never arrives, followed by
-    // provider settlement that gets deferred while abort_in_flight is true.
+    // Start a real in-flight manual abort command whose reply never arrives,
+    // followed by provider settlement deferred while abort_in_flight is true.
     turn.mark_abort_in_flight();
+    let mut manual_abort = Box::pin(connection.abort_command(
+        "abort:turn-deferred-deadline".to_owned(),
+        serde_json::json!({"id": "abort:turn-deferred-deadline", "type": "abort"}),
+        Arc::clone(&turn),
+    ));
+    let waker = std::task::Waker::noop();
+    let mut cx = std::task::Context::from_waker(waker);
+    assert!(matches!(
+        manual_abort.as_mut().poll(&mut cx),
+        std::task::Poll::Pending
+    ));
     turn.handle_event(PiAgentEvent::Settled {
         aborted: Some(false),
     })
@@ -892,10 +903,20 @@ fn deadline_abort_after_deferred_settlement_resolves_timed_out() {
     assert!(!turn.is_finished());
 
     // Fire the turn deadline; deadline-abort succeeds without EOF and must
-    // flush the deferred settlement to TimedOut immediately.
+    // flush the deferred settlement to TimedOut AND wake the superseded manual
+    // abort waiter immediately.
     fire_tx.send(()).expect("fire deadline");
     let outcome = futures_executor::block_on(terminal_fut);
     assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
+    let manual_result = futures_executor::block_on(manual_abort)
+        .expect("superseded manual abort waiter must wake on deadline abort");
+    assert!(manual_result.success);
+
+    // A late wire reply for the superseded manual abort must be ignored cleanly.
+    process.push_line(
+        b"{\"type\":\"response\",\"id\":\"abort:turn-deferred-deadline\",\"command\":\"abort\",\"success\":true}\n"
+            .to_vec(),
+    );
 
     futures_executor::block_on(deadline_task.join()).expect("deadline task joins");
     process.close_stdout();

@@ -277,8 +277,11 @@ impl ActiveTurn {
             .lock()
             .expect("Pi pending-settled lock poisoned")
             .take();
-        if let Some(pending) = pending {
-            return self.finish_settled(pending.aborted);
+        if let Some(pending) = pending
+            && let Err(error) = self.finish_settled(pending.aborted)
+        {
+            self.finish(TerminalStatus::RuntimeFailed(error.diagnostic().clone()));
+            return Err(error);
         }
         Ok(())
     }

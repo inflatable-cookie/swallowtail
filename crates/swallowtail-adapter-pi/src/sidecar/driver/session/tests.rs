@@ -843,6 +843,17 @@ fn sidecar_deadline_abort_after_deferred_settlement_resolves_timed_out() {
     let pump_thread = std::thread::spawn(move || futures_executor::block_on(pump_conn.pump()));
 
     turn.mark_abort_in_flight();
+    let mut manual_abort = Box::pin(connection.abort_command(
+        "abort:sidecar-deferred-deadline".to_owned(),
+        serde_json::json!({}),
+        Arc::clone(&turn),
+    ));
+    let waker = std::task::Waker::noop();
+    let mut cx = std::task::Context::from_waker(waker);
+    assert!(matches!(
+        manual_abort.as_mut().poll(&mut cx),
+        std::task::Poll::Pending
+    ));
     turn.handle_event(PiSdkSidecarEvent::Settled)
         .expect("sidecar settlement defers cleanly");
     assert!(!turn.is_finished());
@@ -850,6 +861,14 @@ fn sidecar_deadline_abort_after_deferred_settlement_resolves_timed_out() {
     fire_tx.send(()).expect("fire deadline");
     let outcome = futures_executor::block_on(terminal_fut);
     assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
+    let manual_result = futures_executor::block_on(manual_abort)
+        .expect("superseded manual sidecar abort waiter must wake on deadline abort");
+    assert!(manual_result.success);
+
+    process.push_line(
+        b"{\"type\":\"response\",\"id\":\"abort:sidecar-deferred-deadline\",\"command\":\"abort\",\"success\":true}\n"
+            .to_vec(),
+    );
 
     futures_executor::block_on(deadline_task.join()).expect("deadline task joins");
     process.close_stdout();

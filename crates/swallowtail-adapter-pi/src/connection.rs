@@ -29,6 +29,7 @@ pub(crate) struct PiConnection {
     services: HostServices,
     callback_tasks: Mutex<Vec<Box<dyn JoinedTask>>>,
     pending: Mutex<BTreeMap<String, PendingCommand>>,
+    superseded_aborts: Mutex<BTreeSet<String>>,
     used_ids: Mutex<BTreeSet<String>>,
     active_turn: Mutex<Option<Arc<ActiveTurn>>>,
     closed: AtomicBool,
@@ -49,6 +50,7 @@ impl PiConnection {
             services,
             callback_tasks: Mutex::new(Vec::new()),
             pending: Mutex::new(BTreeMap::new()),
+            superseded_aborts: Mutex::new(BTreeSet::new()),
             used_ids: Mutex::new(BTreeSet::new()),
             active_turn: Mutex::new(None),
             closed: AtomicBool::new(false),
@@ -95,6 +97,43 @@ impl PiConnection {
     ) -> Result<CommandResult, RuntimeFailure> {
         self.send_command(id, "abort", value, None, Some(turn))
             .await
+    }
+
+    pub(crate) fn complete_sibling_aborts(&self, turn: &Arc<ActiveTurn>, success: bool) {
+        let siblings: Vec<(String, ResponseSender)> = {
+            let mut pending = self.pending.lock().expect("Pi pending lock poisoned");
+            let ids: Vec<String> = pending
+                .iter()
+                .filter(|(_, entry)| {
+                    entry
+                        .abort_turn
+                        .as_ref()
+                        .is_some_and(|other| Arc::ptr_eq(other, turn))
+                })
+                .map(|(id, _)| id.clone())
+                .collect();
+            let mut drained = Vec::with_capacity(ids.len());
+            for id in ids {
+                if let Some(entry) = pending.remove(&id) {
+                    drained.push((id, entry.sender));
+                }
+            }
+            drained
+        };
+        if siblings.is_empty() {
+            return;
+        }
+        let mut superseded = self
+            .superseded_aborts
+            .lock()
+            .expect("Pi superseded-aborts lock poisoned");
+        for (id, sender) in siblings {
+            superseded.insert(id);
+            sender.complete(Ok(CommandResult {
+                success,
+                data: None,
+            }));
+        }
     }
 
     async fn send_command(

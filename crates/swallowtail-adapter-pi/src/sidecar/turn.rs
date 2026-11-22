@@ -232,8 +232,9 @@ impl SidecarActiveTurn {
                 .expect("sidecar pending-settled lock poisoned");
             std::mem::replace(&mut *pending, false)
         };
-        if settled {
-            return self.finish_settled();
+        if settled && let Err(error) = self.finish_settled() {
+            self.finish(TerminalStatus::RuntimeFailed(error.diagnostic().clone()));
+            return Err(error);
         }
         Ok(())
     }

@@ -1269,8 +1269,15 @@ mod tests {
 
         futures_executor::block_on(Arc::clone(&connection).pump());
 
-        // Must resolve instead of hanging when deferred reconciliation fails.
-        assert!(futures_executor::block_on(cancel_fut).is_err());
-        let _ = futures_executor::block_on(terminal_fut);
+        // Must resolve with RuntimeFailed (not Cancelled) and wake the waiter.
+        let cancel_err = futures_executor::block_on(cancel_fut)
+            .expect_err("reconciliation overflow must wake abort waiter with Err");
+        let outcome = futures_executor::block_on(terminal_fut);
+        match outcome.status() {
+            swallowtail_runtime::TerminalStatus::RuntimeFailed(diag) => {
+                assert_eq!(diag.code(), cancel_err.diagnostic().code());
+            }
+            other => panic!("expected RuntimeFailed on reconciliation overflow, got {other:?}"),
+        }
     }
 }

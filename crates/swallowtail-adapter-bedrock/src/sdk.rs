@@ -104,7 +104,15 @@ impl SdkExecutor for AwsSdkExecutor {
                                 "Bedrock Runtime stream semantics were invalid or unsupported",
                             )
                         })?;
-                        updates.send(Ok(update)).await.map_err(|_| {
+                        let sent = tokio::select! {
+                            biased;
+                            changed = cancelled.changed() => {
+                                let _ = changed;
+                                return Ok(());
+                            }
+                            sent = updates.send(Ok(update)) => sent,
+                        };
+                        sent.map_err(|_| {
                             failure(
                                 "swallowtail.bedrock.event_receiver_closed",
                                 "Bedrock Runtime event receiver closed before completion",

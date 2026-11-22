@@ -26,7 +26,6 @@ swallowtail-transport-http.workspace = true
 [dev-dependencies]
 futures-executor.workspace = true
 futures-util.workspace = true
-serde_json.workspace = true
 swallowtail-host-local.workspace = true
 swallowtail-testkit.workspace = true
 

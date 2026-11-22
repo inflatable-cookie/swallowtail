@@ -1,11 +1,20 @@
 struct TrackingCredential {
     host: LocalProcessHost,
+    acquires: Arc<AtomicUsize>,
     releases: Arc<AtomicUsize>,
 }
 
 impl CredentialService for TrackingCredential {
     fn acquire(&self, scope: ScopeId, reference: CredentialRef, audience: EndpointAudience) -> BoxFuture<'static, Result<CredentialLease, RuntimeFailure>> {
-        self.host.acquire(scope, reference, audience)
+        let future = self.host.acquire(scope, reference, audience);
+        let acquires = Arc::clone(&self.acquires);
+        Box::pin(async move {
+            let result = future.await;
+            if result.is_ok() {
+                acquires.fetch_add(1, Ordering::SeqCst);
+            }
+            result
+        })
     }
 
     fn release(&self, lease: CredentialLease) -> BoxFuture<'static, CleanupOutcome> {
@@ -16,6 +25,18 @@ impl CredentialService for TrackingCredential {
             releases.fetch_add(1, Ordering::SeqCst);
             result
         })
+    }
+}
+
+struct FailingTaskService;
+
+impl ScopedTaskService for FailingTaskService {
+    fn spawn(
+        &self,
+        _scope: ScopeId,
+        _task: BoxFuture<'static, ()>,
+    ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+        Err(failure("fixture.spawn_failed", "Fixture task spawn failed"))
     }
 }
 

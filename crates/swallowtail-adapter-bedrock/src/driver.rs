@@ -116,8 +116,6 @@ impl StructuredRunDriver for BedrockDirectDriver {
             require_services(&services)?;
             validate_run(&plan, &request, &services)?;
             let scope = operation_scope(request.request_id().as_str())?;
-            let access =
-                AccessLease::acquire(&plan, &self.binding, scope.clone(), &services).await?;
             let maximum = i32::try_from(request.maximum_output_tokens().expect("validated").get())
                 .map_err(|_| {
                     failure(
@@ -125,6 +123,16 @@ impl StructuredRunDriver for BedrockDirectDriver {
                         "Bedrock Runtime output-token limit exceeded the SDK range",
                     )
                 })?;
+            let run_id =
+                RuntimeRunId::new(format!("bedrock-direct:{}", request.request_id().as_str()))
+                    .map_err(|_| {
+                        failure(
+                            "swallowtail.bedrock.run_id_invalid",
+                            "Bedrock Runtime run id was invalid",
+                        )
+                    })?;
+            let mut access =
+                AccessLease::acquire(&plan, &self.binding, scope.clone(), &services).await?;
             let invocation = SdkInvocation {
                 endpoint: access.endpoint.clone(),
                 region: self.binding.region().clone(),
@@ -143,16 +151,18 @@ impl StructuredRunDriver for BedrockDirectDriver {
             let job =
                 Box::new(move || run_sdk(executor, invocation, update_sender, cancel_receiver))
                     as BlockingJob;
-            let (events_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
-            events_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
-            let run_id =
-                RuntimeRunId::new(format!("bedrock-direct:{}", request.request_id().as_str()))
-                    .map_err(|_| {
-                        failure(
-                            "swallowtail.bedrock.run_id_invalid",
-                            "Bedrock Runtime run id was invalid",
-                        )
-                    })?;
+            let (events_sender, event_stream) = match runtime_event_channel(EVENT_CAPACITY) {
+                Ok(channel) => channel,
+                Err(error) => {
+                    let _ = access.release(&services).await;
+                    return Err(error);
+                }
+            };
+            if let Err(error) = events_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started))
+            {
+                let _ = access.release(&services).await;
+                return Err(error);
+            }
             let (terminal_sender, terminal_future) = terminal_outcome_channel();
             let deadline = request
                 .deadline()
@@ -189,8 +199,8 @@ impl StructuredRunDriver for BedrockDirectDriver {
                         },
                     )
                     .await;
-                    let _ = terminal_sender.complete(outcome);
                     events_sender.mark_terminal();
+                    let _ = terminal_sender.complete(outcome);
                 }),
             );
             let task = match task {

@@ -63,6 +63,14 @@ impl InteractiveSessionHandle for KimiSessionHandle {
                     "Kimi Code session already has an active turn",
                 ));
             }
+            let task_service = services.task().cloned().ok_or_else(|| {
+                failure(
+                    "swallowtail.kimi.acp.task_service_missing",
+                    "Kimi ACP requires a scoped task service",
+                )
+            })?;
+            let scope = ScopeId::new(format!("kimi-acp:turn:{}", request.turn_id().as_str()))
+                .map_err(|_| malformed())?;
             let (turn, events, terminal) =
                 ActiveTurn::new(request.turn_id().clone(), self.provider_id.clone())?;
             self.connection.set_active_turn(Arc::clone(&turn))?;
@@ -86,17 +94,7 @@ impl InteractiveSessionHandle for KimiSessionHandle {
                     return Err(error);
                 }
             };
-            let scope = ScopeId::new(format!("kimi-acp:turn:{}", request.turn_id().as_str()))
-                .map_err(|_| malformed())?;
-            let task = match services
-                .task()
-                .ok_or_else(|| {
-                    failure(
-                        "swallowtail.kimi.acp.task_service_missing",
-                        "Kimi ACP requires a scoped task service",
-                    )
-                })?
-                .spawn(
+            let task = match task_service.spawn(
                     scope,
                     Box::pin(async move {
                         match response.await {

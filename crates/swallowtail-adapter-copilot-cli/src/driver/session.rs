@@ -60,6 +60,17 @@ impl InteractiveSessionHandle for CopilotCliSessionHandle {
                     "Copilot CLI session already has an active turn",
                 ));
             }
+            let task_service = services.task().cloned().ok_or_else(|| {
+                failure(
+                    "swallowtail.copilot-cli.acp.task_service_missing",
+                    "Copilot CLI ACP requires a scoped task service",
+                )
+            })?;
+            let scope = ScopeId::new(format!(
+                "copilot-cli-acp:turn:{}",
+                request.turn_id().as_str()
+            ))
+            .map_err(|_| malformed())?;
             #[cfg(test)]
             let turn_parts = match self.assessment_permission_action {
                 Some(action) => ActiveTurn::new_for_assessment(
@@ -77,17 +88,6 @@ impl InteractiveSessionHandle for CopilotCliSessionHandle {
             let prompt_turn = Arc::clone(&turn);
             let prompt = request.content().as_str().to_owned();
             let session_id = self.provider_id.clone();
-            let task_service = services.task().cloned().ok_or_else(|| {
-                failure(
-                    "swallowtail.copilot-cli.acp.task_service_missing",
-                    "Copilot CLI ACP requires a scoped task service",
-                )
-            })?;
-            let scope = ScopeId::new(format!(
-                "copilot-cli-acp:turn:{}",
-                request.turn_id().as_str()
-            ))
-            .map_err(|_| malformed())?;
             let response = match connection
                 .begin_request(
                     "session/prompt",

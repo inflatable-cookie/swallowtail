@@ -314,8 +314,14 @@ impl GeminiAcpDriver {
             }
         };
         let runtime_id =
-            RuntimeSessionId::new(format!("gemini-acp:{}", request.request_id().as_str()))
-                .map_err(|_| Box::new((malformed(), resource.clone())))?;
+            match RuntimeSessionId::new(format!("gemini-acp:{}", request.request_id().as_str())) {
+                Ok(runtime_id) => runtime_id,
+                Err(_) => {
+                    connection.begin_close().await;
+                    let _ = pump_task.join().await;
+                    return Err(Box::new((malformed(), resource)));
+                }
+            };
         let active = Arc::new(Mutex::new(None));
         Ok(GeminiSessionHandle {
             request_id: request.request_id().clone(),

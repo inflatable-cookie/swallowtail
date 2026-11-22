@@ -80,3 +80,134 @@ fn binding_and_input_mismatches_fail_before_sdk_work() {
     assert_eq!(error.diagnostic().code(), "swallowtail.bedrock.output_limit_missing");
     assert_eq!(calls.load(Ordering::SeqCst), 0);
 }
+
+#[test]
+fn internal_stream_failure_reports_provider_failed_and_does_not_deadlock_on_full_channel() {
+    let fixture = Fixture::new("host.internal-failure");
+    let (run, outcome, _events, calls) = complete(&fixture, FakeMode::EmptyDeltaThenFlood);
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
+    match outcome.status() {
+        TerminalStatus::ProviderFailed(diagnostic) => {
+            assert_eq!(diagnostic.code(), "swallowtail.bedrock.activity_invalid");
+        }
+        other => panic!("expected ProviderFailed, got {other:?}"),
+    }
+    assert_eq!(fixture.acquires.load(Ordering::SeqCst), 1);
+    assert_eq!(fixture.releases.load(Ordering::SeqCst), 1);
+    assert!(matches!(block_on(run.close()), CleanupOutcome::Clean));
+}
+
+#[test]
+fn empty_output_reports_provider_failed_instead_of_cancelled() {
+    let fixture = Fixture::new("host.empty-output");
+    let (run, outcome, _events, _calls) = complete(&fixture, FakeMode::EmptyOutput);
+    match outcome.status() {
+        TerminalStatus::ProviderFailed(diagnostic) => {
+            assert_eq!(diagnostic.code(), "swallowtail.bedrock.empty_output");
+        }
+        other => panic!("expected ProviderFailed, got {other:?}"),
+    }
+    assert_eq!(fixture.releases.load(Ordering::SeqCst), 1);
+    assert!(matches!(block_on(run.close()), CleanupOutcome::Clean));
+}
+
+#[test]
+fn oversized_output_is_bounded_and_reports_provider_failed() {
+    let fixture = Fixture::new("host.oversized-output");
+    let (run, outcome, _events, _calls) = complete(&fixture, FakeMode::OversizedOutput);
+    match outcome.status() {
+        TerminalStatus::ProviderFailed(diagnostic) => {
+            assert_eq!(
+                diagnostic.code(),
+                "swallowtail.bedrock.output_limit_exceeded"
+            );
+        }
+        other => panic!("expected ProviderFailed, got {other:?}"),
+    }
+    assert_eq!(fixture.releases.load(Ordering::SeqCst), 1);
+    assert!(matches!(block_on(run.close()), CleanupOutcome::Clean));
+}
+
+#[test]
+fn early_start_run_errors_do_not_leak_credential_lease() {
+    let fixture = Fixture::new("host.lease-leak");
+    let driver = BedrockDirectDriver::with_executor(
+        fixture.binding(),
+        Arc::new(FakeExecutor {
+            mode: FakeMode::Success,
+            calls: Arc::new(AtomicUsize::new(0)),
+        }),
+    );
+
+    let overflow_request = StructuredRunRequest::new(
+        RequestId::new("overflow-limit").expect("request is valid"),
+        OperationContent::new("fixture prompt").expect("content is valid"),
+        swallowtail_runtime::OperationPolicy::offline(),
+    )
+    .with_maximum_output_tokens(NonZeroU64::new(i32::MAX as u64 + 1).expect("nonzero"));
+    let error = block_on(driver.start_run(fixture.plan(), overflow_request, fixture.services()))
+        .err()
+        .expect("overflowing output limit must fail");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.bedrock.output_limit_invalid"
+    );
+    assert_eq!(
+        fixture.acquires.load(Ordering::SeqCst),
+        fixture.releases.load(Ordering::SeqCst)
+    );
+
+    let failing_services = fixture
+        .services()
+        .with_task(Arc::new(FailingTaskService) as Arc<dyn ScopedTaskService>);
+    let error = block_on(driver.start_run(
+        fixture.plan(),
+        fixture.request("spawn-fail"),
+        failing_services,
+    ))
+    .err()
+    .expect("spawn failure must fail");
+    assert_eq!(error.diagnostic().code(), "fixture.spawn_failed");
+    assert_eq!(fixture.acquires.load(Ordering::SeqCst), 1);
+    assert_eq!(fixture.releases.load(Ordering::SeqCst), 1);
+}
+
+#[test]
+fn events_stream_is_marked_terminal_before_terminal_outcome_completes() {
+    let fixture = Fixture::new("host.terminal-order");
+    let driver = BedrockDirectDriver::with_executor(
+        fixture.binding(),
+        Arc::new(FakeExecutor {
+            mode: FakeMode::Success,
+            calls: Arc::new(AtomicUsize::new(0)),
+        }),
+    );
+    let mut run = block_on(driver.start_run(
+        fixture.plan(),
+        fixture.request("terminal-order"),
+        fixture.services(),
+    ))
+    .expect("run starts");
+    let mut events = run.take_events().expect("events are available");
+    let terminal = run.take_terminal_outcome().expect("terminal is available");
+    let outcome = block_on(terminal);
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+
+    // Every event and the terminal EOF must already be ready without blocking.
+    let waker = std::task::Waker::noop();
+    let mut cx = std::task::Context::from_waker(waker);
+    let mut saw_end = false;
+    for _ in 0..64 {
+        match events.as_mut().poll_next(&mut cx) {
+            Poll::Ready(Some(Ok(_))) => {}
+            Poll::Ready(None) => {
+                saw_end = true;
+                break;
+            }
+            Poll::Ready(Some(Err(error))) => panic!("unexpected event error: {error:?}"),
+            Poll::Pending => panic!("event stream was not marked terminal before outcome"),
+        }
+    }
+    assert!(saw_end, "event stream must reach terminal EOF immediately");
+    assert!(matches!(block_on(run.close()), CleanupOutcome::Clean));
+}

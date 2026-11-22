@@ -58,6 +58,14 @@ impl InteractiveSessionHandle for GeminiSessionHandle {
                     "Gemini CLI session already has an active turn",
                 ));
             }
+            let task_service = services.task().cloned().ok_or_else(|| {
+                failure(
+                    "swallowtail.gemini.acp.task_service_missing",
+                    "Gemini ACP requires a scoped task service",
+                )
+            })?;
+            let scope = ScopeId::new(format!("gemini-acp:turn:{}", request.turn_id().as_str()))
+                .map_err(|_| malformed())?;
             let (turn, events, terminal) = ActiveTurn::new(
                 request.turn_id().clone(),
                 self.provider_id.clone(),
@@ -68,14 +76,6 @@ impl InteractiveSessionHandle for GeminiSessionHandle {
             let prompt_turn = Arc::clone(&turn);
             let prompt = request.content().as_str().to_owned();
             let session_id = self.provider_id.clone();
-            let task_service = services.task().cloned().ok_or_else(|| {
-                failure(
-                    "swallowtail.gemini.acp.task_service_missing",
-                    "Gemini ACP requires a scoped task service",
-                )
-            })?;
-            let scope = ScopeId::new(format!("gemini-acp:turn:{}", request.turn_id().as_str()))
-                .map_err(|_| malformed())?;
             let response = match connection
                 .begin_request(
                     "session/prompt",

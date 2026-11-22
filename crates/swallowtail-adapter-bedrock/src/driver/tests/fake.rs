@@ -2,6 +2,9 @@
 enum FakeMode {
     Success,
     WaitForCancellation,
+    EmptyDeltaThenFlood,
+    EmptyOutput,
+    OversizedOutput,
 }
 
 struct FakeExecutor {
@@ -41,6 +44,32 @@ impl SdkExecutor for FakeExecutor {
                 FakeMode::WaitForCancellation => {
                     while !*cancelled.borrow() {
                         if cancelled.changed().await.is_err() { break; }
+                    }
+                }
+                FakeMode::EmptyDeltaThenFlood => {
+                    let _ = updates.send(Ok(StreamUpdate::MessageStarted)).await;
+                    let _ = updates.send(Ok(StreamUpdate::TextDelta(String::new()))).await;
+                    // Flood past EVENT_CAPACITY (64) without checking `cancelled`;
+                    // `pump_run` must drop its receiver before awaiting this future.
+                    for _ in 0..128 {
+                        if updates.send(Ok(StreamUpdate::TextDelta("x".to_owned()))).await.is_err() {
+                            break;
+                        }
+                    }
+                }
+                FakeMode::EmptyOutput => {
+                    let _ = updates.send(Ok(StreamUpdate::MessageStarted)).await;
+                    let _ = updates
+                        .send(Ok(StreamUpdate::MessageStopped(crate::StopKind::EndTurn)))
+                        .await;
+                }
+                FakeMode::OversizedOutput => {
+                    let _ = updates.send(Ok(StreamUpdate::MessageStarted)).await;
+                    let chunk = "a".repeat(1024 * 1024);
+                    for _ in 0..5 {
+                        if updates.send(Ok(StreamUpdate::TextDelta(chunk.clone()))).await.is_err() {
+                            break;
+                        }
                     }
                 }
             }

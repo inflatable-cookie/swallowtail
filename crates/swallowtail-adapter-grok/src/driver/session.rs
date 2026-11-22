@@ -88,6 +88,14 @@ impl InteractiveSessionHandle for GrokSessionHandle {
                     "Grok Build session already has an active turn",
                 ));
             }
+            let task_service = services.task().cloned().ok_or_else(|| {
+                failure(
+                    "swallowtail.grok.acp.task_service_missing",
+                    "Grok Build ACP requires a scoped task service",
+                )
+            })?;
+            let scope = ScopeId::new(format!("grok-acp:turn:{}", request.turn_id().as_str()))
+                .map_err(|_| malformed())?;
             let (turn, events, callbacks, terminal) = ActiveTurn::new(
                 request.turn_id().clone(),
                 self.provider_id.clone(),
@@ -103,14 +111,6 @@ impl InteractiveSessionHandle for GrokSessionHandle {
             let prompt_turn = Arc::clone(&turn);
             let prompt = request.content().as_str().to_owned();
             let session_id = self.provider_id.clone();
-            let task_service = services.task().cloned().ok_or_else(|| {
-                failure(
-                    "swallowtail.grok.acp.task_service_missing",
-                    "Grok Build ACP requires a scoped task service",
-                )
-            })?;
-            let scope = ScopeId::new(format!("grok-acp:turn:{}", request.turn_id().as_str()))
-                .map_err(|_| malformed())?;
             let response = match connection
                 .begin_request(
                     "session/prompt",

@@ -4,6 +4,7 @@ use crate::exec_input::SharedExecMaterializations;
 use std::future::{Future, poll_fn};
 use std::sync::Arc;
 use std::task::Poll;
+use std::time::{Duration, Instant};
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, DebugObservationKind, HostServices,
@@ -15,6 +16,9 @@ const ROUTE: &str = "codex.exec";
 /// Dedicated teardown budget for reaping a stopped exec child during forced
 /// cleanup so a refused `force_stop()` or hung `wait()` cannot block forever.
 const CLEANUP_WAIT_BUDGET_TICKS: u64 = 500;
+/// Bounded wall-clock fallback grace for `force_cleanup` when no `TimeService`
+/// is supplied by the host.
+const CLOCKLESS_TEARDOWN_GRACE: Duration = Duration::from_millis(100);
 
 pub(crate) async fn pump(
     process: Arc<dyn ProcessHandle>,
@@ -200,6 +204,7 @@ pub(crate) async fn cleanup_failed_start(process: &dyn ProcessHandle, services: 
 struct TeardownTimer<'a> {
     services: &'a HostServices,
     timer: Option<BoxFuture<'static, DeadlineObservation>>,
+    clockless_deadline: Option<Instant>,
     exhausted: bool,
 }
 
@@ -208,6 +213,7 @@ impl<'a> TeardownTimer<'a> {
         Self {
             services,
             timer: None,
+            clockless_deadline: None,
             exhausted: false,
         }
     }
@@ -228,10 +234,21 @@ impl<'a> TeardownTimer<'a> {
                     time.wait_until(deadline)
                 });
                 if timer.as_mut().poll(context).is_ready() {
+                    self.timer = None;
                     self.exhausted = true;
                     return Poll::Ready(None);
                 }
+                return Poll::Pending;
             }
+            let deadline = *self
+                .clockless_deadline
+                .get_or_insert_with(|| Instant::now() + CLOCKLESS_TEARDOWN_GRACE);
+            if Instant::now() >= deadline {
+                self.exhausted = true;
+                return Poll::Ready(None);
+            }
+            std::thread::yield_now();
+            context.waker().wake_by_ref();
             Poll::Pending
         })
         .await
@@ -473,6 +490,22 @@ mod tests {
         ));
         assert!(matches!(
             accepted_stop_hung_wait,
+            CleanupOutcome::Failed(ref diag) if diag.code() == "swallowtail.codex.exec.process_cleanup_failed"
+        ));
+
+        let pending_stop_without_time =
+            futures_executor::block_on(force_cleanup(&PendingStopProcess, &services_without_time));
+        assert!(matches!(
+            pending_stop_without_time,
+            CleanupOutcome::Failed(ref diag) if diag.code() == "swallowtail.codex.exec.process_cleanup_failed"
+        ));
+
+        let accepted_stop_hung_wait_without_time = futures_executor::block_on(force_cleanup(
+            &AcceptedStopHungWaitProcess,
+            &services_without_time,
+        ));
+        assert!(matches!(
+            accepted_stop_hung_wait_without_time,
             CleanupOutcome::Failed(ref diag) if diag.code() == "swallowtail.codex.exec.process_cleanup_failed"
         ));
     }

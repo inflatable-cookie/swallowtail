@@ -5,7 +5,7 @@ use futures_util::future::{Either, select};
 use std::future::{Future, poll_fn};
 use std::sync::{Arc, mpsc};
 use std::task::Poll;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use swallowtail_runtime::{
     BlockingJob, BlockingWorkService, BoxFuture, Deadline, DeadlineObservation, HostServices,
     JoinedTask, MonotonicInstant, ProcessHandle, RuntimeFailure, ScopeId, ScopedTaskService,
@@ -17,6 +17,9 @@ const CLOSE_GRACE: Duration = Duration::from_millis(250);
 /// Dedicated teardown budget (in monotonic ticks) when waiting for a pump to
 /// settle after a refused `force_stop()`.
 const REFUSED_STOP_BUDGET_TICKS: u64 = 500;
+/// Bounded wall-clock fallback grace when a host supplies neither a
+/// `TimeService` nor a `BlockingWorkService`.
+const CLOCKLESS_TEARDOWN_GRACE: Duration = Duration::from_millis(100);
 
 /// The host services a close uses to time its escalation stages.
 pub(crate) struct CloseBudget {
@@ -124,6 +127,7 @@ struct CloseTimer {
     deadline_wait: Option<BoxFuture<'static, DeadlineObservation>>,
     grace_cancel: Option<mpsc::Sender<()>>,
     grace_wait: Option<BoxFuture<'static, Result<(), RuntimeFailure>>>,
+    clockless_deadline: Option<Instant>,
     exhausted: bool,
 }
 
@@ -135,6 +139,7 @@ impl CloseTimer {
             deadline_wait: None,
             grace_cancel: None,
             grace_wait: None,
+            clockless_deadline: None,
             exhausted: false,
         }
     }
@@ -158,6 +163,7 @@ impl CloseTimer {
                     time.wait_until(target)
                 });
                 if wait.as_mut().poll(context).is_ready() {
+                    self.deadline_wait = None;
                     self.exhausted = true;
                     return Poll::Ready(None);
                 }
@@ -174,14 +180,26 @@ impl CloseTimer {
                     blocking.run(self.scope.clone(), grace)
                 });
                 if wait.as_mut().poll(context).is_ready() {
+                    self.grace_wait = None;
+                    self.grace_cancel = None;
                     self.exhausted = true;
                     return Poll::Ready(None);
                 }
                 return Poll::Pending;
             }
-            // No time or blocking service is available to bound a pending step.
-            self.exhausted = true;
-            Poll::Ready(None)
+            // Minimal `[Task, Process]` host with neither a time service nor a
+            // blocking-work service: yield within a bounded wall-clock grace so
+            // fast exits join cleanly while stuck stops or open stdout still abort.
+            let deadline = *self
+                .clockless_deadline
+                .get_or_insert_with(|| Instant::now() + CLOCKLESS_TEARDOWN_GRACE);
+            if Instant::now() >= deadline {
+                self.exhausted = true;
+                return Poll::Ready(None);
+            }
+            std::thread::yield_now();
+            context.waker().wake_by_ref();
+            Poll::Pending
         })
         .await
     }
@@ -207,7 +225,6 @@ impl AppServerTask {
     where
         F: Future<Output = Result<(), RuntimeFailure>>,
     {
-        let has_timing = budget.time.is_some() || budget.blocking.is_some();
         let mut timer = CloseTimer::new(budget, self.scope.clone());
         let stop_result = match stop {
             Some(stop_future) => timer.race(stop_future).await,
@@ -217,11 +234,6 @@ impl AppServerTask {
             true
         } else if stop_result.is_none() {
             false
-        } else if !has_timing && matches!(stop_result, Some(Ok(()))) {
-            // Without a host time or blocking service to measure a teardown
-            // grace window after an accepted stop, allow the pump task to
-            // finish and join normally instead of aborting on the first poll.
-            true
         } else {
             timer.race(&mut self.finished).await.is_some()
         };

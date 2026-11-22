@@ -581,4 +581,65 @@ mod tests {
             "expected process_cleanup_failed when accepted stop leaves stdout open, got {cleanup:?}"
         );
     }
+
+    #[test]
+    fn closing_active_exec_handle_with_ready_error_blocking_work_does_not_re_poll_and_aborts_pump()
+    {
+        struct ReadyErrorBlocking;
+
+        impl swallowtail_runtime::BlockingWorkService for ReadyErrorBlocking {
+            fn run(
+                &self,
+                _scope: ScopeId,
+                _job: swallowtail_runtime::BlockingJob,
+            ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+                Box::pin(async {
+                    Err(RuntimeFailure::new(SafeDiagnostic::new(
+                        "test.blocking_failed",
+                        "blocking failed",
+                    )))
+                })
+            }
+        }
+
+        let process = Arc::new(AcceptedStopOpenStdoutProcess {
+            forced: AtomicUsize::new(0),
+        });
+        let services = HostServices::new(
+            ExecutionHostId::new("codex.exec.blocking-ready-err").expect("host id"),
+        )
+        .with_blocking_work(Arc::new(ReadyErrorBlocking));
+        let handle = spawn_pump_handle(
+            Arc::clone(&process) as Arc<dyn ProcessHandle>,
+            services,
+            "exec-blocking-err",
+        );
+        let cleanup = futures_executor::block_on(handle.close());
+        assert_eq!(process.forced.load(Ordering::SeqCst), 1);
+        assert!(
+            matches!(cleanup, CleanupOutcome::Failed(ref diag) if diag.code() == "swallowtail.codex.exec.process_cleanup_failed"),
+            "expected process_cleanup_failed without re-poll panic, got {cleanup:?}"
+        );
+    }
+
+    #[test]
+    fn closing_active_exec_handle_with_accepted_stop_and_open_stdout_without_timing_aborts_pump() {
+        let process = Arc::new(AcceptedStopOpenStdoutProcess {
+            forced: AtomicUsize::new(0),
+        });
+        let services = HostServices::new(
+            ExecutionHostId::new("codex.exec.clockless-open-stdout").expect("host id"),
+        );
+        let handle = spawn_pump_handle(
+            Arc::clone(&process) as Arc<dyn ProcessHandle>,
+            services,
+            "exec-clockless-open",
+        );
+        let cleanup = futures_executor::block_on(handle.close());
+        assert_eq!(process.forced.load(Ordering::SeqCst), 1);
+        assert!(
+            matches!(cleanup, CleanupOutcome::Failed(ref diag) if diag.code() == "swallowtail.codex.exec.process_cleanup_failed"),
+            "expected process_cleanup_failed on clockless host with open stdout, got {cleanup:?}"
+        );
+    }
 }

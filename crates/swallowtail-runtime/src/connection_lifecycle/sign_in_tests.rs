@@ -2770,9 +2770,10 @@ fn await_cleanup_budget_never_repolls_completed_timer_on_early_ready() {
         SignInStatus::Cancelled
     );
 
-    // Case B: Two consecutive early timer completions followed by a third timer that
-    // actually advances the clock to the deadline. Must stay armed across repeated
-    // early completions and time out cleanly without ever repolling a completed timer.
+    // Case B: Ten consecutive immediate early timer completions (crossing the
+    // per-poll synchronous re-arm yield bound) followed by a timer that actually
+    // advances the clock to the deadline. Must preserve a live wake across the
+    // yield boundary and time out cleanly without ever repolling a completed timer.
     struct SpuriousEarlyWakeTime {
         now: Arc<AtomicU64>,
         arms: AtomicUsize,
@@ -2783,8 +2784,8 @@ fn await_cleanup_budget_never_repolls_completed_timer_on_early_ready() {
         }
         fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, crate::DeadlineObservation> {
             let arm = self.arms.fetch_add(1, Ordering::SeqCst);
-            if arm < 2 {
-                // First two timers resolve early without advancing `now`.
+            if arm < 10 {
+                // First ten timers resolve early without advancing `now`.
                 Box::pin(PanicOnRepollTimer {
                     deadline,
                     completed: false,
@@ -2792,7 +2793,7 @@ fn await_cleanup_budget_never_repolls_completed_timer_on_early_ready() {
                     polls_before_ready: 0,
                 })
             } else {
-                // Third timer yields once then advances `now` to the deadline.
+                // Subsequent timer yields once then advances `now` to the deadline.
                 Box::pin(PanicOnRepollTimer {
                     deadline,
                     completed: false,
@@ -2874,8 +2875,8 @@ fn await_cleanup_budget_never_repolls_completed_timer_on_early_ready() {
         "swallowtail.sign_in.cleanup_timed_out"
     );
     assert!(
-        spurious_time.arms.load(Ordering::SeqCst) >= 3,
-        "repeated early timer completions must keep re-arming the budget timer"
+        spurious_time.arms.load(Ordering::SeqCst) >= 11,
+        "repeated early timer completions must keep re-arming with a live wake across yield boundaries"
     );
 }
 

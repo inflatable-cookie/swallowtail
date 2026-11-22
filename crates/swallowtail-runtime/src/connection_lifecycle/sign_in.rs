@@ -1666,6 +1666,9 @@ async fn await_cleanup_budget<T>(
             }
             synchronous_rearms += 1;
             if synchronous_rearms >= MAX_SYNCHRONOUS_EARLY_TIMER_REARMS {
+                // Yield to the executor with a live wake so a non-waking cleanup
+                // future still re-arms on the next poll without spinning in one poll.
+                context.waker().wake_by_ref();
                 return Poll::Pending;
             }
         }

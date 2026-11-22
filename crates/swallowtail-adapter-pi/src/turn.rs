@@ -48,6 +48,11 @@ impl Future for TurnFinishedFuture {
     }
 }
 
+#[derive(Clone, Copy)]
+struct PendingSettled {
+    aborted: Option<bool>,
+}
+
 pub(crate) struct ActiveTurn {
     runtime_id: RuntimeTurnId,
     events: swallowtail_runtime::RuntimeEventSender,
@@ -61,6 +66,8 @@ pub(crate) struct ActiveTurn {
     steering_scheduled: AtomicBool,
     follow_up_scheduled: AtomicBool,
     abort_in_flight: AtomicBool,
+    abort_rejected: AtomicBool,
+    pending_settled: Mutex<Option<PendingSettled>>,
     cancelled: AtomicBool,
     timed_out: AtomicBool,
     require_aborted_settled: bool,
@@ -103,6 +110,8 @@ impl ActiveTurn {
                 steering_scheduled: AtomicBool::new(false),
                 follow_up_scheduled: AtomicBool::new(false),
                 abort_in_flight: AtomicBool::new(false),
+                abort_rejected: AtomicBool::new(false),
+                pending_settled: Mutex::new(None),
                 cancelled: AtomicBool::new(false),
                 timed_out: AtomicBool::new(false),
                 require_aborted_settled,
@@ -128,8 +137,15 @@ impl ActiveTurn {
         self.finished.load(Ordering::SeqCst)
     }
 
+    fn has_pending_settled(&self) -> bool {
+        self.pending_settled
+            .lock()
+            .expect("Pi pending-settled lock poisoned")
+            .is_some()
+    }
+
     pub(crate) fn handle_event(&self, event: PiAgentEvent) -> Result<(), RuntimeFailure> {
-        if self.is_finished() {
+        if self.is_finished() || self.has_pending_settled() {
             return Err(failure(
                 "swallowtail.pi.rpc.event_after_terminal",
                 "Pi RPC emitted an event after the active turn terminated",
@@ -194,29 +210,45 @@ impl ActiveTurn {
                         "Pi RPC omitted the qualified agent-settled abort state",
                     ));
                 }
-                let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
-                    (TerminalStatus::TimedOut, ActivityStatus::Failed)
-                } else if self.cancelled.load(Ordering::SeqCst) || aborted.unwrap_or(false) {
-                    (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
-                } else {
-                    self.completed_prompts.fetch_add(1, Ordering::SeqCst);
-                    (TerminalStatus::Completed, ActivityStatus::Completed)
-                };
-                self.complete_activity(activity_status)?;
-                let usage = *self.usage.lock().expect("Pi usage lock poisoned");
-                if matches!(status, TerminalStatus::Completed) && usage.is_none() {
-                    self.finish(TerminalStatus::RuntimeFailed(
-                        swallowtail_core::SafeDiagnostic::new(
-                            "swallowtail.pi.rpc.usage_missing",
-                            "Pi RPC completed without required token usage",
-                        ),
-                    ));
-                } else {
-                    self.finish_with_usage(status, usage);
+                if !self.timed_out.load(Ordering::SeqCst)
+                    && !self.cancelled.load(Ordering::SeqCst)
+                    && !aborted.unwrap_or(false)
+                    && self.abort_in_flight.load(Ordering::SeqCst)
+                {
+                    *self
+                        .pending_settled
+                        .lock()
+                        .expect("Pi pending-settled lock poisoned") =
+                        Some(PendingSettled { aborted });
+                    return Ok(());
                 }
-                Ok(())
+                self.finish_settled(aborted)
             }
         }
+    }
+
+    fn finish_settled(&self, aborted: Option<bool>) -> Result<(), RuntimeFailure> {
+        let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
+            (TerminalStatus::TimedOut, ActivityStatus::Failed)
+        } else if self.cancelled.load(Ordering::SeqCst) || aborted.unwrap_or(false) {
+            (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
+        } else {
+            self.completed_prompts.fetch_add(1, Ordering::SeqCst);
+            (TerminalStatus::Completed, ActivityStatus::Completed)
+        };
+        self.complete_activity(activity_status)?;
+        let usage = *self.usage.lock().expect("Pi usage lock poisoned");
+        if matches!(status, TerminalStatus::Completed) && usage.is_none() {
+            self.finish(TerminalStatus::RuntimeFailed(
+                swallowtail_core::SafeDiagnostic::new(
+                    "swallowtail.pi.rpc.usage_missing",
+                    "Pi RPC completed without required token usage",
+                ),
+            ));
+        } else {
+            self.finish_with_usage(status, usage);
+        }
+        Ok(())
     }
 
     pub(crate) fn mark_abort_in_flight(&self) {
@@ -230,7 +262,25 @@ impl ActiveTurn {
     }
 
     pub(crate) fn mark_abort_rejected(&self) {
+        self.abort_rejected.store(true, Ordering::SeqCst);
         self.abort_in_flight.store(false, Ordering::SeqCst);
+    }
+
+    pub(crate) fn reconcile_abort_response(&self, success: bool) -> Result<(), RuntimeFailure> {
+        if success {
+            self.mark_abort_acknowledged();
+        } else {
+            self.mark_abort_rejected();
+        }
+        let pending = self
+            .pending_settled
+            .lock()
+            .expect("Pi pending-settled lock poisoned")
+            .take();
+        if let Some(pending) = pending {
+            return self.finish_settled(pending.aborted);
+        }
+        Ok(())
     }
 
     pub(crate) fn mark_cancelled(&self) {
@@ -244,9 +294,15 @@ impl ActiveTurn {
     }
 
     pub(crate) fn fail_connection(&self, diagnostic: swallowtail_core::SafeDiagnostic) {
+        self.pending_settled
+            .lock()
+            .expect("Pi pending-settled lock poisoned")
+            .take();
         let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
             (TerminalStatus::TimedOut, ActivityStatus::Failed)
-        } else if self.abort_in_flight.load(Ordering::SeqCst) {
+        } else if self.abort_in_flight.load(Ordering::SeqCst)
+            || self.abort_rejected.load(Ordering::SeqCst)
+        {
             (
                 TerminalStatus::RuntimeFailed(swallowtail_core::SafeDiagnostic::new(
                     "swallowtail.pi.rpc.cancel_rejected",
@@ -266,6 +322,10 @@ impl ActiveTurn {
     }
 
     pub(crate) fn fail_rejected_abort(&self, diagnostic: swallowtail_core::SafeDiagnostic) {
+        self.pending_settled
+            .lock()
+            .expect("Pi pending-settled lock poisoned")
+            .take();
         let status = if self.timed_out.load(Ordering::SeqCst) {
             TerminalStatus::TimedOut
         } else {

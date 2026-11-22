@@ -68,7 +68,10 @@ impl CancellationControl for TurnCancellation {
                     "swallowtail.pi.rpc.abort_rejected",
                     "Pi RPC rejected native abort",
                 ),
-                Err(error) => error,
+                Err(error) => {
+                    let _ = self.turn.reconcile_abort_response(false);
+                    error
+                }
             };
             // A turn that could not be aborted while still active may still be
             // running on the provider. Scope connection closure to this exact
@@ -964,6 +967,203 @@ mod tests {
             outcome.status(),
             &TerminalStatus::Completed,
             "explicit RPC aborted:false settlement must resolve Completed despite in-flight abort"
+        );
+    }
+
+    #[test]
+    fn settlement_before_successful_abort_reply_resolves_cancelled_without_usage_missing() {
+        use std::task::{Context, Poll, Waker};
+        use swallowtail_runtime::{ProcessOutputStream, TerminalStatus};
+
+        struct SettleThenAck {
+            lines: Mutex<std::collections::VecDeque<Vec<u8>>>,
+        }
+        impl ProcessHandle for SettleThenAck {
+            fn write_stdin(
+                &self,
+                _: ProcessInputChunk,
+            ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn read_output(
+                &self,
+            ) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+                let line = self.lines.lock().expect("lines lock").pop_front();
+                Box::pin(async move {
+                    Ok(line
+                        .map(|bytes| ProcessOutputChunk::new(ProcessOutputStream::Stdout, bytes)))
+                })
+            }
+            fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+                Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+            }
+        }
+
+        let services = HostServices::new(
+            ExecutionHostId::new("pi.rpc.settle-before-ack-test").expect("host id is valid"),
+        );
+        let lines = std::collections::VecDeque::from([
+            b"{\"type\":\"agent_settled\",\"aborted\":false}\n".to_vec(),
+            b"{\"type\":\"response\",\"id\":\"abort:turn-settle-ack\",\"command\":\"abort\",\"success\":true}\n".to_vec(),
+        ]);
+        let connection = PiConnection::new(
+            Arc::new(SettleThenAck {
+                lines: Mutex::new(lines),
+            }),
+            Arc::new(DummyTaskService),
+            Arc::new(DummyTimeService),
+            services,
+        );
+        let (turn, events, callbacks, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("turn-settle-ack").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+            Arc::downgrade(&connection),
+            false,
+        )
+        .expect("turn constructs");
+        connection
+            .set_active_turn(Arc::clone(&turn))
+            .expect("turn attaches");
+        let active: ActiveSlot = Arc::new(Mutex::new(None));
+        let mut handle = PiTurnHandle::new(
+            RuntimeTurnId::new("turn-settle-ack").expect("turn id is valid"),
+            events,
+            callbacks,
+            Box::pin(terminal),
+            super::PiTurnBinding {
+                connection: Arc::clone(&connection),
+                turn,
+                active,
+                attachment: SharedAttachmentMaterialization::default(),
+                command_dispositions: false,
+            },
+        );
+        let terminal_fut = handle
+            .take_terminal_outcome()
+            .expect("terminal outcome future is present");
+
+        let mut cancel_fut = handle.cancellation().request();
+        let waker = Waker::noop();
+        let mut cx = Context::from_waker(waker);
+        assert!(matches!(cancel_fut.as_mut().poll(&mut cx), Poll::Pending));
+
+        futures_executor::block_on(Arc::clone(&connection).pump());
+
+        let outcome = futures_executor::block_on(terminal_fut);
+        assert_eq!(
+            outcome.status(),
+            &TerminalStatus::Cancelled,
+            "settlement before a successful abort reply must resolve Cancelled without usage_missing"
+        );
+        assert!(futures_executor::block_on(cancel_fut).is_ok());
+    }
+
+    #[test]
+    fn negative_abort_reply_immediately_followed_by_eof_resolves_cancel_rejected() {
+        use std::task::{Context, Poll, Waker};
+        use swallowtail_runtime::{ProcessOutputStream, TerminalStatus};
+
+        struct NackThenEof {
+            response: Mutex<Option<Vec<u8>>>,
+        }
+        impl ProcessHandle for NackThenEof {
+            fn write_stdin(
+                &self,
+                _: ProcessInputChunk,
+            ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn read_output(
+                &self,
+            ) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+                let line = self.response.lock().expect("nack lock").take();
+                Box::pin(async move {
+                    Ok(line
+                        .map(|bytes| ProcessOutputChunk::new(ProcessOutputStream::Stdout, bytes)))
+                })
+            }
+            fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+                Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+            }
+        }
+
+        let services = HostServices::new(
+            ExecutionHostId::new("pi.rpc.abort-nack-eof-test").expect("host id is valid"),
+        );
+        let nack_line = b"{\"type\":\"response\",\"id\":\"abort:turn-nack-eof\",\"command\":\"abort\",\"success\":false}\n".to_vec();
+        let connection = PiConnection::new(
+            Arc::new(NackThenEof {
+                response: Mutex::new(Some(nack_line)),
+            }),
+            Arc::new(DummyTaskService),
+            Arc::new(DummyTimeService),
+            services,
+        );
+        let (turn, events, callbacks, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("turn-nack-eof").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+            Arc::downgrade(&connection),
+            false,
+        )
+        .expect("turn constructs");
+        connection
+            .set_active_turn(Arc::clone(&turn))
+            .expect("turn attaches");
+        let active: ActiveSlot = Arc::new(Mutex::new(None));
+        let mut handle = PiTurnHandle::new(
+            RuntimeTurnId::new("turn-nack-eof").expect("turn id is valid"),
+            events,
+            callbacks,
+            Box::pin(terminal),
+            super::PiTurnBinding {
+                connection: Arc::clone(&connection),
+                turn,
+                active,
+                attachment: SharedAttachmentMaterialization::default(),
+                command_dispositions: false,
+            },
+        );
+        let terminal_fut = handle
+            .take_terminal_outcome()
+            .expect("terminal outcome future is present");
+
+        let mut cancel_fut = handle.cancellation().request();
+        let waker = Waker::noop();
+        let mut cx = Context::from_waker(waker);
+        assert!(matches!(cancel_fut.as_mut().poll(&mut cx), Poll::Pending));
+
+        futures_executor::block_on(Arc::clone(&connection).pump());
+
+        let outcome = futures_executor::block_on(terminal_fut);
+        match outcome.status() {
+            TerminalStatus::RuntimeFailed(diag) => {
+                assert_eq!(diag.code(), "swallowtail.pi.rpc.cancel_rejected");
+            }
+            other => panic!("expected cancel_rejected RuntimeFailed, got {other:?}"),
+        }
+        let cancel_err = futures_executor::block_on(cancel_fut)
+            .expect_err("rejected abort must return an error");
+        assert_eq!(
+            cancel_err.diagnostic().code(),
+            "swallowtail.pi.rpc.abort_rejected"
         );
     }
 }

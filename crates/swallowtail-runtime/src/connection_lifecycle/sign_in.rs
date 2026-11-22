@@ -1400,8 +1400,9 @@ fn cleanup_session_now(
     services: &HostServices,
 ) -> Result<(), SignInFailure> {
     let _ = take_pending_poll(session);
-    let mut pending_cleanup = release_loopback_now(session, services)?;
-    let mut process_failure: Option<SignInFailure> = None;
+    let loopback_result = release_loopback_now(session, services);
+    let mut pending_cleanup = matches!(loopback_result, Ok(true));
+    let mut process_failure = session.cleanup_failure.clone();
     let mut cleanup = take_pending_process_cleanup(session)
         .or_else(|| session.process.take().map(PendingProcessCleanup::start));
     while let Some(stage) = cleanup.take() {
@@ -1461,6 +1462,11 @@ fn cleanup_session_now(
         if !pending_cleanup {
             return Err(failure);
         }
+    }
+    if let Err(failure) = loopback_result
+        && !pending_cleanup
+    {
+        return Err(failure);
     }
     if pending_cleanup {
         return Err(SignInFailure::new(
@@ -1625,6 +1631,11 @@ async fn release_loopback_async(
     Ok(())
 }
 
+/// Bounds consecutive synchronous early timer completions within a single poll
+/// so a non-advancing mock clock cannot spin forever while real clocks stay armed
+/// across repeated early wakes.
+const MAX_SYNCHRONOUS_EARLY_TIMER_REARMS: usize = 8;
+
 async fn await_cleanup_budget<T>(
     future: impl Future<Output = T>,
     services: &HostServices,
@@ -1633,7 +1644,7 @@ async fn await_cleanup_budget<T>(
         return Some(future.await);
     };
     let deadline = Deadline::at(time.now().saturating_add_duration(CLEANUP_TEARDOWN_BUDGET));
-    let mut budget = Some(time.wait_until(deadline));
+    let mut budget: Option<BoxFuture<'static, crate::DeadlineObservation>> = None;
     let mut future = std::pin::pin!(future);
     std::future::poll_fn(|context| {
         if let Poll::Ready(value) = future.as_mut().poll(context) {
@@ -1642,28 +1653,22 @@ async fn await_cleanup_budget<T>(
         if time.now() >= deadline.instant() {
             return Poll::Ready(None);
         }
-        if let Some(active_budget) = budget.as_mut()
-            && active_budget.as_mut().poll(context).is_ready()
-        {
+        let mut synchronous_rearms = 0;
+        loop {
+            let active_budget = budget.get_or_insert_with(|| time.wait_until(deadline));
+            if active_budget.as_mut().poll(context).is_pending() {
+                return Poll::Pending;
+            }
+            // Drop the completed timer immediately so it is never polled again.
+            budget = None;
             if time.now() >= deadline.instant() {
                 return Poll::Ready(None);
             }
-            // The timer resolved before the monotonic clock reached the deadline
-            // (for example, a spurious early wake or a fixed test clock). Drop
-            // the completed timer so it is never polled again; re-arm once to
-            // register the waker for a real clock, and drop it if the fresh
-            // timer also resolves immediately without advancing time.
-            let mut rearmed = time.wait_until(deadline);
-            if rearmed.as_mut().poll(context).is_ready() {
-                if time.now() >= deadline.instant() {
-                    return Poll::Ready(None);
-                }
-                budget = None;
-            } else {
-                budget = Some(rearmed);
+            synchronous_rearms += 1;
+            if synchronous_rearms >= MAX_SYNCHRONOUS_EARLY_TIMER_REARMS {
+                return Poll::Pending;
             }
         }
-        Poll::Pending
     })
     .await
 }

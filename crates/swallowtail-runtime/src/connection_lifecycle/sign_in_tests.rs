@@ -2770,9 +2770,9 @@ fn await_cleanup_budget_never_repolls_completed_timer_on_early_ready() {
         SignInStatus::Cancelled
     );
 
-    // Case B: Spurious early wake on first timer followed by a re-armed timer that
-    // actually advances the clock to the deadline. Must re-arm and time out cleanly
-    // without ever repolling the first completed timer.
+    // Case B: Two consecutive early timer completions followed by a third timer that
+    // actually advances the clock to the deadline. Must stay armed across repeated
+    // early completions and time out cleanly without ever repolling a completed timer.
     struct SpuriousEarlyWakeTime {
         now: Arc<AtomicU64>,
         arms: AtomicUsize,
@@ -2783,8 +2783,8 @@ fn await_cleanup_budget_never_repolls_completed_timer_on_early_ready() {
         }
         fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, crate::DeadlineObservation> {
             let arm = self.arms.fetch_add(1, Ordering::SeqCst);
-            if arm == 0 {
-                // First timer resolves early without advancing `now`.
+            if arm < 2 {
+                // First two timers resolve early without advancing `now`.
                 Box::pin(PanicOnRepollTimer {
                     deadline,
                     completed: false,
@@ -2792,7 +2792,7 @@ fn await_cleanup_budget_never_repolls_completed_timer_on_early_ready() {
                     polls_before_ready: 0,
                 })
             } else {
-                // Re-armed timer yields once then advances `now` to the deadline.
+                // Third timer yields once then advances `now` to the deadline.
                 Box::pin(PanicOnRepollTimer {
                     deadline,
                     completed: false,
@@ -2874,9 +2874,121 @@ fn await_cleanup_budget_never_repolls_completed_timer_on_early_ready() {
         "swallowtail.sign_in.cleanup_timed_out"
     );
     assert!(
-        spurious_time.arms.load(Ordering::SeqCst) >= 2,
-        "spurious early wake must re-arm the budget timer"
+        spurious_time.arms.load(Ordering::SeqCst) >= 3,
+        "repeated early timer completions must keep re-arming the budget timer"
     );
+}
+
+#[test]
+fn sync_retry_resumes_retained_process_cleanup_after_stop_error() {
+    use std::sync::atomic::{AtomicBool, Ordering};
+
+    struct StopErrorThenYieldingForceStop {
+        force_completed: Arc<AtomicBool>,
+        wait_completed: Arc<AtomicBool>,
+    }
+
+    impl ProcessHandle for StopErrorThenYieldingForceStop {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async {
+                Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                    "fixture.request_stop_failed",
+                    "request_stop failed immediately",
+                )))
+            })
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            let force_completed = Arc::clone(&self.force_completed);
+            yield_once_then(move || {
+                force_completed.store(true, Ordering::SeqCst);
+                Ok(())
+            })
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            self.wait_completed.store(true, Ordering::SeqCst);
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+
+    impl ProcessService for StopErrorThenYieldingForceStop {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            let handle = StopErrorThenYieldingForceStop {
+                force_completed: Arc::clone(&self.force_completed),
+                wait_completed: Arc::clone(&self.wait_completed),
+            };
+            Box::pin(async move { Ok(Box::new(handle) as Box<dyn ProcessHandle>) })
+        }
+    }
+
+    let force_completed = Arc::new(AtomicBool::new(false));
+    let wait_completed = Arc::new(AtomicBool::new(false));
+    let services = HostServices::new(host_id())
+        .with_process(Arc::new(StopErrorThenYieldingForceStop {
+            force_completed: Arc::clone(&force_completed),
+            wait_completed: Arc::clone(&wait_completed),
+        }))
+        .with_time(Arc::new(FixedTime(1)));
+    let session = start_sign_in(
+        &services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        ),
+    )
+    .expect("sync start succeeds");
+
+    let (first_err, returned_session) = cancel_sign_in(session, &services)
+        .expect_err("first sync cancel must report pending when force_stop yields");
+    assert_eq!(first_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        first_err.diagnostic().code(),
+        "swallowtail.sign_in.host_port_pending"
+    );
+    assert!(!force_completed.load(Ordering::SeqCst));
+    assert!(!wait_completed.load(Ordering::SeqCst));
+
+    let (retry_err, _) = cancel_sign_in(returned_session, &services)
+        .expect_err("sync retry must preserve the original request_stop failure after reaping");
+    assert!(
+        force_completed.load(Ordering::SeqCst),
+        "sync retry must resume and finish the retained force_stop stage"
+    );
+    assert!(
+        wait_completed.load(Ordering::SeqCst),
+        "sync retry must finish reaping the child before returning the saved diagnostic"
+    );
+    assert_eq!(retry_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(retry_err.diagnostic().code(), "fixture.request_stop_failed");
 }
 
 #[test]

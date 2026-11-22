@@ -259,6 +259,7 @@ impl ActiveTurn {
     pub(crate) fn mark_abort_acknowledged(&self) {
         self.cancelled.store(true, Ordering::SeqCst);
         self.abort_in_flight.store(false, Ordering::SeqCst);
+        self.abort_rejected.store(false, Ordering::SeqCst);
     }
 
     pub(crate) fn mark_abort_rejected(&self) {
@@ -303,6 +304,8 @@ impl ActiveTurn {
             .take();
         let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
             (TerminalStatus::TimedOut, ActivityStatus::Failed)
+        } else if self.cancelled.load(Ordering::SeqCst) {
+            (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
         } else if self.abort_in_flight.load(Ordering::SeqCst)
             || self.abort_rejected.load(Ordering::SeqCst)
         {
@@ -313,8 +316,6 @@ impl ActiveTurn {
                 )),
                 ActivityStatus::Failed,
             )
-        } else if self.cancelled.load(Ordering::SeqCst) {
-            (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
         } else {
             (
                 TerminalStatus::RuntimeFailed(diagnostic),

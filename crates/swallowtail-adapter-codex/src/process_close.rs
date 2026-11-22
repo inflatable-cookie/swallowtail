@@ -2,11 +2,14 @@
 
 use futures_channel::oneshot;
 use futures_util::future::{Either, select};
+use std::future::{Future, poll_fn};
 use std::sync::{Arc, mpsc};
+use std::task::Poll;
 use std::time::Duration;
 use swallowtail_runtime::{
-    BlockingJob, BlockingWorkService, BoxFuture, Deadline, HostServices, JoinedTask,
-    MonotonicInstant, ProcessHandle, RuntimeFailure, ScopeId, ScopedTaskService, TimeService,
+    BlockingJob, BlockingWorkService, BoxFuture, Deadline, DeadlineObservation, HostServices,
+    JoinedTask, MonotonicInstant, ProcessHandle, RuntimeFailure, ScopeId, ScopedTaskService,
+    TimeService,
 };
 
 /// Grace given to EOF and then to graceful stop when there is no caller deadline.
@@ -98,35 +101,141 @@ impl AppServerTask {
             scope,
         }
     }
+}
 
-    /// Waits up to the remaining teardown budget for the pump to finish on its
-    /// own after a refused `force_stop()`; if it is still running, signals
-    /// `on_abort` and joins it cleanly so `close()` cannot hang on open stdout.
-    pub(crate) async fn wait_or_abort(
+/// Outcome of racing one stop-and-join close sequence against a shared teardown budget.
+pub(crate) struct BoundedCloseOutcome {
+    /// Result of the stop future when it completed before the teardown budget ran out,
+    /// or `None` when the stop step itself timed out.
+    pub(crate) stop: Option<Result<(), RuntimeFailure>>,
+    /// Whether the teardown budget ran out before the pump finished, triggering `on_abort`.
+    pub(crate) aborted: bool,
+    /// Result of joining the pump task.
+    pub(crate) join: Result<(), RuntimeFailure>,
+}
+
+/// Shared lazy teardown timer carried across stop and pump-completion steps.
+///
+/// The timer is started only on the first `Poll::Pending`, so fast synchronous
+/// exits do not consume extra `TimeService::wait_until` or blocking-pool slots.
+struct CloseTimer {
+    budget: CloseBudget,
+    scope: ScopeId,
+    deadline_wait: Option<BoxFuture<'static, DeadlineObservation>>,
+    grace_cancel: Option<mpsc::Sender<()>>,
+    grace_wait: Option<BoxFuture<'static, Result<(), RuntimeFailure>>>,
+    exhausted: bool,
+}
+
+impl CloseTimer {
+    fn new(budget: CloseBudget, scope: ScopeId) -> Self {
+        Self {
+            budget,
+            scope,
+            deadline_wait: None,
+            grace_cancel: None,
+            grace_wait: None,
+            exhausted: false,
+        }
+    }
+
+    async fn race<T, F: Future<Output = T>>(&mut self, future: F) -> Option<T> {
+        let mut future = std::pin::pin!(future);
+        poll_fn(|context| {
+            if let Poll::Ready(value) = future.as_mut().poll(context) {
+                return Poll::Ready(Some(value));
+            }
+            if self.exhausted {
+                return Poll::Ready(None);
+            }
+            if let Some(time) = self.budget.time.as_deref() {
+                let wait = self.deadline_wait.get_or_insert_with(|| {
+                    let budget_at = time.now().ticks().saturating_add(REFUSED_STOP_BUDGET_TICKS);
+                    let target = match self.budget.deadline {
+                        Some(deadline) => at(deadline.instant().ticks().min(budget_at)),
+                        None => at(budget_at),
+                    };
+                    time.wait_until(target)
+                });
+                if wait.as_mut().poll(context).is_ready() {
+                    self.exhausted = true;
+                    return Poll::Ready(None);
+                }
+                return Poll::Pending;
+            }
+            if let Some(blocking) = self.budget.blocking.as_deref() {
+                let wait = self.grace_wait.get_or_insert_with(|| {
+                    let (cancel, cancelled) = mpsc::channel::<()>();
+                    self.grace_cancel = Some(cancel);
+                    let grace: BlockingJob = Box::new(move || {
+                        let _ = cancelled.recv_timeout(CLOSE_GRACE);
+                        Ok(())
+                    });
+                    blocking.run(self.scope.clone(), grace)
+                });
+                if wait.as_mut().poll(context).is_ready() {
+                    self.exhausted = true;
+                    return Poll::Ready(None);
+                }
+                return Poll::Pending;
+            }
+            // No time or blocking service is available to bound a pending step.
+            self.exhausted = true;
+            Poll::Ready(None)
+        })
+        .await
+    }
+
+    async fn finish(mut self) {
+        drop(self.grace_cancel.take());
+        if let Some(wait) = self.grace_wait.take() {
+            let _ = wait.await;
+        }
+    }
+}
+
+impl AppServerTask {
+    /// Bounds both an optional stop future and waiting for pump completion
+    /// under one shared teardown budget, aborting and joining the pump if the
+    /// budget expires at either step.
+    pub(crate) async fn close_bounded<F>(
         mut self,
         budget: CloseBudget,
+        stop: Option<F>,
         on_abort: impl FnOnce(),
-    ) -> Result<(), RuntimeFailure> {
-        let CloseBudget {
-            time,
-            blocking,
-            deadline,
-        } = budget;
-        let final_wait = time.as_deref().map(|time| {
-            let budget_at = time.now().ticks().saturating_add(REFUSED_STOP_BUDGET_TICKS);
-            let target = match deadline {
-                Some(deadline) => at(deadline.instant().ticks().min(budget_at)),
-                None => at(budget_at),
-            };
-            (time, target)
-        });
-        if !self
-            .finishes_before(wait_for(final_wait, blocking.as_deref()))
-            .await
-        {
+    ) -> BoundedCloseOutcome
+    where
+        F: Future<Output = Result<(), RuntimeFailure>>,
+    {
+        let has_timing = budget.time.is_some() || budget.blocking.is_some();
+        let mut timer = CloseTimer::new(budget, self.scope.clone());
+        let stop_result = match stop {
+            Some(stop_future) => timer.race(stop_future).await,
+            None => Some(Ok(())),
+        };
+        let finished_in_time = if self.finished.try_recv().is_err() {
+            true
+        } else if stop_result.is_none() {
+            false
+        } else if !has_timing && matches!(stop_result, Some(Ok(()))) {
+            // Without a host time or blocking service to measure a teardown
+            // grace window after an accepted stop, allow the pump task to
+            // finish and join normally instead of aborting on the first poll.
+            true
+        } else {
+            timer.race(&mut self.finished).await.is_some()
+        };
+        timer.finish().await;
+        let aborted = !finished_in_time;
+        if aborted {
             on_abort();
         }
-        self.join().await
+        let join = self.join().await;
+        BoundedCloseOutcome {
+            stop: stop_result,
+            aborted,
+            join,
+        }
     }
 
     #[cfg(test)]

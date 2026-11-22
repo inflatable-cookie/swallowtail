@@ -477,4 +477,153 @@ mod tests {
             outcome.status()
         );
     }
+
+    #[test]
+    fn negative_abort_reply_followed_by_acknowledged_retry_and_eof_resolves_cancelled() {
+        use std::collections::VecDeque;
+        use swallowtail_runtime::ProcessOutputStream;
+
+        struct ScriptedRetryProcess {
+            writes: AtomicUsize,
+            outputs: Mutex<VecDeque<futures_channel::oneshot::Receiver<Option<Vec<u8>>>>>,
+            senders: Mutex<VecDeque<futures_channel::oneshot::Sender<Option<Vec<u8>>>>>,
+        }
+
+        impl ScriptedRetryProcess {
+            fn new() -> Self {
+                let mut outputs = VecDeque::new();
+                let mut senders = VecDeque::new();
+                for _ in 0..3 {
+                    let (tx, rx) = futures_channel::oneshot::channel();
+                    outputs.push_back(rx);
+                    senders.push_back(tx);
+                }
+                Self {
+                    writes: AtomicUsize::new(0),
+                    outputs: Mutex::new(outputs),
+                    senders: Mutex::new(senders),
+                }
+            }
+
+            fn send_eof(&self) {
+                if let Some(tx) = self.senders.lock().expect("senders lock").pop_front() {
+                    let _ = tx.send(None);
+                }
+            }
+        }
+
+        impl ProcessHandle for ScriptedRetryProcess {
+            fn write_stdin(
+                &self,
+                chunk: ProcessInputChunk,
+            ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                let parsed: serde_json::Value =
+                    serde_json::from_slice(chunk.bytes()).expect("valid JSON command");
+                let id = parsed["id"].as_str().expect("id").to_owned();
+                let attempt = self.writes.fetch_add(1, Ordering::SeqCst);
+                let success = attempt >= 1;
+                let mut reply = serde_json::to_vec(&json!({
+                    "type": "response",
+                    "id": id,
+                    "command": "abort",
+                    "success": success,
+                }))
+                .expect("serialize reply");
+                reply.push(b'\n');
+                if let Some(tx) = self.senders.lock().expect("senders lock").pop_front() {
+                    let _ = tx.send(Some(reply));
+                }
+                Box::pin(async { Ok(()) })
+            }
+
+            fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+
+            fn read_output(
+                &self,
+            ) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+                let rx = self.outputs.lock().expect("outputs lock").pop_front();
+                Box::pin(async move {
+                    match rx {
+                        Some(rx) => match rx.await.ok().flatten() {
+                            Some(bytes) => Ok(Some(ProcessOutputChunk::new(
+                                ProcessOutputStream::Stdout,
+                                bytes,
+                            ))),
+                            None => Ok(None),
+                        },
+                        None => Ok(None),
+                    }
+                })
+            }
+
+            fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+
+            fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+
+            fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+                Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+            }
+        }
+
+        let process = Arc::new(ScriptedRetryProcess::new());
+        let services =
+            HostServices::new(ExecutionHostId::new("pi.rpc.abort-retry-eof").expect("host id"));
+        let connection = PiConnection::new(
+            Arc::clone(&process) as Arc<dyn ProcessHandle>,
+            Arc::new(DummyTaskService),
+            Arc::new(DummyTimeService),
+            services,
+        );
+        let (turn, _events, _callbacks, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("pi-run-retry-eof").expect("turn id"),
+            Arc::new(AtomicU32::new(0)),
+            Arc::downgrade(&connection),
+            false,
+        )
+        .expect("turn constructs");
+        connection
+            .set_active_turn(Arc::clone(&turn))
+            .expect("turn attaches");
+        let cancellation = Arc::new(PiRunCancellation {
+            connection: Arc::clone(&connection),
+            turn: Arc::clone(&turn),
+            requested: AtomicBool::new(false),
+            attempts: AtomicU64::new(0),
+        });
+
+        let pump_conn = Arc::clone(&connection);
+        let pump_thread = std::thread::spawn(move || {
+            futures_executor::block_on(pump_conn.pump());
+        });
+
+        // 1. First abort receives a negative reply -> Err(abort_rejected).
+        let first = futures_executor::block_on(cancellation.request())
+            .expect_err("first abort is rejected");
+        assert_eq!(
+            first.diagnostic().code(),
+            "swallowtail.pi.rpc.abort_rejected"
+        );
+
+        // 2. Retry succeeds -> Ok(Requested) and supersedes the earlier refusal.
+        let retry = futures_executor::block_on(cancellation.request())
+            .expect("retry abort is acknowledged");
+        assert_eq!(retry, CancellationAcknowledgement::Requested);
+
+        // 3. EOF arrives before any agent_end event -> TerminalStatus::Cancelled.
+        process.send_eof();
+        pump_thread.join().expect("pump thread joins");
+
+        let outcome = futures_executor::block_on(terminal);
+        assert_eq!(
+            outcome.status(),
+            &TerminalStatus::Cancelled,
+            "acknowledged retry followed by EOF must resolve TerminalStatus::Cancelled"
+        );
+    }
 }

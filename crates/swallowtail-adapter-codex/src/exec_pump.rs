@@ -197,41 +197,65 @@ pub(crate) async fn cleanup_failed_start(process: &dyn ProcessHandle, services: 
     let _ = force_cleanup(process, services).await;
 }
 
-async fn bounded_teardown_step<T>(
-    mut step: BoxFuture<'_, T>,
-    cleanup_timer: &mut Option<BoxFuture<'static, DeadlineObservation>>,
-) -> Option<T> {
-    poll_fn(|context| {
-        if let Poll::Ready(result) = step.as_mut().poll(context) {
-            return Poll::Ready(Some(result));
+struct TeardownTimer<'a> {
+    services: &'a HostServices,
+    timer: Option<BoxFuture<'static, DeadlineObservation>>,
+    exhausted: bool,
+}
+
+impl<'a> TeardownTimer<'a> {
+    fn new(services: &'a HostServices) -> Self {
+        Self {
+            services,
+            timer: None,
+            exhausted: false,
         }
-        if let Some(timer) = cleanup_timer.as_mut()
-            && timer.as_mut().poll(context).is_ready()
-        {
-            return Poll::Ready(None);
-        }
-        Poll::Pending
-    })
-    .await
+    }
+
+    async fn race<T>(&mut self, mut step: BoxFuture<'_, T>) -> Option<T> {
+        poll_fn(|context| {
+            if let Poll::Ready(result) = step.as_mut().poll(context) {
+                return Poll::Ready(Some(result));
+            }
+            if self.exhausted {
+                return Poll::Ready(None);
+            }
+            if let Some(time) = self.services.time() {
+                let timer = self.timer.get_or_insert_with(|| {
+                    let deadline = Deadline::at(MonotonicInstant::from_ticks(
+                        time.now().ticks().saturating_add(CLEANUP_WAIT_BUDGET_TICKS),
+                    ));
+                    time.wait_until(deadline)
+                });
+                if timer.as_mut().poll(context).is_ready() {
+                    self.exhausted = true;
+                    return Poll::Ready(None);
+                }
+            }
+            Poll::Pending
+        })
+        .await
+    }
 }
 
 async fn force_cleanup(process: &dyn ProcessHandle, services: &HostServices) -> CleanupOutcome {
-    let force = process.force_stop().await;
-    if force.is_ok() {
-        return cleanup_from_wait(&process.wait().await);
-    }
-    // `force_stop()` was refused, so the child may still be running. Bound
-    // `wait()` with a dedicated teardown budget when a time service is
-    // available; without one, return immediately instead of hanging forever.
-    let Some(time) = services.time() else {
+    let mut timer = TeardownTimer::new(services);
+    let Some(force) = timer.race(process.force_stop()).await else {
         return process_cleanup_failed();
     };
-    let deadline = Deadline::at(MonotonicInstant::from_ticks(
-        time.now().ticks().saturating_add(CLEANUP_WAIT_BUDGET_TICKS),
-    ));
-    let mut cleanup_timer = Some(time.wait_until(deadline));
-    let _ = bounded_teardown_step(process.wait(), &mut cleanup_timer).await;
-    process_cleanup_failed()
+    if force.is_err() && services.time().is_none() {
+        // Without a time service to bound `wait()`, a refused `force_stop()`
+        // leaves the child running; do not hang indefinitely waiting for exit.
+        return process_cleanup_failed();
+    }
+    let Some(wait) = timer.race(process.wait()).await else {
+        return process_cleanup_failed();
+    };
+    if force.is_err() || wait.is_err() {
+        process_cleanup_failed()
+    } else {
+        CleanupOutcome::Clean
+    }
 }
 
 fn cleanup_from_wait(
@@ -377,6 +401,78 @@ mod tests {
         ));
         assert!(matches!(
             outcome_without_time,
+            CleanupOutcome::Failed(ref diag) if diag.code() == "swallowtail.codex.exec.process_cleanup_failed"
+        ));
+
+        struct PendingStopProcess;
+
+        impl ProcessHandle for PendingStopProcess {
+            fn write_stdin(
+                &self,
+                _: ProcessInputChunk,
+            ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn read_output(
+                &self,
+            ) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+                Box::pin(std::future::pending())
+            }
+            fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(std::future::pending())
+            }
+            fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+                Box::pin(std::future::pending())
+            }
+        }
+
+        struct AcceptedStopHungWaitProcess;
+
+        impl ProcessHandle for AcceptedStopHungWaitProcess {
+            fn write_stdin(
+                &self,
+                _: ProcessInputChunk,
+            ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn read_output(
+                &self,
+            ) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+                Box::pin(std::future::pending())
+            }
+            fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+                Box::pin(std::future::pending())
+            }
+        }
+
+        let pending_stop_outcome =
+            futures_executor::block_on(force_cleanup(&PendingStopProcess, &services_with_time));
+        assert!(matches!(
+            pending_stop_outcome,
+            CleanupOutcome::Failed(ref diag) if diag.code() == "swallowtail.codex.exec.process_cleanup_failed"
+        ));
+
+        let accepted_stop_hung_wait = futures_executor::block_on(force_cleanup(
+            &AcceptedStopHungWaitProcess,
+            &services_with_time,
+        ));
+        assert!(matches!(
+            accepted_stop_hung_wait,
             CleanupOutcome::Failed(ref diag) if diag.code() == "swallowtail.codex.exec.process_cleanup_failed"
         ));
     }

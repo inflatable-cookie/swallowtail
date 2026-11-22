@@ -150,31 +150,42 @@ impl RunHandle for CodexExecRunHandle {
 
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
-            let mut stop_error = None;
-            // Cancel an active run first: joining it otherwise waits for the child to exit.
-            if !self.cancellation.is_finished()
-                && let Err(error) = self.cancellation.request().await
-            {
-                stop_error = Some(error);
+            if self.cancellation.is_finished() {
+                return match self.task.join().await {
+                    Ok(()) => CleanupOutcome::Clean,
+                    Err(_) => CleanupOutcome::Failed(SafeDiagnostic::new(
+                        "swallowtail.codex.exec.task_join_failed",
+                        "Codex exec operation task could not be joined",
+                    )),
+                };
             }
-            let join_result = if stop_error.is_some() {
-                let cancellation = Arc::clone(&self.cancellation);
-                self.task
-                    .wait_or_abort(self.close_budget, move || cancellation.abort_pump())
-                    .await
-            } else {
-                self.task.join().await
+            let cancellation = Arc::clone(&self.cancellation);
+            let stop_future = async move { cancellation.request().await.map(|_| ()) };
+            let abort_handle = Arc::clone(&self.cancellation);
+            let outcome = self
+                .task
+                .close_bounded(self.close_budget, Some(stop_future), move || {
+                    abort_handle.abort_pump();
+                })
+                .await;
+            let stop_cleanup = match outcome.stop {
+                Some(Ok(())) if !outcome.aborted => CleanupOutcome::Clean,
+                Some(Ok(())) => CleanupOutcome::Failed(SafeDiagnostic::new(
+                    "swallowtail.codex.exec.process_cleanup_failed",
+                    "Codex exec process cleanup failed",
+                )),
+                Some(Err(error)) => CleanupOutcome::Failed(error.diagnostic().clone()),
+                None => CleanupOutcome::Failed(SafeDiagnostic::new(
+                    "swallowtail.codex.exec.stop_timed_out",
+                    "Codex exec process stop timed out",
+                )),
             };
-            let join_cleanup = match join_result {
+            let join_cleanup = match outcome.join {
                 Ok(()) => CleanupOutcome::Clean,
                 Err(_) => CleanupOutcome::Failed(SafeDiagnostic::new(
                     "swallowtail.codex.exec.task_join_failed",
                     "Codex exec operation task could not be joined",
                 )),
-            };
-            let stop_cleanup = match stop_error {
-                Some(error) => CleanupOutcome::Failed(error.diagnostic().clone()),
-                None => CleanupOutcome::Clean,
             };
             CleanupOutcome::merge(stop_cleanup, join_cleanup)
         })
@@ -414,6 +425,160 @@ mod tests {
         assert!(
             matches!(cleanup, CleanupOutcome::Failed(ref diag) if diag.code() == "test.force_stop_refused"),
             "expected force_stop_refused cleanup failure, got {cleanup:?}"
+        );
+    }
+
+    struct PastClock;
+
+    impl swallowtail_runtime::TimeService for PastClock {
+        fn now(&self) -> swallowtail_runtime::MonotonicInstant {
+            swallowtail_runtime::MonotonicInstant::from_ticks(0)
+        }
+
+        fn wait_until(
+            &self,
+            deadline: swallowtail_runtime::Deadline,
+        ) -> BoxFuture<'static, swallowtail_runtime::DeadlineObservation> {
+            Box::pin(async move {
+                swallowtail_runtime::DeadlineObservation::new(
+                    deadline,
+                    swallowtail_runtime::MonotonicInstant::from_ticks(u64::MAX),
+                )
+            })
+        }
+    }
+
+    struct PendingStopOpenStdoutProcess;
+
+    impl ProcessHandle for PendingStopOpenStdoutProcess {
+        fn write_stdin(&self, _: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+    }
+
+    struct AcceptedStopOpenStdoutProcess {
+        forced: AtomicUsize,
+    }
+
+    impl ProcessHandle for AcceptedStopOpenStdoutProcess {
+        fn write_stdin(&self, _: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.forced.fetch_add(1, Ordering::SeqCst);
+            Box::pin(async { Ok(()) })
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+    }
+
+    fn spawn_pump_handle(
+        process: Arc<dyn ProcessHandle>,
+        services: HostServices,
+        id: &str,
+    ) -> Box<CodexExecRunHandle> {
+        let run_id = RuntimeRunId::new(id).expect("run id");
+        let scope = ScopeId::new(format!("codex-exec-{id}")).expect("scope id");
+        let (event_sender, event_stream) = runtime_event_channel(8).expect("event channel");
+        let (terminal_sender, terminal_future) = terminal_outcome_channel();
+        let cancellation = Arc::new(ProcessCancellation::new(Arc::clone(&process)));
+        let parser = ExecEventParser::new(run_id.clone(), semver::Version::new(0, 145, 0));
+        let task = AppServerTask::spawn(
+            Arc::new(ThreadTaskService),
+            scope,
+            Box::pin({
+                let pump_cancellation = Arc::clone(&cancellation);
+                let finish_marker = Arc::clone(&cancellation);
+                let process = Arc::clone(&process);
+                let services = services.clone();
+                async move {
+                    let outcome = pump(
+                        process,
+                        event_sender.clone(),
+                        pump_cancellation,
+                        None,
+                        SharedExecMaterializations::new(ExecMaterializations::new(None, None)),
+                        parser,
+                        services,
+                    )
+                    .await;
+                    finish_marker.mark_finished();
+                    let _ = terminal_sender.complete(outcome);
+                    event_sender.mark_terminal();
+                }
+            }),
+        )
+        .expect("pump task spawns");
+        Box::new(CodexExecRunHandle::new(
+            RequestId::new(format!("{id}-req")).expect("request id"),
+            run_id,
+            Box::pin(event_stream),
+            Box::pin(terminal_future),
+            cancellation,
+            task,
+            close_budget(&services, None),
+        ))
+    }
+
+    #[test]
+    fn closing_active_exec_handle_with_pending_stop_times_out_aborts_pump_and_joins() {
+        let process: Arc<dyn ProcessHandle> = Arc::new(PendingStopOpenStdoutProcess);
+        let services = HostServices::new(
+            ExecutionHostId::new("codex.exec.pending-stop-test").expect("host id"),
+        )
+        .with_time(Arc::new(PastClock));
+        let handle = spawn_pump_handle(process, services, "exec-pending-stop");
+        let cleanup = futures_executor::block_on(handle.close());
+        assert!(
+            matches!(cleanup, CleanupOutcome::Failed(ref diag) if diag.code() == "swallowtail.codex.exec.stop_timed_out"),
+            "expected stop_timed_out cleanup failure, got {cleanup:?}"
+        );
+    }
+
+    #[test]
+    fn closing_active_exec_handle_with_accepted_stop_and_open_stdout_aborts_pump_and_joins() {
+        let process = Arc::new(AcceptedStopOpenStdoutProcess {
+            forced: AtomicUsize::new(0),
+        });
+        let services = HostServices::new(
+            ExecutionHostId::new("codex.exec.accepted-stop-open-stdout").expect("host id"),
+        )
+        .with_time(Arc::new(PastClock));
+        let handle = spawn_pump_handle(
+            Arc::clone(&process) as Arc<dyn ProcessHandle>,
+            services,
+            "exec-accepted-open",
+        );
+        let cleanup = futures_executor::block_on(handle.close());
+        assert_eq!(process.forced.load(Ordering::SeqCst), 1);
+        assert!(
+            matches!(cleanup, CleanupOutcome::Failed(ref diag) if diag.code() == "swallowtail.codex.exec.process_cleanup_failed"),
+            "expected process_cleanup_failed when accepted stop leaves stdout open, got {cleanup:?}"
         );
     }
 }

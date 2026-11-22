@@ -10,6 +10,10 @@ impl RunCancellation {
         prior
     }
 
+    fn abort_signal(&self) {
+        let _ = self.signal.send(true);
+    }
+
     fn is_requested(&self) -> bool {
         self.requested.load(Ordering::SeqCst)
     }

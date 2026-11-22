@@ -1,22 +1,21 @@
-const MAX_EVENT_BYTES: usize = 1_048_576;
-
 #[derive(Clone, Eq, PartialEq)]
 /// One bounded named SSE frame with redacted payload bytes.
 pub struct SseFrame {
-    name: String,
-    data: Vec<u8>,
+    inner: swallowtail_transport_http::SseFrame,
 }
 
 impl SseFrame {
     #[must_use]
     /// Returns the provider event name.
     pub fn name(&self) -> &str {
-        &self.name
+        self.inner
+            .name()
+            .expect("Model Studio SSE frame carries a validated non-empty name")
     }
 
     #[must_use]
     pub(crate) fn data(&self) -> &[u8] {
-        &self.data
+        self.inner.data()
     }
 }
 
@@ -24,7 +23,7 @@ impl std::fmt::Debug for SseFrame {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter
             .debug_struct("SseFrame")
-            .field("name", &self.name)
+            .field("name", &self.name())
             .field("data", &"<redacted>")
             .finish()
     }
@@ -33,68 +32,39 @@ impl std::fmt::Debug for SseFrame {
 #[derive(Default)]
 /// Incremental bounded decoder for Model Studio SSE frames.
 pub struct SseDecoder {
-    buffer: Vec<u8>,
+    inner: swallowtail_transport_http::SseDecoder,
 }
 
 impl SseDecoder {
     /// Accepts one transport chunk and returns every complete decoded frame.
     pub fn push(&mut self, chunk: &[u8]) -> Result<Vec<SseFrame>, AlibabaProtocolFailure> {
-        if self.buffer.len().saturating_add(chunk.len()) > MAX_EVENT_BYTES {
-            return Err(AlibabaProtocolFailure::invalid("SSE event bound"));
-        }
-        self.buffer.extend_from_slice(chunk);
         let mut frames = Vec::new();
-        while let Some((end, separator)) = boundary(&self.buffer) {
-            let frame: Vec<_> = self.buffer.drain(..end).collect();
-            self.buffer.drain(..separator);
-            if let Some(frame) = decode_frame(&frame)? {
-                frames.push(frame);
+        for frame in self.inner.push(chunk).map_err(map_sse_error)? {
+            let valid_name = frame.name().is_some_and(|name| !name.is_empty());
+            if !valid_name || frame.data().is_empty() {
+                return Err(AlibabaProtocolFailure::invalid("SSE frame"));
             }
+            frames.push(SseFrame { inner: frame });
         }
         Ok(frames)
     }
 
     /// Verifies that disconnect left no partial semantic frame buffered.
     pub fn finish(self) -> Result<(), AlibabaProtocolFailure> {
-        if self.buffer.iter().all(u8::is_ascii_whitespace) {
-            Ok(())
-        } else {
-            Err(AlibabaProtocolFailure::invalid("disconnected SSE event"))
-        }
+        self.inner.finish().map_err(map_sse_error)
     }
 }
 
-fn boundary(buffer: &[u8]) -> Option<(usize, usize)> {
-    let lf = buffer.windows(2).position(|value| value == b"\n\n").map(|end| (end, 2));
-    let crlf = buffer
-        .windows(4)
-        .position(|value| value == b"\r\n\r\n")
-        .map(|end| (end, 4));
-    match (lf, crlf) {
-        (Some(left), Some(right)) => Some(if left.0 < right.0 { left } else { right }),
-        (Some(value), None) | (None, Some(value)) => Some(value),
-        (None, None) => None,
-    }
-}
-
-fn decode_frame(frame: &[u8]) -> Result<Option<SseFrame>, AlibabaProtocolFailure> {
-    let text = std::str::from_utf8(frame)
-        .map_err(|_| AlibabaProtocolFailure::invalid("SSE UTF-8"))?;
-    let mut name = None;
-    let mut data = Vec::new();
-    for line in text.lines() {
-        if let Some(value) = line.strip_prefix("event:") {
-            name = Some(value.trim().to_owned());
-        } else if let Some(value) = line.strip_prefix("data:") {
-            if !data.is_empty() {
-                data.push(b'\n');
-            }
-            data.extend_from_slice(value.trim_start().as_bytes());
+fn map_sse_error(error: swallowtail_transport_http::SseDecodeError) -> AlibabaProtocolFailure {
+    match error.kind() {
+        swallowtail_transport_http::SseDecodeErrorKind::InvalidUtf8 => {
+            AlibabaProtocolFailure::invalid("SSE UTF-8")
         }
-    }
-    match name {
-        Some(name) if !name.is_empty() && !data.is_empty() => Ok(Some(SseFrame { name, data })),
-        None if text.lines().all(|line| line.trim().is_empty() || line.starts_with(':')) => Ok(None),
-        _ => Err(AlibabaProtocolFailure::invalid("SSE frame")),
+        swallowtail_transport_http::SseDecodeErrorKind::LimitExceeded => {
+            AlibabaProtocolFailure::invalid("SSE event bound")
+        }
+        swallowtail_transport_http::SseDecodeErrorKind::IncompleteFrame => {
+            AlibabaProtocolFailure::invalid("disconnected SSE event")
+        }
     }
 }

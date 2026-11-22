@@ -196,6 +196,40 @@ fn reasoning_sequence_drift_disconnect_and_provider_failure_fail_safely() {
 }
 
 #[test]
+fn sse_decoder_enforces_per_event_limit_across_large_multi_event_chunks() {
+    let mut decoder = SseDecoder::default();
+    let single_event = format!(
+        "event: response.output_text.delta\ndata: {{\"type\":\"response.output_text.delta\",\"delta\":\"{}\"}}\n\n",
+        "a".repeat(256 * 1024)
+    );
+    let multi_event_chunk = single_event.repeat(5);
+    assert!(multi_event_chunk.len() > 1_048_576);
+    let frames = decoder
+        .push(multi_event_chunk.as_bytes())
+        .expect("multi-event chunk above 1 MiB must decode when each event is within limit");
+    assert_eq!(frames.len(), 5);
+    assert!(
+        frames
+            .iter()
+            .all(|frame| frame.name() == "response.output_text.delta")
+    );
+    decoder.finish().expect("clean end after multi-event chunk");
+
+    let mut oversized_decoder = SseDecoder::default();
+    let oversized_event = format!(
+        "event: response.output_text.delta\ndata: {}\n\n",
+        "b".repeat(1_048_577)
+    );
+    let error = oversized_decoder
+        .push(oversized_event.as_bytes())
+        .expect_err("single event exceeding 1 MiB must reject");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.alibaba_model_studio.protocol_invalid"
+    );
+}
+
+#[test]
 fn cancellation_race_keeps_remote_stop_and_both_deletions_unconfirmed() {
     let race: Value = json_fixture("cleanup-race.json");
     assert_eq!(race["late_remote_mutation_possible"], true);

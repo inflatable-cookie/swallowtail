@@ -14,8 +14,6 @@ autotests = false
 doctest = false
 
 [dependencies]
-futures-channel.workspace = true
-futures-core.workspace = true
 semver.workspace = true
 serde_json.workspace = true
 swallowtail-acp-client.workspace = true
@@ -26,7 +24,7 @@ swallowtail-runtime.workspace = true
 [dev-dependencies]
 futures-executor.workspace = true
 futures-util.workspace = true
-libc = "0.2"
+libc.workspace = true
 sha2.workspace = true
 swallowtail-host-local.workspace = true
 swallowtail-testkit.workspace = true

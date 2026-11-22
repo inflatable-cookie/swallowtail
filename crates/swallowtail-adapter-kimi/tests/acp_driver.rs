@@ -245,6 +245,53 @@ fn disconnect_fails_the_turn_and_session_close_still_joins_cleanup() {
     }
 }
 
+#[test]
+fn start_turn_missing_task_service_does_not_wedge_session() {
+    let host_id = ExecutionHostId::new("fixture.host.kimi.missing-task").expect("valid host id");
+    let selected = selection(host_id.clone());
+    let host = FixtureHost::new(Scenario::Complete);
+    let services = host.services(host_id.clone());
+    let mut session = block_on(driver(selected.credential).open_session(
+        selected.plan,
+        open_request("kimi-open-missing-task", selected.resource),
+        services.clone(),
+    ))
+    .expect("session opens");
+
+    let error = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("kimi-missing-task").expect("valid turn"),
+            OperationContent::new("private fixture prompt").expect("valid prompt"),
+        ),
+        swallowtail_runtime::HostServices::new(host_id),
+    ))
+    .err()
+    .expect("missing task service must fail");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.kimi.acp.task_service_missing"
+    );
+
+    let mut turn = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("kimi-after-missing-task").expect("valid turn"),
+            OperationContent::new("private fixture prompt").expect("valid prompt"),
+        ),
+        services.clone(),
+    ))
+    .expect("second turn must not be wedged");
+    let outcome = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
+}
+
 fn topologies() -> [ExecutionHostId; 2] {
     [
         ExecutionHostId::new("fixture.host.local").expect("valid local host id"),

@@ -2972,8 +2972,6 @@ dependencies = [
 name = "swallowtail-adapter-copilot-cli"
 version = "0.6.0"
 dependencies = [
- "futures-channel",
- "futures-core",
  "futures-executor",
  "futures-util",
  "libc",

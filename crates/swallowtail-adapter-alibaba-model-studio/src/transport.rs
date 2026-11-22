@@ -127,7 +127,7 @@ fn shared_request(
     };
     let mut shared = HttpRequest::new(method, request.path())
         .with_response_limit(RESPONSE_LIMIT)
-        .capture_headers(|_| true)
+        .capture_headers(capture_request_id)
         .with_secret_header(SecretHeader::bearer(credential).map_err(transport_failure)?)
         .with_header(
             "accept",
@@ -160,10 +160,20 @@ fn request_correlation(
         .and_then(|value| ProviderRequestRef::new(value.clone()).map_err(|_| protocol_failure()))
 }
 
+fn capture_request_id(name: &str) -> bool {
+    name.eq_ignore_ascii_case("x-request-id")
+}
+
 fn require_success(response: Response) -> Result<Response, RuntimeFailure> {
     match response.status {
         200..=299 => Ok(response),
-        404 => Err(failure(
+        _ => Err(status_failure(response.status, &response.body)),
+    }
+}
+
+fn status_failure(status: u32, body: &[u8]) -> RuntimeFailure {
+    match status {
+        404 => failure(
             "swallowtail.alibaba_model_studio.provider_resource_missing",
             "Alibaba Model Studio reported that the requested provider resource was missing",
         )
@@ -171,8 +181,8 @@ fn require_success(response: Response) -> Result<Response, RuntimeFailure> {
             FailureOrigin::Provider,
             FailureKind::ResourceNotFound,
             FailureRecovery::ConfigurationChangeRequired,
-        ))),
-        401 | 403 => Err(failure(
+        )),
+        401 | 403 => failure(
             "swallowtail.alibaba_model_studio.provider_access_rejected",
             "Alibaba Model Studio rejected access to the requested provider resource",
         )
@@ -180,8 +190,8 @@ fn require_success(response: Response) -> Result<Response, RuntimeFailure> {
             FailureOrigin::Provider,
             FailureKind::AuthorizationDenied,
             FailureRecovery::ReauthenticationRequired,
-        ))),
-        _ => Err(provider_error(&response.body)),
+        )),
+        _ => provider_error(body),
     }
 }
 
@@ -245,6 +255,58 @@ fn stream_failure(error: StreamError<RuntimeFailure>) -> RuntimeFailure {
     match error {
         StreamError::Transport(error) => transport_failure(error),
         StreamError::Decode(error) => error,
-        StreamError::Status { body, .. } => provider_error(&body),
+        StreamError::Status { status, body, .. } => status_failure(status, &body),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn stream_failure_preserves_http_status_classification() {
+        for status in [401, 403] {
+            let error = stream_failure(StreamError::Status {
+                status,
+                headers: BTreeMap::new(),
+                body: Vec::new(),
+            });
+            assert_eq!(
+                error.diagnostic().code(),
+                "swallowtail.alibaba_model_studio.provider_access_rejected"
+            );
+            let classification = error.diagnostic().failure_classification();
+            assert_eq!(classification.kind(), FailureKind::AuthorizationDenied);
+            assert_eq!(
+                classification.recovery(),
+                FailureRecovery::ReauthenticationRequired
+            );
+        }
+
+        let not_found = stream_failure(StreamError::Status {
+            status: 404,
+            headers: BTreeMap::new(),
+            body: Vec::new(),
+        });
+        assert_eq!(
+            not_found.diagnostic().code(),
+            "swallowtail.alibaba_model_studio.provider_resource_missing"
+        );
+        let classification = not_found.diagnostic().failure_classification();
+        assert_eq!(classification.kind(), FailureKind::ResourceNotFound);
+        assert_eq!(
+            classification.recovery(),
+            FailureRecovery::ConfigurationChangeRequired
+        );
+    }
+
+    #[test]
+    fn header_capture_is_restricted_to_x_request_id() {
+        assert!(capture_request_id("x-request-id"));
+        assert!(capture_request_id("X-Request-Id"));
+        assert!(!capture_request_id("set-cookie"));
+        assert!(!capture_request_id("authorization"));
+        assert!(!capture_request_id("content-type"));
+        assert!(!capture_request_id("x-ratelimit-remaining"));
     }
 }

@@ -5,6 +5,7 @@ struct Fixture {
     credential: CredentialRef,
     host: LocalProcessHost,
     thread: ThreadServices,
+    acquires: Arc<AtomicUsize>,
     releases: Arc<AtomicUsize>,
 }
 
@@ -20,7 +21,9 @@ impl Fixture {
             .build();
         Self {
             host_id, target, audience, credential, host: local,
-            thread: ThreadServices::new(), releases: Arc::new(AtomicUsize::new(0)),
+            thread: ThreadServices::new(),
+            acquires: Arc::new(AtomicUsize::new(0)),
+            releases: Arc::new(AtomicUsize::new(0)),
         }
     }
 
@@ -41,7 +44,11 @@ impl Fixture {
             .with_blocking_work(Arc::clone(&thread) as Arc<dyn BlockingWorkService>)
             .with_time(thread as Arc<dyn TimeService>)
             .with_network(Arc::new(self.host.clone()) as Arc<dyn NetworkPolicyService>)
-            .with_credential(Arc::new(TrackingCredential { host: self.host.clone(), releases: Arc::clone(&self.releases) }) as Arc<dyn CredentialService>)
+            .with_credential(Arc::new(TrackingCredential {
+                host: self.host.clone(),
+                acquires: Arc::clone(&self.acquires),
+                releases: Arc::clone(&self.releases),
+            }) as Arc<dyn CredentialService>)
     }
 
     fn plan(&self) -> PreflightPlan {

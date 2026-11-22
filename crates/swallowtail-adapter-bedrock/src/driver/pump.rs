@@ -1,6 +1,9 @@
+const MAXIMUM_OUTPUT_BYTES: usize = 4 * 1024 * 1024;
+
 enum PumpSignal {
     Update(Option<Result<StreamUpdate, RuntimeFailure>>),
     Deadline,
+    WorkDone(Result<(), RuntimeFailure>),
 }
 
 struct RunPumpContext {
@@ -13,11 +16,18 @@ struct RunPumpContext {
 
 async fn next_signal(
     updates: &mut Pin<Box<dyn Stream<Item = Result<StreamUpdate, RuntimeFailure>> + Send>>,
+    blocking: &mut Option<BoxFuture<'static, Result<(), RuntimeFailure>>>,
     deadline: &mut Option<BoxFuture<'static, DeadlineObservation>>,
 ) -> PumpSignal {
     poll_fn(|context| {
         if let Poll::Ready(update) = updates.as_mut().poll_next(context) {
             return Poll::Ready(PumpSignal::Update(update));
+        }
+        if let Some(work) = blocking.as_mut()
+            && let Poll::Ready(result) = work.as_mut().poll(context)
+        {
+            *blocking = None;
+            return Poll::Ready(PumpSignal::WorkDone(result));
         }
         if let Some(deadline) = deadline && deadline.as_mut().poll(context).is_ready() {
             return Poll::Ready(PumpSignal::Deadline);
@@ -40,6 +50,8 @@ async fn pump_run(
         run_id,
     } = context;
     let mut updates: Pin<Box<dyn Stream<Item = Result<StreamUpdate, RuntimeFailure>> + Send>> = Box::pin(updates);
+    let mut blocking = Some(blocking);
+    let mut sdk_result = None;
     let mut sequence = 1;
     let mut output = String::new();
     let mut usage_seen = false;
@@ -49,18 +61,32 @@ async fn pump_run(
         swallowtail_runtime::ActivityOperationId::Run(run_id),
     );
     loop {
-        match next_signal(&mut updates, &mut deadline).await {
+        match next_signal(&mut updates, &mut blocking, &mut deadline).await {
             PumpSignal::Deadline => {
                 timed_out = true;
                 deadline = None;
-                cancellation.request_signal();
+                cancellation.abort_signal();
+            }
+            PumpSignal::WorkDone(result) => {
+                sdk_result = Some(result);
             }
             PumpSignal::Update(Some(Err(error))) => {
                 emit_wire_debug(&services, &error, "http.pump.transport");
                 stream_failure = Some(error);
+                cancellation.abort_signal();
                 break;
             }
             PumpSignal::Update(Some(Ok(StreamUpdate::TextDelta(delta)))) => {
+                if output.len().saturating_add(delta.len()) > MAXIMUM_OUTPUT_BYTES {
+                    let error = failure(
+                        "swallowtail.bedrock.output_limit_exceeded",
+                        "Bedrock Runtime output exceeded its byte bound",
+                    );
+                    emit_protocol_debug(&services, &error, "http.pump.map");
+                    stream_failure = Some(error);
+                    cancellation.abort_signal();
+                    break;
+                }
                 output.push_str(&delta);
                 if let Err(error) = events.send(RuntimeEvent::new(
                     sequence,
@@ -68,13 +94,13 @@ async fn pump_run(
                         Ok(observation) => observation,
                         Err(error) => {
                             stream_failure = Some(error);
-                            cancellation.request_signal();
+                            cancellation.abort_signal();
                             break;
                         }
                     }),
                 )) {
                     stream_failure = Some(error);
-                    cancellation.request_signal();
+                    cancellation.abort_signal();
                     break;
                 }
                 sequence += 1;
@@ -82,7 +108,7 @@ async fn pump_run(
                     Ok(content) => {
                         if let Err(error) = events.send(RuntimeEvent::with_content(sequence, RuntimeEventKind::OutputDelta, content)) {
                             stream_failure = Some(error);
-                            cancellation.request_signal();
+                            cancellation.abort_signal();
                             break;
                         }
                         sequence += 1;
@@ -94,7 +120,7 @@ async fn pump_run(
                         );
                         emit_protocol_debug(&services, &error, "http.pump.map");
                         stream_failure = Some(error);
-                        cancellation.request_signal();
+                        cancellation.abort_signal();
                         break;
                     }
                 }
@@ -104,23 +130,35 @@ async fn pump_run(
                 let observation = ProviderObservation::Usage(RuntimeTokenUsage::new(Some(usage.input), Some(usage.output)));
                 if let Err(error) = events.send(RuntimeEvent::new(sequence, RuntimeEventKind::ProviderObservation(observation))) {
                     stream_failure = Some(error);
-                    cancellation.request_signal();
+                    cancellation.abort_signal();
                     break;
                 }
                 sequence += 1;
                 if !output.is_empty() {
-                    let content = OperationContent::new(output.clone())
-                        .expect("non-empty Bedrock output is valid");
-                    if let Err(error) = events.send(RuntimeEvent::with_content(
-                        sequence,
-                        RuntimeEventKind::OutputAvailable,
-                        content,
-                    )) {
-                        stream_failure = Some(error);
-                        cancellation.request_signal();
-                        break;
+                    match OperationContent::new(output.clone()) {
+                        Ok(content) => {
+                            if let Err(error) = events.send(RuntimeEvent::with_content(
+                                sequence,
+                                RuntimeEventKind::OutputAvailable,
+                                content,
+                            )) {
+                                stream_failure = Some(error);
+                                cancellation.abort_signal();
+                                break;
+                            }
+                            sequence += 1;
+                        }
+                        Err(_) => {
+                            let error = failure(
+                                "swallowtail.bedrock.invalid_output",
+                                "Bedrock Runtime output content was invalid",
+                            );
+                            emit_protocol_debug(&services, &error, "http.pump.map");
+                            stream_failure = Some(error);
+                            cancellation.abort_signal();
+                            break;
+                        }
                     }
-                    sequence += 1;
                 }
             }
             PumpSignal::Update(Some(Ok(StreamUpdate::MessageStarted))) => {
@@ -130,13 +168,13 @@ async fn pump_run(
                         Ok(observation) => observation,
                         Err(error) => {
                             stream_failure = Some(error);
-                            cancellation.request_signal();
+                            cancellation.abort_signal();
                             break;
                         }
                     }),
                 )) {
                     stream_failure = Some(error);
-                    cancellation.request_signal();
+                    cancellation.abort_signal();
                     break;
                 }
                 sequence += 1;
@@ -149,7 +187,7 @@ async fn pump_run(
                     );
                     emit_protocol_debug(&services, &error, "http.pump.map");
                     stream_failure = Some(error);
-                    cancellation.request_signal();
+                    cancellation.abort_signal();
                     break;
                 }
                 if let Err(error) = events.send(RuntimeEvent::new(
@@ -158,13 +196,13 @@ async fn pump_run(
                         Ok(observation) => observation,
                         Err(error) => {
                             stream_failure = Some(error);
-                            cancellation.request_signal();
+                            cancellation.abort_signal();
                             break;
                         }
                     }),
                 )) {
                     stream_failure = Some(error);
-                    cancellation.request_signal();
+                    cancellation.abort_signal();
                     break;
                 }
                 sequence += 1;
@@ -173,14 +211,21 @@ async fn pump_run(
             PumpSignal::Update(None) => break,
         }
     }
-    let sdk_result = blocking.await;
+    drop(updates);
+    let sdk_result = match sdk_result {
+        Some(result) => result,
+        None => match blocking {
+            Some(blocking) => blocking.await,
+            None => Ok(()),
+        },
+    };
     let cleanup = access.release(&services).await;
     let status = if timed_out {
         TerminalStatus::TimedOut
-    } else if cancellation.is_requested() {
-        TerminalStatus::Cancelled
     } else if let Some(error) = stream_failure {
         TerminalStatus::ProviderFailed(error.diagnostic().clone())
+    } else if cancellation.is_requested() {
+        TerminalStatus::Cancelled
     } else if let Err(error) = sdk_result {
         emit_wire_debug(&services, &error, "http.pump.transport");
         TerminalStatus::ProviderFailed(error.diagnostic().clone())
@@ -200,9 +245,31 @@ async fn pump_run(
     } else {
         TerminalStatus::Completed
     };
+    let (status, final_output) =
+        if matches!(status, TerminalStatus::Completed) && !output.is_empty() {
+            match OperationContent::new(output) {
+                Ok(content) => (status, Some(content)),
+                Err(_) => {
+                    let diagnostic = SafeDiagnostic::new(
+                        "swallowtail.bedrock.invalid_output",
+                        "Bedrock Runtime output content was invalid",
+                    );
+                    services.emit_failure_debug(
+                        DebugObservationKind::ProtocolParse,
+                        ROUTE,
+                        "http.pump.map",
+                        diagnostic.code(),
+                        diagnostic.message(),
+                    );
+                    (TerminalStatus::ProviderFailed(diagnostic), None)
+                }
+            }
+        } else {
+            (status, None)
+        };
     let mut outcome = TerminalOutcome::new(status, cleanup);
-    if matches!(outcome.status(), TerminalStatus::Completed) && !output.is_empty() {
-        outcome = outcome.with_output(OperationContent::new(output).expect("non-empty output is valid"));
+    if let Some(content) = final_output {
+        outcome = outcome.with_output(content);
     }
     outcome
 }

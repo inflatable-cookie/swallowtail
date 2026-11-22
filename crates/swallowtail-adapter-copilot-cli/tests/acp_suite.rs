@@ -457,6 +457,41 @@ fn http_mcp_foreign_name_fails_before_session_new() {
     );
 }
 
+#[test]
+fn start_turn_missing_task_service_does_not_wedge_session() {
+    let (host, mut session, services) = open(Scenario::Success, "missing-task");
+    let host_id = ExecutionHostId::new("fixture.host.missing-task").expect("valid host id");
+    let error = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("copilot-missing-task").expect("valid turn"),
+            OperationContent::new("private fixture prompt").expect("valid prompt"),
+        ),
+        swallowtail_runtime::HostServices::new(host_id),
+    ))
+    .err()
+    .expect("missing task service must fail");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.copilot-cli.acp.task_service_missing"
+    );
+
+    let mut turn = start(
+        &mut *session,
+        services.clone(),
+        "copilot-after-missing-task",
+    );
+    let outcome = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
+}
+
 fn open(
     scenario: Scenario,
     suffix: &str,

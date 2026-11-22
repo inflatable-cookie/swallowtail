@@ -1,7 +1,7 @@
 use super::{Shared, SidecarFixtureHost, fixture_failure};
 use futures_channel::oneshot;
-use std::sync::atomic::Ordering;
 use std::sync::Arc;
+use std::sync::atomic::Ordering;
 use swallowtail_runtime::{
     BoxFuture, Deadline, DeadlineObservation, JoinedTask, MonotonicInstant, RuntimeFailure,
     ScopeId, ScopedTaskService, TimeService,

@@ -213,6 +213,7 @@ impl SidecarActiveTurn {
     pub(crate) fn mark_abort_acknowledged(&self) {
         self.cancelled.store(true, Ordering::SeqCst);
         self.abort_in_flight.store(false, Ordering::SeqCst);
+        self.abort_rejected.store(false, Ordering::SeqCst);
     }
 
     pub(crate) fn mark_abort_rejected(&self) {
@@ -255,6 +256,8 @@ impl SidecarActiveTurn {
             .expect("sidecar pending-settled lock poisoned") = false;
         let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
             (TerminalStatus::TimedOut, ActivityStatus::Failed)
+        } else if self.cancelled.load(Ordering::SeqCst) {
+            (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
         } else if self.abort_in_flight.load(Ordering::SeqCst)
             || self.abort_rejected.load(Ordering::SeqCst)
         {
@@ -265,8 +268,6 @@ impl SidecarActiveTurn {
                 )),
                 ActivityStatus::Failed,
             )
-        } else if self.cancelled.load(Ordering::SeqCst) {
-            (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
         } else {
             (
                 TerminalStatus::RuntimeFailed(diagnostic),
@@ -484,6 +485,33 @@ mod tests {
     use super::*;
     use futures_util::StreamExt;
     use swallowtail_runtime::ActivityLifecyclePhase;
+
+    #[test]
+    fn eof_after_session_cancellation_or_acknowledged_retry_reports_cancelled() {
+        for acknowledged_retry in [false, true] {
+            let (turn, _events, terminal) = SidecarActiveTurn::new(
+                RuntimeTurnId::new("sidecar-cancel-eof").expect("turn id is valid"),
+                Arc::new(AtomicU32::new(0)),
+            )
+            .expect("sidecar turn constructs");
+            turn.mark_abort_rejected();
+            turn.mark_abort_in_flight();
+            if acknowledged_retry {
+                turn.mark_abort_acknowledged();
+                assert!(
+                    !turn.abort_rejected.load(Ordering::SeqCst),
+                    "retry clears the previous rejection"
+                );
+            } else {
+                turn.mark_cancelled();
+            }
+            turn.fail_connection(SafeDiagnostic::new("test.eof", "sidecar disconnected"));
+            assert_eq!(
+                futures_executor::block_on(terminal).status(),
+                &TerminalStatus::Cancelled
+            );
+        }
+    }
 
     #[test]
     fn sidecar_fail_connection_closes_open_tool_and_reasoning_activities_before_terminal() {

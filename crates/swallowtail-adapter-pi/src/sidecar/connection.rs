@@ -35,6 +35,7 @@ pub(crate) struct SidecarConnection {
     services: HostServices,
     pending: Mutex<BTreeMap<String, PendingCommand>>,
     superseded_aborts: Mutex<BTreeSet<String>>,
+    abandoned_close: Mutex<Option<String>>,
     used_ids: Mutex<BTreeSet<String>>,
     active_turn: Mutex<Option<Arc<SidecarActiveTurn>>>,
     replay: Mutex<Option<ReplayCollector>>,
@@ -52,6 +53,7 @@ impl SidecarConnection {
             services,
             pending: Mutex::new(BTreeMap::new()),
             superseded_aborts: Mutex::new(BTreeSet::new()),
+            abandoned_close: Mutex::new(None),
             used_ids: Mutex::new(BTreeSet::new()),
             active_turn: Mutex::new(None),
             replay: Mutex::new(None),
@@ -61,6 +63,10 @@ impl SidecarConnection {
             #[cfg(test)]
             send_registration_gate: Mutex::new(None),
         })
+    }
+
+    pub(crate) fn services(&self) -> &HostServices {
+        &self.services
     }
 
     pub(crate) fn emit_protocol_debug(&self, error: &RuntimeFailure, stage: &'static str) {
@@ -177,6 +183,7 @@ impl SidecarConnection {
         // encoded must not consume one of the bounded pending slots forever.
         let bytes = encode_command(&id, command, params).map_err(|_| protocol_failure())?;
         let (sender, response) = response_channel();
+        let is_abort = abort_turn.is_some();
         {
             let mut pending = self.pending.lock().expect("sidecar pending lock poisoned");
             // The pump can close the connection after the fast check above.
@@ -202,20 +209,27 @@ impl SidecarConnection {
         }
         struct PendingGuard<'a> {
             pending: &'a Mutex<BTreeMap<String, PendingCommand>>,
+            superseded_aborts: Option<&'a Mutex<BTreeSet<String>>>,
             id: Option<String>,
         }
         impl Drop for PendingGuard<'_> {
             fn drop(&mut self) {
                 if let Some(id) = self.id.take() {
-                    self.pending
-                        .lock()
-                        .expect("sidecar pending lock poisoned")
-                        .remove(&id);
+                    let mut pending = self.pending.lock().expect("sidecar pending lock poisoned");
+                    if pending.remove(&id).is_some()
+                        && let Some(superseded) = self.superseded_aborts
+                    {
+                        superseded
+                            .lock()
+                            .expect("sidecar superseded-aborts lock poisoned")
+                            .insert(id);
+                    }
                 }
             }
         }
         let mut guard = PendingGuard {
             pending: &self.pending,
+            superseded_aborts: is_abort.then_some(&self.superseded_aborts),
             id: Some(id),
         };
         if let Some(dispatched) = dispatched {
@@ -343,11 +357,10 @@ impl SidecarConnection {
     ///
     /// The acknowledgement is best effort: the shutdown stages run as soon as
     /// one grace expires, so a harness that never answers `close` cannot keep
-    /// stdin open or the stop request unsent. The abandoned acknowledgement is
-    /// still held afterwards, so the caller's own cleanup bound owns whatever
-    /// remains.
+    /// stdin open or the stop request unsent. Any outstanding acknowledgement
+    /// is dropped before process shutdown begins.
     pub(crate) async fn close_session(&self, id: String) {
-        let mut close = Box::pin(self.command(id, PiSdkSidecarCommand::Close, json!({})));
+        let mut close = Box::pin(self.command(id.clone(), PiSdkSidecarCommand::Close, json!({})));
         let mut grace = self.close_acknowledgement_wait();
         let acknowledged = std::future::poll_fn(|context| {
             if close.as_mut().poll(context).is_ready() {
@@ -362,10 +375,18 @@ impl SidecarConnection {
             Poll::Pending
         })
         .await;
-        self.begin_close().await;
         if !acknowledged {
-            let _ = close.await;
+            let mut pending = self.pending.lock().expect("sidecar pending lock poisoned");
+            if pending.remove(&id).is_some() {
+                // The pump can still receive this exact acknowledgement during shutdown.
+                *self
+                    .abandoned_close
+                    .lock()
+                    .expect("sidecar close lock poisoned") = Some(id);
+            }
         }
+        drop(close);
+        self.begin_close().await;
     }
 
     fn close_acknowledgement_wait(&self) -> Option<BoxFuture<'static, DeadlineObservation>> {

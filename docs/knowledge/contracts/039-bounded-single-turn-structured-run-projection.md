@@ -327,6 +327,10 @@ return no binding. A raw provider run reference remains insufficient.
 Cancellation and deadline target the active provider turn or response first,
 then invalidate the operation-private session or connection.
 
+OpenCode HTTP and Pi RPC start a fresh 500-tick cleanup grace when closing a
+structured run's private session. This gives cleanup time to run after the
+turn's execution deadline expires.
+
 Every terminal path:
 
 - stops new callback and event delivery

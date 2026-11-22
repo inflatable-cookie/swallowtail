@@ -111,7 +111,7 @@ fn respond_sse(
         StreamFixture::DuplicateUsage => write_fixture(stream, DUPLICATE_USAGE.as_bytes()),
         StreamFixture::MissingUsage => write_fixture(stream, MISSING_USAGE.as_bytes()),
         StreamFixture::Compaction => write_fixture(stream, COMPACTION.as_bytes()),
-        StreamFixture::InputCallbacks => {
+        StreamFixture::InputCallbacks | StreamFixture::GatedCallbackReply => {
             for (event, expected_replies) in [
                 (
                     r#"{"id":"evt_permission_1","type":"permission.asked","properties":{"id":"per_fixture","sessionID":"ses_fixture","permission":"edit","patterns":["src/approved.rs"],"metadata":{},"always":["src/**"]}}"#,

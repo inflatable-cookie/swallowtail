@@ -2,6 +2,7 @@ use super::session::PiSessionHandle;
 use super::validation::validate_run;
 use super::{PiRpcDriver, failure};
 use crate::connection::PiConnection;
+use crate::driver::{ABORT_ACKNOWLEDGEMENT_GRACE_TICKS, grace_deadline, run_before_deadline};
 use crate::turn::ActiveTurn;
 use serde_json::json;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
@@ -12,8 +13,8 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CallbackExchange, CancellationAcknowledgement, CancellationControl,
-    CleanupOutcome, HostServices, InteractiveSessionHandle, JoinedTask, OpenSessionRequest,
-    RequestId, RunHandle, RuntimeFailure, RuntimeRunId, RuntimeTurnId, SessionCleanupRequest,
+    CleanupOutcome, Deadline, HostServices, InteractiveSessionHandle, JoinedTask,
+    OpenSessionRequest, RequestId, RunHandle, RuntimeFailure, RuntimeRunId, RuntimeTurnId,
     SessionPlanAgreement, StructuredRunDriver, StructuredRunRequest, TerminalOutcome, TurnHandle,
     TurnRequest, terminal_outcome_channel,
 };
@@ -27,8 +28,6 @@ impl StructuredRunDriver for PiRpcDriver {
     ) -> BoxFuture<'_, Result<Box<dyn RunHandle>, RuntimeFailure>> {
         Box::pin(async move {
             let version_features = validate_run(&plan, &request, &services, &self.credential)?;
-            let cleanup =
-                SessionCleanupRequest::new(request.deadline().expect("validated Pi run deadline"));
             let run_id = RuntimeRunId::new(format!("pi-rpc:run:{}", request.request_id().as_str()))
                 .map_err(|_| malformed_run_id())?;
             let turn_id =
@@ -61,7 +60,7 @@ impl StructuredRunDriver for PiRpcDriver {
             let mut turn = match session.start_turn(turn_request, services.clone()).await {
                 Ok(turn) => turn,
                 Err(error) => {
-                    let _ = Box::new(session).close(cleanup, services).await;
+                    let _ = session.close_run().await;
                     return Err(error);
                 }
             };
@@ -69,7 +68,7 @@ impl StructuredRunDriver for PiRpcDriver {
                 Some(events) => events,
                 None => {
                     drop(turn);
-                    let _ = Box::new(session).close(cleanup, services).await;
+                    let _ = session.close_run().await;
                     return Err(failure(
                         "swallowtail.pi.rpc.run_events_missing",
                         "Pi RPC structured run did not expose its event stream",
@@ -81,7 +80,7 @@ impl StructuredRunDriver for PiRpcDriver {
                 Some(terminal) => terminal,
                 None => {
                     drop(turn);
-                    let _ = Box::new(session).close(cleanup, services).await;
+                    let _ = session.close_run().await;
                     return Err(failure(
                         "swallowtail.pi.rpc.run_terminal_missing",
                         "Pi RPC structured run did not expose its terminal outcome",
@@ -96,7 +95,7 @@ impl StructuredRunDriver for PiRpcDriver {
                 Some(active) => active,
                 None => {
                     drop(turn);
-                    let _ = Box::new(session).close(cleanup, services).await;
+                    let _ = session.close_run().await;
                     return Err(failure(
                         "swallowtail.pi.rpc.run_active_missing",
                         "Pi RPC structured run lost its active prompt",
@@ -116,7 +115,6 @@ impl StructuredRunDriver for PiRpcDriver {
             })));
             let (terminal_sender, terminal) = terminal_outcome_channel();
             let task_pending = Arc::clone(&pending);
-            let task_services = services.clone();
             let task = services.task().expect("validated Pi task service").spawn(
                 task_scope,
                 Box::pin(async move {
@@ -127,9 +125,7 @@ impl StructuredRunDriver for PiRpcDriver {
                         .expect("Pi pending run exists");
                     let outcome = resources.terminal.await;
                     drop(resources.turn);
-                    let session_cleanup = Box::new(resources.session)
-                        .close(cleanup, task_services)
-                        .await;
+                    let session_cleanup = resources.session.close_run().await;
                     let cleanup = CleanupOutcome::merge(outcome.cleanup().clone(), session_cleanup);
                     let finished = copy_outcome_with_cleanup(outcome, cleanup);
                     let _ = terminal_sender.complete(finished);
@@ -141,7 +137,7 @@ impl StructuredRunDriver for PiRpcDriver {
                     let resources = pending.lock().expect("Pi pending run lock poisoned").take();
                     if let Some(resources) = resources {
                         drop(resources.turn);
-                        let _ = Box::new(resources.session).close(cleanup, services).await;
+                        let _ = resources.session.close_run().await;
                     }
                     return Err(error);
                 }
@@ -174,12 +170,11 @@ struct PiRunCancellation {
     attempts: AtomicU64,
 }
 
-impl CancellationControl for PiRunCancellation {
-    fn scope(&self) -> CancellationScope {
-        CancellationScope::StructuredRun
-    }
-
-    fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {
+impl PiRunCancellation {
+    fn request_with_deadline(
+        &self,
+        deadline: Option<Deadline>,
+    ) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {
         let already = self.requested.swap(true, Ordering::SeqCst) || self.turn.is_finished();
         Box::pin(async move {
             if already {
@@ -192,14 +187,19 @@ impl CancellationControl for PiRunCancellation {
             } else {
                 format!("abort:{}:{attempt}", self.turn.runtime_id().as_str())
             };
-            let response = self
-                .connection
-                .abort_command(
-                    id.clone(),
-                    json!({"id": id, "type": "abort"}),
-                    Arc::clone(&self.turn),
-                )
-                .await;
+            let abort = self.connection.abort_command(
+                id.clone(),
+                json!({"id": id, "type": "abort"}),
+                Arc::clone(&self.turn),
+            );
+            let response = run_before_deadline(
+                abort,
+                deadline,
+                self.connection.services(),
+                "swallowtail.pi.rpc.close_abort_timed_out",
+                "Pi RPC close timed out awaiting abort acknowledgement",
+            )
+            .await;
             match response {
                 Ok(response) if response.success => {
                     self.turn.mark_abort_acknowledged();
@@ -221,6 +221,16 @@ impl CancellationControl for PiRunCancellation {
                 }
             }
         })
+    }
+}
+
+impl CancellationControl for PiRunCancellation {
+    fn scope(&self) -> CancellationScope {
+        CancellationScope::StructuredRun
+    }
+
+    fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {
+        self.request_with_deadline(None)
     }
 }
 
@@ -265,7 +275,14 @@ impl RunHandle for PiRunHandle {
 
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
-            let cancellation = match self.cancellation.request().await {
+            let cancellation = match self
+                .cancellation
+                .request_with_deadline(grace_deadline(
+                    self.cancellation.connection.services(),
+                    ABORT_ACKNOWLEDGEMENT_GRACE_TICKS,
+                ))
+                .await
+            {
                 Ok(_) => CleanupOutcome::NotApplicable,
                 Err(error) => {
                     // Any rejected or failed native abort leaves the run live, so
@@ -313,6 +330,8 @@ fn malformed_run_id() -> RuntimeFailure {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::driver::close_tests::{AbortGraceExpires, SilentAbort};
+    use futures_util::FutureExt;
     use std::sync::atomic::{AtomicU32, AtomicUsize};
     use swallowtail_core::ExecutionHostId;
     use swallowtail_runtime::{
@@ -404,6 +423,59 @@ mod tests {
                 })
             })
         }
+    }
+
+    #[test]
+    fn silent_abort_during_run_close_expires_before_force_stop_and_join() {
+        struct JoinAfterForceStop(Arc<SilentAbort>);
+
+        impl JoinedTask for JoinAfterForceStop {
+            fn join(self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+                assert!(
+                    self.0.force_stopped.load(Ordering::SeqCst),
+                    "force stop must precede join"
+                );
+                Box::pin(async { Ok(()) })
+            }
+        }
+
+        let process = Arc::new(SilentAbort::default());
+        let clock = Arc::new(AbortGraceExpires);
+        let services =
+            HostServices::new(ExecutionHostId::new("pi.rpc.run-close-test").expect("host id"))
+                .with_time(clock.clone());
+        let connection =
+            PiConnection::new(process.clone(), Arc::new(DummyTaskService), clock, services);
+        let (turn, events, callbacks, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("pi-run-silent-abort").expect("turn id"),
+            Arc::new(AtomicU32::new(0)),
+            Arc::downgrade(&connection),
+            false,
+        )
+        .expect("turn constructs");
+        let handle = Box::new(PiRunHandle {
+            request_id: RequestId::new("pi-run-silent-abort-req").expect("request id"),
+            run_id: RuntimeRunId::new("pi-run-silent-abort-run").expect("run id"),
+            events: Some(events),
+            callbacks: Some(callbacks),
+            terminal: Some(Box::pin(terminal)),
+            cancellation: Arc::new(PiRunCancellation {
+                connection,
+                turn,
+                requested: AtomicBool::new(false),
+                attempts: AtomicU64::new(0),
+            }),
+            task: Box::new(JoinAfterForceStop(process.clone())),
+        });
+        let cleanup = handle
+            .close()
+            .now_or_never()
+            .expect("close settles after grace expires");
+        assert_eq!(
+            cleanup.diagnostic().map(SafeDiagnostic::code),
+            Some("swallowtail.pi.rpc.close_abort_timed_out")
+        );
+        assert_eq!(process.writes.load(Ordering::SeqCst), 1);
     }
 
     #[test]

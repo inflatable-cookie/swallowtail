@@ -36,6 +36,7 @@ pub enum StreamFixture {
     MissingUsage,
     Compaction,
     InputCallbacks,
+    GatedCallbackReply,
     WaitForAbort,
     DeleteMissing,
     DeleteUnauthorized,
@@ -103,6 +104,7 @@ impl FixtureServer {
                             fixture,
                             StreamFixture::WaitForAbort
                                 | StreamFixture::InputCallbacks
+                                | StreamFixture::GatedCallbackReply
                                 | StreamFixture::HoldPromptAndAbort
                                 | StreamFixture::HoldPromptAbortAndMalformedSse
                                 | StreamFixture::HoldHistoryPage
@@ -182,6 +184,10 @@ impl FixtureServer {
     }
 
     pub(crate) fn delete_response_gate(&self) -> DeleteResponseGate {
+        self.delete_gate.clone()
+    }
+
+    pub(crate) fn callback_response_gate(&self) -> DeleteResponseGate {
         self.delete_gate.clone()
     }
 

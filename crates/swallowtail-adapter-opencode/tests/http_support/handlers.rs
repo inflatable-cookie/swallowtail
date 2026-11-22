@@ -161,6 +161,9 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
         || path.starts_with("/question/que_fixture/reply?")
         || path.starts_with("/question/que_fixture/reject?")
     {
+        if fixture == StreamFixture::GatedCallbackReply {
+            delete_gate.mark_dispatched_and_wait_for_release();
+        }
         callback_replies.fetch_add(1, Ordering::SeqCst);
         respond_json(&mut stream, 200, "true");
     } else if path.contains("/abort?") {

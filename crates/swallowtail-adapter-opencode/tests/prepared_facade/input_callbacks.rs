@@ -253,11 +253,11 @@ fn prepared_run_uses_run_correlation_and_reject_paths_without_persistent_authori
 }
 
 #[test]
-fn cancellation_abandons_pending_callbacks_before_attachment_cleanup() {
-    let fixture = PreparedFixture::new_with_fixture(
+fn cancellation_stops_in_flight_callbacks_before_attachment_cleanup() {
+    let mut fixture = PreparedFixture::new_with_fixture(
         "opencode.input-callback.cancel",
         "1.18.10",
-        StreamFixture::InputCallbacks,
+        StreamFixture::GatedCallbackReply,
     );
     let prepared = fixture.prepared();
     let profile = prepared
@@ -289,8 +289,30 @@ fn cancellation_abandons_pending_callbacks_before_attachment_cleanup() {
     let mut requests = callbacks.take_requests().expect("callback stream exists");
     let pending = next_callback(&mut requests);
     let responder = callbacks.responder();
-
-    block_on(turn.cancellation().request()).expect("turn cancellation requests");
+    let reply = CallbackResponse::new(
+        pending.callback_id().clone(),
+        turn_id.clone(),
+        CallbackResult::Success(
+            CallbackPayload::new(br#"{"reply":"once"}"#, 256).expect("reply is bounded"),
+        ),
+    );
+    let in_flight = {
+        let responder = responder.clone();
+        std::thread::spawn(move || block_on(responder.respond(reply)))
+    };
+    let gate = fixture.server.callback_response_gate();
+    gate.wait_for_dispatch();
+    let cancel = block_on(turn.cancellation().request());
+    gate.release();
+    cancel.expect("turn cancellation requests");
+    let reply_error = in_flight
+        .join()
+        .expect("callback worker joins")
+        .expect_err("an in-flight reply observes turn cancellation");
+    assert_eq!(
+        reply_error.diagnostic().code(),
+        "swallowtail.opencode.request_cancelled"
+    );
     let outcome = block_on(
         turn.take_terminal_outcome()
             .expect("terminal outcome exists"),
@@ -314,13 +336,17 @@ fn cancellation_abandons_pending_callbacks_before_attachment_cleanup() {
         CleanupOutcome::Clean
     );
     assert_eq!(fixture.attachment_releases.load(Ordering::SeqCst), 1);
-    assert!(
-        !fixture
+    assert_eq!(
+        fixture
             .server
             .requests()
             .iter()
-            .any(|request| request.contains("/permission/per_fixture/reply?"))
+            .filter(|request| request.contains("/permission/per_fixture/reply?"))
+            .count(),
+        1,
+        "late reply must not dispatch again"
     );
+    fixture.server.shutdown();
 }
 
 #[test]

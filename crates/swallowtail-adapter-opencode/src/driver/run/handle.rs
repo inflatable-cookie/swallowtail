@@ -10,19 +10,24 @@ struct OpenCodeRunCancellation {
     requested: AtomicBool,
 }
 
+impl OpenCodeRunCancellation {
+    fn claim_request(&self) -> bool {
+        !self.requested.swap(true, Ordering::SeqCst) && !self.terminal.load(Ordering::SeqCst)
+    }
+}
+
 impl CancellationControl for OpenCodeRunCancellation {
     fn scope(&self) -> CancellationScope {
         CancellationScope::StructuredRun
     }
 
     fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {
-        let already = self.requested.swap(true, Ordering::SeqCst)
-            || self.terminal.load(Ordering::SeqCst);
+        let claimed = self.claim_request();
         Box::pin(async move {
-            if already {
-                Ok(CancellationAcknowledgement::AlreadyRequested)
-            } else {
+            if claimed {
                 self.inner.request().await
+            } else {
+                Ok(CancellationAcknowledgement::AlreadyRequested)
             }
         })
     }
@@ -69,7 +74,11 @@ impl RunHandle for OpenCodeRunHandle {
 
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
-            let cancellation = cancellation_cleanup(self.cancellation.request().await);
+            let cancellation = if self.cancellation.claim_request() {
+                cancellation_cleanup(self.cancellation.inner.request_bounded().await)
+            } else {
+                CleanupOutcome::NotApplicable
+            };
             let join = self.task.join().await.map_or_else(
                 |_| {
                     CleanupOutcome::Failed(SafeDiagnostic::new(
@@ -89,26 +98,24 @@ struct CreatedSessionCleanup {
     deletion: RemoteResourceDeletionOutcome,
 }
 
-#[derive(Clone)]
-struct RunSessionCleanupBoundary {
-    request: SessionCleanupRequest,
-    services: HostServices,
-}
+/// Grace for joining the turn, deleting its private session, and releasing leases.
+const RUN_SESSION_CLEANUP_GRACE_TICKS: u64 = 500;
 
-async fn close_run_session(
-    session: OpenCodeSessionHandle,
-    boundary: Option<RunSessionCleanupBoundary>,
-) -> CreatedSessionCleanup {
-    let Some(boundary) = boundary else {
+async fn close_run_session(session: OpenCodeSessionHandle) -> CreatedSessionCleanup {
+    let Some(time) = session.services.time() else {
         return session.close_and_delete().await;
     };
+    let deadline = Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(
+        time.now().ticks().saturating_add(RUN_SESSION_CLEANUP_GRACE_TICKS),
+    ));
+    let services = session.services.clone();
     let expected_execution_host_id = session.resume_binding.execution_host_id().clone();
     let deletion = Arc::new(Mutex::new(None));
     let captured_deletion = Arc::clone(&deletion);
     let cleanup = swallowtail_runtime::bound_session_cleanup(
         expected_execution_host_id,
-        boundary.request,
-        boundary.services,
+        SessionCleanupRequest::new(deadline),
+        services,
         Box::pin(async move {
             let result = session.close_and_delete().await;
             *captured_deletion

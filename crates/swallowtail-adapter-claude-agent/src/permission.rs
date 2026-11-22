@@ -21,6 +21,50 @@ const PERMISSION_NAMESPACE: &str = "acp/session/request-permission";
 const CALLBACK_CAPACITY: usize = 16;
 const CALLBACK_BYTES: usize = 64 * 1024;
 const MAXIMUM_OPTION_ID_BYTES: usize = 512;
+/// Maximum number of recent provider callback ids retained for duplicate rejection.
+const MAXIMUM_TRACKED_PROVIDER_IDS: usize = 1024;
+
+pub(super) struct BoundedProviderIds {
+    entries: BTreeSet<String>,
+    order: VecDeque<String>,
+    capacity: usize,
+}
+
+impl BoundedProviderIds {
+    pub(super) fn new(capacity: usize) -> Self {
+        Self {
+            entries: BTreeSet::new(),
+            order: VecDeque::new(),
+            capacity,
+        }
+    }
+
+    fn insert(&mut self, id: String) -> bool {
+        if self.entries.contains(&id) {
+            return false;
+        }
+        while self.entries.len() >= self.capacity {
+            if let Some(oldest) = self.order.pop_front() {
+                self.entries.remove(&oldest);
+            } else {
+                break;
+            }
+        }
+        self.entries.insert(id.clone());
+        self.order.push_back(id);
+        true
+    }
+
+    fn clear(&mut self) {
+        self.entries.clear();
+        self.order.clear();
+    }
+
+    #[cfg(test)]
+    fn len(&self) -> usize {
+        self.entries.len()
+    }
+}
 
 #[must_use]
 /// Returns the extension namespace for Claude Agent permission callbacks.
@@ -45,7 +89,7 @@ struct PendingCallback {
 struct State {
     requests: VecDeque<CallbackRequest>,
     pending: BTreeMap<CallbackId, PendingCallback>,
-    provider_ids: BTreeSet<String>,
+    provider_ids: BoundedProviderIds,
     closed: bool,
     waiter: Option<Waker>,
 }
@@ -63,7 +107,7 @@ impl CallbackHub {
         let state = Arc::new(Mutex::new(State {
             requests: VecDeque::new(),
             pending: BTreeMap::new(),
-            provider_ids: BTreeSet::new(),
+            provider_ids: BoundedProviderIds::new(MAXIMUM_TRACKED_PROVIDER_IDS),
             closed: false,
             waiter: None,
         }));
@@ -260,6 +304,7 @@ impl CallbackHub {
         state.closed = true;
         state.requests.clear();
         state.pending.clear();
+        state.provider_ids.clear();
         wake(&mut state);
     }
 }
@@ -306,4 +351,25 @@ fn closed() -> RuntimeFailure {
         "swallowtail.claude_agent.acp.permission_callback_closed",
         "Claude Agent permission callback exchange is closed",
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn provider_ids_stays_bounded_and_rejects_recent_duplicates() {
+        let mut ids = BoundedProviderIds::new(3);
+        assert!(ids.insert("number:1".to_owned()));
+        assert!(ids.insert("number:2".to_owned()));
+        assert!(ids.insert("number:3".to_owned()));
+        assert!(!ids.insert("number:2".to_owned()));
+        assert!(ids.insert("number:4".to_owned()));
+        assert_eq!(ids.len(), 3);
+        assert!(!ids.insert("number:4".to_owned()));
+        assert!(ids.insert("number:1".to_owned()));
+        assert_eq!(ids.len(), 3);
+        ids.clear();
+        assert_eq!(ids.len(), 0);
+    }
 }

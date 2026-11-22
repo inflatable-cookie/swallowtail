@@ -17,6 +17,53 @@ use swallowtail_runtime::{
 
 /// Lifecycle notifications retained for the confirmation that reads them.
 const MAX_RETAINED_LIFECYCLE_NOTIFICATIONS: usize = 256;
+/// Maximum number of fire-and-forget request ids retained to ignore late replies.
+const MAX_IGNORED_RESPONSES: usize = 256;
+
+struct BoundedIgnoredResponses {
+    ids: BTreeSet<u64>,
+    order: VecDeque<u64>,
+    capacity: usize,
+}
+
+impl BoundedIgnoredResponses {
+    fn new(capacity: usize) -> Self {
+        Self {
+            ids: BTreeSet::new(),
+            order: VecDeque::new(),
+            capacity,
+        }
+    }
+
+    fn insert(&mut self, id: u64) {
+        if self.ids.contains(&id) {
+            return;
+        }
+        while self.ids.len() >= self.capacity {
+            if let Some(oldest) = self.order.pop_front() {
+                self.ids.remove(&oldest);
+            } else {
+                break;
+            }
+        }
+        self.ids.insert(id);
+        self.order.push_back(id);
+    }
+
+    fn remove(&mut self, id: &u64) -> bool {
+        if self.ids.remove(id) {
+            self.order.retain(|existing| existing != id);
+            true
+        } else {
+            false
+        }
+    }
+
+    #[cfg(test)]
+    fn len(&self) -> usize {
+        self.ids.len()
+    }
+}
 
 pub(crate) struct RpcConnection {
     process: Arc<dyn ProcessHandle>,
@@ -24,7 +71,7 @@ pub(crate) struct RpcConnection {
     next_id: AtomicU64,
     next_callback_id: AtomicU64,
     pending: Mutex<BTreeMap<u64, ResponseSender>>,
-    ignored_responses: Mutex<BTreeSet<u64>>,
+    ignored_responses: Mutex<BoundedIgnoredResponses>,
     active_turn: Mutex<Option<Arc<ActiveTurn>>>,
     lifecycle_notifications: Mutex<VecDeque<LifecycleNotification>>,
     closing: AtomicBool,
@@ -42,7 +89,7 @@ impl RpcConnection {
             next_id: AtomicU64::new(1),
             next_callback_id: AtomicU64::new(1),
             pending: Mutex::new(BTreeMap::new()),
-            ignored_responses: Mutex::new(BTreeSet::new()),
+            ignored_responses: Mutex::new(BoundedIgnoredResponses::new(MAX_IGNORED_RESPONSES)),
             active_turn: Mutex::new(None),
             lifecycle_notifications: Mutex::new(VecDeque::new()),
             closing: AtomicBool::new(false),
@@ -347,4 +394,25 @@ fn malformed_outbound() -> RuntimeFailure {
 
 pub(crate) fn failure(code: &'static str, message: impl Into<String>) -> RuntimeFailure {
     RuntimeFailure::new(SafeDiagnostic::new(code, message))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::BoundedIgnoredResponses;
+
+    #[test]
+    fn ignored_responses_evicts_oldest_entries_at_capacity() {
+        let mut ignored = BoundedIgnoredResponses::new(3);
+        ignored.insert(1);
+        ignored.insert(2);
+        ignored.insert(3);
+        ignored.insert(4);
+        assert_eq!(ignored.len(), 3);
+        assert!(!ignored.remove(&1), "oldest entry should be evicted");
+        assert!(ignored.remove(&2));
+        assert_eq!(ignored.len(), 2);
+        assert!(ignored.remove(&4));
+        assert!(ignored.remove(&3));
+        assert_eq!(ignored.len(), 0);
+    }
 }

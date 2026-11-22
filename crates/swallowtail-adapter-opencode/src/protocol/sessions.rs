@@ -41,8 +41,9 @@ pub(crate) fn parse_session_for_version(
     Ok(session.id)
 }
 
-pub(crate) fn session_get(session_id: &str, directory: &str) -> Request {
-    Request::get(format!("/session/{session_id}")).with_directory(directory)
+pub(crate) fn session_get(session_id: &str, directory: &str) -> Result<Request, RuntimeFailure> {
+    let session_id = safe_session_path_id(session_id)?;
+    Ok(Request::get(format!("/session/{session_id}")).with_directory(directory))
 }
 
 pub(crate) fn session_list(directory: &str, start: u32, limit: u32) -> Request {
@@ -147,14 +148,15 @@ pub(crate) fn session_messages(
     directory: &str,
     limit: usize,
     before: Option<&str>,
-) -> Request {
+) -> Result<Request, RuntimeFailure> {
+    let session_id = safe_session_path_id(session_id)?;
     let request = Request::get(format!("/session/{session_id}/message"))
         .with_directory(directory)
         .with_query("limit", limit.to_string());
-    match before {
+    Ok(match before {
         Some(before) => request.with_query("before", before),
         None => request,
-    }
+    })
 }
 
 pub(crate) fn project_session_messages(

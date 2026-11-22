@@ -77,6 +77,8 @@ impl PiSdkSidecarDriver {
                 request.working_resource.clone(),
                 request.plan_agreement.access_policy(),
                 kind,
+                request.deadline,
+                "swallowtail.pi.sdk-sidecar.attach_deadline_elapsed",
                 services,
             )
             .await?;

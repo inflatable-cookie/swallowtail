@@ -245,11 +245,23 @@ impl TurnHandle for PiTurnHandle {
                 match self.cancellation.request().await {
                     Ok(_) => CleanupOutcome::NotApplicable,
                     // A turn that could not be aborted may still be running, so
-                    // close must not report a clean outcome for it.
-                    Err(_) => cleanup_failure(
-                        "cancel_rejected",
-                        "Pi could not abort the active turn during close",
-                    ),
+                    // close must not report a clean outcome for it. Finish the
+                    // turn so the deadline task wakes and exits instead of
+                    // stalling until the full turn deadline.
+                    Err(_) => {
+                        if !self.cancellation.turn.is_finished() {
+                            self.cancellation.turn.fail_connection(
+                                swallowtail_core::SafeDiagnostic::new(
+                                    "swallowtail.pi.rpc.cancel_rejected",
+                                    "Pi could not abort the active turn during close",
+                                ),
+                            );
+                        }
+                        cleanup_failure(
+                            "cancel_rejected",
+                            "Pi could not abort the active turn during close",
+                        )
+                    }
                 }
             };
             let active = {
@@ -281,5 +293,158 @@ impl TurnHandle for PiTurnHandle {
                 self.attachment.release().await,
             )
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::driver::session::ActiveTask;
+    use std::sync::Mutex;
+    use std::sync::atomic::AtomicU32;
+    use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
+    use swallowtail_runtime::{
+        Deadline, DeadlineObservation, HostServices, JoinedTask, MonotonicInstant, ProcessExit,
+        ProcessHandle, ProcessInputChunk, ProcessOutputChunk, ScopeId, ScopedTaskService,
+        TimeService,
+    };
+
+    struct RefusingStdin;
+
+    impl ProcessHandle for RefusingStdin {
+        fn write_stdin(&self, _: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async {
+                Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "test.stdin_refused",
+                    "stdin refused",
+                )))
+            })
+        }
+
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+
+    struct DummyTaskService;
+
+    impl ScopedTaskService for DummyTaskService {
+        fn spawn(
+            &self,
+            _scope: ScopeId,
+            _task: BoxFuture<'static, ()>,
+        ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+            Err(RuntimeFailure::new(SafeDiagnostic::new(
+                "test.unused",
+                "unused",
+            )))
+        }
+    }
+
+    struct DummyTimeService;
+
+    impl TimeService for DummyTimeService {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(0)
+        }
+
+        fn wait_until(&self, _deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+            Box::pin(std::future::pending())
+        }
+    }
+
+    struct WatchTurnFinish {
+        turn: Arc<ActiveTurn>,
+    }
+
+    impl JoinedTask for WatchTurnFinish {
+        fn join(self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            Box::pin(async move {
+                let mut finished = Box::pin(self.turn.finished_future());
+                let mut polls = 0usize;
+                std::future::poll_fn(move |context| {
+                    if std::future::Future::poll(finished.as_mut(), context).is_ready() {
+                        return std::task::Poll::Ready(Ok(()));
+                    }
+                    polls += 1;
+                    if polls > 16 {
+                        return std::task::Poll::Ready(Err(RuntimeFailure::new(
+                            SafeDiagnostic::new(
+                                "test.deadline_watch_hung",
+                                "deadline watcher waited past rejected abort",
+                            ),
+                        )));
+                    }
+                    context.waker().wake_by_ref();
+                    std::task::Poll::Pending
+                })
+                .await
+            })
+        }
+    }
+
+    #[test]
+    fn rejected_abort_during_close_wakes_deadline_task_and_reports_cleanup_failure() {
+        let services =
+            HostServices::new(ExecutionHostId::new("pi.rpc.close-test").expect("host id is valid"));
+        let connection = PiConnection::new(
+            Arc::new(RefusingStdin),
+            Arc::new(DummyTaskService),
+            Arc::new(DummyTimeService),
+            services,
+        );
+        let (turn, events, callbacks, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("turn-close").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+            Arc::downgrade(&connection),
+            false,
+        )
+        .expect("turn constructs");
+        let active: ActiveSlot = Arc::new(Mutex::new(Some(ActiveTask {
+            turn: Arc::clone(&turn),
+            deadline_task: Some(Box::new(WatchTurnFinish {
+                turn: Arc::clone(&turn),
+            })),
+            attachment: SharedAttachmentMaterialization::default(),
+        })));
+        let handle = PiTurnHandle::new(
+            RuntimeTurnId::new("turn-close").expect("turn id is valid"),
+            events,
+            callbacks,
+            Box::pin(terminal),
+            super::PiTurnBinding {
+                connection,
+                turn: Arc::clone(&turn),
+                active,
+                attachment: SharedAttachmentMaterialization::default(),
+                command_dispositions: false,
+            },
+        );
+        let handle: Box<dyn TurnHandle> = Box::new(handle);
+        let cleanup = futures_executor::block_on(handle.close());
+        assert!(
+            matches!(cleanup, CleanupOutcome::Failed(ref diagnostic) if diagnostic.code() == "swallowtail.pi.rpc.cleanup_failed" && diagnostic.message().contains("cancel_rejected")),
+            "expected cancel_rejected cleanup failure, got {cleanup:?}"
+        );
+        assert!(
+            turn.is_finished(),
+            "turn must finish so deadline task wakes"
+        );
     }
 }

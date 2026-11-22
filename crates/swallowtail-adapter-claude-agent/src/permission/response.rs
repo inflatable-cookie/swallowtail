@@ -137,7 +137,7 @@ fn selected_option(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::permission::{PendingCallback, PendingKind};
+    use crate::permission::{BoundedProviderIds, PendingCallback, PendingKind};
     use serde_json::json;
     use std::collections::{BTreeMap, BTreeSet, VecDeque};
     use swallowtail_runtime::{
@@ -164,7 +164,11 @@ mod tests {
                     },
                 },
             )]),
-            provider_ids: BTreeSet::from(["number:900".to_owned()]),
+            provider_ids: {
+                let mut ids = BoundedProviderIds::new(16);
+                ids.insert("number:900".to_owned());
+                ids
+            },
             closed: false,
             waiter: None,
         }));

@@ -8,21 +8,93 @@ mod subagent;
 use crate::turn_state::malformed_notification;
 use item::ItemIdentity;
 use serde_json::Value;
-use std::collections::HashMap;
+use std::borrow::Borrow;
+use std::collections::{HashMap, VecDeque};
+use std::hash::Hash;
 use swallowtail_core::{ProviderActivityRef, ProviderRequestRef};
 use swallowtail_runtime::{
     ActivityCorrelation, ActivityId, ActivityLabel, ActivityLifecyclePhase, ActivityNamespace,
     ActivityObservation, ActivityOperationId, ActivityStatus, RuntimeFailure, RuntimeTurnId,
 };
 
+/// Maximum number of tracked item/identity/label/correlation entries per turn.
+const MAX_TRACKED_ACTIVITY_ENTRIES: usize = 2048;
+/// Maximum number of concurrent pending server requests tracked per turn.
+const MAX_TRACKED_REQUESTS: usize = 256;
+
+struct BoundedMap<K, V> {
+    entries: HashMap<K, V>,
+    order: VecDeque<K>,
+    capacity: usize,
+}
+
+impl<K: Eq + Hash + Clone, V> BoundedMap<K, V> {
+    fn new(capacity: usize) -> Self {
+        Self {
+            entries: HashMap::new(),
+            order: VecDeque::new(),
+            capacity,
+        }
+    }
+
+    fn get<Q>(&self, key: &Q) -> Option<&V>
+    where
+        K: Borrow<Q>,
+        Q: Hash + Eq + ?Sized,
+    {
+        self.entries.get(key)
+    }
+
+    fn insert(&mut self, key: K, value: V) {
+        if let Some(existing) = self.entries.get_mut(&key) {
+            *existing = value;
+            return;
+        }
+        while self.entries.len() >= self.capacity {
+            if let Some(oldest) = self.order.pop_front() {
+                self.entries.remove(&oldest);
+            } else {
+                break;
+            }
+        }
+        self.entries.insert(key.clone(), value);
+        self.order.push_back(key);
+    }
+
+    fn get_or_insert_with(&mut self, key: K, make: impl FnOnce() -> V) -> &V {
+        if !self.entries.contains_key(&key) {
+            let value = make();
+            self.insert(key.clone(), value);
+        }
+        self.entries
+            .get(&key)
+            .expect("inserted key must be present")
+    }
+
+    fn remove<Q>(&mut self, key: &Q) -> Option<V>
+    where
+        K: Borrow<Q>,
+        Q: Hash + Eq + ?Sized,
+    {
+        let removed = self.entries.remove(key)?;
+        self.order.retain(|existing| existing.borrow() != key);
+        Some(removed)
+    }
+
+    #[cfg(test)]
+    fn len(&self) -> usize {
+        self.entries.len()
+    }
+}
+
 pub(crate) struct AppServerActivityProjection {
     operation_id: ActivityOperationId,
     root_provider_thread_id: String,
-    identities: HashMap<String, ActivityId>,
-    items: HashMap<String, ItemIdentity>,
-    labels: HashMap<String, ActivityLabel>,
-    correlations: HashMap<String, ActivityCorrelation>,
-    requests: HashMap<ProviderRequestRef, RequestIdentity>,
+    identities: BoundedMap<String, ActivityId>,
+    items: BoundedMap<String, ItemIdentity>,
+    labels: BoundedMap<String, ActivityLabel>,
+    correlations: BoundedMap<String, ActivityCorrelation>,
+    requests: BoundedMap<ProviderRequestRef, RequestIdentity>,
     next_minted_id: u64,
 }
 
@@ -76,11 +148,11 @@ impl AppServerActivityProjection {
         Self {
             operation_id: ActivityOperationId::Turn(turn_id),
             root_provider_thread_id,
-            identities: HashMap::new(),
-            items: HashMap::new(),
-            labels: HashMap::new(),
-            correlations: HashMap::new(),
-            requests: HashMap::new(),
+            identities: BoundedMap::new(MAX_TRACKED_ACTIVITY_ENTRIES),
+            items: BoundedMap::new(MAX_TRACKED_ACTIVITY_ENTRIES),
+            labels: BoundedMap::new(MAX_TRACKED_ACTIVITY_ENTRIES),
+            correlations: BoundedMap::new(MAX_TRACKED_ACTIVITY_ENTRIES),
+            requests: BoundedMap::new(MAX_TRACKED_REQUESTS),
             next_minted_id: 0,
         }
     }
@@ -170,3 +242,25 @@ fn required_text<'a>(value: &'a Value, field: &str) -> Result<&'a str, RuntimeFa
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod bounded_map_tests {
+    use super::BoundedMap;
+
+    #[test]
+    fn bounded_map_evicts_oldest_and_updates_in_place() {
+        let mut map = BoundedMap::new(3);
+        map.insert("a".to_owned(), 1);
+        map.insert("b".to_owned(), 2);
+        map.insert("c".to_owned(), 3);
+        map.insert("b".to_owned(), 20);
+        assert_eq!(map.len(), 3);
+        assert_eq!(map.get("b"), Some(&20));
+        map.insert("d".to_owned(), 4);
+        assert_eq!(map.len(), 3);
+        assert_eq!(map.get("a"), None);
+        assert_eq!(map.get("d"), Some(&4));
+        assert_eq!(map.remove("c"), Some(3));
+        assert_eq!(map.len(), 2);
+    }
+}

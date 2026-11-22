@@ -12,10 +12,9 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     ActivityOperationId, BoxFuture, DebugObservation, DebugObservationKind, EnvironmentRef,
-    ExecutableRef, HostServices, ProcessHandle, ProcessInputChunk, ProcessRequest, ResourceLease,
-    RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, ScopeId,
-    StructuredRunDriver, StructuredRunRequest, WorkingResourceService, runtime_event_channel,
-    terminal_outcome_channel,
+    ExecutableRef, HostServices, ProcessHandle, ProcessRequest, ResourceLease, RunHandle,
+    RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId, ScopeId, StructuredRunDriver,
+    StructuredRunRequest, WorkingResourceService, runtime_event_channel, terminal_outcome_channel,
 };
 
 pub(crate) const DRIVER_ID: &str = "swallowtail.claude-code.response-only";
@@ -175,7 +174,13 @@ impl ClaudeCodeResponseOnlyDriver {
                     return Err(error);
                 }
             };
-        if let Err(error) = write_prompt(process.as_ref(), &request).await {
+        if let Err(error) = crate::claude_code_pump_common::write_prompt(
+            &crate::claude_code_pump_common::RESPONSE_ONLY_PUMP_ROUTE,
+            process.as_ref(),
+            &request,
+        )
+        .await
+        {
             cleanup_failed_start(process.as_ref()).await;
             release_launch_directory(launch_directory).await;
             return Err(error);
@@ -245,21 +250,4 @@ async fn release_launch_directory(
     if let Some((resources, lease)) = launch_directory {
         let _ = resources.release(lease).await;
     }
-}
-
-async fn write_prompt(
-    process: &dyn ProcessHandle,
-    request: &StructuredRunRequest,
-) -> Result<(), RuntimeFailure> {
-    process
-        .write_stdin(ProcessInputChunk::new(
-            request.content().as_str().as_bytes().to_vec(),
-        ))
-        .await?;
-    process.close_stdin().await.map_err(|_| {
-        failure(
-            "swallowtail.claude_code.response_only.stdin_close_failed",
-            "Claude Code response-only process stdin could not be closed",
-        )
-    })
 }

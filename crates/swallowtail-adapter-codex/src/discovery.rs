@@ -210,9 +210,19 @@ async fn probe_process(
         }
     }
 
-    let exit = match process.wait().await {
-        Ok(exit) => exit,
-        Err(_) => return Ok(outcome(DiscoveryStatus::CleanupFailed)),
+    let exit = match wait_for_exit(process.as_ref(), &mut deadline, &mut cancelled).await {
+        ExitSignal::Exited(Ok(exit)) => exit,
+        ExitSignal::Exited(Err(_)) => return Ok(outcome(DiscoveryStatus::CleanupFailed)),
+        ExitSignal::Cancelled => {
+            return Ok(
+                stop_and_classify(process.as_ref(), outcome(DiscoveryStatus::Cancelled)).await,
+            );
+        }
+        ExitSignal::TimedOut => {
+            return Ok(
+                stop_and_classify(process.as_ref(), outcome(DiscoveryStatus::TimedOut)).await,
+            );
+        }
     };
     if !exit.success() {
         return Ok(exit_failed(exit.code(), &stderr, stderr_truncated));
@@ -258,6 +268,30 @@ async fn next_output(
     .await
 }
 
+enum ExitSignal {
+    Exited(Result<swallowtail_runtime::ProcessExit, RuntimeFailure>),
+    TimedOut,
+    Cancelled,
+}
+
+async fn wait_for_exit(
+    process: &dyn ProcessHandle,
+    deadline: &mut BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
+    cancelled: &mut BoxFuture<'static, ()>,
+) -> ExitSignal {
+    let mut wait = process.wait();
+    poll_fn(|context| {
+        if cancelled.as_mut().poll(context).is_ready() {
+            return Poll::Ready(ExitSignal::Cancelled);
+        }
+        if deadline.as_mut().poll(context).is_ready() {
+            return Poll::Ready(ExitSignal::TimedOut);
+        }
+        wait.as_mut().poll(context).map(ExitSignal::Exited)
+    })
+    .await
+}
+
 async fn stop_and_classify(
     process: &dyn ProcessHandle,
     desired: DiscoveryOutcome,
@@ -265,7 +299,10 @@ async fn stop_and_classify(
     let graceful = process.request_stop().await;
     let forced = process.force_stop().await;
     let waited = process.wait().await;
-    if graceful.is_err() || forced.is_err() || waited.is_err() {
+    // A child that already exited cleanly on `request_stop()` may cause
+    // `force_stop()` to fail (e.g. ESRCH). Only treat stop as failed when
+    // both stop attempts failed or `wait()` itself failed.
+    if waited.is_err() || (graceful.is_err() && forced.is_err()) {
         outcome(DiscoveryStatus::CleanupFailed)
     } else {
         desired

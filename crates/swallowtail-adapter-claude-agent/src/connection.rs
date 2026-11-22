@@ -565,13 +565,16 @@ impl AcpConnection {
     ) -> Result<(Value, Vec<SessionReplayItem>), RuntimeFailure> {
         let id = self.inner.allocate_request_id();
         self.set_session_id(session.as_provider_value().to_owned())?;
-        *self.hooks.phase.lock().expect("ACP phase lock poisoned") = Some(AttachPhase::Loading {
-            response_id: id,
-            session: session.clone(),
-            response_seen: false,
-            bytes: 0,
-            replay: Vec::new(),
-        });
+        let phase_guard = AttachPhaseGuard::enter(
+            &self.hooks.phase,
+            AttachPhase::Loading {
+                response_id: id,
+                session: session.clone(),
+                response_seen: false,
+                bytes: 0,
+                replay: Vec::new(),
+            },
+        );
         let response = self
             .inner
             .begin_request_with_id(
@@ -581,13 +584,7 @@ impl AcpConnection {
             )
             .await?
             .await?;
-        match self
-            .hooks
-            .phase
-            .lock()
-            .expect("ACP phase lock poisoned")
-            .take()
-        {
+        match phase_guard.take() {
             Some(AttachPhase::Loading {
                 response_seen: true,
                 replay,
@@ -604,11 +601,14 @@ impl AcpConnection {
     ) -> Result<Value, RuntimeFailure> {
         let id = self.inner.allocate_request_id();
         self.set_session_id(session.as_provider_value().to_owned())?;
-        *self.hooks.phase.lock().expect("ACP phase lock poisoned") = Some(AttachPhase::Resuming {
-            response_id: id,
-            session: session.clone(),
-            response_seen: false,
-        });
+        let phase_guard = AttachPhaseGuard::enter(
+            &self.hooks.phase,
+            AttachPhase::Resuming {
+                response_id: id,
+                session: session.clone(),
+                response_seen: false,
+            },
+        );
         let response = self
             .inner
             .begin_request_with_id(
@@ -618,13 +618,7 @@ impl AcpConnection {
             )
             .await?
             .await?;
-        match self
-            .hooks
-            .phase
-            .lock()
-            .expect("ACP phase lock poisoned")
-            .take()
-        {
+        match phase_guard.take() {
             Some(AttachPhase::Resuming {
                 response_seen: true,
                 ..
@@ -796,9 +790,74 @@ fn optional_usize(params: &Value, field: &str) -> Result<Option<usize>, RuntimeF
         .transpose()
 }
 
+/// Ensures `hooks.phase` is cleared if `load_session` or `resume_session`
+/// returns early on error or is dropped before completion.
+struct AttachPhaseGuard<'a> {
+    phase: &'a Mutex<Option<AttachPhase>>,
+    armed: bool,
+}
+
+impl<'a> AttachPhaseGuard<'a> {
+    fn enter(phase: &'a Mutex<Option<AttachPhase>>, state: AttachPhase) -> Self {
+        *phase.lock().expect("ACP phase lock poisoned") = Some(state);
+        Self { phase, armed: true }
+    }
+
+    fn take(mut self) -> Option<AttachPhase> {
+        self.armed = false;
+        self.phase.lock().expect("ACP phase lock poisoned").take()
+    }
+}
+
+impl Drop for AttachPhaseGuard<'_> {
+    fn drop(&mut self) {
+        if self.armed {
+            *self.phase.lock().expect("ACP phase lock poisoned") = None;
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use swallowtail_core::SafeDiagnostic;
+    use swallowtail_runtime::{BoxFuture, ProcessExit, ProcessInputChunk, ProcessOutputChunk};
+
+    struct RefusingStdinProcess;
+
+    impl ProcessHandle for RefusingStdinProcess {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async {
+                Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "test.stdin_refused",
+                    "stdin refused",
+                )))
+            })
+        }
+
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
 
     #[test]
     fn receive_framing_profile_covers_observed_large_tool_updates() {
@@ -811,5 +870,83 @@ mod tests {
             8 * 1024 * 1024
         );
         assert!(RECEIVE_FRAMING_LIMITS.maximum_frame_bytes() > 135_553);
+    }
+
+    struct DummyResourceIo;
+
+    impl WorkingResourceIoService for DummyResourceIo {
+        fn read_text(
+            &self,
+            _lease: &ResourceLease,
+            _request: WorkingResourceReadRequest,
+        ) -> BoxFuture<'static, Result<swallowtail_runtime::WorkingResourceText, RuntimeFailure>>
+        {
+            Box::pin(async {
+                Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "test.unused",
+                    "unused",
+                )))
+            })
+        }
+
+        fn write_text(
+            &self,
+            _lease: &ResourceLease,
+            _request: swallowtail_runtime::WorkingResourceWriteRequest,
+        ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            Box::pin(async {
+                Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "test.unused",
+                    "unused",
+                )))
+            })
+        }
+    }
+
+    #[test]
+    fn load_and_resume_session_clear_attach_phase_on_early_error() {
+        let host = swallowtail_core::ExecutionHostId::new("claude-agent.phase-test")
+            .expect("host id is valid");
+        let lease = ResourceLease::consumer_owned(
+            swallowtail_runtime::ScopeId::new("claude-agent.phase-test").expect("scope is valid"),
+            swallowtail_runtime::WorkingResourceRef::new("workspace:phase-test")
+                .expect("resource ref is valid"),
+            swallowtail_core::ResourceAccess::Read,
+            swallowtail_core::ResourceRepresentation::Filesystem,
+        );
+        let connection = AcpConnection::new(
+            Arc::new(RefusingStdinProcess),
+            lease,
+            Arc::new(DummyResourceIo),
+            HostServices::new(host),
+        );
+        let session = SessionRef::new("session-1").expect("session ref is valid");
+
+        let load_err = futures_executor::block_on(
+            connection.load_session(session.clone(), "/workspace".to_owned()),
+        );
+        assert!(load_err.is_err());
+        assert!(
+            connection
+                .hooks
+                .phase
+                .lock()
+                .expect("ACP phase lock poisoned")
+                .is_none(),
+            "load_session must clear hooks.phase on early error"
+        );
+
+        let resume_err =
+            futures_executor::block_on(connection.resume_session(session, "/workspace".to_owned()));
+        assert!(resume_err.is_err());
+        assert!(
+            connection
+                .hooks
+                .phase
+                .lock()
+                .expect("ACP phase lock poisoned")
+                .is_none(),
+            "resume_session must clear hooks.phase on early error"
+        );
     }
 }

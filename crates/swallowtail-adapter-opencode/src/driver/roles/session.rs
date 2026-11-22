@@ -213,7 +213,7 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                     self.transport.request(
                         scope.clone(),
                         access.endpoint.clone(),
-                        session_get(provider_ref.as_provider_value(), &directory),
+                        session_get(provider_ref.as_provider_value(), &directory)?,
                         &services,
                         Arc::clone(&cancelled),
                     ),
@@ -236,7 +236,7 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                         request.deadline(),
                         &services,
                         cancelled,
-                        None,
+                        ReplayControl::SessionLoad,
                     )
                     .await?;
                 Ok((provider_ref, replay))
@@ -318,7 +318,7 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                     self.transport.request(
                         scope,
                         access.endpoint.clone(),
-                        session_get(provider_ref.as_provider_value(), &directory),
+                        session_get(provider_ref.as_provider_value(), &directory)?,
                         &services,
                         Arc::clone(&cancelled),
                     ),

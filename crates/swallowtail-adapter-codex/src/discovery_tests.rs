@@ -1,7 +1,14 @@
-use super::{CODEX_INSTALL_GUIDANCE, attach_install_guidance, parse_version};
+use super::{
+    CODEX_INSTALL_GUIDANCE, ExitSignal, attach_install_guidance, parse_version, stop_and_classify,
+    wait_for_exit,
+};
 use crate::selection::CODEX_CLI_AXIS;
 use crate::{CodexAppServerDriver, CodexExecDriver};
-use swallowtail_core::{DiscoveryOutcome, DiscoveryStatus, InterfaceVersionAxis};
+use swallowtail_core::{DiscoveryOutcome, DiscoveryStatus, InterfaceVersionAxis, SafeDiagnostic};
+use swallowtail_runtime::{
+    BoxFuture, Deadline, DeadlineObservation, MonotonicInstant, ProcessExit, ProcessHandle,
+    ProcessInputChunk, ProcessOutputChunk, RuntimeFailure,
+};
 
 #[test]
 fn absent_guidance_is_frozen_and_present_outcomes_have_none() {
@@ -50,4 +57,89 @@ fn parser_rejects_raw_payload_variants() {
             parse_version(output, InterfaceVersionAxis::new(CODEX_CLI_AXIS).unwrap()).is_none()
         );
     }
+}
+
+struct ExitedOnGracefulStop;
+
+impl ProcessHandle for ExitedOnGracefulStop {
+    fn write_stdin(&self, _: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        Box::pin(async { Ok(()) })
+    }
+
+    fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        Box::pin(async { Ok(()) })
+    }
+
+    fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+        Box::pin(async { Ok(None) })
+    }
+
+    fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        Box::pin(async { Ok(()) })
+    }
+
+    fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        Box::pin(async {
+            Err(RuntimeFailure::new(SafeDiagnostic::new(
+                "test.already_exited",
+                "process already exited after graceful stop",
+            )))
+        })
+    }
+
+    fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+        Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+    }
+}
+
+struct HangingWaitProcess;
+
+impl ProcessHandle for HangingWaitProcess {
+    fn write_stdin(&self, _: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        Box::pin(async { Ok(()) })
+    }
+
+    fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        Box::pin(async { Ok(()) })
+    }
+
+    fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+        Box::pin(async { Ok(None) })
+    }
+
+    fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        Box::pin(async { Ok(()) })
+    }
+
+    fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        Box::pin(async { Ok(()) })
+    }
+
+    fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+        Box::pin(std::future::pending())
+    }
+}
+
+#[test]
+fn stop_and_classify_preserves_desired_outcome_when_force_stop_errors_after_clean_graceful_stop() {
+    let result = futures_executor::block_on(stop_and_classify(
+        &ExitedOnGracefulStop,
+        DiscoveryOutcome::new(DiscoveryStatus::TimedOut, None),
+    ));
+    assert_eq!(result.status(), DiscoveryStatus::TimedOut);
+}
+
+#[test]
+fn wait_for_exit_bounds_hanging_wait_by_deadline() {
+    let deadline_instant = MonotonicInstant::from_ticks(1);
+    let mut deadline: BoxFuture<'static, DeadlineObservation> = Box::pin(async move {
+        DeadlineObservation::new(Deadline::at(deadline_instant), deadline_instant)
+    });
+    let mut cancelled: BoxFuture<'static, ()> = Box::pin(std::future::pending());
+    let signal = futures_executor::block_on(wait_for_exit(
+        &HangingWaitProcess,
+        &mut deadline,
+        &mut cancelled,
+    ));
+    assert!(matches!(signal, ExitSignal::TimedOut));
 }

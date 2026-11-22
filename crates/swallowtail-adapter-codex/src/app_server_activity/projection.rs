@@ -175,8 +175,7 @@ impl AppServerActivityProjection {
             ItemIdentity::new(fallback_kind, fallback_assistant_phase, fallback_disclosure);
         let identity = self
             .items
-            .entry(provider_id.to_owned())
-            .or_insert(fallback)
+            .get_or_insert_with(provider_id.to_owned(), || fallback)
             .clone();
         let correlation = self.correlations.get(provider_id).cloned();
         Ok(vec![self.observation(
@@ -195,8 +194,7 @@ impl AppServerActivityProjection {
         let provider_id = required_text(params, "itemId")?;
         let identity = self
             .items
-            .entry(provider_id.to_owned())
-            .or_insert_with(|| {
+            .get_or_insert_with(provider_id.to_owned(), || {
                 ItemIdentity::new(
                     ActivityKind::AssistantMessage,
                     Some(ActivityAssistantPhase::ProviderUnspecified),

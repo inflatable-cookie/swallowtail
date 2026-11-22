@@ -56,7 +56,7 @@ impl ProviderSessionHistoryDriver for OpenCodeHttpDriver {
                     session_get(
                         agreement.binding().provider_session_ref().as_provider_value(),
                         directory,
-                    ),
+                    )?,
                     ReconciliationControl::new(
                         &services,
                         request.cancellation(),
@@ -91,7 +91,7 @@ impl ProviderSessionHistoryDriver for OpenCodeHttpDriver {
                         agreement.deadline(),
                         &services,
                         cancelled,
-                        Some(request.cancellation()),
+                        ReplayControl::SessionHistory(request.cancellation()),
                     )
                     .await?;
                 let total = u32::try_from(replay.len()).map_err(|_| {

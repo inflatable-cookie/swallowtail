@@ -95,10 +95,16 @@ impl TimeService for ThreadServices {
     fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
         let now = self.now().ticks();
         let wait = deadline.instant().ticks().saturating_sub(now);
+        if wait == 0 {
+            return Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) });
+        }
+        let (sender, receiver) = oneshot::channel();
+        thread::spawn(move || {
+            thread::sleep(Duration::from_millis(wait));
+            let _ = sender.send(());
+        });
         Box::pin(async move {
-            if wait != 0 {
-                thread::sleep(Duration::from_millis(wait));
-            }
+            let _ = receiver.await;
             DeadlineObservation::new(deadline, deadline.instant())
         })
     }

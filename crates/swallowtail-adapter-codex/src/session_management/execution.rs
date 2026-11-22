@@ -5,14 +5,17 @@ use super::protocol::{
 use crate::CodexAppServerDriver;
 use crate::app_server::{close_connection, scope};
 use crate::control_wait::{Controlled, wait_controlled};
-use crate::process_close::close_budget;
+use crate::process_close::{AppServerTask, close_budget};
+use crate::rpc::RpcConnection;
+use std::sync::Arc;
 use swallowtail_core::{
     ProviderSessionEffectTruth, ProviderSessionManagementAction, ProviderSessionManagementEffect,
     SafeDiagnostic,
 };
 use swallowtail_runtime::{
-    BoxFuture, HostServices, ImmediateCancellation, ProviderSessionManagementAgreement,
-    ProviderSessionManagementOutcome, ProviderSessionManagementPlan, RuntimeFailure,
+    BoxFuture, CleanupOutcome, HostServices, ImmediateCancellation,
+    ProviderSessionManagementAgreement, ProviderSessionManagementOutcome,
+    ProviderSessionManagementPlan, RuntimeFailure,
 };
 
 impl CodexAppServerDriver {
@@ -80,13 +83,7 @@ impl CodexAppServerDriver {
                 return Err(error);
             }
             Controlled::Cancelled | Controlled::Deadline => {
-                let _ = connection.cancel_session().await;
-                let cleanup = close_connection(
-                    &connection,
-                    task,
-                    close_budget(&services, agreement.deadline()),
-                )
-                .await;
+                let cleanup = cancel_connection(&connection, task).await;
                 return Ok(with_cleanup(
                     outcome(
                         agreement,
@@ -141,13 +138,7 @@ impl CodexAppServerDriver {
             wait_controlled(response, cancellation, deadline_wait(agreement, &services)?).await;
         let result = match response {
             Controlled::Cancelled | Controlled::Deadline => {
-                let _ = connection.cancel_session().await;
-                let cleanup = close_connection(
-                    &connection,
-                    task,
-                    close_budget(&services, agreement.deadline()),
-                )
-                .await;
+                let cleanup = cancel_connection(&connection, task).await;
                 return Ok(with_cleanup(
                     outcome(
                         agreement,
@@ -208,6 +199,19 @@ impl CodexAppServerDriver {
             ));
         }
         Ok(with_cleanup(result, cleanup))
+    }
+}
+
+async fn cancel_connection(connection: &Arc<RpcConnection>, task: AppServerTask) -> CleanupOutcome {
+    let stop = connection.cancel_session().await;
+    let join = task.join().await;
+    if stop.is_err() || join.is_err() {
+        CleanupOutcome::Failed(SafeDiagnostic::new(
+            "swallowtail.codex.lifecycle.cancel_cleanup_failed",
+            "Codex lifecycle cancellation cleanup failed",
+        ))
+    } else {
+        connection.cleanup_outcome()
     }
 }
 

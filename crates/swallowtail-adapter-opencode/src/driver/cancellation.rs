@@ -36,7 +36,7 @@ impl CancellationControl for TurnCancellation {
                 .request(
                     self.scope.clone(),
                     self.endpoint.clone(),
-                    abort(&self.session_id, &self.directory),
+                    abort(&self.session_id, &self.directory)?,
                     &self.services,
                     Arc::new(AtomicBool::new(false)),
                 )

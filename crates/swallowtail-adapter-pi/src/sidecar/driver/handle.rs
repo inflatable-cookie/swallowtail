@@ -217,11 +217,23 @@ impl TurnHandle for PiSdkSidecarTurnHandle {
                 match self.cancellation.request().await {
                     Ok(_) => CleanupOutcome::NotApplicable,
                     // A turn that could not be aborted may still be running, so
-                    // close must not report a clean outcome for it.
-                    Err(_) => cleanup_failure(
-                        "cancel_rejected",
-                        "Pi could not abort the active turn during close",
-                    ),
+                    // close must not report a clean outcome for it. Finish the
+                    // turn so the deadline task wakes and exits instead of
+                    // stalling until the full turn deadline.
+                    Err(_) => {
+                        if !self.cancellation.turn.is_finished() {
+                            self.cancellation.turn.fail_connection(
+                                swallowtail_core::SafeDiagnostic::new(
+                                    "swallowtail.pi.sdk-sidecar.cancel_rejected",
+                                    "Pi could not abort the active turn during close",
+                                ),
+                            );
+                        }
+                        cleanup_failure(
+                            "cancel_rejected",
+                            "Pi could not abort the active turn during close",
+                        )
+                    }
                 }
             };
             let active = {
@@ -256,5 +268,121 @@ impl TurnHandle for PiSdkSidecarTurnHandle {
                 self.attachment.release().await,
             )
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::sidecar::driver::session::ActiveTask;
+    use std::sync::Mutex;
+    use std::sync::atomic::AtomicU32;
+    use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
+    use swallowtail_runtime::{
+        HostServices, JoinedTask, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
+    };
+
+    struct RefusingStdin;
+
+    impl ProcessHandle for RefusingStdin {
+        fn write_stdin(&self, _: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async {
+                Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "test.stdin_refused",
+                    "stdin refused",
+                )))
+            })
+        }
+
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+
+    struct WatchSidecarTurnFinish {
+        turn: Arc<SidecarActiveTurn>,
+    }
+
+    impl JoinedTask for WatchSidecarTurnFinish {
+        fn join(self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            Box::pin(async move {
+                let mut finished = Box::pin(self.turn.finished_future());
+                let mut polls = 0usize;
+                std::future::poll_fn(move |context| {
+                    if std::future::Future::poll(finished.as_mut(), context).is_ready() {
+                        return std::task::Poll::Ready(Ok(()));
+                    }
+                    polls += 1;
+                    if polls > 16 {
+                        return std::task::Poll::Ready(Err(RuntimeFailure::new(
+                            SafeDiagnostic::new(
+                                "test.deadline_watch_hung",
+                                "deadline watcher waited past rejected abort",
+                            ),
+                        )));
+                    }
+                    context.waker().wake_by_ref();
+                    std::task::Poll::Pending
+                })
+                .await
+            })
+        }
+    }
+
+    #[test]
+    fn rejected_abort_during_close_wakes_deadline_task_and_reports_cleanup_failure() {
+        let services = HostServices::new(
+            ExecutionHostId::new("pi.sidecar.close-test").expect("host id is valid"),
+        );
+        let connection = SidecarConnection::new(Arc::new(RefusingStdin), services);
+        let (turn, events, terminal) = SidecarActiveTurn::new(
+            RuntimeTurnId::new("sidecar-turn-close").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+        )
+        .expect("turn constructs");
+        let active: ActiveSlot = Arc::new(Mutex::new(Some(ActiveTask {
+            turn: Arc::clone(&turn),
+            deadline_task: Some(Box::new(WatchSidecarTurnFinish {
+                turn: Arc::clone(&turn),
+            })),
+            attachment: SharedAttachmentMaterialization::default(),
+        })));
+        let handle = PiSdkSidecarTurnHandle::new(
+            RuntimeTurnId::new("sidecar-turn-close").expect("turn id is valid"),
+            events,
+            Box::pin(terminal),
+            super::PiSdkSidecarTurnBinding {
+                connection,
+                turn: Arc::clone(&turn),
+                active,
+                attachment: SharedAttachmentMaterialization::default(),
+            },
+        );
+        let handle: Box<dyn TurnHandle> = Box::new(handle);
+        let cleanup = futures_executor::block_on(handle.close());
+        assert!(
+            matches!(cleanup, CleanupOutcome::Failed(ref diagnostic) if diagnostic.code() == "swallowtail.pi.sdk-sidecar.cleanup_failed" && diagnostic.message().contains("cancel_rejected")),
+            "expected cancel_rejected cleanup failure, got {cleanup:?}"
+        );
+        assert!(
+            turn.is_finished(),
+            "turn must finish so deadline task wakes"
+        );
     }
 }

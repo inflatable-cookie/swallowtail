@@ -173,6 +173,16 @@ fn structured_run_deadline_aborts_then_joins_the_rpc_process() {
             .expect("terminal outcome is available"),
     );
     assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
+    assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
+    assert_eq!(
+        fixture.cleanup_events(),
+        [
+            CleanupEvent::ProcessWait,
+            CleanupEvent::ResourceRelease,
+            CleanupEvent::CredentialRelease,
+        ],
+        "run terminal delivery follows process join and lease release after expiry"
+    );
     assert!(
         fixture
             .inputs()

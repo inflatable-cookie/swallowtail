@@ -58,6 +58,10 @@ impl PiConnection {
         })
     }
 
+    pub(crate) fn services(&self) -> &HostServices {
+        &self.services
+    }
+
     pub(crate) fn emit_protocol_debug(&self, error: &RuntimeFailure, stage: &'static str) {
         let diagnostic = error.diagnostic();
         self.services.emit_failure_debug(
@@ -159,6 +163,7 @@ impl PiConnection {
             ));
         }
         let (sender, response) = response_channel();
+        let is_abort = abort_turn.is_some();
         {
             let mut pending = self.pending.lock().expect("Pi pending lock poisoned");
             // The pump can close the connection after the fast check above.
@@ -184,20 +189,27 @@ impl PiConnection {
         }
         struct PendingGuard<'a> {
             pending: &'a Mutex<BTreeMap<String, PendingCommand>>,
+            superseded_aborts: Option<&'a Mutex<BTreeSet<String>>>,
             id: Option<String>,
         }
         impl Drop for PendingGuard<'_> {
             fn drop(&mut self) {
                 if let Some(id) = self.id.take() {
-                    self.pending
-                        .lock()
-                        .expect("Pi pending lock poisoned")
-                        .remove(&id);
+                    let mut pending = self.pending.lock().expect("Pi pending lock poisoned");
+                    if pending.remove(&id).is_some()
+                        && let Some(superseded) = self.superseded_aborts
+                    {
+                        superseded
+                            .lock()
+                            .expect("Pi superseded-aborts lock poisoned")
+                            .insert(id);
+                    }
                 }
             }
         }
         let mut guard = PendingGuard {
             pending: &self.pending,
+            superseded_aborts: is_abort.then_some(&self.superseded_aborts),
             id: Some(id),
         };
         if let Some(dispatched) = dispatched {

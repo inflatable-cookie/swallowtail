@@ -2,6 +2,7 @@ use self::cleanup::{release_credential, release_resource};
 use super::handle::{PiSdkSidecarTurnBinding, PiSdkSidecarTurnHandle, SessionCancellation};
 use super::input::{SharedAttachmentMaterialization, prepare_attachment};
 use super::validation::validate_turn;
+use crate::driver::{ABORT_ACKNOWLEDGEMENT_GRACE_TICKS, grace_deadline, run_before_deadline};
 use crate::failure::failure;
 use crate::sidecar::connection::SidecarConnection;
 use crate::sidecar::turn::SidecarActiveTurn;
@@ -352,10 +353,6 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
     }
 }
 
-/// How long a deadline-triggered `abort` command may wait for acknowledgement
-/// before escalating to connection closure and `force_stop`.
-const ABORT_ACKNOWLEDGEMENT_GRACE_TICKS: u64 = 500;
-
 fn spawn_deadline(
     services: &HostServices,
     connection: Arc<SidecarConnection>,
@@ -403,16 +400,9 @@ fn spawn_deadline(
                 if timed_out {
                     deadline_turn.mark_timed_out();
                     let id = format!("deadline-abort:{}", deadline_turn.runtime_id().as_str());
-                    let abort_deadline = swallowtail_runtime::Deadline::at(
-                        swallowtail_runtime::MonotonicInstant::from_ticks(
-                            time.now()
-                                .ticks()
-                                .saturating_add(ABORT_ACKNOWLEDGEMENT_GRACE_TICKS),
-                        ),
-                    );
-                    let abort = crate::driver::run_before_deadline(
+                    let abort = run_before_deadline(
                         connection.abort_command(id, json!({}), Arc::clone(&deadline_turn)),
-                        Some(abort_deadline),
+                        grace_deadline(&deadline_services, ABORT_ACKNOWLEDGEMENT_GRACE_TICKS),
                         &deadline_services,
                         "swallowtail.pi.sdk-sidecar.deadline_abort_timed_out",
                         "Pi SDK sidecar deadline abort timed out awaiting acknowledgement",

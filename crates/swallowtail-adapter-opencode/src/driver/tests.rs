@@ -108,7 +108,8 @@ fn a_refused_cancellation_at_close_is_reported_not_discarded() {
 }
 
 #[test]
-fn stalled_abort_during_turn_close_and_close_active_is_bounded() {
+fn stalled_abort_during_turn_run_and_active_close_is_bounded() {
+    use futures_util::FutureExt;
     use swallowtail_core::ExecutionHostId;
     use swallowtail_runtime::{
         BlockingJob, BlockingWorkService, BoxFuture, Deadline, DeadlineObservation,
@@ -183,7 +184,7 @@ fn stalled_abort_during_turn_close_and_close_active_is_bounded() {
     let active: ActiveSlot = Arc::new(Mutex::new(Some(ActiveTurn {
         task: None,
         terminal: Arc::new(AtomicBool::new(false)),
-        cancellation: make_cancellation(services),
+        cancellation: make_cancellation(services.clone()),
         detachment: None,
         attachment: input::SharedAttachment::default(),
     })));
@@ -192,6 +193,33 @@ fn stalled_abort_during_turn_close_and_close_active_is_bounded() {
         active_cleanup
             .diagnostic()
             .map(swallowtail_core::SafeDiagnostic::code),
+        Some("swallowtail.opencode.abort_timed_out")
+    );
+
+    struct FinishedTask;
+
+    impl JoinedTask for FinishedTask {
+        fn join(self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+    }
+
+    let run_handle = Box::new(OpenCodeRunHandle {
+        request_id: RequestId::new("run-stalled-abort").expect("request id"),
+        run_id: RuntimeRunId::new("run-stalled-abort").expect("run id"),
+        events: None,
+        terminal: None,
+        callbacks: None,
+        cancellation: Arc::new(OpenCodeRunCancellation {
+            inner: make_cancellation(services),
+            terminal: Arc::new(AtomicBool::new(false)),
+            requested: AtomicBool::new(false),
+        }),
+        task: Box::new(FinishedTask),
+    });
+    let run_cleanup = run_handle.close().now_or_never().expect("stalled run abort is bounded");
+    assert_eq!(
+        run_cleanup.diagnostic().map(SafeDiagnostic::code),
         Some("swallowtail.opencode.abort_timed_out")
     );
 }

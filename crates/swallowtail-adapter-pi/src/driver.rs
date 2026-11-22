@@ -17,6 +17,8 @@ use swallowtail_runtime::{
 };
 
 mod catalogue;
+#[cfg(test)]
+pub(crate) mod close_tests;
 mod descriptor;
 mod disposition;
 mod handle;
@@ -329,6 +331,17 @@ pub(crate) async fn start_process_before_deadline(
         return Err(failure(timeout_code, timeout_message));
     }
     Ok(process)
+}
+
+/// Maximum wait for a native abort acknowledgement during deadline or close handling.
+pub(crate) const ABORT_ACKNOWLEDGEMENT_GRACE_TICKS: u64 = 500;
+
+pub(crate) fn grace_deadline(services: &HostServices, ticks: u64) -> Option<Deadline> {
+    services.time().map(|time| {
+        Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(
+            time.now().ticks().saturating_add(ticks),
+        ))
+    })
 }
 
 pub(crate) async fn run_before_deadline<T, F>(

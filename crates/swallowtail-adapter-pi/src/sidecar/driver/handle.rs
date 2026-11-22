@@ -1,5 +1,6 @@
 use super::input::SharedAttachmentMaterialization;
 use super::session::{ActiveSlot, cleanup_failure};
+use crate::driver::{ABORT_ACKNOWLEDGEMENT_GRACE_TICKS, grace_deadline, run_before_deadline};
 use crate::sidecar::connection::SidecarConnection;
 use crate::sidecar::failure::failure;
 use crate::sidecar::turn::SidecarActiveTurn;
@@ -10,8 +11,8 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use swallowtail_core::{CancellationScope, HarnessMessageClass, TurnRef};
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CallbackExchange, CancellationAcknowledgement, CancellationControl,
-    CleanupOutcome, HarnessCommandAcknowledgement, HarnessCommandResponse, HarnessScheduledMessage,
-    RuntimeFailure, RuntimeTurnId, TerminalOutcome, TurnHandle,
+    CleanupOutcome, Deadline, HarnessCommandAcknowledgement, HarnessCommandResponse,
+    HarnessScheduledMessage, RuntimeFailure, RuntimeTurnId, TerminalOutcome, TurnHandle,
 };
 
 pub(super) struct TurnCancellation {
@@ -30,14 +31,11 @@ impl TurnCancellation {
             rejected: AtomicBool::new(false),
         }
     }
-}
 
-impl CancellationControl for TurnCancellation {
-    fn scope(&self) -> CancellationScope {
-        CancellationScope::ActiveTurn
-    }
-
-    fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {
+    fn request_with_deadline(
+        &self,
+        deadline: Option<Deadline>,
+    ) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {
         let already = self.requested.swap(true, Ordering::SeqCst);
         Box::pin(async move {
             if already {
@@ -51,11 +49,18 @@ impl CancellationControl for TurnCancellation {
             }
             self.turn.mark_abort_in_flight();
             let id = format!("abort:{}", self.turn.runtime_id().as_str());
-            let error = match self
+            let abort = self
                 .connection
-                .abort_command(id, json!({}), Arc::clone(&self.turn))
-                .await
-            {
+                .abort_command(id, json!({}), Arc::clone(&self.turn));
+            let response = run_before_deadline(
+                abort,
+                deadline,
+                self.connection.services(),
+                "swallowtail.pi.sdk-sidecar.close_abort_timed_out",
+                "Pi SDK sidecar close timed out awaiting abort acknowledgement",
+            )
+            .await;
+            let error = match response {
                 Ok(response) if response.success => {
                     self.turn.mark_abort_acknowledged();
                     return Ok(CancellationAcknowledgement::Requested);
@@ -84,6 +89,16 @@ impl CancellationControl for TurnCancellation {
             }
             Err(error)
         })
+    }
+}
+
+impl CancellationControl for TurnCancellation {
+    fn scope(&self) -> CancellationScope {
+        CancellationScope::ActiveTurn
+    }
+
+    fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {
+        self.request_with_deadline(None)
     }
 }
 
@@ -247,7 +262,14 @@ impl TurnHandle for PiSdkSidecarTurnHandle {
             } else if self.cancellation.turn.is_finished() {
                 CleanupOutcome::NotApplicable
             } else {
-                match self.cancellation.request().await {
+                match self
+                    .cancellation
+                    .request_with_deadline(grace_deadline(
+                        self.cancellation.connection.services(),
+                        ABORT_ACKNOWLEDGEMENT_GRACE_TICKS,
+                    ))
+                    .await
+                {
                     Ok(_) => CleanupOutcome::NotApplicable,
                     Err(_) => cleanup_failure(
                         "cancel_rejected",
@@ -293,7 +315,9 @@ impl TurnHandle for PiSdkSidecarTurnHandle {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::driver::close_tests::{AbortGraceExpires, SilentAbort};
     use crate::sidecar::driver::session::ActiveTask;
+    use futures_util::FutureExt;
     use std::sync::Mutex;
     use std::sync::atomic::AtomicU32;
     use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
@@ -370,6 +394,23 @@ mod tests {
             ExecutionHostId::new("pi.sidecar.close-test").expect("host id is valid"),
         );
         let connection = SidecarConnection::new(Arc::new(RefusingStdin), services);
+        assert_abort_failure_during_close(connection);
+    }
+
+    #[test]
+    fn silent_abort_during_close_expires_and_wakes_deadline_task() {
+        let process = Arc::new(SilentAbort::default());
+        let clock = Arc::new(AbortGraceExpires);
+        let services = HostServices::new(
+            ExecutionHostId::new("pi.sidecar.close-test").expect("host id is valid"),
+        )
+        .with_time(clock.clone());
+        let connection = SidecarConnection::new(process.clone(), services);
+        assert_abort_failure_during_close(connection);
+        assert_eq!(process.writes.load(Ordering::SeqCst), 1);
+    }
+
+    fn assert_abort_failure_during_close(connection: Arc<SidecarConnection>) {
         let (turn, events, terminal) = SidecarActiveTurn::new(
             RuntimeTurnId::new("sidecar-turn-close").expect("turn id is valid"),
             Arc::new(AtomicU32::new(0)),
@@ -398,7 +439,10 @@ mod tests {
             },
         );
         let handle: Box<dyn TurnHandle> = Box::new(handle);
-        let cleanup = futures_executor::block_on(handle.close());
+        let cleanup = handle
+            .close()
+            .now_or_never()
+            .expect("close must settle after the abort fails");
         assert!(
             matches!(cleanup, CleanupOutcome::Failed(ref diagnostic) if diagnostic.code() == "swallowtail.pi.sdk-sidecar.cleanup_failed" && diagnostic.message().contains("cancel_rejected")),
             "expected cancel_rejected cleanup failure, got {cleanup:?}"

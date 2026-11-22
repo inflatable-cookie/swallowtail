@@ -1,6 +1,7 @@
 use super::*;
 use crate::sidecar::failure::failure;
-use crate::sidecar::wire::PiSdkSidecarCommand;
+use crate::sidecar::wire::{PiSdkSidecarCommand, PiSdkSidecarRecord, PiSdkSidecarResponse};
+use futures_util::FutureExt;
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{Arc, Barrier};
 use std::thread;
@@ -189,38 +190,35 @@ fn a_record_that_cannot_be_encoded_leaves_no_pending_slot() {
 }
 
 #[test]
-fn a_silent_close_command_still_closes_stdin_and_requests_stop() {
+fn a_silent_close_command_finishes_without_waiting_for_eof() {
     let stdin_closed = Arc::new(AtomicBool::new(false));
     let stop_requested = Arc::new(AtomicBool::new(false));
     let connection = silent_connection(&stdin_closed, &stop_requested);
 
-    // The harness never answers `close`; the shutdown stages must still run
-    // once the acknowledgement grace expires.
-    let closing = {
-        let connection = Arc::clone(&connection);
-        thread::spawn(move || {
-            futures_executor::block_on(connection.close_session("close:fixture".to_owned()))
-        })
-    };
-    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
-    while !stop_requested.load(Ordering::SeqCst) {
-        assert!(
-            std::time::Instant::now() < deadline,
-            "a silent close acknowledgement must not hold the shutdown stages"
-        );
-        thread::sleep(std::time::Duration::from_millis(1));
-    }
+    connection
+        .close_session("close:fixture".to_owned())
+        .now_or_never()
+        .expect("close finishes after the acknowledgement grace expires");
+    assert!(stop_requested.load(Ordering::SeqCst));
     assert!(
         stdin_closed.load(Ordering::SeqCst),
         "stdin must close even when the harness never answers close"
     );
     assert!(connection.closed.load(Ordering::SeqCst));
 
-    // A connection end settles the abandoned acknowledgement, so close can
-    // finish once the caller's bound or the process end arrives.
-    connection.fail_connection(&failure(
-        "swallowtail.pi.sdk-sidecar.connection_ended",
-        "Pi SDK sidecar connection ended",
-    ));
-    closing.join().expect("close worker joins");
+    assert!(connection.pending.lock().expect("pending lock").is_empty());
+    let late_close = PiSdkSidecarRecord::Response(PiSdkSidecarResponse {
+        id: "close:fixture".to_owned(),
+        command: "close".to_owned(),
+        success: true,
+        data: None,
+        failure: None,
+    });
+    assert!(
+        connection
+            .dispatch(late_close)
+            .expect("late close reply is valid")
+            .is_none(),
+        "a late acknowledgement cannot complete an abandoned waiter"
+    );
 }

@@ -37,6 +37,24 @@ fn provider_disconnect_and_unknown_event_remain_distinct_and_redacted() {
             fixture.services(),
         ))
         .expect("turn starts");
+        if stream == StreamFixture::MissingUsage {
+            use swallowtail_runtime::{ActivityKind, ActivityLifecyclePhase, ActivityStatus, RuntimeEventKind};
+
+            let mut events = turn.take_events().expect("turn exposes events");
+            let terminal_activity_statuses = block_on(async {
+                let mut statuses = Vec::new();
+                while let Some(event) = events.next().await {
+                    if let RuntimeEventKind::Activity(activity) = event.expect("event succeeds").kind()
+                        && activity.kind() == &ActivityKind::AssistantMessage
+                        && activity.phase() == ActivityLifecyclePhase::Completed
+                    {
+                        statuses.push(activity.status());
+                    }
+                }
+                statuses
+            });
+            assert_eq!(terminal_activity_statuses, [ActivityStatus::Failed]);
+        }
         let outcome = block_on(
             turn.take_terminal_outcome()
                 .expect("terminal outcome is available"),

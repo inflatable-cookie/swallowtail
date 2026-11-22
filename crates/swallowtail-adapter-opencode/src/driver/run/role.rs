@@ -9,10 +9,6 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
             let version = Self::validate_plan(&plan)?;
             services.require_execution_host(plan.execution_host_id())?;
             validate_run(&plan, &request, &services)?;
-            let cleanup_boundary = request.deadline().map(|deadline| RunSessionCleanupBoundary {
-                request: SessionCleanupRequest::new(deadline),
-                services: services.clone(),
-            });
             let run_id =
                 RuntimeRunId::new(format!("opencode:run:{}", request.request_id().as_str()))
                     .map_err(|_| invalid_run_identity())?;
@@ -31,7 +27,7 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
             let mut turn = match session.start_turn(turn_request, services.clone()).await {
                 Ok(turn) => turn,
                 Err(error) => {
-                    let _ = close_run_session(session, cleanup_boundary.clone()).await;
+                    let _ = close_run_session(session).await;
                     return Err(error);
                 }
             };
@@ -39,7 +35,7 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
                 Some(events) => events,
                 None => {
                     drop(turn);
-                    let _ = close_run_session(session, cleanup_boundary.clone()).await;
+                    let _ = close_run_session(session).await;
                     return Err(failure(
                         "swallowtail.opencode.run_events_missing",
                         "OpenCode structured run did not expose its event stream",
@@ -51,7 +47,7 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
                 Some(terminal) => terminal,
                 None => {
                     drop(turn);
-                    let _ = close_run_session(session, cleanup_boundary.clone()).await;
+                    let _ = close_run_session(session).await;
                     return Err(failure(
                         "swallowtail.opencode.run_terminal_missing",
                         "OpenCode structured run did not expose its terminal outcome",
@@ -71,7 +67,7 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
                 Some(state) => state,
                 None => {
                     drop(turn);
-                    let _ = close_run_session(session, cleanup_boundary.clone()).await;
+                    let _ = close_run_session(session).await;
                     return Err(failure(
                         "swallowtail.opencode.run_active_missing",
                         "OpenCode structured run lost its active prompt",
@@ -90,7 +86,6 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
             })));
             let (terminal_sender, terminal) = terminal_outcome_channel();
             let task_pending = Arc::clone(&pending);
-            let task_cleanup_boundary = cleanup_boundary.clone();
             let task = services.task().expect("validated task service").spawn(
                 task_scope,
                 Box::pin(async move {
@@ -101,8 +96,7 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
                         .expect("OpenCode pending run exists");
                     let outcome = resources.terminal.await;
                     drop(resources.turn);
-                    let session_cleanup =
-                        close_run_session(resources.session, task_cleanup_boundary).await;
+                    let session_cleanup = close_run_session(resources.session).await;
                     let cleanup = CleanupOutcome::merge(outcome.cleanup().clone(), session_cleanup.cleanup);
                     let mut finished = copy_terminal_outcome(outcome, cleanup);
                     finished = finished.with_remote_resource_deletion(
@@ -121,7 +115,7 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
                         .take();
                     if let Some(resources) = resources {
                         drop(resources.turn);
-                        let _ = close_run_session(resources.session, cleanup_boundary).await;
+                        let _ = close_run_session(resources.session).await;
                     }
                     return Err(error);
                 }

@@ -131,6 +131,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                     self.endpoint.clone(),
                     services.clone(),
                     self.transport.clone(),
+                    Arc::clone(&stream_cancelled),
                 );
                 (Some(hub), Some(exchange))
             } else {

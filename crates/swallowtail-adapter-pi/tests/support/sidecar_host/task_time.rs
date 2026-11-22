@@ -1,6 +1,7 @@
 use super::{Shared, SidecarFixtureHost, fixture_failure};
+use futures_channel::oneshot;
+use std::sync::Arc;
 use std::sync::atomic::Ordering;
-use std::sync::{Arc, Mutex};
 use swallowtail_runtime::{
     BoxFuture, Deadline, DeadlineObservation, JoinedTask, MonotonicInstant, RuntimeFailure,
     ScopeId, ScopedTaskService, TimeService,
@@ -79,7 +80,10 @@ pub(super) struct ThreadTaskService {
     shared: Arc<Shared>,
     reject_deadline_spawn: bool,
 }
-struct ThreadTask(Mutex<Option<std::thread::JoinHandle<()>>>);
+struct ThreadTask {
+    thread: std::thread::JoinHandle<()>,
+    completed: oneshot::Receiver<()>,
+}
 
 impl ThreadTaskService {
     pub(super) fn new(shared: Arc<Shared>, reject_deadline_spawn: bool) -> Self {
@@ -100,22 +104,21 @@ impl ScopedTaskService for ThreadTaskService {
         if self.reject_deadline_spawn && spawn == 2 {
             return Err(fixture_failure());
         }
-        Ok(Box::new(ThreadTask(Mutex::new(Some(std::thread::spawn(
-            move || futures_executor::block_on(task),
-        ))))))
+        let (finished, completed) = oneshot::channel();
+        let thread = std::thread::spawn(move || {
+            futures_executor::block_on(task);
+            let _ = finished.send(());
+        });
+        Ok(Box::new(ThreadTask { thread, completed }))
     }
 }
 
 impl JoinedTask for ThreadTask {
     fn join(self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
         Box::pin(async move {
-            self.0
-                .lock()
-                .expect("sidecar fixture task lock poisoned")
-                .take()
-                .expect("sidecar fixture task joins once")
-                .join()
-                .map_err(|_| fixture_failure())
+            // Let the caller's cleanup deadline advance while the fake pump is held.
+            let _ = self.completed.await;
+            self.thread.join().map_err(|_| fixture_failure())
         })
     }
 }

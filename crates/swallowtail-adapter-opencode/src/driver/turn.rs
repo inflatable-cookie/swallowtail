@@ -177,7 +177,12 @@ async fn pump_turn(pump: TurnPump) {
                 );
             }
             TurnSignal::Data(data) => match parse_event(&data, &cancellation.session_id).and_then(
-                |event| project_event(&mut activity, &events, &mut sequence, event),
+                |event| {
+                    if matches!(event, Event::Idle) && usage.is_none() {
+                        return Ok(event);
+                    }
+                    project_event(&mut activity, &events, &mut sequence, event)
+                },
             ) {
                 Ok(Event::Connected | Event::Foreign) => {}
                 Ok(Event::Busy) => {

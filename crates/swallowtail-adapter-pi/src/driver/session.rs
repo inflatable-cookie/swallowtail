@@ -4,6 +4,7 @@ use super::input::{SharedAttachmentMaterialization, prepare_attachment};
 use super::validation::validate_turn;
 use crate::connection::PiConnection;
 use crate::driver::disposition::{CommandDisposition, parse_command_disposition};
+use crate::driver::{ABORT_ACKNOWLEDGEMENT_GRACE_TICKS, grace_deadline, run_before_deadline};
 use crate::failure::failure;
 use crate::selection::PiRpcVersionFeatures;
 use crate::turn::ActiveTurn;
@@ -298,7 +299,7 @@ impl InteractiveSessionHandle for PiSessionHandle {
     }
 
     fn close(
-        mut self: Box<Self>,
+        self: Box<Self>,
         request: swallowtail_runtime::SessionCleanupRequest,
         services: HostServices,
     ) -> BoxFuture<'static, CleanupOutcome> {
@@ -307,37 +308,54 @@ impl InteractiveSessionHandle for PiSessionHandle {
             execution_host_id,
             request,
             services,
-            Box::pin(async move {
-                let active = self
-                    .active
-                    .lock()
-                    .expect("Pi active-task lock poisoned")
-                    .take();
-                let active_cleanup = settle_active_task(active, &self.connection).await;
-                let process = match self.pump_task.take() {
-                    Some(task) => match task.join().await {
-                        Ok(()) => self.connection.cleanup_outcome(),
-                        Err(_) => cleanup_failure(
-                            "pump_join_failed",
-                            "Pi RPC protocol task did not join cleanly",
-                        ),
-                    },
-                    None => CleanupOutcome::NotApplicable,
-                };
-                let callbacks = self.connection.join_callback_tasks().await;
-                let resource = release_resource(self.resource.take(), &self.services).await;
-                let credential = release_credential(self.credential.take(), &self.services).await;
-                CleanupOutcome::merge(
-                    CleanupOutcome::merge(
-                        CleanupOutcome::merge(
-                            CleanupOutcome::merge(active_cleanup, process),
-                            callbacks,
-                        ),
-                        resource,
-                    ),
-                    credential,
-                )
-            }),
+            Box::pin(self.close_session()),
+        )
+    }
+}
+
+/// Grace for joining the private process and releasing the run's leases.
+const RUN_SESSION_CLEANUP_GRACE_TICKS: u64 = 500;
+
+impl PiSessionHandle {
+    pub(super) async fn close_run(self) -> CleanupOutcome {
+        let Some(deadline) = grace_deadline(&self.services, RUN_SESSION_CLEANUP_GRACE_TICKS) else {
+            return self.close_session().await;
+        };
+        let services = self.services.clone();
+        Box::new(self)
+            .close(
+                swallowtail_runtime::SessionCleanupRequest::new(deadline),
+                services,
+            )
+            .await
+    }
+
+    async fn close_session(mut self) -> CleanupOutcome {
+        let active = self
+            .active
+            .lock()
+            .expect("Pi active-task lock poisoned")
+            .take();
+        let active_cleanup = settle_active_task(active, &self.connection).await;
+        let process = match self.pump_task.take() {
+            Some(task) => match task.join().await {
+                Ok(()) => self.connection.cleanup_outcome(),
+                Err(_) => cleanup_failure(
+                    "pump_join_failed",
+                    "Pi RPC protocol task did not join cleanly",
+                ),
+            },
+            None => CleanupOutcome::NotApplicable,
+        };
+        let callbacks = self.connection.join_callback_tasks().await;
+        let resource = release_resource(self.resource.take(), &self.services).await;
+        let credential = release_credential(self.credential.take(), &self.services).await;
+        CleanupOutcome::merge(
+            CleanupOutcome::merge(
+                CleanupOutcome::merge(CleanupOutcome::merge(active_cleanup, process), callbacks),
+                resource,
+            ),
+            credential,
         )
     }
 }
@@ -373,10 +391,6 @@ async fn settle_active_task(
 #[cfg(test)]
 #[path = "session/tests.rs"]
 mod tests;
-
-/// How long a deadline-triggered `abort` command may wait for acknowledgement
-/// before escalating to connection closure and `force_stop`.
-const ABORT_ACKNOWLEDGEMENT_GRACE_TICKS: u64 = 500;
 
 fn spawn_deadline(
     services: &HostServices,
@@ -416,20 +430,13 @@ fn spawn_deadline(
             if timed_out {
                 deadline_turn.mark_timed_out();
                 let id = format!("deadline-abort:{}", deadline_turn.runtime_id().as_str());
-                let abort_deadline = swallowtail_runtime::Deadline::at(
-                    swallowtail_runtime::MonotonicInstant::from_ticks(
-                        time.now()
-                            .ticks()
-                            .saturating_add(ABORT_ACKNOWLEDGEMENT_GRACE_TICKS),
-                    ),
-                );
-                let abort = crate::driver::run_before_deadline(
+                let abort = run_before_deadline(
                     connection.abort_command(
                         id.clone(),
                         json!({"id": id, "type": "abort"}),
                         Arc::clone(&deadline_turn),
                     ),
-                    Some(abort_deadline),
+                    grace_deadline(&deadline_services, ABORT_ACKNOWLEDGEMENT_GRACE_TICKS),
                     &deadline_services,
                     "swallowtail.pi.rpc.deadline_abort_timed_out",
                     "Pi RPC deadline abort timed out awaiting acknowledgement",

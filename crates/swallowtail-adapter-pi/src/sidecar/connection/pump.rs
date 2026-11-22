@@ -88,7 +88,7 @@ impl SidecarConnection {
         *self.cleanup.lock().expect("sidecar cleanup lock poisoned") = Some(cleanup);
     }
 
-    fn dispatch(
+    pub(super) fn dispatch(
         self: &Arc<Self>,
         record: PiSdkSidecarRecord,
     ) -> Result<Option<(ResponseSender, CommandResult)>, RuntimeFailure> {
@@ -98,6 +98,16 @@ impl SidecarConnection {
                     self.pending.lock().expect("sidecar pending lock poisoned");
                 if !pending_commands.contains_key(&response.id) {
                     drop(pending_commands);
+                    if response.command == "close" {
+                        let mut abandoned = self
+                            .abandoned_close
+                            .lock()
+                            .expect("sidecar close lock poisoned");
+                        if abandoned.as_ref() == Some(&response.id) {
+                            abandoned.take();
+                            return Ok(None);
+                        }
+                    }
                     if response.command == "abort"
                         && self
                             .superseded_aborts

@@ -14,7 +14,8 @@ use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
     CredentialRef, CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
     EntitlementState, ExecutionHostId, ExtensionNamespace, InstanceRevision, InstanceTargetRef,
-    ModelId, ModelRouteId, ModelRouteRevision, ProviderId, RuntimeReadiness, SupportAuthority,
+    ModelId, ModelRouteId, ModelRouteRevision, ProviderId, ResourceAccess, ResourceRepresentation,
+    RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
@@ -22,11 +23,11 @@ use swallowtail_runtime::{
     BlockingWorkService, BoxFuture, CleanupOutcome, CredentialLease, CredentialService, Deadline,
     DeadlineObservation, DiscoveryCancellation, EndpointRef, HostServices,
     InteractiveSessionHandle, MonotonicInstant, NetworkPolicyService, PreparedAccessEvidence,
-    RuntimeFailure, ScopeId, ScopedTaskService, SessionCleanupRequest, TimeService,
+    ResourceLease, RuntimeFailure, ScopeId, ScopedTaskService, SessionCleanupRequest, TimeService,
     WorkingResourceRef, WorkingResourceService,
 };
 
-static NEXT_ATTACHMENT: AtomicUsize = AtomicUsize::new(0);
+static NEXT_FIXTURE: AtomicUsize = AtomicUsize::new(0);
 
 pub(super) struct PreparedFixture {
     pub(super) server: FixtureServer,
@@ -39,8 +40,9 @@ pub(super) struct PreparedFixture {
     thread: ThreadServices,
     clock: TestClock,
     pub(super) releases: Arc<AtomicUsize>,
+    pub(super) resource_releases: Arc<AtomicUsize>,
     attachment: AttachmentDescriptor,
-    attachment_path: PathBuf,
+    fixture_dir: PathBuf,
     pub(super) attachment_releases: Arc<AtomicUsize>,
 }
 
@@ -61,12 +63,14 @@ impl PreparedFixture {
         let credential = CredentialRef::new("opencode.prepared.delegated").unwrap();
         let resource = WorkingResourceRef::new("opencode.prepared.workspace").unwrap();
         let attachment_ref = AttachmentRef::new("opencode.prepared.image").unwrap();
-        let attachment_sequence = NEXT_ATTACHMENT.fetch_add(1, Ordering::Relaxed);
-        let attachment_path = std::env::temp_dir().join(format!(
-            "swallowtail-opencode-{}-{attachment_sequence}-{}.png",
+        let sequence = NEXT_FIXTURE.fetch_add(1, Ordering::Relaxed);
+        let fixture_dir = std::env::temp_dir().join(format!(
+            "swallowtail-opencode-{}-{sequence}-{}",
             std::process::id(),
             host_id.as_str().replace(['.', ':'], "-")
         ));
+        std::fs::create_dir(&fixture_dir).expect("fresh OpenCode fixture directory");
+        let attachment_path = fixture_dir.join("input.png");
         let mut attachment_file = std::fs::File::create_new(&attachment_path)
             .expect("fixture image path is created without collision");
         std::io::Write::write_all(&mut attachment_file, b"\x89PNG\r\n\x1a\n")
@@ -114,8 +118,9 @@ impl PreparedFixture {
             thread: ThreadServices::new(),
             clock: TestClock::new(),
             releases: Arc::new(AtomicUsize::new(0)),
+            resource_releases: Arc::new(AtomicUsize::new(0)),
             attachment,
-            attachment_path,
+            fixture_dir,
             attachment_releases: Arc::new(AtomicUsize::new(0)),
         }
     }
@@ -174,7 +179,10 @@ impl PreparedFixture {
                 releases: Arc::clone(&self.releases),
                 fail_release,
             }) as Arc<dyn CredentialService>)
-            .with_working_resource(Arc::new(self.host.clone()) as Arc<dyn WorkingResourceService>)
+            .with_working_resource(Arc::new(TrackingResource {
+                inner: self.host.clone(),
+                releases: Arc::clone(&self.resource_releases),
+            }))
             .with_attachment(Arc::new(TrackingAttachment {
                 inner: self.host.clone(),
                 releases: Arc::clone(&self.attachment_releases),
@@ -234,7 +242,8 @@ impl PreparedFixture {
 
 impl Drop for PreparedFixture {
     fn drop(&mut self) {
-        let _ = std::fs::remove_file(&self.attachment_path);
+        let _ = std::fs::remove_file(self.fixture_dir.join("input.png"));
+        let _ = std::fs::remove_dir(&self.fixture_dir);
     }
 }
 
@@ -440,6 +449,42 @@ impl CredentialService for TrackingCredential {
             } else {
                 outcome
             }
+        })
+    }
+}
+
+struct TrackingResource {
+    inner: LocalProcessHost,
+    releases: Arc<AtomicUsize>,
+}
+
+impl WorkingResourceService for TrackingResource {
+    fn resolve(
+        &self,
+        scope: ScopeId,
+        reference: WorkingResourceRef,
+        access: ResourceAccess,
+        representation: ResourceRepresentation,
+    ) -> BoxFuture<'static, Result<ResourceLease, RuntimeFailure>> {
+        self.inner.resolve(scope, reference, access, representation)
+    }
+
+    fn create_temporary(
+        &self,
+        scope: ScopeId,
+        access: ResourceAccess,
+        representation: ResourceRepresentation,
+    ) -> BoxFuture<'static, Result<ResourceLease, RuntimeFailure>> {
+        self.inner.create_temporary(scope, access, representation)
+    }
+
+    fn release(&self, lease: ResourceLease) -> BoxFuture<'static, CleanupOutcome> {
+        let release = WorkingResourceService::release(&self.inner, lease);
+        let releases = Arc::clone(&self.releases);
+        Box::pin(async move {
+            let outcome = release.await;
+            releases.fetch_add(1, Ordering::SeqCst);
+            outcome
         })
     }
 }

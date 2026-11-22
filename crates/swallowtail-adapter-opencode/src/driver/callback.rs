@@ -55,6 +55,7 @@ struct ResponseContext {
     endpoint: String,
     services: HostServices,
     transport: CurlTransport,
+    cancelled: Arc<AtomicBool>,
 }
 
 impl CallbackHub {
@@ -64,6 +65,7 @@ impl CallbackHub {
         endpoint: String,
         services: HostServices,
         transport: CurlTransport,
+        cancelled: Arc<AtomicBool>,
     ) -> (Self, CallbackExchange) {
         let state = Arc::new(Mutex::new(State {
             requests: VecDeque::new(),
@@ -83,6 +85,7 @@ impl CallbackHub {
             endpoint,
             services,
             transport,
+            cancelled,
         });
         (Self { state }, CallbackExchange::new(requests, responder))
     }
@@ -224,7 +227,7 @@ impl CallbackResponder for ResponseContext {
                     self.endpoint.clone(),
                     request,
                     &self.services,
-                    Arc::new(AtomicBool::new(false)),
+                    Arc::clone(&self.cancelled),
                 )
                 .await?;
             if (200..300).contains(&response.status) {

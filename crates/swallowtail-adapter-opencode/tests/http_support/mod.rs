@@ -49,6 +49,8 @@ pub enum StreamFixture {
     ReconciliationActive,
     RepeatedCursor,
     PanicOnEvent,
+    HoldPromptAndAbort,
+    HoldHistoryPage,
 }
 
 pub struct FixtureServer {

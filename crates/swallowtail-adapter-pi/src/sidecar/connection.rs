@@ -144,6 +144,9 @@ impl SidecarConnection {
             .active_turn
             .lock()
             .expect("sidecar active lock poisoned");
+        if self.closed.load(Ordering::SeqCst) {
+            return Err(self.closed_failure());
+        }
         if active.as_ref().is_some_and(|active| !active.is_finished()) {
             return Err(failure(
                 "swallowtail.pi.sdk-sidecar.turn_active",
@@ -152,6 +155,13 @@ impl SidecarConnection {
         }
         *active = Some(turn);
         Ok(())
+    }
+
+    /// Closes the connection to any further commands or turns when an active
+    /// turn's abort was rejected, ensuring late events from the still-running
+    /// provider turn can never be misattributed to a replacement turn.
+    pub(crate) fn close_on_rejected_abort(&self, diagnostic: SafeDiagnostic) {
+        self.fail_connection(&RuntimeFailure::new(diagnostic));
     }
 
     pub(crate) fn clear_active_turn(&self, turn: &Arc<SidecarActiveTurn>) {

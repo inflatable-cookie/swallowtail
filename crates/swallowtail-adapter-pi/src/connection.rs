@@ -124,6 +124,9 @@ impl PiConnection {
 
     pub(crate) fn set_active_turn(&self, turn: Arc<ActiveTurn>) -> Result<(), RuntimeFailure> {
         let mut active = self.active_turn.lock().expect("Pi active lock poisoned");
+        if self.closed.load(Ordering::SeqCst) {
+            return Err(connection_closed());
+        }
         if active.as_ref().is_some_and(|active| !active.is_finished()) {
             return Err(failure(
                 "swallowtail.pi.rpc.turn_active",
@@ -132,6 +135,26 @@ impl PiConnection {
         }
         *active = Some(turn);
         Ok(())
+    }
+
+    /// Closes the connection to any further commands or turns when an active
+    /// turn's abort was rejected, ensuring late events from the still-running
+    /// provider turn can never be misattributed to a replacement turn.
+    pub(crate) fn close_on_rejected_abort(&self, diagnostic: SafeDiagnostic) {
+        {
+            let _pending = self.pending.lock().expect("Pi pending lock poisoned");
+            self.closed.store(true, Ordering::SeqCst);
+        }
+        if let Some(turn) = self
+            .active_turn
+            .lock()
+            .expect("Pi active lock poisoned")
+            .as_ref()
+            && !turn.is_finished()
+        {
+            turn.fail_connection(diagnostic.clone());
+        }
+        self.fail_pending(RuntimeFailure::new(diagnostic));
     }
 
     pub(crate) fn clear_active_turn(&self, turn: &Arc<ActiveTurn>) {

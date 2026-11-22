@@ -244,19 +244,17 @@ impl TurnHandle for PiTurnHandle {
             } else {
                 match self.cancellation.request().await {
                     Ok(_) => CleanupOutcome::NotApplicable,
-                    // A turn that could not be aborted may still be running, so
-                    // close must not report a clean outcome for it. Finish the
-                    // turn so the deadline task wakes and exits instead of
-                    // stalling until the full turn deadline.
+                    // A turn that could not be aborted may still be running on
+                    // the provider. Close the connection to further commands
+                    // and turns so late events can never be assigned to a
+                    // replacement turn, and wake the deadline task.
                     Err(_) => {
-                        if !self.cancellation.turn.is_finished() {
-                            self.cancellation.turn.fail_connection(
-                                swallowtail_core::SafeDiagnostic::new(
-                                    "swallowtail.pi.rpc.cancel_rejected",
-                                    "Pi could not abort the active turn during close",
-                                ),
-                            );
-                        }
+                        self.cancellation.connection.close_on_rejected_abort(
+                            swallowtail_core::SafeDiagnostic::new(
+                                "swallowtail.pi.rpc.cancel_rejected",
+                                "Pi could not abort the active turn during close",
+                            ),
+                        );
                         cleanup_failure(
                             "cancel_rejected",
                             "Pi could not abort the active turn during close",
@@ -423,6 +421,10 @@ mod tests {
             })),
             attachment: SharedAttachmentMaterialization::default(),
         })));
+        let connection_ref = Arc::clone(&connection);
+        connection
+            .set_active_turn(Arc::clone(&turn))
+            .expect("initial turn attaches");
         let handle = PiTurnHandle::new(
             RuntimeTurnId::new("turn-close").expect("turn id is valid"),
             events,
@@ -445,6 +447,20 @@ mod tests {
         assert!(
             turn.is_finished(),
             "turn must finish so deadline task wakes"
+        );
+        let (next_turn, _next_events, _next_callbacks, _next_terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("turn-next").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+            Arc::downgrade(&connection_ref),
+            false,
+        )
+        .expect("next turn constructs");
+        let next_err = connection_ref
+            .set_active_turn(next_turn)
+            .expect_err("connection must refuse a replacement turn after rejected abort");
+        assert_eq!(
+            next_err.diagnostic().code(),
+            "swallowtail.pi.rpc.connection_closed"
         );
     }
 }

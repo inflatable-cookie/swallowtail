@@ -100,7 +100,7 @@ async fn pump_turn(pump: TurnPump) {
     let mut status = loop {
         match next_signal(&mut subscription, &mut deadline_wait).await {
             TurnSignal::Deadline => {
-                let abort = cancellation.request().await;
+                let abort = cancellation.request_bounded().await;
                 break (
                     TerminalStatus::TimedOut,
                     cleanup_from_result(abort.map(|_| ())),

@@ -1,13 +1,18 @@
 use super::{
-    CODEX_INSTALL_GUIDANCE, ExitSignal, attach_install_guidance, parse_version, stop_and_classify,
-    wait_for_exit,
+    CODEX_INSTALL_GUIDANCE, ExitSignal, attach_install_guidance, parse_version, probe_process,
+    stop_and_classify, wait_for_exit,
 };
 use crate::selection::CODEX_CLI_AXIS;
 use crate::{CodexAppServerDriver, CodexExecDriver};
-use swallowtail_core::{DiscoveryOutcome, DiscoveryStatus, InterfaceVersionAxis, SafeDiagnostic};
+use std::sync::Arc;
+use swallowtail_core::{
+    DiscoveryOutcome, DiscoveryStatus, ExecutionHostId, InterfaceVersionAxis, SafeDiagnostic,
+};
 use swallowtail_runtime::{
-    BoxFuture, Deadline, DeadlineObservation, MonotonicInstant, ProcessExit, ProcessHandle,
-    ProcessInputChunk, ProcessOutputChunk, RuntimeFailure,
+    BoxFuture, Deadline, DeadlineObservation, DiscoveryCancellation, ExecutableRef, HostServices,
+    InstalledExecutableDiscoveryRequest, InstalledExecutableTarget, MonotonicInstant, ProcessExit,
+    ProcessHandle, ProcessInputChunk, ProcessOutputChunk, ProcessRequest, ProcessService,
+    RequestId, RuntimeFailure, ScopeId, TimeService,
 };
 
 #[test]
@@ -120,10 +125,35 @@ impl ProcessHandle for HangingWaitProcess {
     }
 }
 
+struct ImmediateTime;
+
+impl TimeService for ImmediateTime {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(10)
+    }
+
+    fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        Box::pin(async move { DeadlineObservation::new(deadline, deadline.instant()) })
+    }
+}
+
+struct HangingWaitProcessService;
+
+impl ProcessService for HangingWaitProcessService {
+    fn start(
+        &self,
+        _scope: ScopeId,
+        _request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        Box::pin(async { Ok(Box::new(HangingWaitProcess) as Box<dyn ProcessHandle>) })
+    }
+}
+
 #[test]
 fn stop_and_classify_preserves_desired_outcome_when_force_stop_errors_after_clean_graceful_stop() {
     let result = futures_executor::block_on(stop_and_classify(
         &ExitedOnGracefulStop,
+        &ImmediateTime,
         DiscoveryOutcome::new(DiscoveryStatus::TimedOut, None),
     ));
     assert_eq!(result.status(), DiscoveryStatus::TimedOut);
@@ -142,4 +172,28 @@ fn wait_for_exit_bounds_hanging_wait_by_deadline() {
         &mut cancelled,
     ));
     assert!(matches!(signal, ExitSignal::TimedOut));
+}
+
+#[test]
+fn probe_process_bounds_hanging_wait_through_teardown_and_reports_cleanup_failed() {
+    let host_id = ExecutionHostId::new("codex.discovery.teardown-test").expect("host id is valid");
+    let services = HostServices::new(host_id.clone())
+        .with_time(Arc::new(ImmediateTime))
+        .with_process(Arc::new(HangingWaitProcessService));
+    let axis = InterfaceVersionAxis::new(CODEX_CLI_AXIS).expect("axis is valid");
+    let request = InstalledExecutableDiscoveryRequest::new(
+        RequestId::new("codex.discovery.teardown-req").expect("request id is valid"),
+        ScopeId::new("codex.discovery.teardown-scope").expect("scope is valid"),
+        host_id,
+        InstalledExecutableTarget::new(
+            ExecutableRef::new("codex.fixture").expect("executable ref is valid"),
+            axis,
+        ),
+        Deadline::at(MonotonicInstant::from_ticks(20)),
+        DiscoveryCancellation::new(),
+    );
+    let claim = crate::selection::codex_exec_claim();
+    let result = futures_executor::block_on(probe_process(request, services, claim))
+        .expect("probe returns bounded outcome instead of hanging");
+    assert_eq!(result.status(), DiscoveryStatus::CleanupFailed);
 }

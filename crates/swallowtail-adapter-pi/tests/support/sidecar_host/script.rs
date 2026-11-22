@@ -221,6 +221,7 @@ pub(super) fn respond(
                     );
                 }
                 SidecarScenario::Hold
+                | SidecarScenario::AbortRejected
                 | SidecarScenario::ResponseMismatch
                 | SidecarScenario::BootstrapCwdMismatch
                 | SidecarScenario::BootstrapVersionMismatch
@@ -260,11 +261,18 @@ pub(super) fn respond(
             settled(state, "stop");
         }
         "abort" => {
-            output(
-                state,
-                json!({"type": "response", "id": id, "command": "abort", "success": true, "data": {}}),
-            );
-            settled(state, "aborted");
+            if matches!(scenario, SidecarScenario::AbortRejected) {
+                output(
+                    state,
+                    json!({"type": "response", "id": id, "command": "abort", "success": false, "error": {"code": "abort_rejected", "message": "fixture abort rejected"}}),
+                );
+            } else {
+                output(
+                    state,
+                    json!({"type": "response", "id": id, "command": "abort", "success": true, "data": {}}),
+                );
+                settled(state, "aborted");
+            }
         }
         "close" => {
             state.close_requested = true;

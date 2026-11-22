@@ -82,6 +82,7 @@ enum PendingKind {
 
 struct PendingCallback {
     provider_id: Value,
+    provider_key: String,
     operation_id: CallbackOperationId,
     kind: PendingKind,
 }
@@ -222,7 +223,12 @@ impl CallbackHub {
                 "Claude Agent permission callback capacity was exceeded",
             ));
         }
-        if !state.provider_ids.insert(provider_key) {
+        if state
+            .pending
+            .values()
+            .any(|pending| pending.provider_key == provider_key)
+            || !state.provider_ids.insert(provider_key.clone())
+        {
             return Err(failure(
                 "swallowtail.claude_agent.acp.permission_provider_id_reused",
                 "Claude Agent reused a permission request id",
@@ -232,6 +238,7 @@ impl CallbackHub {
             callback_id.clone(),
             PendingCallback {
                 provider_id: provider_id.clone(),
+                provider_key,
                 operation_id: CallbackOperationId::Turn(turn_id.clone()),
                 kind: PendingKind::Permission {
                     options: accepted,
@@ -277,7 +284,12 @@ impl CallbackHub {
                 "Claude Agent callback capacity was exceeded",
             ));
         }
-        if !state.provider_ids.insert(provider_key) {
+        if state
+            .pending
+            .values()
+            .any(|pending| pending.provider_key == provider_key)
+            || !state.provider_ids.insert(provider_key.clone())
+        {
             return Err(failure(
                 "swallowtail.claude_agent.acp.callback_provider_id_reused",
                 "Claude Agent reused a callback request id",
@@ -287,6 +299,7 @@ impl CallbackHub {
             callback_id.clone(),
             PendingCallback {
                 provider_id: provider_id.clone(),
+                provider_key,
                 operation_id: CallbackOperationId::Turn(turn_id.clone()),
                 kind: PendingKind::UserInput(request),
             },
@@ -356,6 +369,55 @@ fn closed() -> RuntimeFailure {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use swallowtail_runtime::{
+        HarnessQuestionId, HarnessQuestionOptionId, HarnessUserInputChoiceMode,
+        HarnessUserInputOption, HarnessUserInputQuestion, HarnessUserInputQuestionKind,
+        OperationContent,
+    };
+
+    fn permission_params() -> Value {
+        json!({
+            "toolCall": { "toolCallId": "tool-1" },
+            "options": [
+                { "optionId": "allow-1", "kind": "allow_once" },
+                { "optionId": "reject-1", "kind": "reject_once" }
+            ]
+        })
+    }
+
+    fn user_input_request() -> HarnessUserInputRequest {
+        HarnessUserInputRequest::new(
+            vec![
+                HarnessUserInputQuestion::new(
+                    HarnessQuestionId::new("q1").expect("id"),
+                    OperationContent::new("header").expect("content"),
+                    OperationContent::new("prompt").expect("content"),
+                    HarnessUserInputQuestionKind::Choice {
+                        mode: HarnessUserInputChoiceMode::Single,
+                        allow_other: false,
+                    },
+                    vec![
+                        HarnessUserInputOption::new(
+                            HarnessQuestionOptionId::new("a").expect("id"),
+                            OperationContent::new("A").expect("content"),
+                            None,
+                        ),
+                        HarnessUserInputOption::new(
+                            HarnessQuestionOptionId::new("b").expect("id"),
+                            OperationContent::new("B").expect("content"),
+                            None,
+                        ),
+                    ],
+                )
+                .expect("question"),
+            ],
+            None,
+            4,
+            4,
+            4096,
+        )
+        .expect("request")
+    }
 
     #[test]
     fn provider_ids_stays_bounded_and_rejects_recent_duplicates() {
@@ -371,5 +433,44 @@ mod tests {
         assert_eq!(ids.len(), 3);
         ids.clear();
         assert_eq!(ids.len(), 0);
+    }
+
+    #[test]
+    fn outstanding_pending_provider_id_stays_reserved_across_cache_turnover() {
+        let state = Arc::new(Mutex::new(State {
+            requests: VecDeque::new(),
+            pending: BTreeMap::new(),
+            provider_ids: BoundedProviderIds::new(2),
+            closed: false,
+            waiter: None,
+        }));
+        let hub = CallbackHub {
+            state,
+            exchanges_permissions: true,
+        };
+        let turn_id = RuntimeTurnId::new("turn-turnover").expect("turn id");
+        hub.enqueue_permission(&turn_id, 1, None, &json!(100), &permission_params())
+            .expect("first permission enqueues");
+        // Cycle two more provider IDs so "number:100" is evicted from the
+        // 2-entry recent-ID cache while callback 100 remains pending.
+        hub.enqueue_permission(&turn_id, 2, None, &json!(200), &permission_params())
+            .expect("second permission enqueues");
+        hub.enqueue_permission(&turn_id, 3, None, &json!(300), &permission_params())
+            .expect("third permission enqueues");
+
+        let dup_permission = hub
+            .enqueue_permission(&turn_id, 4, None, &json!(100), &permission_params())
+            .expect_err("pending provider id must remain reserved for permissions");
+        assert_eq!(
+            dup_permission.diagnostic().code(),
+            "swallowtail.claude_agent.acp.permission_provider_id_reused"
+        );
+        let dup_user_input = hub
+            .enqueue_user_input(&turn_id, 5, None, &json!(100), user_input_request())
+            .expect_err("pending provider id must remain reserved for user input");
+        assert_eq!(
+            dup_user_input.diagnostic().code(),
+            "swallowtail.claude_agent.acp.callback_provider_id_reused"
+        );
     }
 }

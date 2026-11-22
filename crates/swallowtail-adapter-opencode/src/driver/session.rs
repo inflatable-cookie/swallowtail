@@ -235,7 +235,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                 Err(error) => Err(error),
             };
             if let Err(error) = prompt_result {
-                let _ = cancellation.request().await;
+                let _ = cancellation.request_bounded().await;
                 let _ = task.join().await;
                 let _ = attachment.release().await;
                 return Err(error);

@@ -138,7 +138,9 @@ fn respond_sse(
                 write_fixture(stream, SUCCESS.as_bytes());
             }
         }
-        StreamFixture::WaitForAbort => {
+        StreamFixture::WaitForAbort
+        | StreamFixture::HoldPromptAndAbort
+        | StreamFixture::HoldHistoryPage => {
             write_fixture(
                 stream,
                 b"data: {\"id\":\"evt_1\",\"type\":\"server.connected\",\"properties\":{}}\n\n",

@@ -10,9 +10,55 @@ struct TurnCancellation {
     callbacks: Option<callback::CallbackHub>,
 }
 
+/// Maximum time spent waiting for a best-effort `/abort` HTTP exchange during
+/// deadline/timeout cleanup before abandoning the stalled abort request.
+const ABORT_CLEANUP_BUDGET_TICKS: u64 = 500;
+
 impl TurnCancellation {
     fn is_requested(&self) -> bool {
         self.requested.load(Ordering::SeqCst)
+    }
+
+    async fn request_with_deadline(
+        &self,
+        abort_deadline: Option<Deadline>,
+    ) -> Result<CancellationAcknowledgement, RuntimeFailure> {
+        let already = self.requested.swap(true, Ordering::SeqCst);
+        self.stream_cancelled.store(true, Ordering::SeqCst);
+        if let Some(callbacks) = &self.callbacks {
+            callbacks.abandon(swallowtail_runtime::CallbackAbandonment::TurnCancelled);
+        }
+        if already {
+            return Ok(CancellationAcknowledgement::AlreadyRequested);
+        }
+        let abort_request = abort(&self.session_id, &self.directory)?;
+        let abort_cancelled = Arc::new(AtomicBool::new(false));
+        let response = complete_before_deadline(
+            self.transport.request(
+                self.scope.clone(),
+                self.endpoint.clone(),
+                abort_request,
+                &self.services,
+                Arc::clone(&abort_cancelled),
+            ),
+            abort_deadline,
+            &self.services,
+            abort_cancelled,
+            "swallowtail.opencode.abort_timed_out",
+            "OpenCode abort request timed out",
+        )
+        .await?;
+        require_abort_success(&response)?;
+        Ok(CancellationAcknowledgement::Requested)
+    }
+
+    async fn request_bounded(&self) -> Result<CancellationAcknowledgement, RuntimeFailure> {
+        let abort_deadline = self.services.time().map(|time| {
+            Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(
+                time.now().ticks().saturating_add(ABORT_CLEANUP_BUDGET_TICKS),
+            ))
+        });
+        self.request_with_deadline(abort_deadline).await
     }
 }
 
@@ -22,28 +68,7 @@ impl CancellationControl for TurnCancellation {
     }
 
     fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {
-        let already = self.requested.swap(true, Ordering::SeqCst);
-        self.stream_cancelled.store(true, Ordering::SeqCst);
-        if let Some(callbacks) = &self.callbacks {
-            callbacks.abandon(swallowtail_runtime::CallbackAbandonment::TurnCancelled);
-        }
-        Box::pin(async move {
-            if already {
-                return Ok(CancellationAcknowledgement::AlreadyRequested);
-            }
-            let response = self
-                .transport
-                .request(
-                    self.scope.clone(),
-                    self.endpoint.clone(),
-                    abort(&self.session_id, &self.directory)?,
-                    &self.services,
-                    Arc::new(AtomicBool::new(false)),
-                )
-                .await?;
-            require_abort_success(&response)?;
-            Ok(CancellationAcknowledgement::Requested)
-        })
+        Box::pin(async move { self.request_with_deadline(None).await })
     }
 }
 

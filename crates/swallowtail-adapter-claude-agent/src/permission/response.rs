@@ -154,6 +154,7 @@ mod tests {
                 callback_id.clone(),
                 PendingCallback {
                     provider_id: json!(900),
+                    provider_key: "number:900".to_owned(),
                     operation_id: CallbackOperationId::Turn(turn_id.clone()),
                     kind: PendingKind::Permission {
                         options: BTreeSet::from([

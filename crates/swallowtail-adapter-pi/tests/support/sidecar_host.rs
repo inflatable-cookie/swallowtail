@@ -29,6 +29,7 @@ mod task_time;
 pub enum SidecarScenario {
     Complete,
     Hold,
+    AbortRejected,
     Disconnect,
     Malformed,
     UnknownEvent,

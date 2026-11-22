@@ -143,3 +143,158 @@ fn bootstrap_identity_mismatch_fails_before_provider_work() {
         );
     }
 }
+
+struct SteppingClock {
+    calls: std::sync::atomic::AtomicUsize,
+    expire_on_call: usize,
+}
+
+impl swallowtail_runtime::TimeService for SteppingClock {
+    fn now(&self) -> swallowtail_runtime::MonotonicInstant {
+        let call = self.calls.fetch_add(1, std::sync::atomic::Ordering::SeqCst) + 1;
+        if call >= self.expire_on_call {
+            swallowtail_runtime::MonotonicInstant::from_ticks(100)
+        } else {
+            swallowtail_runtime::MonotonicInstant::from_ticks(1)
+        }
+    }
+
+    fn wait_until(
+        &self,
+        _deadline: swallowtail_runtime::Deadline,
+    ) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::DeadlineObservation> {
+        Box::pin(std::future::pending())
+    }
+}
+
+#[test]
+fn sidecar_rejected_abort_during_turn_close_blocks_subsequent_turns() {
+    let host_id = make_host_id("pi.fixture.sdk-sidecar.abort-rejected");
+    let fixture = SidecarFixtureHost::new(SidecarScenario::AbortRejected);
+    let selected = sidecar_selection(host_id.clone());
+    let services = fixture.services(host_id);
+    let mut session = block_on(driver(selected.credential.clone()).open_session(
+        selected.plan,
+        sidecar_open_request("sidecar-abort-rejected-session", selected.resource),
+        services.clone(),
+    ))
+    .expect("sidecar session opens");
+    let turn = block_on(session.start_turn(
+        turn_request("sidecar-abort-rejected-turn-1", deadline()),
+        services.clone(),
+    ))
+    .expect("first sidecar turn starts");
+    let close_outcome = block_on(turn.close());
+    assert!(
+        matches!(close_outcome, CleanupOutcome::Failed(ref diagnostic) if diagnostic.message().contains("cancel_rejected")),
+        "expected cancel_rejected cleanup failure, got {close_outcome:?}"
+    );
+    let second_error = block_on(session.start_turn(
+        turn_request("sidecar-abort-rejected-turn-2", deadline()),
+        services.clone(),
+    ))
+    .err()
+    .expect("sidecar session must refuse a new turn after rejected abort");
+    assert_eq!(
+        second_error.diagnostic().code(),
+        "swallowtail.pi.sdk-sidecar.cancel_rejected"
+    );
+    let _ = block_on(close_session(session, services));
+}
+
+#[test]
+fn sidecar_startup_deadline_enforced_before_and_after_synchronous_launch() {
+    use std::sync::Arc;
+    use swallowtail_core::{
+        HarnessConfigurationPosture, ResourceAccess, SessionAccessPolicy,
+        SessionProviderStatePolicy,
+    };
+    use swallowtail_runtime::{
+        Deadline, MonotonicInstant, OpenSessionRequest, RequestId, SessionPlanAgreement,
+    };
+
+    // 1. Expires during lease acquisition before ProcessService::start is called.
+    {
+        let host_id = make_host_id("pi.fixture.sdk-sidecar.expire-before-launch");
+        let fixture = SidecarFixtureHost::new(SidecarScenario::Complete);
+        let selected = sidecar_selection(host_id.clone());
+        let services = fixture.services(host_id).with_time(Arc::new(SteppingClock {
+            calls: std::sync::atomic::AtomicUsize::new(0),
+            expire_on_call: 2,
+        }));
+        let request = OpenSessionRequest::new(
+            RequestId::new("sidecar-expire-before-launch").expect("id"),
+            selected.resource,
+            Some(Deadline::at(MonotonicInstant::from_ticks(50))),
+            SessionPlanAgreement::explicit(
+                SessionAccessPolicy::ambient_harness(ResourceAccess::Read),
+                Some(SessionProviderStatePolicy::DurableProviderSessionPreserved),
+                Some(HarnessConfigurationPosture::ProviderSuppressed),
+            ),
+        );
+        let error = block_on(driver(selected.credential.clone()).open_session(
+            selected.plan,
+            request,
+            services,
+        ))
+        .err()
+        .expect("expired deadline before launch must fail");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.pi.sdk-sidecar.open_deadline_elapsed"
+        );
+        assert_eq!(
+            fixture.cleanup_events(),
+            [
+                CleanupEvent::ResourceRelease,
+                CleanupEvent::CredentialRelease,
+            ],
+            "sidecar process must not have been started when deadline elapsed before dispatch"
+        );
+    }
+
+    // 2. Synchronous ProcessService::start completes after deadline: process is
+    //    cleaned up and bootstrap never runs.
+    {
+        let host_id = make_host_id("pi.fixture.sdk-sidecar.expire-after-launch");
+        let fixture = SidecarFixtureHost::new(SidecarScenario::Complete);
+        let selected = sidecar_selection(host_id.clone());
+        let services = fixture.services(host_id).with_time(Arc::new(SteppingClock {
+            calls: std::sync::atomic::AtomicUsize::new(0),
+            expire_on_call: 4,
+        }));
+        let request = OpenSessionRequest::new(
+            RequestId::new("sidecar-expire-after-launch").expect("id"),
+            selected.resource,
+            Some(Deadline::at(MonotonicInstant::from_ticks(50))),
+            SessionPlanAgreement::explicit(
+                SessionAccessPolicy::ambient_harness(ResourceAccess::Read),
+                Some(SessionProviderStatePolicy::DurableProviderSessionPreserved),
+                Some(HarnessConfigurationPosture::ProviderSuppressed),
+            ),
+        );
+        let error = block_on(driver(selected.credential.clone()).open_session(
+            selected.plan,
+            request,
+            services,
+        ))
+        .err()
+        .expect("deadline elapsed after synchronous launch must fail");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.pi.sdk-sidecar.open_deadline_elapsed"
+        );
+        assert!(
+            fixture.inputs().is_empty(),
+            "bootstrap must not run after late launch"
+        );
+        assert_eq!(
+            fixture.cleanup_events(),
+            [
+                CleanupEvent::ProcessWait,
+                CleanupEvent::ResourceRelease,
+                CleanupEvent::CredentialRelease,
+            ]
+        );
+    }
+}

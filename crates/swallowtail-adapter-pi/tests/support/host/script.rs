@@ -90,7 +90,7 @@ pub(super) fn respond(
                 state,
                 json!({"id": id, "type": "response", "command": kind, "success": true, "data": data}),
             );
-            if kind == "follow_up" {
+            if kind == "follow_up" && !matches!(scenario, Scenario::ScheduledHandled) {
                 output(
                     state,
                     json!({"type": "message_update", "message": {}, "assistantMessageEvent": {"type": "text_delta", "contentIndex": 0, "delta": "fixture answer", "partial": {}}}),

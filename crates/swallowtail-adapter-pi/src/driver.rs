@@ -171,6 +171,18 @@ impl PiRpcDriver {
         .with_environment([self.environment.clone()])
         .with_working_resource(working_resource);
         let deadline = request.deadline();
+        if deadline_elapsed(deadline, &services) {
+            let _ = resource_service
+                .release(resource.take().expect("Pi resource was resolved"))
+                .await;
+            let _ = credential_service
+                .release(credential.take().expect("Pi credential was acquired"))
+                .await;
+            return Err(failure(
+                "swallowtail.pi.rpc.open_deadline_elapsed",
+                "Pi RPC session deadline elapsed before process start",
+            ));
+        }
         let process: Arc<dyn ProcessHandle> = match run_before_deadline(
             services
                 .process()
@@ -194,6 +206,20 @@ impl PiRpcDriver {
                 return Err(error);
             }
         };
+        if deadline_elapsed(deadline, &services) {
+            let _ = process.force_stop().await;
+            let _ = process.wait().await;
+            let _ = resource_service
+                .release(resource.take().expect("Pi resource was resolved"))
+                .await;
+            let _ = credential_service
+                .release(credential.take().expect("Pi credential was acquired"))
+                .await;
+            return Err(failure(
+                "swallowtail.pi.rpc.open_deadline_elapsed",
+                "Pi RPC session deadline elapsed after process start",
+            ));
+        }
         let connection = PiConnection::new(
             Arc::clone(&process),
             services.task().cloned().expect("validated Pi task service"),
@@ -282,6 +308,12 @@ impl PiRpcDriver {
     }
 }
 
+pub(crate) fn deadline_elapsed(deadline: Option<Deadline>, services: &HostServices) -> bool {
+    deadline.is_some_and(|deadline| {
+        services.time().expect("validated Pi time service").now() >= deadline.instant()
+    })
+}
+
 pub(crate) async fn run_before_deadline<T, F>(
     work: F,
     deadline: Option<Deadline>,
@@ -296,6 +328,9 @@ where
         return work.await;
     };
     let time = services.time().expect("validated Pi time service");
+    if time.now() >= deadline.instant() {
+        return Err(failure(timeout_code, timeout_message));
+    }
     let mut wait = time.wait_until(deadline);
     let mut work = Box::pin(work);
     poll_fn(|context| {

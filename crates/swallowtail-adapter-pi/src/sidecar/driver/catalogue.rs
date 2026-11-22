@@ -1,5 +1,9 @@
 use super::session::cleanup::release_credential;
 use super::validation::validate_catalogue;
+use crate::driver::cleanup::{
+    graceful_shutdown_deadline, join_session_pump, spawn_session_pump, stop_session_process,
+};
+use crate::driver::{deadline_elapsed, run_before_deadline, start_process_before_deadline};
 use crate::failure::failure;
 use crate::sidecar::catalogue::parse_catalogue;
 use crate::sidecar::connection::{CommandResult, SidecarConnection};
@@ -9,14 +13,14 @@ use crate::sidecar::selection::{
 use crate::sidecar::wire::PiSdkSidecarCommand;
 use crate::sidecar::{PI_SDK_SIDECAR_BEHAVIOR, PI_SDK_SIDECAR_SDK_PACKAGE, PI_SDK_SIDECAR_WIRE};
 use serde_json::{Value, json};
-use std::future::{Future, poll_fn};
 use std::sync::Arc;
-use std::task::Poll;
 use swallowtail_core::{ModelCatalogEntry, PreflightPlan};
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, CredentialLease, ExecutableRef, HostServices, ModelCatalogDriver,
-    ModelCatalogRequest, ProcessHandle, ProcessRequest, RuntimeFailure, ScopeId,
+    ModelCatalogRequest, ProcessRequest, RuntimeFailure, ScopeId,
 };
+
+const CATALOGUE_TIMEOUT: &str = "swallowtail.pi.sdk-sidecar.catalogue_timed_out";
 
 impl ModelCatalogDriver for super::PiSdkSidecarDriver {
     fn list_models(
@@ -27,13 +31,7 @@ impl ModelCatalogDriver for super::PiSdkSidecarDriver {
     ) -> BoxFuture<'_, Result<Vec<ModelCatalogEntry>, RuntimeFailure>> {
         Box::pin(async move {
             validate_catalogue(&plan, &services, &self.credential)?;
-            if request.deadline().is_some_and(|deadline| {
-                services
-                    .time()
-                    .expect("validated sidecar time service")
-                    .now()
-                    >= deadline.instant()
-            }) {
+            if deadline_elapsed(request.deadline(), &services) {
                 return Err(failure(
                     "swallowtail.pi.sdk-sidecar.catalogue_deadline_elapsed",
                     "Pi SDK sidecar model catalogue deadline elapsed before startup",
@@ -94,13 +92,17 @@ impl super::PiSdkSidecarDriver {
             plan.instance_target_ref(),
         ))
         .with_environment([self.environment.clone()]);
-        let process: Arc<dyn ProcessHandle> = match services
-            .process()
-            .expect("validated sidecar process service")
-            .start(scope.clone(), process_request)
-            .await
+        let process = match start_process_before_deadline(
+            scope.clone(),
+            process_request,
+            request.deadline(),
+            &services,
+            CATALOGUE_TIMEOUT,
+            "Pi SDK sidecar model catalogue timed out during process start",
+        )
+        .await
         {
-            Ok(process) => Arc::from(process),
+            Ok(process) => process,
             Err(error) => {
                 let _ = credential_service
                     .release(credential.take().expect("sidecar credential was acquired"))
@@ -110,11 +112,7 @@ impl super::PiSdkSidecarDriver {
         };
         let connection = SidecarConnection::new(Arc::clone(&process), services.clone());
         let pump = Arc::clone(&connection);
-        let pump_task = match services
-            .task()
-            .expect("validated sidecar task service")
-            .spawn(scope, Box::pin(async move { pump.pump().await }))
-        {
+        let pump_task = match spawn_session_pump(scope, &services, pump.pump()) {
             Ok(task) => task,
             Err(error) => {
                 let _ = process.force_stop().await;
@@ -130,33 +128,35 @@ impl super::PiSdkSidecarDriver {
             PiSdkSidecarCommand::Bootstrap,
             json!({"catalogueOnly": true}),
         );
-        let response = match request.deadline() {
-            Some(deadline) => {
-                let wait = services
-                    .time()
-                    .cloned()
-                    .expect("validated sidecar time service")
-                    .wait_until(deadline);
-                command_before_deadline(command, wait).await
+        let response = run_before_deadline(
+            command,
+            request.deadline(),
+            &services,
+            CATALOGUE_TIMEOUT,
+            "Pi SDK sidecar model catalogue discovery timed out",
+        )
+        .await;
+        let timed_out = response
+            .as_ref()
+            .is_err_and(|error| error.diagnostic().code() == CATALOGUE_TIMEOUT);
+        let graceful_stop = async {
+            if timed_out || deadline_elapsed(request.deadline(), &services) {
+                connection.begin_close().await;
+            } else {
+                connection
+                    .close_session("catalogue-close-1".to_owned())
+                    .await;
             }
-            None => command.await,
         };
         let result = response.and_then(|response| parse_catalogue_response(&plan, response));
-        let _ = connection
-            .command(
-                "catalogue-close-1".to_owned(),
-                PiSdkSidecarCommand::Close,
-                json!({}),
-            )
-            .await;
-        connection.begin_close().await;
-        let process_cleanup = match pump_task.join().await {
-            Ok(()) => connection.cleanup_outcome(),
-            Err(_) => CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
-                "swallowtail.pi.sdk-sidecar.catalogue_cleanup_failed",
-                "Pi SDK sidecar model catalogue protocol task did not join cleanly",
-            )),
-        };
+        let process_cleanup = stop_session_process(
+            graceful_stop,
+            join_session_pump(pump_task, || connection.cleanup_outcome()),
+            async { connection.force_stop().await },
+            graceful_shutdown_deadline(&services, None),
+            &services,
+        )
+        .await;
         let credential_cleanup = release_credential(credential.take(), &services).await;
         let cleanup = CleanupOutcome::merge(process_cleanup, credential_cleanup);
         match (result, cleanup) {
@@ -223,27 +223,4 @@ fn matching_credential(
         && credential.scope() == scope
         && credential.reference() == reference
         && credential.audience() == audience
-}
-
-async fn command_before_deadline<F>(
-    command: F,
-    mut deadline: BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
-) -> Result<CommandResult, RuntimeFailure>
-where
-    F: Future<Output = Result<CommandResult, RuntimeFailure>>,
-{
-    let mut command = Box::pin(command);
-    poll_fn(|context| {
-        if let Poll::Ready(result) = command.as_mut().poll(context) {
-            return Poll::Ready(result);
-        }
-        if deadline.as_mut().poll(context).is_ready() {
-            return Poll::Ready(Err(failure(
-                "swallowtail.pi.sdk-sidecar.catalogue_timed_out",
-                "Pi SDK sidecar model catalogue discovery timed out",
-            )));
-        }
-        Poll::Pending
-    })
-    .await
 }

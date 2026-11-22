@@ -9,16 +9,18 @@
 
 use super::validation::{AttachmentSurface, validate_attachment};
 use super::{PiSdkSidecarDriver, session_binding, startup};
+use crate::driver::run_before_deadline;
 use crate::failure::failure;
 use crate::sidecar::replay::MAXIMUM_REPLAY_ITEMS;
 use crate::sidecar::wire::PiSdkSidecarCommand;
 use serde_json::{Value, json};
-use std::future::{Future, poll_fn};
-use std::task::Poll;
 use swallowtail_core::PreflightPlan;
 use swallowtail_runtime::{
     Deadline, HostServices, InteractiveSessionHandle, RuntimeFailure, SessionReplayItem,
 };
+
+const ATTACH_TIMEOUT: &str = "swallowtail.pi.sdk-sidecar.attach_timed_out";
+const ATTACH_TIMEOUT_MESSAGE: &str = "Pi SDK sidecar attachment timed out before readiness";
 
 /// The operation-neutral pieces of one load or resume request.
 pub(super) struct AttachmentRequest {
@@ -124,14 +126,28 @@ impl PiSdkSidecarDriver {
     > {
         // Bootstrap builds only in-memory state at the leased cwd; the fresh
         // session it creates is discarded by the switch below.
-        startup::bootstrap(connection, plan, leased_cwd, &request.options).await?;
+        run_before_deadline(
+            startup::bootstrap(connection, plan, leased_cwd, &request.options),
+            request.deadline,
+            services,
+            ATTACH_TIMEOUT,
+            ATTACH_TIMEOUT_MESSAGE,
+        )
+        .await?;
         let bound_ref = request.binding.provider_session_ref().as_provider_value();
         let switch = connection.command(
             "switch-1".to_owned(),
             PiSdkSidecarCommand::SessionSwitch,
             json!({"sessionRef": bound_ref, "expectedCwd": leased_cwd}),
         );
-        let switch = raced(switch, request.deadline, services).await??;
+        let switch = run_before_deadline(
+            switch,
+            request.deadline,
+            services,
+            ATTACH_TIMEOUT,
+            ATTACH_TIMEOUT_MESSAGE,
+        )
+        .await?;
         if !switch.success {
             return Err(failure(
                 "swallowtail.pi.sdk-sidecar.switch_rejected",
@@ -166,9 +182,17 @@ impl PiSdkSidecarDriver {
                 PiSdkSidecarCommand::SessionReplay,
                 json!({"maxItems": MAXIMUM_REPLAY_ITEMS}),
             );
-            let response = match raced(command, request.deadline, services).await {
-                Ok(Ok(response)) => response,
-                Ok(Err(error)) | Err(error) => {
+            let response = match run_before_deadline(
+                command,
+                request.deadline,
+                services,
+                ATTACH_TIMEOUT,
+                ATTACH_TIMEOUT_MESSAGE,
+            )
+            .await
+            {
+                Ok(response) => response,
+                Err(error) => {
                     let _ = connection.take_replay();
                     return Err(error);
                 }
@@ -203,12 +227,18 @@ impl PiSdkSidecarDriver {
         } else {
             Vec::new()
         };
-        startup::check_state(
-            connection,
-            plan,
-            leased_cwd,
-            &request.options,
-            Some(bound_ref),
+        run_before_deadline(
+            startup::check_state(
+                connection,
+                plan,
+                leased_cwd,
+                &request.options,
+                Some(bound_ref),
+            ),
+            request.deadline,
+            services,
+            ATTACH_TIMEOUT,
+            ATTACH_TIMEOUT_MESSAGE,
         )
         .await?;
         let binding = session_binding(
@@ -219,36 +249,4 @@ impl PiSdkSidecarDriver {
         )?;
         Ok((binding, replay_items))
     }
-}
-
-async fn raced<F>(
-    command: F,
-    deadline: Option<Deadline>,
-    services: &HostServices,
-) -> Result<F::Output, RuntimeFailure>
-where
-    F: Future,
-{
-    let Some(deadline) = deadline else {
-        return Ok(command.await);
-    };
-    let mut wait = services
-        .time()
-        .cloned()
-        .expect("validated sidecar time service")
-        .wait_until(deadline);
-    let mut command = Box::pin(command);
-    poll_fn(|context| {
-        if let Poll::Ready(result) = command.as_mut().poll(context) {
-            return Poll::Ready(Ok(result));
-        }
-        if wait.as_mut().poll(context).is_ready() {
-            return Poll::Ready(Err(failure(
-                "swallowtail.pi.sdk-sidecar.attach_timed_out",
-                "Pi SDK sidecar attachment timed out before readiness",
-            )));
-        }
-        Poll::Pending
-    })
-    .await
 }

@@ -1,6 +1,7 @@
 use super::run_before_deadline;
 use futures_channel::oneshot;
 use std::future::Future;
+use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, Deadline, HostServices, JoinedTask, MonotonicInstant,
     RuntimeFailure, ScopeId,
@@ -53,6 +54,19 @@ impl JoinedTask for SessionPumpTask {
             let _ = self.finished.await;
             self.task.join().await
         })
+    }
+}
+
+pub(crate) async fn join_session_pump(
+    task: Box<dyn JoinedTask>,
+    cleanup_outcome: impl FnOnce() -> CleanupOutcome,
+) -> CleanupOutcome {
+    match task.join().await {
+        Ok(()) => cleanup_outcome(),
+        Err(_) => CleanupOutcome::Failed(SafeDiagnostic::new(
+            "swallowtail.pi.pump_join_failed",
+            "Pi protocol task did not join cleanly",
+        )),
     }
 }
 

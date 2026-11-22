@@ -9,6 +9,7 @@
 
 use self::session::{ActiveSlot, PiSdkSidecarSessionHandle};
 use self::validation::validate_open;
+use crate::driver::cleanup::{graceful_shutdown_deadline, join_session_pump, stop_session_process};
 use crate::failure::failure;
 use crate::sidecar::connection::SidecarConnection;
 use std::sync::atomic::AtomicU32;
@@ -57,7 +58,7 @@ impl PiSdkSidecarDriver {
 pub(super) struct PendingSession {
     pub(super) request_id: swallowtail_runtime::RequestId,
     pub(super) connection: Arc<SidecarConnection>,
-    pub(super) pump_task: Option<Box<dyn JoinedTask>>,
+    pub(super) pump_task: Box<dyn JoinedTask>,
     pub(super) services: HostServices,
     pub(super) resource: Option<ResourceLease>,
     pub(super) credential: Option<CredentialLease>,
@@ -68,10 +69,15 @@ impl PendingSession {
     /// Closes and joins the sidecar, then releases the resource and
     /// credential leases in contract order. Used when readiness fails.
     pub(in crate::sidecar::driver) async fn abort(mut self) {
-        self.connection.begin_close().await;
-        if let Some(task) = self.pump_task.take() {
-            let _ = task.join().await;
-        }
+        let connection = &self.connection;
+        let _ = stop_session_process(
+            connection.begin_close(),
+            join_session_pump(self.pump_task, || connection.cleanup_outcome()),
+            async { connection.force_stop().await },
+            graceful_shutdown_deadline(&self.services, None),
+            &self.services,
+        )
+        .await;
         if let (Some(lease), Some(service)) =
             (self.resource.take(), self.services.working_resource())
         {
@@ -112,7 +118,7 @@ impl PendingSession {
                 Arc::clone(&self.connection),
                 Arc::clone(&active),
             ),
-            pump_task: self.pump_task,
+            pump_task: Some(self.pump_task),
             services: self.services,
             resource: self.resource,
             credential: self.credential,
@@ -404,7 +410,7 @@ impl PiSdkSidecarDriver {
         Ok(PendingSession {
             request_id,
             connection,
-            pump_task: Some(pump_task),
+            pump_task,
             services,
             resource,
             credential,

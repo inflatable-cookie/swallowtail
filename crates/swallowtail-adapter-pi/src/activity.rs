@@ -48,6 +48,9 @@ impl PiActivityProjection {
     ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
         match event {
             PiAgentEvent::MessageStarted => {
+                if self.message.is_some() {
+                    return Err(activity_drift());
+                }
                 let activity = self.open(
                     "message",
                     None,
@@ -106,6 +109,9 @@ impl PiActivityProjection {
                 Ok(observations)
             }
             PiAgentEvent::ReasoningStarted => {
+                if self.reasoning.is_some() {
+                    return Err(activity_drift());
+                }
                 let activity = self.open(
                     "reasoning",
                     None,

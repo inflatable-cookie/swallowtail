@@ -54,6 +54,8 @@ pub enum CleanupEvent {
 pub struct FixtureHost {
     shared: Arc<Shared>,
     scenario: Scenario,
+    held_command: Option<&'static str>,
+    unresponsive_shutdown: bool,
     process_wait_failure: bool,
     version: Option<String>,
 }
@@ -63,6 +65,7 @@ struct Shared {
     process: Mutex<ProcessState>,
     changed: Condvar,
     credential_acquisitions: AtomicUsize,
+    force_stops: AtomicUsize,
     cleanup: Mutex<Vec<CleanupEvent>>,
     time: Mutex<TimeState>,
 }
@@ -89,10 +92,13 @@ impl FixtureHost {
                 process: Mutex::new(ProcessState::default()),
                 changed: Condvar::new(),
                 credential_acquisitions: AtomicUsize::new(0),
+                force_stops: AtomicUsize::new(0),
                 cleanup: Mutex::new(Vec::new()),
                 time: Mutex::new(TimeState::default()),
             }),
             scenario,
+            held_command: None,
+            unresponsive_shutdown: false,
             process_wait_failure: false,
             version: None,
         }
@@ -120,6 +126,22 @@ impl FixtureHost {
     pub fn with_process_wait_failure(mut self) -> Self {
         self.process_wait_failure = true;
         self
+    }
+
+    pub fn with_held_command(mut self, command: &'static str) -> Self {
+        self.held_command = Some(command);
+        self
+    }
+
+    pub fn with_unresponsive_shutdown(mut self) -> Self {
+        self.unresponsive_shutdown = true;
+        self
+    }
+
+    pub fn force_stops(&self) -> usize {
+        self.shared
+            .force_stops
+            .load(std::sync::atomic::Ordering::SeqCst)
     }
 
     pub fn services(&self, host: ExecutionHostId) -> HostServices {
@@ -203,6 +225,8 @@ impl ProcessService for FixtureHost {
         let handle = FixtureProcess {
             shared: Arc::clone(&self.shared),
             scenario: self.scenario,
+            held_command: self.held_command,
+            unresponsive_shutdown: self.unresponsive_shutdown,
             wait_failure: self.process_wait_failure,
         };
         Box::pin(async move { Ok(Box::new(handle) as Box<dyn ProcessHandle>) })
@@ -212,6 +236,8 @@ impl ProcessService for FixtureHost {
 struct FixtureProcess {
     shared: Arc<Shared>,
     scenario: Scenario,
+    held_command: Option<&'static str>,
+    unresponsive_shutdown: bool,
     wait_failure: bool,
 }
 
@@ -229,7 +255,12 @@ impl ProcessHandle for FixtureProcess {
                 .lock()
                 .expect("Pi fixture state lock poisoned");
             state.input.push(value.clone());
-            respond(self.scenario, &value, &mut state)?;
+            if !self
+                .held_command
+                .is_some_and(|command| value["type"] == command)
+            {
+                respond(self.scenario, &value, &mut state)?;
+            }
             self.shared.changed.notify_all();
             Ok(())
         })();
@@ -237,7 +268,7 @@ impl ProcessHandle for FixtureProcess {
     }
 
     fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        self.stop()
+        self.request_stop()
     }
 
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
@@ -259,11 +290,18 @@ impl ProcessHandle for FixtureProcess {
     }
 
     fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        self.stop()
+        if !self.unresponsive_shutdown {
+            self.stop();
+        }
+        Box::pin(async { Ok(()) })
     }
 
     fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        self.stop()
+        self.shared
+            .force_stops
+            .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        self.stop();
+        Box::pin(async { Ok(()) })
     }
 
     fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
@@ -284,14 +322,13 @@ impl ProcessHandle for FixtureProcess {
 }
 
 impl FixtureProcess {
-    fn stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+    fn stop(&self) {
         self.shared
             .process
             .lock()
             .expect("Pi fixture state lock poisoned")
             .stopped = true;
         self.shared.changed.notify_all();
-        Box::pin(async { Ok(()) })
     }
 }
 

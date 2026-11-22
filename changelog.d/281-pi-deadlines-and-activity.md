@@ -1,0 +1,3 @@
+- Pi RPC and SDK sidecar model discovery now enforce the request deadline during launch and bound graceful shutdown. Failed session startups use the same force-stop escalation and reap the child before releasing leases.
+- Pi SDK sidecar load and resume now enforce the request deadline during bootstrap and state verification.
+- Pi SDK sidecar provider errors fail open activities, and both Pi routes reject duplicate message and reasoning starts.

@@ -45,6 +45,9 @@ impl SidecarActivityProjection {
     ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
         match event {
             PiSdkSidecarEvent::MessageStarted => {
+                if self.message.is_some() {
+                    return Err(activity_drift());
+                }
                 let activity = self.open(
                     "message",
                     None,
@@ -103,6 +106,9 @@ impl SidecarActivityProjection {
                 Ok(observations)
             }
             PiSdkSidecarEvent::ReasoningStarted => {
+                if self.reasoning.is_some() {
+                    return Err(activity_drift());
+                }
                 let activity = self.open(
                     "reasoning",
                     None,
@@ -312,4 +318,35 @@ fn activity_drift() -> RuntimeFailure {
         "swallowtail.pi.sdk-sidecar.activity_invalid",
         "Pi SDK sidecar observable activity did not match the qualified protocol",
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn duplicate_starts_preserve_the_original_message_and_reasoning_activities() {
+        for event in [
+            PiSdkSidecarEvent::MessageStarted,
+            PiSdkSidecarEvent::ReasoningStarted,
+        ] {
+            let mut projection = SidecarActivityProjection::new(
+                RuntimeTurnId::new("sidecar-duplicate-start").expect("valid turn id"),
+            );
+            let started = projection.project(&event).expect("first start projects");
+            let error = projection
+                .project(&event)
+                .expect_err("duplicate start is drift");
+            assert_eq!(
+                error.diagnostic().code(),
+                "swallowtail.pi.sdk-sidecar.activity_invalid"
+            );
+
+            let closed = projection
+                .complete(ActivityStatus::Failed)
+                .expect("activity closes");
+            assert_eq!(closed.len(), 1);
+            assert_eq!(closed[0].activity_id(), started[0].activity_id());
+        }
+    }
 }

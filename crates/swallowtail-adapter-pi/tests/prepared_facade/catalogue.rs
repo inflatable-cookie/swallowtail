@@ -126,19 +126,52 @@ fn prepared_catalogues_bound_failures_deadlines_and_cleanup() {
         host_id.clone(),
         Some(Deadline::at(MonotonicInstant::from_ticks(1_001))),
     );
-    let operation = FixtureHost::new(Scenario::Hold).with_immediate_time();
+    let operation = FixtureHost::new(Scenario::Hold)
+        .with_unresponsive_shutdown()
+        .with_immediate_time();
     let error = block_on(profile.list_models(operation.services(host_id)))
         .expect_err("Pi catalogue deadline fires");
     assert_eq!(
         error.diagnostic().code(),
         "swallowtail.pi.rpc.catalogue_timed_out"
     );
+    assert_eq!(operation.force_stops(), 1);
     assert_eq!(
         operation.cleanup_events(),
         [
             support::CleanupEvent::ProcessWait,
             support::CleanupEvent::CredentialRelease,
         ]
+    );
+}
+
+#[test]
+fn catalogue_deadline_bounds_pending_process_start() {
+    use futures_util::FutureExt;
+    use std::sync::Arc;
+
+    let host_id = ExecutionHostId::new("fixture.pi.catalogue.start-timeout").expect("valid host");
+    let profile = prepared_catalogue(
+        host_id.clone(),
+        Some(Deadline::at(MonotonicInstant::from_ticks(1_001))),
+    );
+    let operation = FixtureHost::new(Scenario::Complete).with_immediate_time();
+    let services = operation
+        .services(host_id)
+        .with_process(Arc::new(support::PendingProcessStart));
+
+    let error = profile
+        .list_models(services)
+        .now_or_never()
+        .expect("deadline bounds pending process start")
+        .expect_err("no process starts before the deadline");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.pi.rpc.catalogue_timed_out"
+    );
+    assert_eq!(
+        operation.cleanup_events(),
+        [support::CleanupEvent::CredentialRelease]
     );
 }
 

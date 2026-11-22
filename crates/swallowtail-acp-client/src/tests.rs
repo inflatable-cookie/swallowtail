@@ -1042,9 +1042,11 @@ fn active_turn_serializes_projection_and_output_with_terminal_publication() {
 #[test]
 fn active_turn_emit_event_allows_reentrant_calls_and_recovers_from_builder_panic() {
     use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
+    use std::sync::Barrier;
     use swallowtail_runtime::RuntimeEventKind;
 
-    // 1. Re-entrant builder calling `emit_event` and `finish_with_status` must not deadlock.
+    // 1. Re-entrant builder calling `emit_event`, `finish_with_status`, AND awaiting
+    //    `terminal` before returning must not deadlock or stall on its own reservation.
     let (turn, events, terminal) = ActiveTurn::new(
         RuntimeTurnId::new("turn-reentrant").expect("valid turn id"),
         "sess-reentrant".to_owned(),
@@ -1053,6 +1055,7 @@ fn active_turn_emit_event_allows_reentrant_calls_and_recovers_from_builder_panic
     .expect("turn creates");
 
     let inner_turn = Arc::clone(&turn);
+    let mut terminal_slot = Some(terminal);
     turn.emit_event(|outer_seq| {
         assert_eq!(outer_seq, 1);
         inner_turn
@@ -1062,21 +1065,84 @@ fn active_turn_emit_event_allows_reentrant_calls_and_recovers_from_builder_panic
             })
             .expect("re-entrant emit_event must succeed without deadlocking");
         inner_turn.finish_with_status(TerminalStatus::TimedOut);
+        let outcome = block_on(terminal_slot.take().expect("terminal future present"));
+        assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
         Ok(RuntimeEventKind::Progress)
     })
-    .expect("outer emit_event succeeds");
+    .expect("outer emit_event returns cleanly after terminal abandoned its reservation");
 
-    let outcome = block_on(terminal);
-    assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
     let collected: Vec<_> = futures_executor::block_on_stream(events)
         .map(|event| event.expect("runtime event is valid"))
         .collect();
-    assert_eq!(collected.len(), 3);
+    // Started (0) + committed inner Progress (2); outer reservation (1) was abandoned at terminal.
+    assert_eq!(collected.len(), 2);
     assert_eq!(collected[0].sequence(), 0);
-    assert_eq!(collected[1].sequence(), 1);
-    assert_eq!(collected[2].sequence(), 2);
+    assert_eq!(collected[1].sequence(), 2);
 
-    // 2. A panicking builder must not poison the turn state or wedge later completion.
+    // 2. A stalled builder on another thread must not block terminal publication
+    //    and must still enforce the bounded outbox capacity at admission.
+    let (bounded_turn, bounded_events, bounded_terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-bounded").expect("valid turn id"),
+        "sess-bounded".to_owned(),
+        ActiveTurnConfig::new(test_diagnostics()),
+    )
+    .expect("turn creates");
+
+    let builder_entered = Arc::new(Barrier::new(2));
+    let builder_release = Arc::new(Barrier::new(2));
+    let paused_builder = {
+        let turn = Arc::clone(&bounded_turn);
+        let entered = Arc::clone(&builder_entered);
+        let release = Arc::clone(&builder_release);
+        std::thread::spawn(move || {
+            turn.emit_event(|_| {
+                entered.wait();
+                release.wait();
+                Ok(RuntimeEventKind::Progress)
+            })
+            .expect("builder exits cleanly after terminal abandoned reservation")
+        })
+    };
+
+    builder_entered.wait();
+    // 1 slot is held by the paused reservation; each agent_message_chunk emits 2 events
+    // (OutputDelta + AssistantMessage activity), so 63 updates stage 1 + 126 = 127 events
+    // within EVENT_CAPACITY (128), and the 64th crosses the bound at admission.
+    for index in 0..63 {
+        bounded_turn
+            .handle_update(&json!({
+                "sessionId": "sess-bounded",
+                "update": {
+                    "sessionUpdate": "agent_message_chunk",
+                    "content": { "type": "text", "text": format!("{index}") }
+                }
+            }))
+            .expect("update within EVENT_CAPACITY is admitted");
+    }
+    let overflow = bounded_turn
+        .handle_update(&json!({
+            "sessionId": "sess-bounded",
+            "update": {
+                "sessionUpdate": "agent_message_chunk",
+                "content": { "type": "text", "text": "overflow" }
+            }
+        }))
+        .expect_err("update beyond EVENT_CAPACITY must fail at admission");
+    assert_eq!(
+        overflow.diagnostic().code(),
+        "swallowtail.event_buffer_rejected"
+    );
+
+    // Terminal must still progress and resolve while the builder is still paused.
+    bounded_turn.finish_prompt("end_turn");
+    let bounded_outcome = block_on(bounded_terminal);
+    assert_eq!(bounded_outcome.status(), &TerminalStatus::Completed);
+    let _ = futures_executor::block_on_stream(bounded_events).count();
+
+    builder_release.wait();
+    paused_builder.join().expect("paused builder thread joins");
+
+    // 3. A panicking builder must not poison the turn state or wedge later completion.
     let (panic_turn, panic_events, panic_terminal) = ActiveTurn::new(
         RuntimeTurnId::new("turn-panic").expect("valid turn id"),
         "sess-panic".to_owned(),
@@ -1099,6 +1165,43 @@ fn active_turn_emit_event_allows_reentrant_calls_and_recovers_from_builder_panic
         .collect();
     assert_eq!(panic_collected.len(), 1);
     assert_eq!(panic_collected[0].sequence(), 0);
+}
+
+#[test]
+fn active_turn_finish_prompt_invokes_diagnostic_factories_outside_state_lock() {
+    use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
+    use std::cell::RefCell;
+
+    thread_local! {
+        static REENTRANT_TURN: RefCell<Option<Arc<ActiveTurn>>> = const { RefCell::new(None) };
+    }
+
+    fn reentrant_stop_reason_unsupported() -> RuntimeFailure {
+        REENTRANT_TURN.with(|slot| {
+            if let Some(turn) = slot.borrow().as_ref() {
+                // If `finish_prompt` held `TurnState` while calling this factory,
+                // calling `finish_with_status` here would self-deadlock.
+                turn.finish_with_status(TerminalStatus::TimedOut);
+            }
+        });
+        test_failure("swallowtail.test.acp.stop", "stop")
+    }
+
+    let mut diagnostics = test_diagnostics();
+    diagnostics.stop_reason_unsupported = reentrant_stop_reason_unsupported;
+    let (turn, _events, terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-diag-reentry").expect("valid turn id"),
+        "sess-diag".to_owned(),
+        ActiveTurnConfig::new(diagnostics),
+    )
+    .expect("turn creates");
+
+    REENTRANT_TURN.with(|slot| *slot.borrow_mut() = Some(Arc::clone(&turn)));
+    turn.finish_prompt("unexpected_stop_reason");
+    REENTRANT_TURN.with(|slot| *slot.borrow_mut() = None);
+
+    let outcome = block_on(terminal);
+    assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
 }
 
 #[test]

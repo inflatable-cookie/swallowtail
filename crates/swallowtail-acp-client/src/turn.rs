@@ -130,6 +130,26 @@ enum PendingEvent {
     Terminal(TerminalOutcome),
 }
 
+enum UpdateAdmissionError {
+    OutputLimitExceeded,
+    ActivityMalformed,
+    SendFailed(RuntimeFailure),
+}
+
+fn internal_activity_malformed() -> RuntimeFailure {
+    RuntimeFailure::new(SafeDiagnostic::new(
+        "swallowtail.acp.internal.activity_malformed",
+        "Internal ACP activity projection sentinel",
+    ))
+}
+
+fn event_buffer_overflow() -> RuntimeFailure {
+    RuntimeFailure::new(SafeDiagnostic::new(
+        "swallowtail.event_buffer_rejected",
+        "Event buffer cannot discard a semantic event",
+    ))
+}
+
 struct TurnState {
     next_sequence: u64,
     terminal: bool,
@@ -137,7 +157,9 @@ struct TurnState {
     activity: AcpActivityProjection,
     provider_observation: Option<ProviderRequestObservation>,
     outbox: VecDeque<PendingEvent>,
+    staged_events: usize,
     flushing: bool,
+    send_error: Option<RuntimeFailure>,
 }
 
 impl TurnState {
@@ -154,33 +176,41 @@ impl TurnState {
             None => RuntimeEvent::new(sequence, kind),
         };
         self.outbox.push_back(PendingEvent::Event(Box::new(event)));
+        self.staged_events += 1;
     }
 
-    fn push_content(
-        &mut self,
-        kind: RuntimeEventKind,
-        text: &str,
-        malformed: fn() -> RuntimeFailure,
-    ) -> Result<(), RuntimeFailure> {
-        match OperationContent::new(text) {
-            Ok(content) => {
-                self.push_event(kind, Some(content));
-                Ok(())
-            }
-            Err(_) if text.trim().is_empty() => Ok(()),
-            Err(_) => Err(malformed()),
+    fn push_terminal_event(&mut self, kind: RuntimeEventKind, content: Option<OperationContent>) {
+        let sequence = self.allocate_sequence();
+        let event = match content {
+            Some(content) => RuntimeEvent::with_content(sequence, kind, content),
+            None => RuntimeEvent::new(sequence, kind),
+        };
+        self.outbox.push_back(PendingEvent::Event(Box::new(event)));
+    }
+
+    fn remove_reservation(&mut self, sequence: u64) -> bool {
+        if let Some(position) = self
+            .outbox
+            .iter()
+            .position(|item| matches!(item, PendingEvent::Reserved(seq) if *seq == sequence))
+        {
+            self.outbox.remove(position);
+            self.staged_events = self.staged_events.saturating_sub(1);
+            true
+        } else {
+            false
         }
     }
 
-    fn append_output(
-        &mut self,
-        text: &str,
-        output_limit_exceeded: fn() -> RuntimeFailure,
-    ) -> Result<(), RuntimeFailure> {
-        if self.output.len().saturating_add(text.len()) > MAXIMUM_OUTPUT_BYTES {
-            return Err(output_limit_exceeded());
+    fn check_non_terminal_capacity(&mut self, incoming: usize) -> Result<(), RuntimeFailure> {
+        if let Some(error) = &self.send_error {
+            return Err(error.clone());
         }
-        self.output.push_str(text);
+        if self.staged_events.saturating_add(incoming) > EVENT_CAPACITY {
+            let overflow = event_buffer_overflow();
+            self.send_error = Some(overflow.clone());
+            return Err(overflow);
+        }
         Ok(())
     }
 
@@ -189,15 +219,27 @@ impl TurnState {
             return false;
         }
         self.terminal = true;
+        // Abandon any incomplete event-builder reservations so terminal
+        // publication and committed events can drain immediately.
+        let mut abandoned = 0_usize;
+        self.outbox.retain(|item| {
+            if matches!(item, PendingEvent::Reserved(_)) {
+                abandoned += 1;
+                false
+            } else {
+                true
+            }
+        });
+        self.staged_events = self.staged_events.saturating_sub(abandoned);
         if let Ok(observations) = self.activity.complete(&status) {
             for observation in observations {
-                self.push_event(RuntimeEventKind::Activity(observation), None);
+                self.push_terminal_event(RuntimeEventKind::Activity(observation), None);
             }
         }
         let output = self.output.clone();
         let mut outcome = TerminalOutcome::new(status, CleanupOutcome::NotApplicable);
         if let Ok(content) = OperationContent::new(output) {
-            self.push_event(RuntimeEventKind::OutputAvailable, Some(content.clone()));
+            self.push_terminal_event(RuntimeEventKind::OutputAvailable, Some(content.clone()));
             outcome = outcome.with_output(content);
         }
         self.outbox.push_back(PendingEvent::Terminal(outcome));
@@ -237,11 +279,7 @@ impl Drop for ReservationGuard<'_> {
                     .state
                     .lock()
                     .unwrap_or_else(std::sync::PoisonError::into_inner);
-                if let Some(position) = state.outbox.iter().position(
-                    |item| matches!(item, PendingEvent::Reserved(seq) if *seq == self.sequence),
-                ) {
-                    state.outbox.remove(position);
-                }
+                state.remove_reservation(self.sequence);
             }
             let _ = self.turn.flush_outbox();
         }
@@ -272,6 +310,11 @@ impl ActiveTurn {
         let (events, stream) = runtime_event_channel(EVENT_CAPACITY)?;
         events.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
         let (terminal, future) = terminal_outcome_channel();
+        // Use an internal sentinel factory inside `AcpActivityProjection` so
+        // adapter-supplied diagnostic factories are never invoked while the
+        // turn state mutex is held; `handle_update` maps failures outside the lock.
+        let mut activity_config = config.diagnostics.activity;
+        activity_config.malformed = internal_activity_malformed;
         Ok((
             Arc::new(Self {
                 config,
@@ -283,10 +326,12 @@ impl ActiveTurn {
                     next_sequence: 1,
                     terminal: false,
                     output: String::new(),
-                    activity: AcpActivityProjection::new(runtime_id, config.diagnostics.activity),
+                    activity: AcpActivityProjection::new(runtime_id, activity_config),
                     provider_observation: None,
                     outbox: VecDeque::new(),
+                    staged_events: 0,
                     flushing: false,
+                    send_error: None,
                 }),
                 cancelled: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
@@ -327,8 +372,10 @@ impl ActiveTurn {
             if state.terminal {
                 return Ok(());
             }
+            state.check_non_terminal_capacity(1)?;
             let sequence = state.allocate_sequence();
             state.outbox.push_back(PendingEvent::Reserved(sequence));
+            state.staged_events += 1;
             sequence
         };
         let mut guard = ReservationGuard {
@@ -351,11 +398,7 @@ impl ActiveTurn {
             }
             Err(error) => {
                 let mut state = self.state.lock().expect("turn state lock poisoned");
-                if let Some(position) = state.outbox.iter().position(
-                    |item| matches!(item, PendingEvent::Reserved(seq) if *seq == sequence),
-                ) {
-                    state.outbox.remove(position);
-                }
+                state.remove_reservation(sequence);
                 Err(error)
             }
         };
@@ -382,9 +425,11 @@ impl ActiveTurn {
             let next = {
                 let mut state = self.state.lock().expect("turn state lock poisoned");
                 match state.outbox.front() {
-                    Some(PendingEvent::Event(_) | PendingEvent::Terminal(_)) => {
+                    Some(PendingEvent::Event(_)) => {
+                        state.staged_events = state.staged_events.saturating_sub(1);
                         state.outbox.pop_front()
                     }
+                    Some(PendingEvent::Terminal(_)) => state.outbox.pop_front(),
                     None | Some(PendingEvent::Reserved(_)) => {
                         state.flushing = false;
                         guard.active = false;
@@ -397,10 +442,16 @@ impl ActiveTurn {
             };
             match item {
                 PendingEvent::Event(event) => {
-                    if let Err(error) = self.events.send(*event)
-                        && first_error.is_none()
-                    {
-                        first_error = Some(error);
+                    if let Err(error) = self.events.send(*event) {
+                        {
+                            let mut state = self.state.lock().expect("turn state lock poisoned");
+                            if state.send_error.is_none() {
+                                state.send_error = Some(error.clone());
+                            }
+                        }
+                        if first_error.is_none() {
+                            first_error = Some(error);
+                        }
                     }
                 }
                 PendingEvent::Terminal(outcome) => {
@@ -437,6 +488,33 @@ impl ActiveTurn {
             Err((self.config.diagnostics.session_mismatch_update)())
         }
     }
+
+    fn stop_reason_status(&self, stop_reason: &str) -> TerminalStatus {
+        match stop_reason {
+            "end_turn" => TerminalStatus::Completed,
+            "cancelled" => TerminalStatus::Cancelled,
+            "auth_required" if self.config.auth_required_stop.is_some() => {
+                let diagnostic = self
+                    .config
+                    .auth_required_stop
+                    .expect("auth_required_stop checked above");
+                TerminalStatus::ProviderFailed(diagnostic())
+            }
+            "max_tokens" => {
+                TerminalStatus::ProviderFailed((self.config.diagnostics.prompt_stopped)())
+            }
+            "max_turn_requests" | "refusal"
+                if self.config.stop_reason_policy == StopReasonPolicy::ExtendedProviderStops =>
+            {
+                TerminalStatus::ProviderFailed((self.config.diagnostics.prompt_stopped)())
+            }
+            _ => TerminalStatus::RuntimeFailed(
+                (self.config.diagnostics.stop_reason_unsupported)()
+                    .diagnostic()
+                    .clone(),
+            ),
+        }
+    }
 }
 
 impl AcpTurnSink for ActiveTurn {
@@ -463,17 +541,23 @@ impl AcpTurnSink for ActiveTurn {
             _ => return Err(malformed()),
         })
         .map_err(|_| malformed())?;
+        let permission_namespace = (self.config.diagnostics.permission_namespace)();
         let observation = {
             let mut state = self.state.lock().expect("turn state lock poisoned");
+            if !state.terminal {
+                state.check_non_terminal_capacity(1)?;
+            }
             let sequence = state.allocate_sequence();
-            let callback_id = CallbackId::new(format!(
+            let Ok(callback_id) = CallbackId::new(format!(
                 "{}:permission:{sequence}",
                 self.runtime_id.as_str()
-            ))
-            .map_err(|_| malformed())?;
+            )) else {
+                drop(state);
+                return Err(malformed());
+            };
             let observation = ProviderRequestObservation::new(
                 callback_id,
-                (self.config.diagnostics.permission_namespace)(),
+                permission_namespace,
                 provider_request_ref.clone(),
             );
             state.provider_observation = Some(observation.clone());
@@ -498,42 +582,91 @@ impl AcpTurnSink for ActiveTurn {
         let decoded =
             swallowtail_protocol_acp::decode_session_update(params).map_err(|_| malformed())?;
         self.verify_session(decoded.session_id.as_str())?;
-        {
-            let mut state = self.state.lock().expect("turn state lock poisoned");
-            if state.terminal {
-                return Ok(());
-            }
+
+        // Extract and validate text/content before acquiring the turn state
+        // mutex so adapter-supplied diagnostic factories never run under lock.
+        let mut agent_text: Option<&str> = None;
+        let primary_event: Option<(RuntimeEventKind, Option<OperationContent>)> =
             match &decoded.update {
                 AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Agent => {
                     let text = text_content(&message.content, content_unsupported)?;
-                    state.append_output(text, self.config.diagnostics.output_limit_exceeded)?;
-                    state.push_content(RuntimeEventKind::OutputDelta, text, malformed)?;
+                    agent_text = Some(text);
+                    match OperationContent::new(text) {
+                        Ok(content) => Some((RuntimeEventKind::OutputDelta, Some(content))),
+                        Err(_) if text.trim().is_empty() => None,
+                        Err(_) => return Err(malformed()),
+                    }
                 }
                 AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Thought => {
                     let text = text_content(&message.content, content_unsupported)?;
-                    state.push_content(RuntimeEventKind::ReasoningProgress, text, malformed)?;
+                    match OperationContent::new(text) {
+                        Ok(content) => Some((RuntimeEventKind::ReasoningProgress, Some(content))),
+                        Err(_) if text.trim().is_empty() => None,
+                        Err(_) => return Err(malformed()),
+                    }
                 }
                 AcpSessionUpdate::CurrentMode(_)
                 | AcpSessionUpdate::Message(_)
                 | AcpSessionUpdate::Plan(_)
                 | AcpSessionUpdate::AvailableCommands(_)
                 | AcpSessionUpdate::ConfigOptions(_)
-                | AcpSessionUpdate::SessionInfo { .. } => {
-                    state.push_event(RuntimeEventKind::Progress, None);
-                }
+                | AcpSessionUpdate::SessionInfo { .. } => Some((RuntimeEventKind::Progress, None)),
                 AcpSessionUpdate::Usage(_) => {
                     if self.config.usage_progress_policy == UsageProgressPolicy::EmitProgress {
-                        state.push_event(RuntimeEventKind::Progress, None);
+                        Some((RuntimeEventKind::Progress, None))
+                    } else {
+                        None
                     }
                 }
                 AcpSessionUpdate::ToolCall(_)
                 | AcpSessionUpdate::ToolCallUpdate(_)
-                | AcpSessionUpdate::Unknown { .. } => {}
+                | AcpSessionUpdate::Unknown { .. } => None,
+            };
+
+        let commit = {
+            let mut state = self.state.lock().expect("turn state lock poisoned");
+            if state.terminal {
+                return Ok(());
             }
-            let observations = state.activity.project(&decoded.update)?;
-            for observation in observations {
-                state.push_event(RuntimeEventKind::Activity(observation), None);
+            let primary_count = usize::from(primary_event.is_some());
+            if let Err(error) = state.check_non_terminal_capacity(primary_count) {
+                Err(UpdateAdmissionError::SendFailed(error))
+            } else if let Some(text) = agent_text
+                && state.output.len().saturating_add(text.len()) > MAXIMUM_OUTPUT_BYTES
+            {
+                Err(UpdateAdmissionError::OutputLimitExceeded)
+            } else {
+                match state.activity.project(&decoded.update) {
+                    Err(_) => Err(UpdateAdmissionError::ActivityMalformed),
+                    Ok(observations) => {
+                        let total_incoming = primary_count.saturating_add(observations.len());
+                        if let Err(error) = state.check_non_terminal_capacity(total_incoming) {
+                            Err(UpdateAdmissionError::SendFailed(error))
+                        } else {
+                            if let Some(text) = agent_text {
+                                state.output.push_str(text);
+                            }
+                            if let Some((kind, content)) = primary_event {
+                                state.push_event(kind, content);
+                            }
+                            for observation in observations {
+                                state.push_event(RuntimeEventKind::Activity(observation), None);
+                            }
+                            Ok(())
+                        }
+                    }
+                }
             }
+        };
+        match commit {
+            Ok(()) => {}
+            Err(UpdateAdmissionError::OutputLimitExceeded) => {
+                return Err((self.config.diagnostics.output_limit_exceeded)());
+            }
+            Err(UpdateAdmissionError::ActivityMalformed) => {
+                return Err((self.config.diagnostics.activity.malformed)());
+            }
+            Err(UpdateAdmissionError::SendFailed(error)) => return Err(error),
         }
         #[cfg(test)]
         {
@@ -550,37 +683,15 @@ impl AcpTurnSink for ActiveTurn {
     }
 
     fn finish_prompt(&self, stop_reason: &str) {
+        // Compute fallback stop status outside the turn state mutex so
+        // adapter-supplied diagnostic factories cannot deadlock or poison it.
+        let fallback_status = self.stop_reason_status(stop_reason);
         let transitioned = {
             let mut state = self.state.lock().expect("turn state lock poisoned");
-            let status = if let Some(observation) = state.provider_observation.clone() {
-                TerminalStatus::ProviderRequestObserved(observation)
-            } else {
-                match stop_reason {
-                    "end_turn" => TerminalStatus::Completed,
-                    "cancelled" => TerminalStatus::Cancelled,
-                    "auth_required" if self.config.auth_required_stop.is_some() => {
-                        let diagnostic = self
-                            .config
-                            .auth_required_stop
-                            .expect("auth_required_stop checked above");
-                        TerminalStatus::ProviderFailed(diagnostic())
-                    }
-                    "max_tokens" => {
-                        TerminalStatus::ProviderFailed((self.config.diagnostics.prompt_stopped)())
-                    }
-                    "max_turn_requests" | "refusal"
-                        if self.config.stop_reason_policy
-                            == StopReasonPolicy::ExtendedProviderStops =>
-                    {
-                        TerminalStatus::ProviderFailed((self.config.diagnostics.prompt_stopped)())
-                    }
-                    _ => TerminalStatus::RuntimeFailed(
-                        (self.config.diagnostics.stop_reason_unsupported)()
-                            .diagnostic()
-                            .clone(),
-                    ),
-                }
-            };
+            let status = state
+                .provider_observation
+                .clone()
+                .map_or(fallback_status, TerminalStatus::ProviderRequestObserved);
             let transitioned = state.finish_locked(status);
             if transitioned {
                 self.finished.store(true, Ordering::SeqCst);

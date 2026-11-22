@@ -198,3 +198,70 @@ fn close_preserves_durable_provider_state_for_later_attachment() {
         CleanupOutcome::Clean
     );
 }
+
+#[test]
+fn prepared_session_with_image_attachments_opens_loads_and_resumes() {
+    use swallowtail_core::HostServiceKind;
+
+    let host_id = make_host_id("pi.fixture.sdk-sidecar.image-attachments");
+    let prepared = prepare_pi_sdk_sidecar_session(
+        preparation(host_id.clone(), "sidecar-img-open").with_image_attachments(),
+        SessionOptions::default(),
+    )
+    .expect("sidecar session with image attachments prepares");
+    let planned_services: Vec<HostServiceKind> =
+        prepared.plan().requirements().host_services().collect();
+    assert!(
+        planned_services.contains(&HostServiceKind::Attachment),
+        "plan must require Attachment host service when image attachments are enabled"
+    );
+    assert!(
+        planned_services.contains(&HostServiceKind::BlockingWork),
+        "plan must require BlockingWork host service when image attachments are enabled"
+    );
+
+    let first = SidecarFixtureHost::new(SidecarScenario::Complete);
+    let first_services = first.services(host_id.clone());
+    let session = block_on(prepared.open_session(first_services.clone()))
+        .expect("prepared sidecar session with image attachments opens");
+    let binding = session.resume_binding().expect("binding exists").clone();
+    assert_eq!(
+        block_on(close_session(session, first_services)),
+        CleanupOutcome::Clean
+    );
+
+    let second = SidecarFixtureHost::new(SidecarScenario::Complete);
+    let second_services = second.services(host_id.clone());
+    let loaded = block_on(
+        prepared
+            .load_session(
+                RequestId::new("sidecar-img-load").expect("valid request"),
+                binding.clone(),
+                second_services.clone(),
+            )
+            .expect("load request builds"),
+    )
+    .expect("prepared sidecar session with image attachments loads");
+    let (_, loaded_session) = loaded.into_parts();
+    assert_eq!(
+        block_on(close_session(loaded_session, second_services)),
+        CleanupOutcome::Clean
+    );
+
+    let third = SidecarFixtureHost::new(SidecarScenario::Complete);
+    let third_services = third.services(host_id);
+    let resumed = block_on(
+        prepared
+            .resume_session(
+                RequestId::new("sidecar-img-resume").expect("valid request"),
+                binding,
+                third_services.clone(),
+            )
+            .expect("resume request builds"),
+    )
+    .expect("prepared sidecar session with image attachments resumes");
+    assert_eq!(
+        block_on(close_session(resumed, third_services)),
+        CleanupOutcome::Clean
+    );
+}

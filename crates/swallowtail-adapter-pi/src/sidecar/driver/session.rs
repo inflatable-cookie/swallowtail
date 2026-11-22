@@ -218,7 +218,9 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 dispatched: Arc::clone(&prompt_dispatched),
                 active: true,
             };
-            let id = format!("prompt:{}", request.turn_id().as_str());
+            let id = self
+                .connection
+                .bounded_command_id("prompt", request.turn_id().as_str());
             let mut params = json!({"text": request.content().as_str()});
             if let Some(attachment) = attachment {
                 params["images"] = json!([{
@@ -321,7 +323,9 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 {
                     active.turn.mark_cancelled();
                 }
-                let id = format!("close:{}", self.request_id.as_str());
+                let id = self
+                    .connection
+                    .bounded_command_id("close", self.request_id.as_str());
                 let deadline = graceful_shutdown_deadline(&services, Some(request.deadline()));
                 let connection = &self.connection;
                 let process = stop_session_process(
@@ -407,7 +411,8 @@ fn spawn_deadline(
                 .await;
                 if timed_out {
                     deadline_turn.mark_timed_out();
-                    let id = format!("deadline-abort:{}", deadline_turn.runtime_id().as_str());
+                    let id = connection
+                        .bounded_command_id("deadline-abort", deadline_turn.runtime_id().as_str());
                     let abort = run_before_deadline(
                         connection.abort_command(id, json!({}), Arc::clone(&deadline_turn)),
                         grace_deadline(&deadline_services, ABORT_ACKNOWLEDGEMENT_GRACE_TICKS),
@@ -466,10 +471,13 @@ async fn reap_finished(active: &ActiveSlot) -> Result<(), RuntimeFailure> {
         }
     };
     if let Some(mut active) = finished {
-        if let Some(task) = active.deadline_task.take() {
-            task.join().await?;
-        }
-        if matches!(active.attachment.release().await, CleanupOutcome::Failed(_)) {
+        let join_result = match active.deadline_task.take() {
+            Some(task) => task.join().await,
+            None => Ok(()),
+        };
+        let attachment_cleanup = active.attachment.release().await;
+        join_result?;
+        if matches!(attachment_cleanup, CleanupOutcome::Failed(_)) {
             return Err(failure(
                 "swallowtail.pi.sdk-sidecar.attachment_cleanup_failed",
                 "Pi SDK sidecar attachment cleanup failed",

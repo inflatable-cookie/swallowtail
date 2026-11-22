@@ -48,7 +48,9 @@ impl TurnCancellation {
                 return Ok(CancellationAcknowledgement::AlreadyRequested);
             }
             self.turn.mark_abort_in_flight();
-            let id = format!("abort:{}", self.turn.runtime_id().as_str());
+            let id = self
+                .connection
+                .bounded_command_id("abort", self.turn.runtime_id().as_str());
             let abort = self
                 .connection
                 .abort_command(id, json!({}), Arc::clone(&self.turn));
@@ -214,12 +216,14 @@ impl TurnHandle for PiSdkSidecarTurnHandle {
                     HarnessCommandAcknowledgement::Rejected,
                 ));
             }
-            let command = match class {
-                HarnessMessageClass::Steering => PiSdkSidecarCommand::Steer,
-                HarnessMessageClass::FollowUp => PiSdkSidecarCommand::FollowUp,
+            let (command, fallback_prefix) = match class {
+                HarnessMessageClass::Steering => (PiSdkSidecarCommand::Steer, "steer"),
+                HarnessMessageClass::FollowUp => (PiSdkSidecarCommand::FollowUp, "follow-up"),
                 HarnessMessageClass::Prompt => unreachable!(),
             };
-            let id = message.command_id().as_str().to_owned();
+            let id = self
+                .connection
+                .bounded_raw_command_id(fallback_prefix, message.command_id().as_str());
             let result = self
                 .connection
                 .command(id, command, json!({"text": message.content().as_str()}))

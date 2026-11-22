@@ -55,6 +55,14 @@ struct PendingSettled {
     aborted: Option<bool>,
 }
 
+#[derive(Default)]
+struct AbortSettlementState {
+    abort_in_flight: bool,
+    abort_rejected: bool,
+    cancelled: bool,
+    pending_settled: Option<PendingSettled>,
+}
+
 pub(crate) struct ActiveTurn {
     runtime_id: RuntimeTurnId,
     events: TurnEvents,
@@ -67,10 +75,7 @@ pub(crate) struct ActiveTurn {
     ui_ids: Mutex<BTreeSet<String>>,
     steering_scheduled: AtomicBool,
     follow_up_scheduled: AtomicBool,
-    abort_in_flight: AtomicBool,
-    abort_rejected: AtomicBool,
-    pending_settled: Mutex<Option<PendingSettled>>,
-    cancelled: AtomicBool,
+    abort_state: Mutex<AbortSettlementState>,
     timed_out: AtomicBool,
     require_aborted_settled: bool,
     finished: AtomicBool,
@@ -111,10 +116,7 @@ impl ActiveTurn {
                 ui_ids: Mutex::new(BTreeSet::new()),
                 steering_scheduled: AtomicBool::new(false),
                 follow_up_scheduled: AtomicBool::new(false),
-                abort_in_flight: AtomicBool::new(false),
-                abort_rejected: AtomicBool::new(false),
-                pending_settled: Mutex::new(None),
-                cancelled: AtomicBool::new(false),
+                abort_state: Mutex::new(AbortSettlementState::default()),
                 timed_out: AtomicBool::new(false),
                 require_aborted_settled,
                 finished: AtomicBool::new(false),
@@ -140,9 +142,10 @@ impl ActiveTurn {
     }
 
     fn has_pending_settled(&self) -> bool {
-        self.pending_settled
+        self.abort_state
             .lock()
-            .expect("Pi pending-settled lock poisoned")
+            .expect("Pi abort-settlement lock poisoned")
+            .pending_settled
             .is_some()
     }
 
@@ -212,17 +215,19 @@ impl ActiveTurn {
                         "Pi RPC omitted the qualified agent-settled abort state",
                     ));
                 }
-                if !self.timed_out.load(Ordering::SeqCst)
-                    && !self.cancelled.load(Ordering::SeqCst)
-                    && !aborted.unwrap_or(false)
-                    && self.abort_in_flight.load(Ordering::SeqCst)
                 {
-                    *self
-                        .pending_settled
+                    let mut state = self
+                        .abort_state
                         .lock()
-                        .expect("Pi pending-settled lock poisoned") =
-                        Some(PendingSettled { aborted });
-                    return Ok(());
+                        .expect("Pi abort-settlement lock poisoned");
+                    if !self.timed_out.load(Ordering::SeqCst)
+                        && !state.cancelled
+                        && !aborted.unwrap_or(false)
+                        && state.abort_in_flight
+                    {
+                        state.pending_settled = Some(PendingSettled { aborted });
+                        return Ok(());
+                    }
                 }
                 self.finish_settled(aborted)
             }
@@ -231,9 +236,14 @@ impl ActiveTurn {
 
     fn finish_settled(&self, aborted: Option<bool>) -> Result<(), RuntimeFailure> {
         let usage = *self.usage.lock().expect("Pi usage lock poisoned");
+        let cancelled = self
+            .abort_state
+            .lock()
+            .expect("Pi abort-settlement lock poisoned")
+            .cancelled;
         let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
             (TerminalStatus::TimedOut, ActivityStatus::Failed)
-        } else if self.cancelled.load(Ordering::SeqCst) || aborted.unwrap_or(false) {
+        } else if cancelled || aborted.unwrap_or(false) {
             (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
         } else if usage.is_none() {
             (
@@ -255,32 +265,39 @@ impl ActiveTurn {
     }
 
     pub(crate) fn mark_abort_in_flight(&self) {
-        self.abort_in_flight.store(true, Ordering::SeqCst);
+        self.abort_state
+            .lock()
+            .expect("Pi abort-settlement lock poisoned")
+            .abort_in_flight = true;
         self.callbacks.abandon(CallbackAbandonment::TurnCancelled);
     }
 
     pub(crate) fn mark_abort_acknowledged(&self) {
-        self.cancelled.store(true, Ordering::SeqCst);
-        self.abort_in_flight.store(false, Ordering::SeqCst);
-        self.abort_rejected.store(false, Ordering::SeqCst);
-    }
-
-    pub(crate) fn mark_abort_rejected(&self) {
-        self.abort_rejected.store(true, Ordering::SeqCst);
-        self.abort_in_flight.store(false, Ordering::SeqCst);
+        let mut state = self
+            .abort_state
+            .lock()
+            .expect("Pi abort-settlement lock poisoned");
+        state.cancelled = true;
+        state.abort_in_flight = false;
+        state.abort_rejected = false;
     }
 
     pub(crate) fn reconcile_abort_response(&self, success: bool) -> Result<(), RuntimeFailure> {
-        if success {
-            self.mark_abort_acknowledged();
-        } else {
-            self.mark_abort_rejected();
-        }
-        let pending = self
-            .pending_settled
-            .lock()
-            .expect("Pi pending-settled lock poisoned")
-            .take();
+        let pending = {
+            let mut state = self
+                .abort_state
+                .lock()
+                .expect("Pi abort-settlement lock poisoned");
+            if success {
+                state.cancelled = true;
+                state.abort_in_flight = false;
+                state.abort_rejected = false;
+            } else {
+                state.abort_rejected = true;
+                state.abort_in_flight = false;
+            }
+            state.pending_settled.take()
+        };
         if let Some(pending) = pending
             && let Err(error) = self.finish_settled(pending.aborted)
         {
@@ -291,7 +308,10 @@ impl ActiveTurn {
     }
 
     pub(crate) fn mark_cancelled(&self) {
-        self.cancelled.store(true, Ordering::SeqCst);
+        self.abort_state
+            .lock()
+            .expect("Pi abort-settlement lock poisoned")
+            .cancelled = true;
         self.callbacks.abandon(CallbackAbandonment::TurnCancelled);
     }
 
@@ -301,17 +321,19 @@ impl ActiveTurn {
     }
 
     pub(crate) fn fail_connection(&self, diagnostic: swallowtail_core::SafeDiagnostic) {
-        self.pending_settled
-            .lock()
-            .expect("Pi pending-settled lock poisoned")
-            .take();
+        let (cancelled, abort_in_flight, abort_rejected) = {
+            let mut state = self
+                .abort_state
+                .lock()
+                .expect("Pi abort-settlement lock poisoned");
+            state.pending_settled = None;
+            (state.cancelled, state.abort_in_flight, state.abort_rejected)
+        };
         let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
             (TerminalStatus::TimedOut, ActivityStatus::Failed)
-        } else if self.cancelled.load(Ordering::SeqCst) {
+        } else if cancelled {
             (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
-        } else if self.abort_in_flight.load(Ordering::SeqCst)
-            || self.abort_rejected.load(Ordering::SeqCst)
-        {
+        } else if abort_in_flight || abort_rejected {
             (
                 TerminalStatus::RuntimeFailed(swallowtail_core::SafeDiagnostic::new(
                     "swallowtail.pi.rpc.cancel_rejected",
@@ -329,10 +351,10 @@ impl ActiveTurn {
     }
 
     pub(crate) fn fail_rejected_abort(&self, diagnostic: swallowtail_core::SafeDiagnostic) {
-        self.pending_settled
+        self.abort_state
             .lock()
-            .expect("Pi pending-settled lock poisoned")
-            .take();
+            .expect("Pi abort-settlement lock poisoned")
+            .pending_settled = None;
         let status = if self.timed_out.load(Ordering::SeqCst) {
             TerminalStatus::TimedOut
         } else {
@@ -733,5 +755,109 @@ mod tests {
             TerminalStatus::RuntimeFailed(diagnostic)
                 if diagnostic.code() == "swallowtail.pi.rpc.usage_missing"
         ));
+    }
+
+    #[test]
+    fn settled_and_reconcile_abort_response_share_mutex_and_never_strand_turn() {
+        use futures_util::FutureExt;
+        use std::sync::Barrier;
+
+        // 1. Deterministic lock-serialization proof: while `abort_state` is held
+        // during an in-flight abort transition, a concurrent `Settled` event
+        // cannot observe stale `abort_in_flight = true` and strand `pending_settled`.
+        {
+            let (turn, _events, _callbacks, terminal) = ActiveTurn::new(
+                RuntimeTurnId::new("pi-toctou-lock").expect("turn id is valid"),
+                Arc::new(AtomicU32::new(0)),
+                Weak::new(),
+                false,
+            )
+            .expect("turn constructs");
+            turn.mark_abort_in_flight();
+
+            let mut guard = turn
+                .abort_state
+                .lock()
+                .expect("Pi abort-settlement lock poisoned");
+            let entered = Arc::new(Barrier::new(2));
+            let settled_turn = Arc::clone(&turn);
+            let entered_worker = Arc::clone(&entered);
+            let settled_thread = std::thread::spawn(move || {
+                entered_worker.wait();
+                settled_turn
+                    .handle_event(PiAgentEvent::Settled {
+                        aborted: Some(false),
+                    })
+                    .expect("settled handles cleanly");
+            });
+            entered.wait();
+            // Simulate `reconcile_abort_response(true)` completing under the lock.
+            guard.cancelled = true;
+            guard.abort_in_flight = false;
+            guard.abort_rejected = false;
+            assert!(guard.pending_settled.is_none());
+            drop(guard);
+
+            settled_thread.join().expect("settled thread joins");
+            assert!(turn.is_finished(), "turn must not be stranded");
+            assert!(!turn.has_pending_settled());
+            let outcome = terminal
+                .now_or_never()
+                .expect("terminal outcome must already be ready");
+            assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
+        }
+
+        // 2. Concurrent race between `handle_event(Settled)` and
+        // `reconcile_abort_response` for both `success = true` and `false`.
+        for success in [true, false] {
+            for iteration in 0..64 {
+                let (turn, _events, _callbacks, terminal) = ActiveTurn::new(
+                    RuntimeTurnId::new(format!("pi-toctou-{success}-{iteration}"))
+                        .expect("turn id is valid"),
+                    Arc::new(AtomicU32::new(0)),
+                    Weak::new(),
+                    false,
+                )
+                .expect("turn constructs");
+                turn.add_usage(TokenUsage::new(Some(3), Some(2)))
+                    .expect("usage recorded");
+                turn.mark_abort_in_flight();
+
+                let barrier = Arc::new(Barrier::new(2));
+                let t1 = Arc::clone(&turn);
+                let b1 = Arc::clone(&barrier);
+                let h1 = std::thread::spawn(move || {
+                    b1.wait();
+                    t1.handle_event(PiAgentEvent::Settled {
+                        aborted: Some(false),
+                    })
+                    .expect("settled succeeds");
+                });
+                let t2 = Arc::clone(&turn);
+                let b2 = Arc::clone(&barrier);
+                let h2 = std::thread::spawn(move || {
+                    b2.wait();
+                    t2.reconcile_abort_response(success)
+                        .expect("reconcile succeeds");
+                });
+                h1.join().expect("settled thread joins");
+                h2.join().expect("reconcile thread joins");
+
+                assert!(
+                    turn.is_finished(),
+                    "turn stranded on success={success}, iteration={iteration}"
+                );
+                assert!(!turn.has_pending_settled());
+                let outcome = terminal
+                    .now_or_never()
+                    .expect("terminal outcome must be ready without stranding");
+                let expected = if success {
+                    TerminalStatus::Cancelled
+                } else {
+                    TerminalStatus::Completed
+                };
+                assert_eq!(outcome.status(), &expected);
+            }
+        }
     }
 }

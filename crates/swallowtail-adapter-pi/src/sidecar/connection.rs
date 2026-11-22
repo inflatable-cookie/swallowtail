@@ -1,14 +1,14 @@
 use super::failure::{failure, protocol_failure};
 use super::replay::ReplayCollector;
 use super::turn::SidecarActiveTurn;
-use super::wire::{PiSdkSidecarCommand, encode_command};
+use super::wire::{MAXIMUM_COMMAND_ID_BYTES, PiSdkSidecarCommand, encode_command};
 use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet};
 use std::future::Future;
 use std::pin::Pin;
 #[cfg(test)]
 use std::sync::Barrier;
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::{SafeDiagnostic, SessionRef};
@@ -37,6 +37,7 @@ pub(crate) struct SidecarConnection {
     superseded_aborts: Mutex<BTreeSet<String>>,
     abandoned_close: Mutex<Option<String>>,
     used_ids: Mutex<BTreeSet<String>>,
+    next_wire_id: AtomicU64,
     active_turn: Mutex<Option<Arc<SidecarActiveTurn>>>,
     replay: Mutex<Option<ReplayCollector>>,
     closed: AtomicBool,
@@ -55,6 +56,7 @@ impl SidecarConnection {
             superseded_aborts: Mutex::new(BTreeSet::new()),
             abandoned_close: Mutex::new(None),
             used_ids: Mutex::new(BTreeSet::new()),
+            next_wire_id: AtomicU64::new(1),
             active_turn: Mutex::new(None),
             replay: Mutex::new(None),
             closed: AtomicBool::new(false),
@@ -63,6 +65,32 @@ impl SidecarConnection {
             #[cfg(test)]
             send_registration_gate: Mutex::new(None),
         })
+    }
+
+    /// Formats a prefixed wire command ID bounded to `MAXIMUM_COMMAND_ID_BYTES`.
+    ///
+    /// Keeps short caller IDs verbatim so existing correlation expectations stay
+    /// intact, and falls back to a compact monotonic connection-scoped ID when
+    /// `"{prefix}:{caller_id}"` would exceed the wire limit.
+    pub(crate) fn bounded_command_id(&self, prefix: &str, caller_id: &str) -> String {
+        if !caller_id.is_empty() && prefix.len() + 1 + caller_id.len() <= MAXIMUM_COMMAND_ID_BYTES {
+            format!("{prefix}:{caller_id}")
+        } else {
+            let seq = self.next_wire_id.fetch_add(1, Ordering::SeqCst);
+            format!("{prefix}:w-{seq}")
+        }
+    }
+
+    /// Bounds a caller-supplied command ID (e.g. `steer` / `follow_up`) to
+    /// `MAXIMUM_COMMAND_ID_BYTES`, preserving short IDs verbatim and falling
+    /// back to a compact monotonic connection-scoped ID when oversized.
+    pub(crate) fn bounded_raw_command_id(&self, fallback_prefix: &str, caller_id: &str) -> String {
+        if !caller_id.is_empty() && caller_id.len() <= MAXIMUM_COMMAND_ID_BYTES {
+            caller_id.to_owned()
+        } else {
+            let seq = self.next_wire_id.fetch_add(1, Ordering::SeqCst);
+            format!("{fallback_prefix}:w-{seq}")
+        }
     }
 
     pub(crate) fn services(&self) -> &HostServices {

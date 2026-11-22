@@ -272,10 +272,11 @@ impl AcpConnection {
                 return Err((self.diagnostics.connection_closed)());
             }
             if pending.requests.len() >= MAXIMUM_PENDING_REQUESTS
-                || pending.requests.insert(id, sender).is_some()
+                || pending.requests.contains_key(&id)
             {
                 return Err((self.diagnostics.correlation_limit)());
             }
+            pending.requests.insert(id, sender);
         }
         if let Err(error) = self
             .writer

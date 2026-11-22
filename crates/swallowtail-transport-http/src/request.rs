@@ -113,10 +113,7 @@ impl SecretHeader {
 }
 
 fn validate_secret(name: &str, value: &str) -> Result<(), TransportError> {
-    if name.is_empty()
-        || name
-            .bytes()
-            .any(|byte| !byte.is_ascii_graphic() || byte == b':')
+    if !is_header_name_token(name)
         || value.is_empty()
         || value.bytes().any(|byte| matches!(byte, b'\r' | b'\n'))
     {
@@ -271,7 +268,7 @@ impl HttpRequest {
             return Err(TransportError::EndpointInvalid);
         }
         if let Some(query) = embedded_query {
-            if query.is_empty() {
+            if query.is_empty() || query.contains('#') {
                 return Err(TransportError::EndpointInvalid);
             }
             url.set_query(Some(query));

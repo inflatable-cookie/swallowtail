@@ -104,23 +104,26 @@ impl<Item> ChannelSender<Item> {
     /// Returns `false` when the consumer was dropped, which is the only
     /// condition that abandons a provider stream.
     pub(crate) fn send(&self, item: Item) -> bool {
-        let mut state = self
-            .shared
-            .state
-            .lock()
-            .expect("shared HTTP channel lock is not poisoned");
-        while state.items.len() >= self.shared.capacity && !state.closed {
-            state = self
+        let waker = {
+            let mut state = self
                 .shared
-                .available
-                .wait(state)
+                .state
+                .lock()
                 .expect("shared HTTP channel lock is not poisoned");
-        }
-        if state.closed {
-            return false;
-        }
-        state.items.push_back(item);
-        if let Some(waker) = state.waker.take() {
+            while state.items.len() >= self.shared.capacity && !state.closed {
+                state = self
+                    .shared
+                    .available
+                    .wait(state)
+                    .expect("shared HTTP channel lock is not poisoned");
+            }
+            if state.closed {
+                return false;
+            }
+            state.items.push_back(item);
+            state.waker.take()
+        };
+        if let Some(waker) = waker {
             waker.wake();
         }
         true
@@ -129,13 +132,16 @@ impl<Item> ChannelSender<Item> {
 
 impl<Item> Drop for ChannelSender<Item> {
     fn drop(&mut self) {
-        let mut state = self
-            .shared
-            .state
-            .lock()
-            .expect("shared HTTP channel lock is not poisoned");
-        state.senders = state.senders.saturating_sub(1);
-        if let Some(waker) = state.waker.take() {
+        let waker = {
+            let mut state = self
+                .shared
+                .state
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            state.senders = state.senders.saturating_sub(1);
+            state.waker.take()
+        };
+        if let Some(waker) = waker {
             waker.wake();
         }
     }
@@ -151,7 +157,7 @@ impl<Item> ChannelReceiver<Item> {
         std::future::poll_fn(|context| self.poll_next(context)).await
     }
 
-    fn poll_next(&mut self, context: &mut Context<'_>) -> Poll<Option<Item>> {
+    pub(crate) fn poll_next(&mut self, context: &mut Context<'_>) -> Poll<Option<Item>> {
         let mut state = self
             .shared
             .state
@@ -184,7 +190,7 @@ impl<Item> Drop for ChannelReceiver<Item> {
             .shared
             .state
             .lock()
-            .expect("shared HTTP channel lock is not poisoned");
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
         state.closed = true;
         self.shared.available.notify_all();
     }

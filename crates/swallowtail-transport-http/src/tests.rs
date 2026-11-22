@@ -704,3 +704,108 @@ fn secret_header_line_retains_bytes_until_zeroize_and_transmits_header() {
     .expect("secret header exchange succeeds");
     assert_eq!(response.body, b"ok");
 }
+
+#[test]
+fn channel_sender_releases_lock_before_waking_on_send_and_drop() {
+    use std::sync::Mutex;
+    use std::task::{Context, Wake, Waker};
+
+    struct ReentrantWaker {
+        receiver: Arc<Mutex<crate::stream::ChannelReceiver<u32>>>,
+        observed: Arc<Mutex<Vec<Option<u32>>>>,
+    }
+
+    impl Wake for ReentrantWaker {
+        fn wake(self: Arc<Self>) {
+            let mut receiver = self.receiver.lock().expect("test receiver lock");
+            let mut noop_cx = Context::from_waker(Waker::noop());
+            if let Poll::Ready(item) = receiver.poll_next(&mut noop_cx) {
+                self.observed.lock().expect("observed lock").push(item);
+            }
+        }
+    }
+
+    let (sender, receiver) = crate::stream::channel::<u32>(1);
+    let receiver = Arc::new(Mutex::new(receiver));
+    let observed = Arc::new(Mutex::new(Vec::new()));
+    let waker = Waker::from(Arc::new(ReentrantWaker {
+        receiver: Arc::clone(&receiver),
+        observed: Arc::clone(&observed),
+    }));
+    let mut cx = Context::from_waker(&waker);
+
+    assert!(
+        receiver
+            .lock()
+            .expect("test receiver lock")
+            .poll_next(&mut cx)
+            .is_pending(),
+        "empty channel registers waker"
+    );
+    assert!(
+        sender.send(42),
+        "send must release its mutex before waking so an inline waker can poll without deadlocking"
+    );
+    assert_eq!(
+        *observed.lock().expect("observed lock"),
+        vec![Some(42)],
+        "re-entrant waker polled the sent item synchronously"
+    );
+
+    assert!(
+        receiver
+            .lock()
+            .expect("test receiver lock")
+            .poll_next(&mut cx)
+            .is_pending(),
+        "drained channel re-registers waker"
+    );
+    drop(sender);
+    assert_eq!(
+        *observed.lock().expect("observed lock"),
+        vec![Some(42), None],
+        "drop must release its mutex before waking so an inline waker observes EOF without deadlocking"
+    );
+}
+
+#[test]
+fn secret_header_name_validation_matches_rfc9110_token_and_embedded_query_rejects_fragment() {
+    for invalid_name in [
+        "",
+        "bad header",
+        "x-name:injected",
+        "x-bad(name)",
+        "x-bad/name",
+        "x-bad=name",
+        "x-bad;name",
+    ] {
+        assert_eq!(
+            SecretHeader::new(invalid_name, "value").expect_err("non-token header name must fail"),
+            TransportError::CredentialInvalid,
+            "name {invalid_name:?}"
+        );
+    }
+    assert!(SecretHeader::new("x-api-key", "secret").is_ok());
+
+    let endpoint = "https://provider.example/base";
+    for rejected in [
+        "/v1/models#fragment",
+        "/v1/models?limit=2#fragment",
+        "/v1/models?#fragment",
+    ] {
+        assert_eq!(
+            HttpRequest::new(Method::Get, rejected)
+                .resolve(endpoint)
+                .expect_err("fragment in route or embedded query must be rejected"),
+            TransportError::EndpointInvalid,
+            "route {rejected:?}"
+        );
+    }
+    let valid = HttpRequest::new(Method::Get, "/v1/models?limit=2")
+        .resolve(endpoint)
+        .expect("embedded query without fragment resolves");
+    assert_eq!(
+        valid.as_str(),
+        "https://provider.example/base/v1/models?limit=2"
+    );
+}

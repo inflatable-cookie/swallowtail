@@ -1,18 +1,22 @@
+use super::cleanup::{
+    graceful_shutdown_deadline, join_session_pump, spawn_session_pump, stop_session_process,
+};
 use super::launch::catalogue_arguments;
 use super::session::cleanup::release_credential;
 use super::validation::validate_catalogue;
+use super::{deadline_elapsed, run_before_deadline, start_process_before_deadline};
 use crate::catalogue::parse_catalogue;
-use crate::connection::{CommandResult, PiConnection};
+use crate::connection::PiConnection;
 use crate::failure::failure;
 use serde_json::json;
-use std::future::{Future, poll_fn};
 use std::sync::Arc;
-use std::task::Poll;
 use swallowtail_core::{ModelCatalogEntry, PreflightPlan};
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, CredentialLease, ExecutableRef, HostServices, ModelCatalogDriver,
-    ModelCatalogRequest, ProcessHandle, ProcessRequest, RuntimeFailure, ScopeId,
+    ModelCatalogRequest, ProcessRequest, RuntimeFailure, ScopeId,
 };
+
+const CATALOGUE_TIMEOUT: &str = "swallowtail.pi.rpc.catalogue_timed_out";
 
 impl ModelCatalogDriver for super::PiRpcDriver {
     fn list_models(
@@ -23,9 +27,7 @@ impl ModelCatalogDriver for super::PiRpcDriver {
     ) -> BoxFuture<'_, Result<Vec<ModelCatalogEntry>, RuntimeFailure>> {
         Box::pin(async move {
             validate_catalogue(&plan, &services, &self.credential)?;
-            if request.deadline().is_some_and(|deadline| {
-                services.time().expect("validated Pi time service").now() >= deadline.instant()
-            }) {
+            if deadline_elapsed(request.deadline(), &services) {
                 return Err(failure(
                     "swallowtail.pi.rpc.catalogue_deadline_elapsed",
                     "Pi RPC model catalogue deadline elapsed before startup",
@@ -85,13 +87,17 @@ impl super::PiRpcDriver {
         ))
         .with_arguments(catalogue_arguments())
         .with_environment([self.environment.clone()]);
-        let process: Arc<dyn ProcessHandle> = match services
-            .process()
-            .expect("validated Pi process service")
-            .start(scope.clone(), process_request)
-            .await
+        let process = match start_process_before_deadline(
+            scope.clone(),
+            process_request,
+            request.deadline(),
+            &services,
+            CATALOGUE_TIMEOUT,
+            "Pi RPC model catalogue timed out during process start",
+        )
+        .await
         {
-            Ok(process) => Arc::from(process),
+            Ok(process) => process,
             Err(error) => {
                 let _ = credential_service
                     .release(credential.take().expect("Pi credential was acquired"))
@@ -106,11 +112,7 @@ impl super::PiRpcDriver {
             services.clone(),
         );
         let pump = Arc::clone(&connection);
-        let pump_task = match services
-            .task()
-            .expect("validated Pi task service")
-            .spawn(scope, Box::pin(async move { pump.pump().await }))
-        {
+        let pump_task = match spawn_session_pump(scope, &services, pump.pump()) {
             Ok(task) => task,
             Err(error) => {
                 let _ = process.force_stop().await;
@@ -127,26 +129,23 @@ impl super::PiRpcDriver {
             "get_available_models",
             json!({"id": id, "type": "get_available_models"}),
         );
-        let response = match request.deadline() {
-            Some(deadline) => {
-                let wait = services
-                    .time()
-                    .cloned()
-                    .expect("validated Pi time service")
-                    .wait_until(deadline);
-                command_before_deadline(command, wait).await
-            }
-            None => command.await,
-        };
+        let response = run_before_deadline(
+            command,
+            request.deadline(),
+            &services,
+            CATALOGUE_TIMEOUT,
+            "Pi RPC model catalogue discovery timed out",
+        )
+        .await;
         let result = response.and_then(parse_catalogue);
-        connection.begin_close().await;
-        let process_cleanup = match pump_task.join().await {
-            Ok(()) => connection.cleanup_outcome(),
-            Err(_) => CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
-                "swallowtail.pi.rpc.catalogue_cleanup_failed",
-                "Pi RPC model catalogue protocol task did not join cleanly",
-            )),
-        };
+        let process_cleanup = stop_session_process(
+            connection.begin_close(),
+            join_session_pump(pump_task, || connection.cleanup_outcome()),
+            async { connection.force_stop().await },
+            graceful_shutdown_deadline(&services, None),
+            &services,
+        )
+        .await;
         let credential_cleanup = release_credential(credential.take(), &services).await;
         let cleanup = CleanupOutcome::merge(process_cleanup, credential_cleanup);
         match (result, cleanup) {
@@ -170,27 +169,4 @@ fn matching_credential(
         && credential.scope() == scope
         && credential.reference() == reference
         && credential.audience() == audience
-}
-
-async fn command_before_deadline<F>(
-    command: F,
-    mut deadline: BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
-) -> Result<CommandResult, RuntimeFailure>
-where
-    F: Future<Output = Result<CommandResult, RuntimeFailure>>,
-{
-    let mut command = Box::pin(command);
-    poll_fn(|context| {
-        if let Poll::Ready(result) = command.as_mut().poll(context) {
-            return Poll::Ready(result);
-        }
-        if deadline.as_mut().poll(context).is_ready() {
-            return Poll::Ready(Err(failure(
-                "swallowtail.pi.rpc.catalogue_timed_out",
-                "Pi RPC model catalogue discovery timed out",
-            )));
-        }
-        Poll::Pending
-    })
-    .await
 }

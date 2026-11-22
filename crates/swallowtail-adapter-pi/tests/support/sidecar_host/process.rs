@@ -3,6 +3,7 @@ use super::script::respond;
 use super::{Shared, SidecarFixtureHost, SidecarScenario, fixture_failure};
 use serde_json::Value;
 use std::sync::Arc;
+use std::sync::atomic::Ordering;
 use std::time::Duration;
 use swallowtail_runtime::{
     BoxFuture, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk, ProcessRequest,
@@ -33,6 +34,8 @@ impl ProcessService for SidecarFixtureHost {
         let handle = SidecarFixtureProcess {
             shared: Arc::clone(&self.shared),
             scenario: self.scenario,
+            held_command: self.held_command,
+            unresponsive_shutdown: self.unresponsive_shutdown,
             sdk_version: self.sdk_version,
             wait_failure: self.process_wait_failure,
             exit_failure: self.process_exit_failure,
@@ -44,6 +47,8 @@ impl ProcessService for SidecarFixtureHost {
 struct SidecarFixtureProcess {
     shared: Arc<Shared>,
     scenario: SidecarScenario,
+    held_command: Option<&'static str>,
+    unresponsive_shutdown: bool,
     sdk_version: &'static str,
     wait_failure: bool,
     exit_failure: bool,
@@ -63,7 +68,12 @@ impl ProcessHandle for SidecarFixtureProcess {
                 .lock()
                 .expect("sidecar fixture state lock poisoned");
             state.input.push(value.clone());
-            respond(self.scenario, self.sdk_version, &value, &mut state)?;
+            if !self
+                .held_command
+                .is_some_and(|command| value["command"] == command)
+            {
+                respond(self.scenario, self.sdk_version, &value, &mut state)?;
+            }
             self.shared.changed.notify_all();
             Ok(())
         })();
@@ -71,7 +81,7 @@ impl ProcessHandle for SidecarFixtureProcess {
     }
 
     fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        self.stop()
+        self.request_stop()
     }
 
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
@@ -97,11 +107,16 @@ impl ProcessHandle for SidecarFixtureProcess {
     }
 
     fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        self.stop()
+        if !self.unresponsive_shutdown {
+            self.stop();
+        }
+        Box::pin(async { Ok(()) })
     }
 
     fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        self.stop()
+        self.shared.force_stops.fetch_add(1, Ordering::SeqCst);
+        self.stop();
+        Box::pin(async { Ok(()) })
     }
 
     fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
@@ -150,7 +165,7 @@ impl ProcessHandle for SidecarFixtureProcess {
 }
 
 impl SidecarFixtureProcess {
-    fn stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+    fn stop(&self) {
         let mut state = self
             .shared
             .process
@@ -160,6 +175,5 @@ impl SidecarFixtureProcess {
             state.stopped = true;
         }
         self.shared.changed.notify_all();
-        Box::pin(async { Ok(()) })
     }
 }

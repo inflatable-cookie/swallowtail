@@ -127,6 +127,23 @@ impl SidecarActiveTurn {
                 "Pi SDK sidecar emitted replay evidence inside a fresh session",
             ));
         }
+        if let PiSdkSidecarEvent::MessageEnded { stop_reason, .. } = &event
+            && stop_reason == "error"
+        {
+            self.complete_activity(ActivityStatus::Failed)?;
+            self.finish(TerminalStatus::ProviderFailed(
+                SafeDiagnostic::new(
+                    "swallowtail.pi.sdk-sidecar.provider_failed",
+                    "Pi SDK sidecar reported a downstream provider failure",
+                )
+                .with_failure_classification(FailureClassification::new(
+                    FailureOrigin::Provider,
+                    FailureKind::Unknown,
+                    FailureRecovery::Unknown,
+                )),
+            ));
+            return Ok(());
+        }
         self.project_activity(&event)?;
         match event {
             PiSdkSidecarEvent::Started | PiSdkSidecarEvent::Progress => self.progress(),
@@ -134,33 +151,14 @@ impl SidecarActiveTurn {
             PiSdkSidecarEvent::ReasoningDelta(delta) => {
                 self.content_event(RuntimeEventKind::ReasoningProgress, delta)
             }
-            PiSdkSidecarEvent::MessageEnded { stop_reason, usage } => {
-                if stop_reason == "error" {
-                    self.complete_activity(ActivityStatus::Failed)?;
-                    self.finish(TerminalStatus::ProviderFailed(
-                        SafeDiagnostic::new(
-                            "swallowtail.pi.sdk-sidecar.provider_failed",
-                            "Pi SDK sidecar reported a downstream provider failure",
-                        )
-                        .with_failure_classification(
-                            FailureClassification::new(
-                                FailureOrigin::Provider,
-                                FailureKind::Unknown,
-                                FailureRecovery::Unknown,
-                            ),
-                        ),
-                    ));
-                    Ok(())
-                } else if let Some(usage) = usage {
-                    self.add_usage(usage)
-                } else {
-                    Ok(())
-                }
-            }
+            PiSdkSidecarEvent::MessageEnded {
+                usage: Some(usage), ..
+            } => self.add_usage(usage),
             PiSdkSidecarEvent::TurnStarted
             | PiSdkSidecarEvent::TurnEnded
             | PiSdkSidecarEvent::Ended
             | PiSdkSidecarEvent::MessageStarted
+            | PiSdkSidecarEvent::MessageEnded { usage: None, .. }
             | PiSdkSidecarEvent::ReasoningStarted
             | PiSdkSidecarEvent::ReasoningEnded
             | PiSdkSidecarEvent::ToolStarted { .. }
@@ -469,6 +467,49 @@ mod tests {
     use super::*;
     use futures_util::StreamExt;
     use swallowtail_runtime::ActivityLifecyclePhase;
+
+    #[test]
+    fn provider_error_fails_every_open_activity_before_terminal() {
+        let (turn, mut events, terminal) = SidecarActiveTurn::new(
+            RuntimeTurnId::new("sidecar-provider-error").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+        )
+        .expect("sidecar turn constructs");
+        for event in [
+            PiSdkSidecarEvent::MessageStarted,
+            PiSdkSidecarEvent::ReasoningStarted,
+            PiSdkSidecarEvent::ToolStarted {
+                call_id: "tool-1".to_owned(),
+                name: "read".to_owned(),
+            },
+            PiSdkSidecarEvent::MessageEnded {
+                stop_reason: "error".to_owned(),
+                usage: None,
+            },
+        ] {
+            turn.handle_event(event).expect("event is handled");
+        }
+
+        let failed_activities = futures_executor::block_on(async {
+            let mut failed_activities = 0;
+            while let Some(event) = events.next().await {
+                let event = event.expect("event is valid");
+                if let RuntimeEventKind::Activity(activity) = event.kind()
+                    && activity.phase() == ActivityLifecyclePhase::Completed
+                {
+                    assert_eq!(activity.status(), ActivityStatus::Failed);
+                    failed_activities += 1;
+                }
+            }
+            failed_activities
+        });
+        assert_eq!(failed_activities, 3);
+        assert!(matches!(
+            futures_executor::block_on(terminal).status(),
+            TerminalStatus::ProviderFailed(diagnostic)
+                if diagnostic.code() == "swallowtail.pi.sdk-sidecar.provider_failed"
+        ));
+    }
 
     #[test]
     fn failed_activity_completion_does_not_consume_a_prompt_slot() {

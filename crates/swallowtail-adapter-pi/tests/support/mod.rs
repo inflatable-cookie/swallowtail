@@ -28,6 +28,22 @@ pub use sidecar_selection::{
 };
 
 #[allow(dead_code)]
+pub struct PendingProcessStart;
+
+impl swallowtail_runtime::ProcessService for PendingProcessStart {
+    fn start(
+        &self,
+        _scope: swallowtail_runtime::ScopeId,
+        _request: swallowtail_runtime::ProcessRequest,
+    ) -> swallowtail_runtime::BoxFuture<
+        'static,
+        Result<Box<dyn swallowtail_runtime::ProcessHandle>, swallowtail_runtime::RuntimeFailure>,
+    > {
+        Box::pin(std::future::pending())
+    }
+}
+
+#[allow(dead_code)]
 pub fn close_session(
     session: Box<dyn swallowtail_runtime::InteractiveSessionHandle>,
     services: swallowtail_runtime::HostServices,

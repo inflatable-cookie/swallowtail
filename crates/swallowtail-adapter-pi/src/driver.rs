@@ -216,7 +216,7 @@ impl PiRpcDriver {
                 return Err(error);
             }
         };
-        if let Err(error) = run_before_deadline(
+        let readiness = run_before_deadline(
             startup::configure(
                 &connection,
                 plan.provider_id().expect("validated Pi provider").as_str(),
@@ -228,35 +228,36 @@ impl PiRpcDriver {
             "Pi RPC session deadline elapsed during startup configuration",
         )
         .await
-        {
-            connection.begin_close().await;
-            let _ = pump_task.join().await;
-            let _ = resource_service
-                .release(resource.take().expect("Pi resource was resolved"))
-                .await;
-            let _ = credential_service
-                .release(credential.take().expect("Pi credential was acquired"))
-                .await;
-            return Err(error);
-        }
-        let runtime_id =
-            match RuntimeSessionId::new(format!("pi-rpc:{}", request.request_id().as_str())) {
-                Ok(runtime_id) => runtime_id,
-                Err(_) => {
-                    connection.begin_close().await;
-                    let _ = pump_task.join().await;
-                    let _ = resource_service
-                        .release(resource.take().expect("Pi resource was resolved"))
-                        .await;
-                    let _ = credential_service
-                        .release(credential.take().expect("Pi credential was acquired"))
-                        .await;
-                    return Err(failure(
+        .and_then(|()| {
+            RuntimeSessionId::new(format!("pi-rpc:{}", request.request_id().as_str())).map_err(
+                |_| {
+                    failure(
                         "swallowtail.pi.rpc.runtime_session_id_invalid",
                         "Pi RPC runtime session id was invalid",
-                    ));
-                }
-            };
+                    )
+                },
+            )
+        });
+        let runtime_id = match readiness {
+            Ok(runtime_id) => runtime_id,
+            Err(error) => {
+                let _ = cleanup::stop_session_process(
+                    connection.begin_close(),
+                    cleanup::join_session_pump(pump_task, || connection.cleanup_outcome()),
+                    async { connection.force_stop().await },
+                    cleanup::graceful_shutdown_deadline(&services, None),
+                    &services,
+                )
+                .await;
+                let _ = resource_service
+                    .release(resource.take().expect("Pi resource was resolved"))
+                    .await;
+                let _ = credential_service
+                    .release(credential.take().expect("Pi credential was acquired"))
+                    .await;
+                return Err(error);
+            }
+        };
         let active: ActiveSlot = Arc::new(Mutex::new(None));
         Ok(PiSessionHandle {
             request_id: request.request_id().clone(),

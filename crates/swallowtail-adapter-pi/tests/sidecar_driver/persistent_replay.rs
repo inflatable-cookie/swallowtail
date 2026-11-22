@@ -327,6 +327,57 @@ fn resume_fails_closed_on_replay_evidence() {
 }
 
 #[test]
+fn load_and_resume_deadlines_cover_bootstrap_and_state_verification() {
+    for replay in [true, false] {
+        for command in ["bootstrap", "state"] {
+            let host_id = make_host_id("pi.fixture.sdk-sidecar.attach-startup-deadline");
+            let fixture =
+                SidecarFixtureHost::new(SidecarScenario::Complete).with_held_command(command);
+            let selected = sidecar_selection(host_id.clone());
+            let binding = fixture_binding(&selected.plan);
+            let services = fixture.services(host_id);
+            let request_id = RequestId::new("sidecar-attach-timeout").expect("valid request");
+            let deadline = Some(Deadline::at(MonotonicInstant::from_ticks(500)));
+            let driver = driver(selected.credential);
+            let worker = thread::spawn(move || {
+                if replay {
+                    let request = LoadSessionRequest::new(
+                        request_id,
+                        binding,
+                        selected.resource,
+                        deadline,
+                        agreement(),
+                    );
+                    block_on(driver.load_session(selected.plan, request, services)).err()
+                } else {
+                    let request = ResumeSessionRequest::new(
+                        request_id,
+                        binding,
+                        selected.resource,
+                        deadline,
+                        agreement(),
+                    );
+                    block_on(driver.resume_session(selected.plan, request, services)).err()
+                }
+            });
+            fixture.wait_for_command(command);
+            fixture.advance_time(500);
+
+            let error = worker
+                .join()
+                .expect("attachment thread joins")
+                .expect("attachment times out");
+            assert_eq!(
+                error.diagnostic().code(),
+                "swallowtail.pi.sdk-sidecar.attach_timed_out",
+                "held {command}, replay {replay}"
+            );
+            assert_joined_cleanup(&fixture);
+        }
+    }
+}
+
+#[test]
 fn deadline_during_replay_stops_the_load_without_a_handle() {
     let host_id = make_host_id("pi.fixture.sdk-sidecar.load-cancel");
     let fixture = SidecarFixtureHost::new(SidecarScenario::HoldReplay);

@@ -245,6 +245,47 @@ fn sidecar_explicit_rejected_cancellation_followed_by_close_wakes_deadline_and_b
 }
 
 #[test]
+fn startup_timeout_force_stops_unresponsive_sidecar_before_releasing_leases() {
+    use swallowtail_runtime::{Deadline, MonotonicInstant, OpenSessionRequest, RequestId};
+
+    let host_id = make_host_id("pi.fixture.sdk-sidecar.startup-abort");
+    let fixture = SidecarFixtureHost::new(SidecarScenario::Complete)
+        .with_held_command("bootstrap")
+        .with_unresponsive_shutdown()
+        .with_immediate_time();
+    let selected = sidecar_selection(host_id.clone());
+    let request = OpenSessionRequest::from_plan(
+        &selected.plan,
+        RequestId::new("sidecar-startup-abort").expect("valid request"),
+        selected.resource,
+        Some(Deadline::at(MonotonicInstant::from_ticks(1_001))),
+    )
+    .expect("open request builds");
+    let error = block_on(driver(selected.credential).open_session(
+        selected.plan,
+        request,
+        fixture.services(host_id),
+    ))
+    .err()
+    .expect("startup times out");
+
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.pi.sdk-sidecar.open_deadline_elapsed"
+    );
+    assert_eq!(fixture.inputs()[0]["command"], "bootstrap");
+    assert_eq!(fixture.force_stops(), 1);
+    assert_eq!(
+        fixture.cleanup_events(),
+        [
+            CleanupEvent::ProcessWait,
+            CleanupEvent::ResourceRelease,
+            CleanupEvent::CredentialRelease
+        ]
+    );
+}
+
+#[test]
 fn sidecar_startup_deadline_enforced_before_and_after_synchronous_launch() {
     use std::sync::Arc;
     use swallowtail_core::{

@@ -63,6 +63,8 @@ pub const FIXTURE_SESSION_REF: &str = "00000000-0000-0000-0000-000000000000";
 pub struct SidecarFixtureHost {
     shared: Arc<Shared>,
     scenario: SidecarScenario,
+    held_command: Option<&'static str>,
+    unresponsive_shutdown: bool,
     sdk_version: &'static str,
     process_wait_failure: bool,
     process_exit_failure: bool,
@@ -74,6 +76,7 @@ struct Shared {
     process: Mutex<ProcessState>,
     changed: Condvar,
     credential_acquisitions: AtomicUsize,
+    force_stops: AtomicUsize,
     cleanup: Mutex<Vec<CleanupEvent>>,
     time: Mutex<TimeState>,
     task_spawns: AtomicUsize,
@@ -135,11 +138,14 @@ impl SidecarFixtureHost {
                 process: Mutex::new(ProcessState::default()),
                 changed: Condvar::new(),
                 credential_acquisitions: AtomicUsize::new(0),
+                force_stops: AtomicUsize::new(0),
                 cleanup: Mutex::new(Vec::new()),
                 time: Mutex::new(TimeState::default()),
                 task_spawns: AtomicUsize::new(0),
             }),
             scenario,
+            held_command: None,
+            unresponsive_shutdown: false,
             sdk_version: PI_SDK_SIDECAR_SDK_VERSION,
             process_wait_failure: false,
             process_exit_failure: false,
@@ -150,6 +156,20 @@ impl SidecarFixtureHost {
     pub fn with_sdk_version(mut self, version: &'static str) -> Self {
         self.sdk_version = version;
         self
+    }
+
+    pub fn with_held_command(mut self, command: &'static str) -> Self {
+        self.held_command = Some(command);
+        self
+    }
+
+    pub fn with_unresponsive_shutdown(mut self) -> Self {
+        self.unresponsive_shutdown = true;
+        self
+    }
+
+    pub fn force_stops(&self) -> usize {
+        self.shared.force_stops.load(Ordering::SeqCst)
     }
 
     pub fn with_immediate_time(self) -> Self {

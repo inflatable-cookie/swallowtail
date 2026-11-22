@@ -318,6 +318,48 @@ fn explicit_rejected_cancellation_followed_by_close_wakes_deadline_and_blocks_ne
 }
 
 #[test]
+fn startup_timeout_force_stops_unresponsive_rpc_child_before_releasing_leases() {
+    use crate::support::CleanupEvent;
+    use swallowtail_runtime::{OpenSessionRequest, RequestId};
+
+    let topology = ExecutionTopologyFixture::local();
+    let fixture = FixtureHost::new(Scenario::Complete)
+        .with_held_command("set_auto_retry")
+        .with_unresponsive_shutdown()
+        .with_immediate_time();
+    let selected = selection_for_topology(&topology);
+    let request = OpenSessionRequest::from_plan(
+        &selected.plan,
+        RequestId::new("pi-rpc-startup-abort").expect("valid request"),
+        selected.resource,
+        Some(Deadline::at(MonotonicInstant::from_ticks(1_001))),
+    )
+    .expect("open request builds");
+    let error = block_on(driver(selected.credential).open_session(
+        selected.plan,
+        request,
+        fixture.services(topology.execution_host_id().clone()),
+    ))
+    .err()
+    .expect("startup times out");
+
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.pi.rpc.open_deadline_elapsed"
+    );
+    assert_eq!(fixture.inputs()[0]["type"], "set_auto_retry");
+    assert_eq!(fixture.force_stops(), 1);
+    assert_eq!(
+        fixture.cleanup_events(),
+        [
+            CleanupEvent::ProcessWait,
+            CleanupEvent::ResourceRelease,
+            CleanupEvent::CredentialRelease
+        ]
+    );
+}
+
+#[test]
 fn startup_deadline_enforced_before_and_after_synchronous_process_launch() {
     use crate::support::CleanupEvent;
     use std::sync::Arc;

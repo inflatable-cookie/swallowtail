@@ -5,6 +5,29 @@ use swallowtail_runtime::{ActivityKind, ActivityLifecyclePhase, ActivityStatus, 
 const ACTIVITY: &str = include_str!("../../tests/fixtures/pi-rpc-0.80.10/activity.jsonl");
 
 #[test]
+fn duplicate_starts_preserve_the_original_message_and_reasoning_activities() {
+    for event in [PiAgentEvent::MessageStarted, PiAgentEvent::ReasoningStarted] {
+        let mut projection = PiActivityProjection::new(
+            RuntimeTurnId::new("pi-duplicate-start").expect("valid turn id"),
+        );
+        let started = projection.project(&event).expect("first start projects");
+        let error = projection
+            .project(&event)
+            .expect_err("duplicate start is drift");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.pi.rpc.activity_invalid"
+        );
+
+        let closed = projection
+            .complete(ActivityStatus::Failed)
+            .expect("activity closes");
+        assert_eq!(closed.len(), 1);
+        assert_eq!(closed[0].activity_id(), started[0].activity_id());
+    }
+}
+
+#[test]
 fn exact_pi_corpus_projects_message_reasoning_tool_compaction_and_unknown() {
     let mut decoder = PiRpcDecoder::new();
     let mut projection = PiActivityProjection::new(

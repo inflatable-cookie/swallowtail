@@ -395,7 +395,10 @@ mod tests {
                 "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nX-Request-Id: req_decode_1\r\nConnection: close\r\n\r\n{SUCCESS_SSE}"
             )
             .into_bytes();
-            payload.extend_from_slice(b"data: \xff\xfe\n\n");
+            // Leave a trailing unterminated frame so all SUCCESS_SSE frames (including
+            // response.completed) are delivered regardless of TCP segmentation, and EOF
+            // triggers SseDecoder::finish()'s decode error afterwards.
+            payload.extend_from_slice(b"data: trailing-unterminated-frame");
             let _ = stream.write_all(&payload);
             let _ = stream.flush();
         });
@@ -435,7 +438,7 @@ mod tests {
         ));
         block_on(cancellation.request()).expect("cancellation accepted");
 
-        let (events, _stream) = runtime_event_channel(64).expect("event channel opens");
+        let (events, stream) = runtime_event_channel(64).expect("event channel opens");
         events
             .send(swallowtail_runtime::RuntimeEvent::new(
                 0,
@@ -444,20 +447,39 @@ mod tests {
             .expect("started event sends");
         let outcome = block_on(pump_turn(
             subscription,
-            events,
+            events.clone(),
             cancellation,
             None,
             RuntimeTurnId::new("turn-decode-after-completed").expect("valid turn id"),
             services,
         ));
+        events.mark_terminal();
         server.join().expect("server joins");
+
+        let saw_output_available = futures_executor::block_on_stream(stream)
+            .map(|event| event.expect("event succeeds"))
+            .any(|event| {
+                matches!(
+                    event.kind(),
+                    swallowtail_runtime::RuntimeEventKind::OutputAvailable
+                )
+            });
+        assert!(
+            saw_output_available,
+            "pump must have observed response.completed and emitted OutputAvailable before the decode failure"
+        );
 
         match outcome.status() {
             TerminalStatus::ProviderFailed(diagnostic) => {
-                assert_ne!(
+                assert_eq!(
                     diagnostic.code(),
-                    "swallowtail.alibaba_model_studio.connection_cancelled",
-                    "decode failure must not be misclassified as cancellation"
+                    "swallowtail.alibaba_model_studio.protocol_invalid",
+                    "trailing unterminated SSE frame must surface the decoder diagnostic"
+                );
+                assert!(
+                    diagnostic.message().contains("disconnected SSE event"),
+                    "expected SseDecoder::finish diagnostic, got: {}",
+                    diagnostic.message()
                 );
             }
             other => panic!(

@@ -54,14 +54,31 @@ impl OpenCodeHttpDriver {
                 &self.transport, scope.clone(), access.endpoint.clone(), session_status(directory),
                 &services, request.cancellation(), request.agreement().deadline(), ProviderSessionOperationFailureStage::CatalogueDispatch,
             ).await.and_then(|response| parse_session_statuses(&response).map_err(catalogue_projection))?;
-            let start = parse_cursor(request.cursor().map(|cursor| cursor.as_provider_value()))?;
+            let mut start = parse_cursor(request.cursor().map(|cursor| cursor.as_provider_value()))?;
             let limit = plan.agreement().bounds().maximum_page_size().get();
-            let response = controlled_request(
-                &self.transport, scope, access.endpoint.clone(), session_list(directory, start, limit),
-                &services, request.cancellation(), request.agreement().deadline(), ProviderSessionOperationFailureStage::CatalogueDispatch,
-            ).await?;
-            let observations = parse_session_list(&response).map_err(catalogue_projection)?;
-            project_opencode_page(&plan, observations, &statuses, start, limit, directory, version.binding().version().as_str())
+            let mut scanned_pages = 0usize;
+            loop {
+                let response = controlled_request(
+                    &self.transport, scope.clone(), access.endpoint.clone(), session_list(directory, start, limit),
+                    &services, request.cancellation(), request.agreement().deadline(), ProviderSessionOperationFailureStage::CatalogueDispatch,
+                ).await?;
+                let observations = parse_session_list(&response).map_err(catalogue_projection)?;
+                let (candidates, cursor) = project_opencode_page(
+                    &plan, observations, &statuses, start, limit, directory, version.binding().version().as_str(),
+                )?;
+                if !candidates.is_empty() || cursor.is_none() {
+                    break Ok((candidates, cursor));
+                }
+                scanned_pages += 1;
+                if scanned_pages >= MAXIMUM_FILTERED_SCAN_PAGES {
+                    break Err(operation_failure(
+                        ProviderSessionOperationFailureStage::CatalogueProjection,
+                        "swallowtail.opencode.session_catalogue.scan_limit_exceeded",
+                        "OpenCode session catalogue exceeded its filtered page scan limit",
+                    ));
+                }
+                start = parse_cursor(cursor.as_deref())?;
+            }
         }.await;
         let cleanup = access.release(&services).await;
         let (candidates, cursor) = finish(result, cleanup.clone())?;
@@ -108,6 +125,8 @@ impl OpenCodeHttpDriver {
     }
 }
 
+const MAXIMUM_FILTERED_SCAN_PAGES: usize = 64;
+
 fn qualified_plan(plan: &swallowtail_core::PreflightPlan) -> Result<OpenCodePlanVersion, RuntimeFailure> {
     let selected = OpenCodeHttpDriver::validate_plan(plan)?;
     if !matches!(selected.assessment(), InterfaceCompatibilityAssessment::Qualified(_)) {
@@ -152,7 +171,10 @@ fn project_opencode_page(
         }};
         candidates.push(ProviderSessionCandidate::new(plan, candidate_id, provider_ref, display, Some(observation.updated_at), activity, availability).map_err(catalogue_projection)?);
     }
-    let cursor = (raw_len == limit as usize && !candidates.is_empty()).then(|| start.saturating_add(limit).to_string());
+    let cursor = (raw_len == limit as usize)
+        .then(|| start.checked_add(limit))
+        .flatten()
+        .map(|next| next.to_string());
     Ok((candidates, cursor))
 }
 

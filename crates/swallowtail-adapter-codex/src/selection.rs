@@ -271,36 +271,48 @@ pub(crate) fn classify_exec_plan(
     }
 }
 
+pub(crate) fn app_server_behavior(revision: &str) -> Option<CodexAppServerBehavior> {
+    match revision {
+        CODEX_APP_SERVER_LEGACY_DEFAULT_BEHAVIOR => {
+            Some(CodexAppServerBehavior::LegacyDefaultStdio)
+        }
+        CODEX_APP_SERVER_LEGACY_EXPLICIT_BEHAVIOR => {
+            Some(CodexAppServerBehavior::LegacyExplicitStdio)
+        }
+        CODEX_APP_SERVER_BASE_BEHAVIOR => Some(CodexAppServerBehavior::CurrentBase),
+        CODEX_APP_SERVER_WORKSPACE_BEHAVIOR => Some(CodexAppServerBehavior::CurrentWorkspaceRoots),
+        CODEX_APP_SERVER_MANAGED_POLICY_BEHAVIOR => {
+            Some(CodexAppServerBehavior::ManagedPolicyWorkspaceRoots)
+        }
+        CODEX_APP_SERVER_MANAGED_NETWORK_BEHAVIOR => {
+            Some(CodexAppServerBehavior::ManagedNetworkWorkspaceRoots)
+        }
+        CODEX_APP_SERVER_PATH_ALIAS_BEHAVIOR => {
+            Some(CodexAppServerBehavior::PathAliasWorkspaceRoots)
+        }
+        CODEX_APP_SERVER_PROTECTED_AWS_BEHAVIOR => {
+            Some(CodexAppServerBehavior::ProtectedAwsWorkspaceRoots)
+        }
+        _ => None,
+    }
+}
+
 pub(crate) fn classify_app_server_plan(
     plan: &PreflightPlan,
 ) -> Result<CodexAppServerBehavior, RuntimeFailure> {
     let assessment = classify_plan(plan, &codex_app_server_claim(), "app_server")?;
-    match assessment
-        .behavior_revision()
-        .expect("permitted assessment has behavior")
-        .as_str()
-    {
-        CODEX_APP_SERVER_LEGACY_DEFAULT_BEHAVIOR => Ok(CodexAppServerBehavior::LegacyDefaultStdio),
-        CODEX_APP_SERVER_LEGACY_EXPLICIT_BEHAVIOR => {
-            Ok(CodexAppServerBehavior::LegacyExplicitStdio)
-        }
-        CODEX_APP_SERVER_BASE_BEHAVIOR => Ok(CodexAppServerBehavior::CurrentBase),
-        CODEX_APP_SERVER_WORKSPACE_BEHAVIOR => Ok(CodexAppServerBehavior::CurrentWorkspaceRoots),
-        CODEX_APP_SERVER_MANAGED_POLICY_BEHAVIOR => {
-            Ok(CodexAppServerBehavior::ManagedPolicyWorkspaceRoots)
-        }
-        CODEX_APP_SERVER_MANAGED_NETWORK_BEHAVIOR => {
-            Ok(CodexAppServerBehavior::ManagedNetworkWorkspaceRoots)
-        }
-        CODEX_APP_SERVER_PATH_ALIAS_BEHAVIOR => Ok(CodexAppServerBehavior::PathAliasWorkspaceRoots),
-        CODEX_APP_SERVER_PROTECTED_AWS_BEHAVIOR => {
-            Ok(CodexAppServerBehavior::ProtectedAwsWorkspaceRoots)
-        }
-        _ => Err(super::exec::failure(
+    app_server_behavior(
+        assessment
+            .behavior_revision()
+            .expect("permitted assessment has behavior")
+            .as_str(),
+    )
+    .ok_or_else(|| {
+        super::exec::failure(
             "swallowtail.codex.app_server.behavior_incompatible",
             "Codex app-server behavior is not mapped by this driver",
-        )),
-    }
+        )
+    })
 }
 
 pub(crate) fn supports_thread_catalogue_version(version: &InterfaceVersion) -> bool {

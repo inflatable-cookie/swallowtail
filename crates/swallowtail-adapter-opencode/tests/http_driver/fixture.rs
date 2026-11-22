@@ -184,6 +184,7 @@ impl Fixture {
         let access_id = AccessProfileId::new("access.opencode").expect("access id is valid");
         let capability = match role {
             DriverRole::ModelCatalog => Capability::ModelCatalog,
+            DriverRole::ProviderSessionCatalogue => Capability::ProviderSessionCatalogue,
             DriverRole::ProviderSessionReconciliation => {
                 Capability::ProviderSessionReconciliation
             }
@@ -257,6 +258,21 @@ impl Fixture {
                     ],
                 ),
             ];
+        } else if role == DriverRole::ProviderSessionCatalogue {
+            capability_requirements = vec![
+                CapabilityRequirement::new(Capability::ProviderSessionCatalogue, []),
+                CapabilityRequirement::new(
+                    Capability::WorkingResource,
+                    [
+                        swallowtail_core::CapabilityConstraint::ResourceAccess(
+                            swallowtail_core::ResourceAccess::Read,
+                        ),
+                        swallowtail_core::CapabilityConstraint::ResourceRepresentation(
+                            swallowtail_core::ResourceRepresentation::Filesystem,
+                        ),
+                    ],
+                ),
+            ];
         }
         let capabilities = CapabilityProfile::new(capability_requirements.clone());
         let versions: Vec<_> = versions
@@ -307,6 +323,7 @@ impl Fixture {
         let requirements = OperationRequirements::new(
             ExecutionLayer::HarnessInteraction,
             match role {
+                DriverRole::ProviderSessionCatalogue => OperationShape::ProviderSessionCatalogue,
                 DriverRole::ProviderSessionReconciliation => {
                     OperationShape::ProviderSessionReconciliation
                 }
@@ -325,23 +342,28 @@ impl Fixture {
         .with_ownership_modes([InstanceOwnership::ExternalAttached])
         .with_host_services(host_services.clone())
         .with_capabilities(capability_requirements)
-        .with_interface_versions(versions)
-        .with_session_access_policy(SessionAccessPolicy::ambient_harness(
-            swallowtail_core::ResourceAccess::Read,
-        ))
-        .with_session_provider_state_policy(
-            if role == DriverRole::ProviderSessionReconciliation
-                || role == DriverRole::ProviderSessionHistory
-                || active_turn_detachment
-            {
-                SessionProviderStatePolicy::DurableProviderSessionPreserved
-            } else {
-                SessionProviderStatePolicy::Prohibited
-            },
-        );
+        .with_interface_versions(versions);
+        let requirements = if role == DriverRole::ProviderSessionCatalogue {
+            requirements
+        } else {
+            requirements
+                .with_session_access_policy(SessionAccessPolicy::ambient_harness(
+                    swallowtail_core::ResourceAccess::Read,
+                ))
+                .with_session_provider_state_policy(
+                    if role == DriverRole::ProviderSessionReconciliation
+                        || role == DriverRole::ProviderSessionHistory
+                        || active_turn_detachment
+                    {
+                        SessionProviderStatePolicy::DurableProviderSessionPreserved
+                    } else {
+                        SessionProviderStatePolicy::Prohibited
+                    },
+                )
+        };
         let context =
             PreflightContext::new(&descriptor, &instance, &access, &status, host_services);
-        if role == DriverRole::ModelCatalog {
+        if role == DriverRole::ModelCatalog || role == DriverRole::ProviderSessionCatalogue {
             preflight(&context, &requirements).expect("catalogue preflight succeeds")
         } else {
             preflight(

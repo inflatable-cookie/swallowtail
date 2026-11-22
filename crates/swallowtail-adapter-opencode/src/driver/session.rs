@@ -65,6 +65,11 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                 ));
             }
             let (event_sender, event_stream) = runtime_event_channel(EVENT_CAPACITY)?;
+            let events_dropped = Arc::new(AtomicBool::new(false));
+            let event_stream = ObservedEventStream {
+                inner: event_stream,
+                dropped: Arc::clone(&events_dropped),
+            };
             let (terminal_sender, terminal) = terminal_outcome_channel();
             let terminal_flag = Arc::new(AtomicBool::new(false));
             let (file, attachment) = input::prepare(
@@ -187,6 +192,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                         cancellation: pump_cancellation,
                         detachment: pump_detachment,
                         events: event_sender,
+                        events_dropped,
                         terminal: terminal_sender,
                         terminal_flag: Arc::clone(&pump_terminal),
                         callback_hub: pump_callback_hub,

@@ -50,7 +50,7 @@ fn native_abort_is_idempotent_and_resolves_cancelled() {
 #[test]
 fn host_deadline_uses_native_abort_and_resolves_timed_out() {
     let host_id = make_host_id("pi.fixture.host");
-    let fixture = FixtureHost::new(Scenario::Hold).with_immediate_time();
+    let fixture = FixtureHost::new(Scenario::Hold);
     let selected = selection(host_id.clone());
     let services = fixture.services(host_id);
     let mut session = block_on(driver(selected.credential.clone()).open_session(
@@ -62,6 +62,7 @@ fn host_deadline_uses_native_abort_and_resolves_timed_out() {
     let mut turn =
         block_on(session.start_turn(turn_request("turn-timeout", deadline()), services.clone()))
             .expect("Pi turn starts");
+    fixture.advance_time(deadline().instant().ticks());
 
     let terminal = block_on(
         turn.take_terminal_outcome()
@@ -75,6 +76,34 @@ fn host_deadline_uses_native_abort_and_resolves_timed_out() {
             .any(|value| value["type"] == "abort")
     );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(
+        block_on(close_session(session, services)),
+        CleanupOutcome::Clean
+    );
+}
+
+#[test]
+fn prompt_command_times_out_when_deadline_elapses_before_acceptance() {
+    let host_id = make_host_id("pi.fixture.host.prompt-timeout");
+    let fixture = FixtureHost::new(Scenario::Hold).with_immediate_time();
+    let selected = selection(host_id.clone());
+    let services = fixture.services(host_id);
+    let mut session = block_on(driver(selected.credential.clone()).open_session(
+        selected.plan,
+        open_request("session-prompt-timeout", selected.resource),
+        services.clone(),
+    ))
+    .expect("Pi session opens");
+    let error = block_on(session.start_turn(
+        turn_request("turn-prompt-timeout", deadline()),
+        services.clone(),
+    ))
+    .err()
+    .expect("immediate deadline must time out prompt dispatch");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.pi.rpc.prompt_timed_out"
+    );
     assert_eq!(
         block_on(close_session(session, services)),
         CleanupOutcome::Clean

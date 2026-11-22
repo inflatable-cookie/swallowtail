@@ -318,6 +318,7 @@ mod tests {
                 super::PendingCommand {
                     command: "state",
                     sender,
+                    abort_turn: None,
                 },
             );
 

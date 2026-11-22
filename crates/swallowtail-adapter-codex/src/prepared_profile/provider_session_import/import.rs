@@ -4,11 +4,11 @@ use super::super::plan::{
     CodexPreparedEvidence, build_plan, descriptor, failure, instance_with_capabilities,
     model_route, require_driver, requirements,
 };
-use super::super::session_capabilities::behavior_revision;
-use super::super::session_capabilities::{session_capabilities, supports_harness_mode};
+use super::super::session_capabilities::{
+    session_capabilities, supports_harness_mode, supports_workspace_roots,
+};
 use super::catalogue::CodexPreparedSessionCatalogue;
 use super::{read_only_working_resource_capability, require_catalogue_version};
-use crate::selection::CODEX_APP_SERVER_WORKSPACE_BEHAVIOR;
 use crate::{
     CodexAppServerDriver, CodexPreparedDriver, CodexPreparedIntegration,
     codex_bounded_workspace_capability,
@@ -121,9 +121,7 @@ impl CodexPreparedIntegration {
     ) -> Result<CodexPreparedSessionImport, PreparationFailure> {
         require_driver(self, CodexPreparedDriver::AppServer)?;
         require_catalogue_version(self)?;
-        if kind == CodexPreparedSessionKind::BoundedWorkspace
-            && behavior_revision(self) != Some(CODEX_APP_SERVER_WORKSPACE_BEHAVIOR)
-        {
+        if kind == CodexPreparedSessionKind::BoundedWorkspace && !supports_workspace_roots(self) {
             return Err(failure(
                 "swallowtail.codex.preparation.workspace_version_unsupported",
                 "Prepared Codex version does not support bounded workspace roots",
@@ -152,7 +150,7 @@ impl CodexPreparedIntegration {
                 "Prepared Codex version does not support harness mode selection",
             ));
         }
-        let (mut capability_requirements, extension_namespaces, access_policy) =
+        let (mut capability_requirements, mut extension_namespaces, access_policy) =
             session_capabilities(kind, &options, user_input_exchange)?;
         capability_requirements.extend([
             CapabilityRequirement::new(Capability::ProviderSessionImport, []),
@@ -162,6 +160,13 @@ impl CodexPreparedIntegration {
                 CodexPreparedSessionKind::BoundedWorkspace => codex_bounded_workspace_capability(),
             },
         ]);
+        extension_namespaces.extend(
+            access_policy
+                .provider_requests()
+                .observed_extensions()
+                .chain(access_policy.provider_requests().exchanged_extensions())
+                .cloned(),
+        );
         let capabilities = CapabilityProfile::new(capability_requirements.clone());
         let instance = instance_with_capabilities(self, capabilities.clone());
         let route = model_route(

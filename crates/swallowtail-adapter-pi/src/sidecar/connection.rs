@@ -34,6 +34,7 @@ pub(crate) struct SidecarConnection {
     process: Arc<dyn ProcessHandle>,
     services: HostServices,
     pending: Mutex<BTreeMap<String, PendingCommand>>,
+    superseded_aborts: Mutex<BTreeSet<String>>,
     used_ids: Mutex<BTreeSet<String>>,
     active_turn: Mutex<Option<Arc<SidecarActiveTurn>>>,
     replay: Mutex<Option<ReplayCollector>>,
@@ -50,6 +51,7 @@ impl SidecarConnection {
             process,
             services,
             pending: Mutex::new(BTreeMap::new()),
+            superseded_aborts: Mutex::new(BTreeSet::new()),
             used_ids: Mutex::new(BTreeSet::new()),
             active_turn: Mutex::new(None),
             replay: Mutex::new(None),
@@ -77,6 +79,75 @@ impl SidecarConnection {
         id: String,
         command: PiSdkSidecarCommand,
         params: Value,
+    ) -> Result<CommandResult, RuntimeFailure> {
+        self.send_command(id, command, params, None, None).await
+    }
+
+    pub(crate) async fn command_tracked(
+        &self,
+        id: String,
+        command: PiSdkSidecarCommand,
+        params: Value,
+        dispatched: &AtomicBool,
+    ) -> Result<CommandResult, RuntimeFailure> {
+        self.send_command(id, command, params, Some(dispatched), None)
+            .await
+    }
+
+    pub(crate) async fn abort_command(
+        &self,
+        id: String,
+        params: Value,
+        turn: Arc<SidecarActiveTurn>,
+    ) -> Result<CommandResult, RuntimeFailure> {
+        self.send_command(id, PiSdkSidecarCommand::Abort, params, None, Some(turn))
+            .await
+    }
+
+    pub(crate) fn complete_sibling_aborts(&self, turn: &Arc<SidecarActiveTurn>, success: bool) {
+        let siblings: Vec<(String, ResponseSender)> = {
+            let mut pending = self.pending.lock().expect("sidecar pending lock poisoned");
+            let ids: Vec<String> = pending
+                .iter()
+                .filter(|(_, entry)| {
+                    entry
+                        .abort_turn
+                        .as_ref()
+                        .is_some_and(|other| Arc::ptr_eq(other, turn))
+                })
+                .map(|(id, _)| id.clone())
+                .collect();
+            let mut drained = Vec::with_capacity(ids.len());
+            for id in ids {
+                if let Some(entry) = pending.remove(&id) {
+                    drained.push((id, entry.sender));
+                }
+            }
+            drained
+        };
+        if siblings.is_empty() {
+            return;
+        }
+        let mut superseded = self
+            .superseded_aborts
+            .lock()
+            .expect("sidecar superseded-aborts lock poisoned");
+        for (id, sender) in siblings {
+            superseded.insert(id);
+            sender.complete(Ok(CommandResult {
+                success,
+                data: None,
+            }));
+        }
+    }
+
+    async fn send_command(
+        &self,
+        id: String,
+        command: PiSdkSidecarCommand,
+        params: Value,
+        dispatched: Option<&AtomicBool>,
+        abort_turn: Option<Arc<SidecarActiveTurn>>,
     ) -> Result<CommandResult, RuntimeFailure> {
         if self.closed.load(Ordering::SeqCst) {
             return Err(self.closed_failure());
@@ -120,20 +191,42 @@ impl SidecarConnection {
                     "Pi SDK sidecar exceeded the pending command limit",
                 ));
             }
-            pending.insert(id.clone(), PendingCommand { command, sender });
+            pending.insert(
+                id.clone(),
+                PendingCommand {
+                    command,
+                    sender,
+                    abort_turn,
+                },
+            );
         }
-        if let Err(error) = self
-            .process
+        struct PendingGuard<'a> {
+            pending: &'a Mutex<BTreeMap<String, PendingCommand>>,
+            id: Option<String>,
+        }
+        impl Drop for PendingGuard<'_> {
+            fn drop(&mut self) {
+                if let Some(id) = self.id.take() {
+                    self.pending
+                        .lock()
+                        .expect("sidecar pending lock poisoned")
+                        .remove(&id);
+                }
+            }
+        }
+        let mut guard = PendingGuard {
+            pending: &self.pending,
+            id: Some(id),
+        };
+        if let Some(dispatched) = dispatched {
+            dispatched.store(true, Ordering::SeqCst);
+        }
+        self.process
             .write_stdin(ProcessInputChunk::new(bytes))
-            .await
-        {
-            self.pending
-                .lock()
-                .expect("sidecar pending lock poisoned")
-                .remove(&id);
-            return Err(error);
-        }
-        response.await
+            .await?;
+        let result = response.await;
+        guard.id = None;
+        result
     }
 
     pub(crate) fn set_active_turn(
@@ -197,7 +290,7 @@ impl SidecarConnection {
         if let Some(active_turn) = active_turn
             && !active_turn.is_finished()
         {
-            active_turn.fail_connection(diagnostic);
+            active_turn.fail_rejected_abort(diagnostic);
         }
         true
     }
@@ -307,6 +400,7 @@ impl SidecarConnection {
 struct PendingCommand {
     command: PiSdkSidecarCommand,
     sender: ResponseSender,
+    abort_turn: Option<Arc<SidecarActiveTurn>>,
 }
 
 #[derive(Default)]

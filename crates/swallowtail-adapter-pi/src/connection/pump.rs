@@ -92,12 +92,25 @@ impl PiConnection {
         match record {
             PiRpcRecord::Response(response) => {
                 let mut pending_commands = self.pending.lock().expect("Pi pending lock poisoned");
-                let pending = pending_commands.get(&response.id).ok_or_else(|| {
-                    failure(
+                if !pending_commands.contains_key(&response.id) {
+                    drop(pending_commands);
+                    if response.command == "abort"
+                        && self
+                            .superseded_aborts
+                            .lock()
+                            .expect("Pi superseded-aborts lock poisoned")
+                            .remove(&response.id)
+                    {
+                        return Ok(());
+                    }
+                    return Err(failure(
                         "swallowtail.pi.rpc.response_unknown",
                         "Pi RPC returned an unknown command response",
-                    )
-                })?;
+                    ));
+                }
+                let pending = pending_commands
+                    .get(&response.id)
+                    .expect("checked Pi pending command exists");
                 if pending.command != response.command {
                     return Err(failure(
                         "swallowtail.pi.rpc.response_command_mismatch",
@@ -108,6 +121,15 @@ impl PiConnection {
                     .remove(&response.id)
                     .expect("validated Pi pending command exists");
                 drop(pending_commands);
+                if let Some(turn) = pending.abort_turn {
+                    if let Err(error) = turn.reconcile_abort_response(response.success) {
+                        pending
+                            .sender
+                            .complete(Err(RuntimeFailure::new(error.diagnostic().clone())));
+                        return Err(error);
+                    }
+                    self.complete_sibling_aborts(&turn, response.success);
+                }
                 pending.sender.complete(Ok(CommandResult {
                     success: response.success,
                     data: response.data,

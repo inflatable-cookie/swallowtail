@@ -290,3 +290,111 @@ fn idioms_session_option_binds_into_the_plan_and_folds_into_developer_instructio
         "the folded idioms block is appended under its labeled header"
     );
 }
+
+#[test]
+fn bounded_workspace_session_and_import_accept_current_workspace_roots_revisions() {
+    use swallowtail_adapter_codex::{
+        CodexSessionCatalogueInput, codex_approval_request_extension,
+        codex_user_input_request_extension,
+    };
+    use swallowtail_core::{
+        ProviderSessionActivityState, ProviderSessionDisplayContent,
+        ProviderSessionImportAvailability, SessionRef,
+    };
+    use swallowtail_runtime::{ProviderSessionCandidate, ProviderSessionCandidateId};
+
+    let recording = RecordingHostServices::default();
+
+    for version in ["0.156.0", "0.159.0", "0.164.0"] {
+        let prepared_app = prepared(CodexPreparedDriver::AppServer, version, &recording, true);
+        let session = prepared_app
+            .prepare_bounded_workspace_session(CodexSessionProfileInput::new(
+                RequestId::new(format!("bounded-session-{version}")).unwrap(),
+                model(),
+                working_resource(),
+                None,
+                SessionOptions::default(),
+            ))
+            .unwrap_or_else(|error| {
+                panic!("bounded workspace session must prepare on {version}: {error:?}")
+            });
+        assert_eq!(session.kind(), CodexPreparedSessionKind::BoundedWorkspace);
+
+        let catalogue = prepared_app
+            .prepare_session_catalogue(CodexSessionCatalogueInput::new(
+                RequestId::new(format!("bounded-catalogue-{version}")).unwrap(),
+                swallowtail_runtime::ProviderSessionCatalogueId::new(format!(
+                    "codex-bounded-catalogue-{version}"
+                ))
+                .unwrap(),
+                working_resource(),
+                swallowtail_core::ProviderSessionCatalogueBounds::new(
+                    std::num::NonZeroU32::new(2).unwrap(),
+                    std::num::NonZeroU32::new(4).unwrap(),
+                    std::num::NonZeroU32::new(64).unwrap(),
+                    std::num::NonZeroU32::new(128).unwrap(),
+                    std::num::NonZeroU32::new(128).unwrap(),
+                )
+                .unwrap(),
+            ))
+            .expect("catalogue prepares");
+        let candidate = ProviderSessionCandidate::new(
+            catalogue.plan(),
+            ProviderSessionCandidateId::new("candidate-1").unwrap(),
+            SessionRef::new("thread-1").unwrap(),
+            ProviderSessionDisplayContent::new(Some("title".to_owned()), None).unwrap(),
+            Some(1_700_000_000_000),
+            ProviderSessionActivityState::Inactive,
+            ProviderSessionImportAvailability::Available,
+        )
+        .expect("candidate builds");
+
+        let import = prepared_app
+            .prepare_bounded_workspace_session_import(
+                &catalogue,
+                candidate,
+                CodexSessionProfileInput::new(
+                    RequestId::new(format!("bounded-import-{version}")).unwrap(),
+                    model(),
+                    working_resource(),
+                    None,
+                    SessionOptions::default(),
+                )
+                .with_user_input_exchange(),
+            )
+            .unwrap_or_else(|error| {
+                panic!("bounded workspace import must prepare on {version}: {error:?}")
+            });
+        let namespaces: Vec<_> = import
+            .plan()
+            .preflight()
+            .requirements()
+            .extension_namespaces()
+            .cloned()
+            .collect();
+        assert!(
+            namespaces.contains(&codex_approval_request_extension()),
+            "bounded workspace import must populate approval request extension namespace on {version}"
+        );
+        assert!(
+            namespaces.contains(&codex_user_input_request_extension()),
+            "bounded workspace import with user input exchange must populate user input extension namespace on {version}"
+        );
+    }
+
+    // 0.130.0 precedes workspace-roots support and must remain rejected.
+    let pre_workspace = prepared(CodexPreparedDriver::AppServer, "0.130.0", &recording, true);
+    let session_err = pre_workspace
+        .prepare_bounded_workspace_session(CodexSessionProfileInput::new(
+            RequestId::new("pre-workspace-session").unwrap(),
+            model(),
+            working_resource(),
+            None,
+            SessionOptions::default(),
+        ))
+        .expect_err("0.130.0 must reject bounded workspace session");
+    assert_eq!(
+        session_err.diagnostic().safe().code(),
+        "swallowtail.codex.preparation.workspace_version_unsupported"
+    );
+}

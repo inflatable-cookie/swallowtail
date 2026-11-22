@@ -78,8 +78,12 @@ impl CodexAppServerDriver {
         match initialization {
             Controlled::Completed(Ok(())) => {}
             Controlled::Completed(Err(error)) => {
-                let _ = connection.cancel_session().await;
-                let _ = task.join().await;
+                let _ = cancel_connection(
+                    &connection,
+                    task,
+                    close_budget(&services, agreement.deadline()),
+                )
+                .await;
                 return Err(error);
             }
             Controlled::Cancelled | Controlled::Deadline => {
@@ -217,28 +221,14 @@ async fn cancel_connection(
     task: AppServerTask,
     budget: CloseBudget,
 ) -> CleanupOutcome {
-    match connection.cancel_session().await {
-        Ok(()) => {
-            if task.join().await.is_err() {
-                CleanupOutcome::Failed(SafeDiagnostic::new(
-                    "swallowtail.codex.lifecycle.cancel_cleanup_failed",
-                    "Codex lifecycle cancellation cleanup failed",
-                ))
-            } else {
-                connection.cleanup_outcome()
-            }
-        }
-        Err(_) => {
-            // If `force_stop` was refused while stdout is still open, joining
-            // unconditionally would hang forever. Fall back to bounded close
-            // (stdin EOF + escalation) and still report cancellation failure.
-            let _ = close_connection(connection, task, budget).await;
-            CleanupOutcome::Failed(SafeDiagnostic::new(
-                "swallowtail.codex.lifecycle.cancel_cleanup_failed",
-                "Codex lifecycle cancellation cleanup failed",
-            ))
-        }
-    }
+    crate::app_server::cancel_connection(
+        connection,
+        task,
+        budget,
+        "swallowtail.codex.lifecycle.cancel_cleanup_failed",
+        "Codex lifecycle cancellation cleanup failed",
+    )
+    .await
 }
 
 fn cancelled_or_expired(

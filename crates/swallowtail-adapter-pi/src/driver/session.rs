@@ -94,6 +94,13 @@ impl InteractiveSessionHandle for PiSessionHandle {
                     "Pi RPC session already has an active turn",
                 ));
             }
+            let deadline = request.deadline().expect("validated turn deadline");
+            if services.time().expect("validated Pi time service").now() >= deadline.instant() {
+                return Err(failure(
+                    "swallowtail.pi.rpc.prompt_timed_out",
+                    "Pi RPC prompt timed out before acceptance",
+                ));
+            }
             let (turn, events, callbacks, terminal) = ActiveTurn::new(
                 request.turn_id().clone(),
                 Arc::clone(&self.completed_prompts),
@@ -119,11 +126,20 @@ impl InteractiveSessionHandle for PiSessionHandle {
                 let _ = materialization.release().await;
                 return Err(error);
             }
+            // Spawn the deadline watcher before sending `prompt` so a spawn
+            // failure rolls back cleanly without dispatching provider work, but
+            // keep it parked on `arm_rx` until `prompt` is accepted so
+            // `start_turn` remains the sole deadline owner during dispatch.
+            // Store the task in `self.active` immediately and bind `arm_tx` to
+            // `PendingStartGuard` so dropping a pending `start_turn` future
+            // disarms the task before `session.close()` joins it.
+            let (arm_tx, arm_rx) = futures_channel::oneshot::channel();
             let deadline_task = match spawn_deadline(
                 &services,
                 Arc::clone(&self.connection),
                 Arc::clone(&turn),
-                request.deadline().expect("validated turn deadline"),
+                deadline,
+                arm_rx,
             ) {
                 Ok(task) => task,
                 Err(error) => {
@@ -137,6 +153,60 @@ impl InteractiveSessionHandle for PiSessionHandle {
                 deadline_task: Some(deadline_task),
                 attachment: materialization.clone(),
             });
+            let prompt_dispatched = Arc::new(std::sync::atomic::AtomicBool::new(false));
+            struct PendingStartGuard<'a> {
+                arm_tx: Option<futures_channel::oneshot::Sender<()>>,
+                connection: &'a Arc<PiConnection>,
+                turn: &'a Arc<ActiveTurn>,
+                dispatched: Arc<std::sync::atomic::AtomicBool>,
+                active: bool,
+            }
+            impl PendingStartGuard<'_> {
+                fn accept(mut self) {
+                    if let Some(arm_tx) = self.arm_tx.take() {
+                        let _ = arm_tx.send(());
+                    }
+                    self.active = false;
+                }
+
+                fn disarm(mut self) {
+                    drop(self.arm_tx.take());
+                    self.active = false;
+                }
+            }
+            impl Drop for PendingStartGuard<'_> {
+                fn drop(&mut self) {
+                    // Always disarm `spawn_deadline` first so any subsequent
+                    // join (including join-on-drop hosts) never deadlocks.
+                    drop(self.arm_tx.take());
+                    if !self.active {
+                        return;
+                    }
+                    if self.dispatched.load(Ordering::SeqCst) {
+                        let _ = self.connection.close_on_rejected_abort(
+                            self.turn,
+                            swallowtail_core::SafeDiagnostic::new(
+                                "swallowtail.pi.rpc.prompt_abandoned",
+                                "Pi RPC prompt dispatch was dropped before acceptance",
+                            ),
+                        );
+                    } else {
+                        self.turn
+                            .fail_connection(swallowtail_core::SafeDiagnostic::new(
+                                "swallowtail.pi.rpc.prompt_abandoned",
+                                "Pi RPC prompt startup was dropped before dispatch",
+                            ));
+                        self.connection.clear_active_turn(self.turn);
+                    }
+                }
+            }
+            let guard = PendingStartGuard {
+                arm_tx: Some(arm_tx),
+                connection: &self.connection,
+                turn: &turn,
+                dispatched: Arc::clone(&prompt_dispatched),
+                active: true,
+            };
             let id = format!("prompt:{}", request.turn_id().as_str());
             let mut payload =
                 json!({"id": id, "type": "prompt", "message": request.content().as_str()});
@@ -147,7 +217,15 @@ impl InteractiveSessionHandle for PiSessionHandle {
                     "mimeType": "image/png"
                 }]);
             }
-            let response = self.connection.command(id.clone(), "prompt", payload).await;
+            let response = crate::driver::run_before_deadline(
+                self.connection
+                    .command_tracked(id.clone(), "prompt", payload, &prompt_dispatched),
+                Some(deadline),
+                &services,
+                "swallowtail.pi.rpc.prompt_timed_out",
+                "Pi RPC prompt timed out before acceptance",
+            )
+            .await;
             let accepted = match response {
                 Ok(response) if response.success => {
                     match parse_command_disposition(
@@ -171,25 +249,42 @@ impl InteractiveSessionHandle for PiSessionHandle {
                 Err(error) => Err(error),
             };
             match accepted {
-                Ok(()) => Ok(Box::new(PiTurnHandle::new(
-                    request.turn_id().clone(),
-                    events,
-                    callbacks,
-                    Box::pin(terminal),
-                    PiTurnBinding {
-                        connection: Arc::clone(&self.connection),
-                        turn,
-                        active: Arc::clone(&self.active),
-                        attachment: materialization,
-                        command_dispositions: self.version_features.command_dispositions,
-                    },
-                )) as Box<dyn TurnHandle>),
+                Ok(()) => {
+                    guard.accept();
+                    Ok(Box::new(PiTurnHandle::new(
+                        request.turn_id().clone(),
+                        events,
+                        callbacks,
+                        Box::pin(terminal),
+                        PiTurnBinding {
+                            connection: Arc::clone(&self.connection),
+                            turn,
+                            active: Arc::clone(&self.active),
+                            attachment: materialization,
+                            command_dispositions: self.version_features.command_dispositions,
+                        },
+                    )) as Box<dyn TurnHandle>)
+                }
                 Err(error) => {
-                    turn.fail_connection(error.diagnostic().clone());
-                    self.connection.clear_active_turn(&turn);
-                    // Join the deadline task and release the attachment this turn
-                    // already registered; a rejected prompt must leave nothing
-                    // running behind the session.
+                    guard.disarm();
+                    if error.diagnostic().code() == "swallowtail.pi.rpc.prompt_timed_out"
+                        && prompt_dispatched.load(Ordering::SeqCst)
+                    {
+                        // The prompt write may have already reached Pi with
+                        // unconfirmed settlement. Close this exact connection
+                        // and force-stop so live work cannot outlive the timed-
+                        // out call or collide with a subsequent turn.
+                        turn.mark_timed_out();
+                        if self
+                            .connection
+                            .close_on_rejected_abort(&turn, error.diagnostic().clone())
+                        {
+                            let _ = self.connection.force_stop().await;
+                        }
+                    } else {
+                        turn.fail_connection(error.diagnostic().clone());
+                        self.connection.clear_active_turn(&turn);
+                    }
                     let _ = reap_finished(&self.active).await;
                     let _ = materialization.release().await;
                     Err(error)
@@ -279,19 +374,22 @@ async fn settle_active_task(
 #[path = "session/tests.rs"]
 mod tests;
 
+/// How long a deadline-triggered `abort` command may wait for acknowledgement
+/// before escalating to connection closure and `force_stop`.
+const ABORT_ACKNOWLEDGEMENT_GRACE_TICKS: u64 = 500;
+
 fn spawn_deadline(
     services: &HostServices,
     connection: Arc<PiConnection>,
     turn: Arc<ActiveTurn>,
     deadline: swallowtail_runtime::Deadline,
+    arm: futures_channel::oneshot::Receiver<()>,
 ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
-    let mut wait = services
-        .time()
-        .cloned()
-        .expect("validated Pi time service")
-        .wait_until(deadline);
+    let time = services.time().cloned().expect("validated Pi time service");
+    let mut wait = time.wait_until(deadline);
     let mut finished = Box::pin(turn.finished_future());
     let deadline_turn = Arc::clone(&turn);
+    let deadline_services = services.clone();
     let scope =
         ScopeId::new(format!("pi-rpc:deadline:{}", turn.runtime_id().as_str())).map_err(|_| {
             failure(
@@ -302,6 +400,9 @@ fn spawn_deadline(
     services.task().expect("validated Pi task service").spawn(
         scope,
         Box::pin(async move {
+            if arm.await.is_err() {
+                return;
+            }
             let timed_out = poll_fn(|context| {
                 if finished.as_mut().poll(context).is_ready() {
                     Poll::Ready(false)
@@ -315,9 +416,34 @@ fn spawn_deadline(
             if timed_out {
                 deadline_turn.mark_timed_out();
                 let id = format!("deadline-abort:{}", deadline_turn.runtime_id().as_str());
-                let _ = connection
-                    .command(id.clone(), "abort", json!({"id": id, "type": "abort"}))
-                    .await;
+                let abort_deadline = swallowtail_runtime::Deadline::at(
+                    swallowtail_runtime::MonotonicInstant::from_ticks(
+                        time.now()
+                            .ticks()
+                            .saturating_add(ABORT_ACKNOWLEDGEMENT_GRACE_TICKS),
+                    ),
+                );
+                let abort = crate::driver::run_before_deadline(
+                    connection.abort_command(
+                        id.clone(),
+                        json!({"id": id, "type": "abort"}),
+                        Arc::clone(&deadline_turn),
+                    ),
+                    Some(abort_deadline),
+                    &deadline_services,
+                    "swallowtail.pi.rpc.deadline_abort_timed_out",
+                    "Pi RPC deadline abort timed out awaiting acknowledgement",
+                )
+                .await;
+                if !matches!(abort, Ok(response) if response.success) {
+                    let diagnostic = swallowtail_core::SafeDiagnostic::new(
+                        "swallowtail.pi.rpc.deadline_abort_failed",
+                        "Pi RPC could not abort the turn after its deadline elapsed",
+                    );
+                    if connection.close_on_rejected_abort(&deadline_turn, diagnostic) {
+                        let _ = connection.force_stop().await;
+                    }
+                }
             }
         }),
     )

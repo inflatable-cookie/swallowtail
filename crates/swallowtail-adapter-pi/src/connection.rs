@@ -29,6 +29,7 @@ pub(crate) struct PiConnection {
     services: HostServices,
     callback_tasks: Mutex<Vec<Box<dyn JoinedTask>>>,
     pending: Mutex<BTreeMap<String, PendingCommand>>,
+    superseded_aborts: Mutex<BTreeSet<String>>,
     used_ids: Mutex<BTreeSet<String>>,
     active_turn: Mutex<Option<Arc<ActiveTurn>>>,
     closed: AtomicBool,
@@ -49,6 +50,7 @@ impl PiConnection {
             services,
             callback_tasks: Mutex::new(Vec::new()),
             pending: Mutex::new(BTreeMap::new()),
+            superseded_aborts: Mutex::new(BTreeSet::new()),
             used_ids: Mutex::new(BTreeSet::new()),
             active_turn: Mutex::new(None),
             closed: AtomicBool::new(false),
@@ -72,6 +74,75 @@ impl PiConnection {
         id: String,
         command: &'static str,
         value: Value,
+    ) -> Result<CommandResult, RuntimeFailure> {
+        self.send_command(id, command, value, None, None).await
+    }
+
+    pub(crate) async fn command_tracked(
+        &self,
+        id: String,
+        command: &'static str,
+        value: Value,
+        dispatched: &AtomicBool,
+    ) -> Result<CommandResult, RuntimeFailure> {
+        self.send_command(id, command, value, Some(dispatched), None)
+            .await
+    }
+
+    pub(crate) async fn abort_command(
+        &self,
+        id: String,
+        value: Value,
+        turn: Arc<ActiveTurn>,
+    ) -> Result<CommandResult, RuntimeFailure> {
+        self.send_command(id, "abort", value, None, Some(turn))
+            .await
+    }
+
+    pub(crate) fn complete_sibling_aborts(&self, turn: &Arc<ActiveTurn>, success: bool) {
+        let siblings: Vec<(String, ResponseSender)> = {
+            let mut pending = self.pending.lock().expect("Pi pending lock poisoned");
+            let ids: Vec<String> = pending
+                .iter()
+                .filter(|(_, entry)| {
+                    entry
+                        .abort_turn
+                        .as_ref()
+                        .is_some_and(|other| Arc::ptr_eq(other, turn))
+                })
+                .map(|(id, _)| id.clone())
+                .collect();
+            let mut drained = Vec::with_capacity(ids.len());
+            for id in ids {
+                if let Some(entry) = pending.remove(&id) {
+                    drained.push((id, entry.sender));
+                }
+            }
+            drained
+        };
+        if siblings.is_empty() {
+            return;
+        }
+        let mut superseded = self
+            .superseded_aborts
+            .lock()
+            .expect("Pi superseded-aborts lock poisoned");
+        for (id, sender) in siblings {
+            superseded.insert(id);
+            sender.complete(Ok(CommandResult {
+                success,
+                data: None,
+            }));
+        }
+    }
+
+    async fn send_command(
+        &self,
+        id: String,
+        command: &'static str,
+        value: Value,
+        dispatched: Option<&AtomicBool>,
+        abort_turn: Option<Arc<ActiveTurn>>,
     ) -> Result<CommandResult, RuntimeFailure> {
         if self.closed.load(Ordering::SeqCst) {
             return Err(connection_closed());
@@ -102,16 +173,40 @@ impl PiConnection {
                     "Pi RPC exceeded the pending command limit",
                 ));
             }
-            pending.insert(id.clone(), PendingCommand { command, sender });
+            pending.insert(
+                id.clone(),
+                PendingCommand {
+                    command,
+                    sender,
+                    abort_turn,
+                },
+            );
         }
-        if let Err(error) = self.write_value(value).await {
-            self.pending
-                .lock()
-                .expect("Pi pending lock poisoned")
-                .remove(&id);
-            return Err(error);
+        struct PendingGuard<'a> {
+            pending: &'a Mutex<BTreeMap<String, PendingCommand>>,
+            id: Option<String>,
         }
-        response.await
+        impl Drop for PendingGuard<'_> {
+            fn drop(&mut self) {
+                if let Some(id) = self.id.take() {
+                    self.pending
+                        .lock()
+                        .expect("Pi pending lock poisoned")
+                        .remove(&id);
+                }
+            }
+        }
+        let mut guard = PendingGuard {
+            pending: &self.pending,
+            id: Some(id),
+        };
+        if let Some(dispatched) = dispatched {
+            dispatched.store(true, Ordering::SeqCst);
+        }
+        self.write_value(value).await?;
+        let result = response.await;
+        guard.id = None;
+        result
     }
 
     pub(crate) async fn write_value(&self, value: Value) -> Result<(), RuntimeFailure> {
@@ -164,7 +259,7 @@ impl PiConnection {
         if let Some(active_turn) = active_turn
             && !active_turn.is_finished()
         {
-            active_turn.fail_connection(diagnostic.clone());
+            active_turn.fail_rejected_abort(diagnostic.clone());
         }
         self.fail_pending(RuntimeFailure::new(diagnostic));
         true
@@ -231,6 +326,7 @@ impl PiConnection {
 struct PendingCommand {
     command: &'static str,
     sender: ResponseSender,
+    abort_turn: Option<Arc<ActiveTurn>>,
 }
 
 #[derive(Default)]

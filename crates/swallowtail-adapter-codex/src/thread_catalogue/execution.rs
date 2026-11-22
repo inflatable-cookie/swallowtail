@@ -11,7 +11,7 @@ mod reconciliation;
 #[path = "execution/resource.rs"]
 mod resource;
 
-use crate::app_server::close_connection;
+use crate::app_server::{cancel_connection, close_connection};
 use crate::control_wait::{Controlled, wait_controlled};
 use crate::process_close::{AppServerTask, CloseBudget};
 use crate::rpc::RpcConnection;
@@ -110,7 +110,7 @@ async fn settle(
     budget: CloseBudget,
 ) -> CleanupOutcome {
     if interrupted {
-        cancel_and_release(connection, task, resource).await
+        cancel_and_release(connection, task, resource, budget).await
     } else {
         close_and_release(connection, task, resource, budget).await
     }
@@ -130,17 +130,16 @@ async fn cancel_and_release(
     connection: &Arc<RpcConnection>,
     task: AppServerTask,
     resource: ScopedResource,
+    budget: CloseBudget,
 ) -> CleanupOutcome {
-    let stop = connection.cancel_session().await;
-    let join = task.join().await;
-    let connection_cleanup = if stop.is_err() || join.is_err() {
-        CleanupOutcome::Failed(SafeDiagnostic::new(
-            "swallowtail.codex.thread_catalogue.cancel_cleanup_failed",
-            "Codex provider-session cancellation cleanup failed",
-        ))
-    } else {
-        connection.cleanup_outcome()
-    };
+    let connection_cleanup = cancel_connection(
+        connection,
+        task,
+        budget,
+        "swallowtail.codex.thread_catalogue.cancel_cleanup_failed",
+        "Codex provider-session cancellation cleanup failed",
+    )
+    .await;
     CleanupOutcome::merge(connection_cleanup, resource.release().await)
 }
 

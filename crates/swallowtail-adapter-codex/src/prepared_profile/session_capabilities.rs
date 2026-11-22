@@ -137,7 +137,7 @@ fn tool_capability(
     ))
 }
 
-pub(super) fn behavior_revision(prepared: &CodexPreparedIntegration) -> Option<&str> {
+fn behavior_revision(prepared: &CodexPreparedIntegration) -> Option<&str> {
     match prepared.observation().compatibility() {
         InstalledExecutableCompatibility::Qualified(assessment) => {
             Some(assessment.behavior_revision().as_str())
@@ -147,6 +147,12 @@ pub(super) fn behavior_revision(prepared: &CodexPreparedIntegration) -> Option<&
         }
         InstalledExecutableCompatibility::Incompatible => None,
     }
+}
+
+pub(super) fn supports_workspace_roots(prepared: &CodexPreparedIntegration) -> bool {
+    behavior_revision(prepared)
+        .and_then(crate::selection::app_server_behavior)
+        .is_some_and(crate::selection::CodexAppServerBehavior::supports_workspace_roots)
 }
 
 pub(super) fn supports_harness_mode(prepared: &CodexPreparedIntegration) -> bool {

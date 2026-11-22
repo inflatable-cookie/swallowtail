@@ -295,6 +295,10 @@ impl RpcConnection {
         self.process.as_ref()
     }
 
+    pub(crate) const fn services(&self) -> &HostServices {
+        &self.services
+    }
+
     pub(crate) async fn close_input(&self) -> Result<(), RuntimeFailure> {
         self.closing.store(true, Ordering::SeqCst);
         self.process.close_stdin().await

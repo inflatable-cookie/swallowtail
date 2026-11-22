@@ -51,6 +51,9 @@ pub(crate) struct SidecarActiveTurn {
     usage: Mutex<Option<TokenUsage>>,
     steering_scheduled: AtomicBool,
     follow_up_scheduled: AtomicBool,
+    abort_in_flight: AtomicBool,
+    abort_rejected: AtomicBool,
+    pending_settled: Mutex<bool>,
     cancelled: AtomicBool,
     timed_out: AtomicBool,
     finished: AtomicBool,
@@ -78,6 +81,9 @@ impl SidecarActiveTurn {
                 usage: Mutex::new(None),
                 steering_scheduled: AtomicBool::new(false),
                 follow_up_scheduled: AtomicBool::new(false),
+                abort_in_flight: AtomicBool::new(false),
+                abort_rejected: AtomicBool::new(false),
+                pending_settled: Mutex::new(false),
                 cancelled: AtomicBool::new(false),
                 timed_out: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
@@ -101,8 +107,15 @@ impl SidecarActiveTurn {
         self.finished.load(Ordering::SeqCst)
     }
 
+    fn has_pending_settled(&self) -> bool {
+        *self
+            .pending_settled
+            .lock()
+            .expect("sidecar pending-settled lock poisoned")
+    }
+
     pub(crate) fn handle_event(&self, event: PiSdkSidecarEvent) -> Result<(), RuntimeFailure> {
-        if self.is_finished() {
+        if self.is_finished() || self.has_pending_settled() {
             return Err(failure(
                 "swallowtail.pi.sdk-sidecar.event_after_terminal",
                 "Pi SDK sidecar emitted an event after the active turn terminated",
@@ -154,28 +167,76 @@ impl SidecarActiveTurn {
             | PiSdkSidecarEvent::ToolUpdated { .. }
             | PiSdkSidecarEvent::ToolEnded { .. } => Ok(()),
             PiSdkSidecarEvent::Settled => {
-                let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
-                    (TerminalStatus::TimedOut, ActivityStatus::Failed)
-                } else if self.cancelled.load(Ordering::SeqCst) {
-                    (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
-                } else {
-                    self.completed_prompts.fetch_add(1, Ordering::SeqCst);
-                    (TerminalStatus::Completed, ActivityStatus::Completed)
-                };
-                self.complete_activity(activity_status)?;
-                let usage = *self.usage.lock().expect("sidecar usage lock poisoned");
-                if matches!(status, TerminalStatus::Completed) && usage.is_none() {
-                    self.finish(TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
-                        "swallowtail.pi.sdk-sidecar.usage_missing",
-                        "Pi SDK sidecar completed without required token usage",
-                    )));
-                } else {
-                    self.finish_with_usage(status, usage);
+                if !self.timed_out.load(Ordering::SeqCst)
+                    && !self.cancelled.load(Ordering::SeqCst)
+                    && self.abort_in_flight.load(Ordering::SeqCst)
+                {
+                    *self
+                        .pending_settled
+                        .lock()
+                        .expect("sidecar pending-settled lock poisoned") = true;
+                    return Ok(());
                 }
-                Ok(())
+                self.finish_settled()
             }
             PiSdkSidecarEvent::ReplayItem { .. } => unreachable!("replay events fail closed above"),
         }
+    }
+
+    fn finish_settled(&self) -> Result<(), RuntimeFailure> {
+        let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
+            (TerminalStatus::TimedOut, ActivityStatus::Failed)
+        } else if self.cancelled.load(Ordering::SeqCst) {
+            (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
+        } else {
+            self.completed_prompts.fetch_add(1, Ordering::SeqCst);
+            (TerminalStatus::Completed, ActivityStatus::Completed)
+        };
+        self.complete_activity(activity_status)?;
+        let usage = *self.usage.lock().expect("sidecar usage lock poisoned");
+        if matches!(status, TerminalStatus::Completed) && usage.is_none() {
+            self.finish(TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
+                "swallowtail.pi.sdk-sidecar.usage_missing",
+                "Pi SDK sidecar completed without required token usage",
+            )));
+        } else {
+            self.finish_with_usage(status, usage);
+        }
+        Ok(())
+    }
+
+    pub(crate) fn mark_abort_in_flight(&self) {
+        self.abort_in_flight.store(true, Ordering::SeqCst);
+    }
+
+    pub(crate) fn mark_abort_acknowledged(&self) {
+        self.cancelled.store(true, Ordering::SeqCst);
+        self.abort_in_flight.store(false, Ordering::SeqCst);
+    }
+
+    pub(crate) fn mark_abort_rejected(&self) {
+        self.abort_rejected.store(true, Ordering::SeqCst);
+        self.abort_in_flight.store(false, Ordering::SeqCst);
+    }
+
+    pub(crate) fn reconcile_abort_response(&self, success: bool) -> Result<(), RuntimeFailure> {
+        if success {
+            self.mark_abort_acknowledged();
+        } else {
+            self.mark_abort_rejected();
+        }
+        let settled = {
+            let mut pending = self
+                .pending_settled
+                .lock()
+                .expect("sidecar pending-settled lock poisoned");
+            std::mem::replace(&mut *pending, false)
+        };
+        if settled && let Err(error) = self.finish_settled() {
+            self.finish(TerminalStatus::RuntimeFailed(error.diagnostic().clone()));
+            return Err(error);
+        }
+        Ok(())
     }
 
     pub(crate) fn mark_cancelled(&self) {
@@ -187,14 +248,44 @@ impl SidecarActiveTurn {
     }
 
     pub(crate) fn fail_connection(&self, diagnostic: SafeDiagnostic) {
+        *self
+            .pending_settled
+            .lock()
+            .expect("sidecar pending-settled lock poisoned") = false;
+        let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
+            (TerminalStatus::TimedOut, ActivityStatus::Failed)
+        } else if self.abort_in_flight.load(Ordering::SeqCst)
+            || self.abort_rejected.load(Ordering::SeqCst)
+        {
+            (
+                TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
+                    "swallowtail.pi.sdk-sidecar.cancel_rejected",
+                    "Pi could not abort the active turn",
+                )),
+                ActivityStatus::Failed,
+            )
+        } else if self.cancelled.load(Ordering::SeqCst) {
+            (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
+        } else {
+            (
+                TerminalStatus::RuntimeFailed(diagnostic),
+                ActivityStatus::Failed,
+            )
+        };
+        self.finish_with_activity_cleanup(status, None, Some(activity_status));
+    }
+
+    pub(crate) fn fail_rejected_abort(&self, diagnostic: SafeDiagnostic) {
+        *self
+            .pending_settled
+            .lock()
+            .expect("sidecar pending-settled lock poisoned") = false;
         let status = if self.timed_out.load(Ordering::SeqCst) {
             TerminalStatus::TimedOut
-        } else if self.cancelled.load(Ordering::SeqCst) {
-            TerminalStatus::Cancelled
         } else {
             TerminalStatus::RuntimeFailed(diagnostic)
         };
-        self.finish(status);
+        self.finish_with_activity_cleanup(status, None, Some(ActivityStatus::Failed));
     }
 
     pub(crate) fn reserve_scheduling(&self, class: swallowtail_core::HarnessMessageClass) -> bool {
@@ -301,13 +392,48 @@ impl SidecarActiveTurn {
         self.sequence.fetch_add(1, Ordering::SeqCst)
     }
 
+    fn complete_activity_best_effort(&self, status: ActivityStatus) {
+        let Ok(observations) = self
+            .activity
+            .lock()
+            .expect("sidecar activity lock poisoned")
+            .complete(status)
+        else {
+            return;
+        };
+        for observation in observations {
+            if self
+                .events
+                .send(RuntimeEvent::new(
+                    self.next_sequence(),
+                    RuntimeEventKind::Activity(observation),
+                ))
+                .is_err()
+            {
+                break;
+            }
+        }
+    }
+
     fn finish(&self, status: TerminalStatus) {
-        self.finish_with_usage(status, None);
+        self.finish_with_activity_cleanup(status, None, None);
     }
 
     fn finish_with_usage(&self, status: TerminalStatus, usage: Option<TokenUsage>) {
+        self.finish_with_activity_cleanup(status, usage, None);
+    }
+
+    fn finish_with_activity_cleanup(
+        &self,
+        status: TerminalStatus,
+        usage: Option<TokenUsage>,
+        complete_activity: Option<ActivityStatus>,
+    ) {
         if self.finished.swap(true, Ordering::SeqCst) {
             return;
+        }
+        if let Some(activity_status) = complete_activity {
+            self.complete_activity_best_effort(activity_status);
         }
         let output = self
             .output
@@ -349,5 +475,62 @@ impl SidecarActiveTurn {
         if let Some(waiter) = signal.waiter.take() {
             waiter.wake();
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use futures_util::StreamExt;
+    use swallowtail_runtime::ActivityLifecyclePhase;
+
+    #[test]
+    fn sidecar_fail_connection_closes_open_tool_and_reasoning_activities_before_terminal() {
+        let (turn, mut events, terminal) = SidecarActiveTurn::new(
+            RuntimeTurnId::new("sidecar-disconnect-activities").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+        )
+        .expect("sidecar turn constructs");
+        turn.handle_event(PiSdkSidecarEvent::ReasoningStarted)
+            .expect("reasoning starts");
+        turn.handle_event(PiSdkSidecarEvent::ToolStarted {
+            call_id: "tool-1".to_owned(),
+            name: "bash".to_owned(),
+        })
+        .expect("tool starts");
+        turn.fail_connection(SafeDiagnostic::new(
+            "swallowtail.pi.sdk-sidecar.disconnected",
+            "Pi SDK sidecar disconnected",
+        ));
+
+        let emitted: Vec<_> = futures_executor::block_on(async move {
+            let mut items = Vec::new();
+            while let Some(item) = events.next().await {
+                items.push(item.expect("event is valid"));
+            }
+            items
+        });
+        let completed_failed = emitted
+            .iter()
+            .filter_map(|event| match event.kind() {
+                RuntimeEventKind::Activity(observation)
+                    if observation.phase() == ActivityLifecyclePhase::Completed
+                        && observation.status() == ActivityStatus::Failed =>
+                {
+                    Some(observation)
+                }
+                _ => None,
+            })
+            .count();
+        assert_eq!(
+            completed_failed, 2,
+            "both open sidecar reasoning and tool activities must close as Failed before terminal"
+        );
+        let outcome = futures_executor::block_on(terminal);
+        assert!(matches!(
+            outcome.status(),
+            TerminalStatus::RuntimeFailed(diagnostic)
+                if diagnostic.code() == "swallowtail.pi.sdk-sidecar.disconnected"
+        ));
     }
 }

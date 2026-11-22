@@ -887,3 +887,701 @@ fn active_turn_finish_with_status_and_emit_event() {
     assert_eq!(collected[0].sequence(), 0);
     assert_eq!(collected[1].sequence(), 1);
 }
+
+#[test]
+fn active_turn_serializes_projection_and_output_with_terminal_publication() {
+    use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
+    use std::sync::Barrier;
+    use swallowtail_runtime::RuntimeEventKind;
+
+    let (turn, events, terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-interleave").expect("valid turn id"),
+        "sess-interleave".to_owned(),
+        ActiveTurnConfig::new(test_diagnostics()),
+    )
+    .expect("turn creates");
+
+    // Start an open tool call and emit an initial message chunk.
+    turn.handle_update(&json!({
+        "sessionId": "sess-interleave",
+        "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "tool-1",
+            "title": "Read file",
+            "kind": "read",
+            "status": "in_progress"
+        }
+    }))
+    .expect("tool start succeeds");
+    turn.handle_update(&json!({
+        "sessionId": "sess-interleave",
+        "update": {
+            "sessionUpdate": "agent_message_chunk",
+            "content": { "type": "text", "text": "hello " }
+        }
+    }))
+    .expect("first chunk succeeds");
+
+    // Force the exact interleaving where an update commits its activity completion
+    // and pauses before flushing, while `finish_prompt` runs concurrently.
+    let reached_before_flush = Arc::new(Barrier::new(2));
+    let release_flush = Arc::new(Barrier::new(2));
+    {
+        let reached = Arc::clone(&reached_before_flush);
+        let release = Arc::clone(&release_flush);
+        turn.set_before_update_flush(Some(Arc::new(move || {
+            reached.wait();
+            release.wait();
+        })));
+    }
+
+    let updater = {
+        let turn = Arc::clone(&turn);
+        std::thread::spawn(move || {
+            turn.handle_update(&json!({
+                "sessionId": "sess-interleave",
+                "update": {
+                    "sessionUpdate": "tool_call_update",
+                    "toolCallId": "tool-1",
+                    "status": "completed"
+                }
+            }))
+            .expect("tool completion update must succeed")
+        })
+    };
+
+    // Wait until the tool completion has updated projection & enqueued its event,
+    // but has not flushed yet. Now call `finish_prompt`.
+    reached_before_flush.wait();
+    turn.set_before_update_flush(None);
+    turn.finish_prompt("end_turn");
+    release_flush.wait();
+    updater.join().expect("updater thread joins");
+
+    // A late update arriving after terminal must not mutate finalized output or emit events.
+    turn.handle_update(&json!({
+        "sessionId": "sess-interleave",
+        "update": {
+            "sessionUpdate": "agent_message_chunk",
+            "content": { "type": "text", "text": "late-ignored" }
+        }
+    }))
+    .expect("late post-terminal update is ignored cleanly");
+
+    let outcome = block_on(terminal);
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(
+        outcome.output().map(OperationContent::as_str),
+        Some("hello ")
+    );
+
+    let collected: Vec<_> = futures_executor::block_on_stream(events)
+        .map(|event| event.expect("runtime event must stay strictly ordered"))
+        .collect();
+    for (expected, event) in collected.iter().enumerate() {
+        assert_eq!(
+            event.sequence(),
+            expected as u64,
+            "events must have contiguous monotonic sequence numbers"
+        );
+    }
+
+    let tool_started = collected
+        .iter()
+        .filter(|event| {
+            matches!(
+                event.kind(),
+                RuntimeEventKind::Activity(obs)
+                    if obs.phase() == ActivityLifecyclePhase::Started
+                        && obs.kind() == &ActivityKind::ProviderOwnedTool
+            )
+        })
+        .count();
+    let tool_completed = collected
+        .iter()
+        .filter(|event| {
+            matches!(
+                event.kind(),
+                RuntimeEventKind::Activity(obs)
+                    if obs.phase() == ActivityLifecyclePhase::Completed
+                        && obs.status() == ActivityStatus::Completed
+                        && obs.kind() == &ActivityKind::ProviderOwnedTool
+            )
+        })
+        .count();
+    assert_eq!(tool_started, 1, "tool must emit Started");
+    assert_eq!(
+        tool_completed, 1,
+        "tool completion must publish before terminal and never be dropped"
+    );
+
+    let deltas: String = collected
+        .iter()
+        .filter_map(|event| {
+            if matches!(event.kind(), RuntimeEventKind::OutputDelta) {
+                event.content().map(OperationContent::as_str)
+            } else {
+                None
+            }
+        })
+        .collect();
+    let output_available: Vec<&str> = collected
+        .iter()
+        .filter_map(|event| {
+            if matches!(event.kind(), RuntimeEventKind::OutputAvailable) {
+                event.content().map(OperationContent::as_str)
+            } else {
+                None
+            }
+        })
+        .collect();
+    assert_eq!(deltas, "hello ");
+    assert_eq!(output_available, vec!["hello "]);
+}
+
+#[test]
+fn active_turn_emit_event_allows_reentrant_calls_and_recovers_from_builder_panic() {
+    use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
+    use std::sync::Barrier;
+    use swallowtail_runtime::RuntimeEventKind;
+
+    // 1. Re-entrant builder calling `emit_event`, `finish_with_status`, AND awaiting
+    //    `terminal` before returning must not deadlock or stall on its own reservation.
+    let (turn, events, terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-reentrant").expect("valid turn id"),
+        "sess-reentrant".to_owned(),
+        ActiveTurnConfig::new(test_diagnostics()),
+    )
+    .expect("turn creates");
+
+    let inner_turn = Arc::clone(&turn);
+    let mut terminal_slot = Some(terminal);
+    turn.emit_event(|outer_seq| {
+        assert_eq!(outer_seq, 1);
+        inner_turn
+            .emit_event(|inner_seq| {
+                assert_eq!(inner_seq, 2);
+                Ok(RuntimeEventKind::Progress)
+            })
+            .expect("re-entrant emit_event must succeed without deadlocking");
+        inner_turn.finish_with_status(TerminalStatus::TimedOut);
+        let outcome = block_on(terminal_slot.take().expect("terminal future present"));
+        assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
+        Ok(RuntimeEventKind::Progress)
+    })
+    .expect("outer emit_event returns cleanly after terminal abandoned its reservation");
+
+    let collected: Vec<_> = futures_executor::block_on_stream(events)
+        .map(|event| event.expect("runtime event is valid"))
+        .collect();
+    // Started (0) + committed inner Progress (2); outer reservation (1) was abandoned at terminal.
+    assert_eq!(collected.len(), 2);
+    assert_eq!(collected[0].sequence(), 0);
+    assert_eq!(collected[1].sequence(), 2);
+
+    // 2. A stalled builder on another thread must not block terminal publication,
+    //    must account for both downstream buffered and staged events plus terminal
+    //    reserve at admission, and must leave every admitted + terminal stream item Ok.
+    let (bounded_turn, bounded_events, bounded_terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-bounded").expect("valid turn id"),
+        "sess-bounded".to_owned(),
+        ActiveTurnConfig::new(test_diagnostics()),
+    )
+    .expect("turn creates");
+
+    let builder_entered = Arc::new(Barrier::new(2));
+    let builder_release = Arc::new(Barrier::new(2));
+    let paused_builder = {
+        let turn = Arc::clone(&bounded_turn);
+        let entered = Arc::clone(&builder_entered);
+        let release = Arc::clone(&builder_release);
+        std::thread::spawn(move || {
+            turn.emit_event(|_| {
+                entered.wait();
+                release.wait();
+                Ok(RuntimeEventKind::Progress)
+            })
+            .expect("builder exits cleanly after terminal abandoned reservation")
+        })
+    };
+
+    builder_entered.wait();
+    // Downstream holds Started (1); paused builder holds 1 reservation; terminal reserve
+    // needs 2 slots once assistant text starts (AssistantMessage completion + OutputAvailable).
+    // Each agent_message_chunk emits 2 events (OutputDelta + AssistantMessage activity), so
+    // 62 chunks stage 124 events: 1 (downstream) + 1 (reservation) + 124 (chunks) + 2 (terminal) = 128.
+    for index in 0..62 {
+        bounded_turn
+            .handle_update(&json!({
+                "sessionId": "sess-bounded",
+                "update": {
+                    "sessionUpdate": "agent_message_chunk",
+                    "content": { "type": "text", "text": format!("{index}") }
+                }
+            }))
+            .expect("update within EVENT_CAPACITY is admitted");
+    }
+    let overflow = bounded_turn
+        .handle_update(&json!({
+            "sessionId": "sess-bounded",
+            "update": {
+                "sessionUpdate": "agent_message_chunk",
+                "content": { "type": "text", "text": "overflow" }
+            }
+        }))
+        .expect_err(
+            "update beyond combined downstream + staged + terminal capacity must fail at admission",
+        );
+    assert_eq!(
+        overflow.diagnostic().code(),
+        "swallowtail.event_buffer_rejected"
+    );
+
+    // Terminal must still progress and resolve while the builder is still paused,
+    // and every event in the stream must succeed without downstream overflow.
+    bounded_turn.finish_prompt("end_turn");
+    let bounded_outcome = block_on(bounded_terminal);
+    assert_eq!(bounded_outcome.status(), &TerminalStatus::Completed);
+    let bounded_collected: Vec<_> = futures_executor::block_on_stream(bounded_events)
+        .map(|event| {
+            event.expect("every admitted and terminal event must succeed without overflow")
+        })
+        .collect();
+    assert_eq!(
+        bounded_collected.len(),
+        127,
+        "Started (1) + 62*2 chunk events (124) + AssistantMessage completion (1) + OutputAvailable (1)"
+    );
+    let expected_output: String = (0..62).map(|index| index.to_string()).collect();
+    assert_eq!(
+        bounded_outcome.output().map(OperationContent::as_str),
+        Some(expected_output.as_str())
+    );
+    assert!(bounded_collected.iter().any(|event| {
+        matches!(event.kind(), RuntimeEventKind::OutputAvailable)
+            && event.content().map(OperationContent::as_str) == Some(expected_output.as_str())
+    }));
+
+    builder_release.wait();
+    paused_builder.join().expect("paused builder thread joins");
+
+    // 3. A rejected terminal tool update must not mutate activity projection state,
+    //    so finishing the turn still emits the open tool's terminal completion.
+    let (tool_turn, tool_events, tool_terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-rejected-tool").expect("valid turn id"),
+        "sess-rejected-tool".to_owned(),
+        ActiveTurnConfig::new(test_diagnostics()),
+    )
+    .expect("turn creates");
+    tool_turn
+        .handle_update(&json!({
+            "sessionId": "sess-rejected-tool",
+            "update": {
+                "sessionUpdate": "tool_call",
+                "toolCallId": "tool-keep",
+                "title": "Read file",
+                "kind": "read",
+                "status": "in_progress"
+            }
+        }))
+        .expect("tool start succeeds");
+    // Drain Started + tool start so downstream buffer is empty (buffered == 0).
+    let mut tool_stream = futures_executor::block_on_stream(tool_events);
+    let _ = tool_stream
+        .next()
+        .expect("Started arrives")
+        .expect("Started is Ok");
+    let _ = tool_stream
+        .next()
+        .expect("tool start arrives")
+        .expect("tool start is Ok");
+
+    let tool_builder_entered = Arc::new(Barrier::new(3));
+    let tool_builder_release = Arc::new(Barrier::new(3));
+    let paused_tool_builders: Vec<_> = (0..2)
+        .map(|_| {
+            let turn = Arc::clone(&tool_turn);
+            let entered = Arc::clone(&tool_builder_entered);
+            let release = Arc::clone(&tool_builder_release);
+            std::thread::spawn(move || {
+                turn.emit_event(|_| {
+                    entered.wait();
+                    release.wait();
+                    Ok(RuntimeEventKind::Progress)
+                })
+                .expect("builder exits cleanly after terminal abandoned reservation")
+            })
+        })
+        .collect();
+    tool_builder_entered.wait();
+    // 2 reservations + 125 Progress + 1 open tool terminal reserve = 128.
+    for index in 0..125 {
+        tool_turn
+            .handle_update(&json!({
+                "sessionId": "sess-rejected-tool",
+                "update": {
+                    "sessionUpdate": "current_mode_update",
+                    "currentModeId": format!("mode-{index}")
+                }
+            }))
+            .expect("progress update within capacity is admitted");
+    }
+    // Attempting to stage one more Progress exceeds capacity (2 + 126 + 1 = 129 > 128).
+    let extra_err = tool_turn
+        .handle_update(&json!({
+            "sessionId": "sess-rejected-tool",
+            "update": {
+                "sessionUpdate": "current_mode_update",
+                "currentModeId": "mode-overflow"
+            }
+        }))
+        .expect_err("extra progress must be rejected");
+    assert_eq!(
+        extra_err.diagnostic().code(),
+        "swallowtail.event_buffer_rejected"
+    );
+    // Both a new tool_call (which would open a second tool in `state.activity`)
+    // and an agent_message_chunk (which would open AssistantMessage + append output)
+    // exceed capacity and must be rejected without mutating `state.activity` or `output`.
+    let rejected_new_tool = tool_turn
+        .handle_update(&json!({
+            "sessionId": "sess-rejected-tool",
+            "update": {
+                "sessionUpdate": "tool_call",
+                "toolCallId": "tool-rejected",
+                "title": "Rejected tool",
+                "kind": "read",
+                "status": "in_progress"
+            }
+        }))
+        .expect_err("new tool_call exceeding capacity must be rejected");
+    assert_eq!(
+        rejected_new_tool.diagnostic().code(),
+        "swallowtail.event_buffer_rejected"
+    );
+    let rejected_chunk = tool_turn
+        .handle_update(&json!({
+            "sessionId": "sess-rejected-tool",
+            "update": {
+                "sessionUpdate": "agent_message_chunk",
+                "content": { "type": "text", "text": "rejected-output" }
+            }
+        }))
+        .expect_err("agent_message_chunk exceeding capacity must be rejected");
+    assert_eq!(
+        rejected_chunk.diagnostic().code(),
+        "swallowtail.event_buffer_rejected"
+    );
+    // Finish the turn while builders are still paused: abandoning reservations frees slots,
+    // only `tool-keep` emits a terminal completion, and neither `tool-rejected` nor
+    // `AssistantMessage` / `OutputAvailable` appears.
+    tool_turn.finish_prompt("end_turn");
+    let tool_outcome = block_on(tool_terminal);
+    assert_eq!(tool_outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(
+        tool_outcome.output(),
+        None,
+        "rejected agent_message_chunk must not mutate terminal output"
+    );
+    let tool_collected: Vec<_> = tool_stream
+        .map(|event| event.expect("every remaining event must succeed"))
+        .collect();
+    let completed_tools: Vec<_> = tool_collected
+        .iter()
+        .filter_map(|event| match event.kind() {
+            RuntimeEventKind::Activity(obs)
+                if obs.phase() == ActivityLifecyclePhase::Completed
+                    && obs.kind() == &ActivityKind::ProviderOwnedTool =>
+            {
+                Some(
+                    obs.provider_activity_ref()
+                        .map(|r| r.as_provider_value().to_owned()),
+                )
+            }
+            _ => None,
+        })
+        .collect();
+    assert_eq!(
+        completed_tools,
+        vec![Some("tool-keep".to_owned())],
+        "only the admitted open tool must complete; rejected tool-rejected must not mutate state"
+    );
+    assert!(
+        !tool_collected.iter().any(|event| {
+            matches!(event.kind(), RuntimeEventKind::OutputAvailable)
+                || matches!(
+                    event.kind(),
+                    RuntimeEventKind::Activity(obs)
+                        if obs.kind() == &ActivityKind::AssistantMessage
+                )
+        }),
+        "rejected agent_message_chunk must not emit AssistantMessage or OutputAvailable"
+    );
+    tool_builder_release.wait();
+    for handle in paused_tool_builders {
+        handle.join().expect("paused tool builder joins");
+    }
+
+    // 4. A panicking builder must not poison the turn state or wedge later completion.
+    let (panic_turn, panic_events, panic_terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-panic").expect("valid turn id"),
+        "sess-panic".to_owned(),
+        ActiveTurnConfig::new(test_diagnostics()),
+    )
+    .expect("turn creates");
+
+    let panicked = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        let _ = panic_turn.emit_event(|_| -> Result<RuntimeEventKind, RuntimeFailure> {
+            panic!("simulated builder panic");
+        });
+    }));
+    assert!(panicked.is_err());
+
+    panic_turn.finish_prompt("end_turn");
+    let panic_outcome = block_on(panic_terminal);
+    assert_eq!(panic_outcome.status(), &TerminalStatus::Completed);
+    let panic_collected: Vec<_> = futures_executor::block_on_stream(panic_events)
+        .map(|event| event.expect("post-panic events remain valid"))
+        .collect();
+    assert_eq!(panic_collected.len(), 1);
+    assert_eq!(panic_collected[0].sequence(), 0);
+}
+
+#[test]
+fn active_turn_finish_prompt_invokes_diagnostic_factories_outside_state_lock() {
+    use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
+    use std::cell::{Cell, RefCell};
+
+    thread_local! {
+        static REENTRANT_TURN: RefCell<Option<Arc<ActiveTurn>>> = const { RefCell::new(None) };
+        static FACTORY_CALLS: Cell<usize> = const { Cell::new(0) };
+    }
+
+    fn reentrant_stop_reason_unsupported() -> RuntimeFailure {
+        FACTORY_CALLS.with(|count| count.set(count.get() + 1));
+        REENTRANT_TURN.with(|slot| {
+            if let Some(turn) = slot.borrow().as_ref() {
+                // If `finish_prompt` held `TurnState` while calling this factory,
+                // calling `finish_with_status` here would self-deadlock.
+                turn.finish_with_status(TerminalStatus::TimedOut);
+            }
+        });
+        test_failure("swallowtail.test.acp.stop", "stop")
+    }
+
+    // 1. Without a recorded permission observation, the fallback factory runs outside the lock.
+    FACTORY_CALLS.with(|count| count.set(0));
+    let mut diagnostics = test_diagnostics();
+    diagnostics.stop_reason_unsupported = reentrant_stop_reason_unsupported;
+    let (turn, _events, terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-diag-reentry").expect("valid turn id"),
+        "sess-diag".to_owned(),
+        ActiveTurnConfig::new(diagnostics),
+    )
+    .expect("turn creates");
+
+    REENTRANT_TURN.with(|slot| *slot.borrow_mut() = Some(Arc::clone(&turn)));
+    turn.finish_prompt("unexpected_stop_reason");
+    REENTRANT_TURN.with(|slot| *slot.borrow_mut() = None);
+
+    let outcome = block_on(terminal);
+    assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
+    assert_eq!(FACTORY_CALLS.with(Cell::get), 1);
+
+    // 2. With a recorded permission observation, permission precedence wins and the
+    //    fallback diagnostic factory must not be invoked at all.
+    FACTORY_CALLS.with(|count| count.set(0));
+    let mut perm_diagnostics = test_diagnostics();
+    perm_diagnostics.stop_reason_unsupported = reentrant_stop_reason_unsupported;
+    let (perm_turn, _perm_events, perm_terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-perm-precedence").expect("valid turn id"),
+        "sess-perm-prec".to_owned(),
+        ActiveTurnConfig::new(perm_diagnostics),
+    )
+    .expect("turn creates");
+
+    let observation = perm_turn
+        .observe_permission(&json!(9))
+        .expect("permission observation records");
+    REENTRANT_TURN.with(|slot| *slot.borrow_mut() = Some(Arc::clone(&perm_turn)));
+    perm_turn.finish_prompt("unexpected_stop_reason");
+    REENTRANT_TURN.with(|slot| *slot.borrow_mut() = None);
+
+    let perm_outcome = block_on(perm_terminal);
+    assert_eq!(
+        perm_outcome.status(),
+        &TerminalStatus::ProviderRequestObserved(observation)
+    );
+    assert_eq!(
+        FACTORY_CALLS.with(Cell::get),
+        0,
+        "fallback stop diagnostic factory must not run when a permission observation is recorded"
+    );
+}
+
+#[test]
+fn reject_permission_forwards_tool_call_id_to_turn_sink() {
+    use crate::{AcpConnection, AcpTransport, AcpTurnSink, StandardAcpHooks};
+    use serde_json::Value;
+    use std::sync::Mutex;
+    use swallowtail_runtime::ProviderRequestObservation;
+
+    struct RecordingTurn {
+        session_id: String,
+        recorded_tool_call_id: Mutex<Option<String>>,
+    }
+
+    impl AcpTurnSink for RecordingTurn {
+        fn session_id(&self) -> &str {
+            &self.session_id
+        }
+
+        fn is_finished(&self) -> bool {
+            false
+        }
+
+        fn mark_cancelled(&self) {}
+
+        fn observe_permission(
+            &self,
+            _provider_request_id: &Value,
+        ) -> Result<ProviderRequestObservation, RuntimeFailure> {
+            panic!("observe_permission_with_tool_call must be invoked")
+        }
+
+        fn observe_permission_with_tool_call(
+            &self,
+            _provider_request_id: &Value,
+            tool_call_id: &str,
+        ) -> Result<ProviderRequestObservation, RuntimeFailure> {
+            *self
+                .recorded_tool_call_id
+                .lock()
+                .expect("tool call lock poisoned") = Some(tool_call_id.to_owned());
+            Ok(ProviderRequestObservation::new(
+                swallowtail_runtime::CallbackId::new("turn:permission:1").expect("valid id"),
+                crate::default_permission_namespace(),
+                swallowtail_core::ProviderRequestRef::new("acp:7").expect("valid ref"),
+            ))
+        }
+
+        fn handle_update(&self, _params: &Value) -> Result<(), RuntimeFailure> {
+            Ok(())
+        }
+
+        fn finish_prompt(&self, _stop_reason: &str) {}
+
+        fn fail(&self, _error: &RuntimeFailure) {}
+    }
+
+    let process = EofProcess::new();
+    let connection = AcpConnection::new(
+        AcpTransport::stdio(
+            process as Arc<dyn ProcessHandle>,
+            FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES),
+        ),
+        HostServices::new(ExecutionHostId::new("test-host").expect("valid host id")),
+        test_diagnostics(),
+        Arc::new(StandardAcpHooks),
+    );
+    connection
+        .set_session_id("sess-perm".to_owned())
+        .expect("session binds");
+    let turn = Arc::new(RecordingTurn {
+        session_id: "sess-perm".to_owned(),
+        recorded_tool_call_id: Mutex::new(None),
+    });
+    connection
+        .set_active_turn(Arc::clone(&turn) as Arc<dyn AcpTurnSink>)
+        .expect("active turn registers");
+
+    block_on(connection.reject_permission(
+        json!(7),
+        &json!({
+            "sessionId": "sess-perm",
+            "toolCall": { "toolCallId": "call-42" },
+            "options": []
+        }),
+    ))
+    .expect("reject_permission succeeds");
+
+    assert_eq!(
+        turn.recorded_tool_call_id
+            .lock()
+            .expect("tool call lock poisoned")
+            .as_deref(),
+        Some("call-42")
+    );
+}
+
+#[test]
+fn active_turn_rejected_plan_projection_does_not_leak_open_activity() {
+    use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
+    use swallowtail_runtime::RuntimeEventKind;
+
+    let (turn, events, terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-plan-reject").expect("valid turn id"),
+        "sess-plan-reject".to_owned(),
+        ActiveTurnConfig::new(test_diagnostics()),
+    )
+    .expect("turn creates");
+
+    let malformed_plan = json!({
+        "sessionId": "sess-plan-reject",
+        "update": {
+            "sessionUpdate": "plan",
+            "entries": [
+                {
+                    "content": "   ",
+                    "priority": "high",
+                    "status": "in_progress"
+                }
+            ]
+        }
+    });
+    let err = turn
+        .handle_update(&malformed_plan)
+        .expect_err("blank plan entry must fail task-list validation");
+    assert_eq!(err.diagnostic().code(), "swallowtail.test.acp.malformed");
+
+    turn.finish_prompt("end_turn");
+    let outcome = block_on(terminal);
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+
+    let collected: Vec<_> = futures_executor::block_on_stream(events)
+        .map(|event| event.expect("every emitted event must succeed"))
+        .collect();
+    assert!(
+        !collected.iter().any(|event| {
+            matches!(
+                event.kind(),
+                RuntimeEventKind::Progress
+                    | RuntimeEventKind::Activity(_)
+                    | RuntimeEventKind::OutputAvailable
+            )
+        }),
+        "failed plan projection must not emit Progress or leak an open Plan activity at terminal; got {collected:?}"
+    );
+
+    // Also verify AcpActivityProjection directly leaves no open activity on error.
+    let mut projection = AcpActivityProjection::new(
+        RuntimeTurnId::new("turn-plan-proj").expect("valid turn id"),
+        test_diagnostics().activity,
+    );
+    let decoded = decode_session_update(&malformed_plan).expect("plan payload decodes");
+    let proj_err = projection
+        .project(&decoded.update)
+        .expect_err("blank plan entry fails projection");
+    assert_eq!(
+        proj_err.diagnostic().code(),
+        "swallowtail.test.acp.malformed"
+    );
+    assert_eq!(projection.open_count(), 0);
+    assert!(
+        projection
+            .complete(&TerminalStatus::Completed)
+            .expect("complete succeeds")
+            .is_empty(),
+        "failed plan projection must not leave an open activity to complete"
+    );
+}

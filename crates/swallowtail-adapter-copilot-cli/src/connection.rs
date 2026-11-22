@@ -2,16 +2,16 @@ use crate::{
     failure::{failure, malformed, protocol_failure, unsupported},
     turn::ActiveTurn,
 };
-use serde_json::{Value, json};
-use std::sync::{Arc, Mutex};
+use serde_json::Value;
+use std::sync::Arc;
 use swallowtail_acp_client::{
-    AcpActivityConfig, AcpConnection as SharedConnection, AcpConnectionHooks, AcpDiagnostics,
-    AcpTransport, AcpTurnSink, MessageClassification, PendingResponse, PlanProjection,
-    RequestDisposition, default_permission_namespace,
+    AcpActivityConfig, AcpConnection as SharedConnection, AcpDiagnostics, AcpTransport,
+    AcpTurnSink, MessageClassification, PendingResponse, PlanProjection, StandardAcpHooks,
+    default_permission_namespace,
 };
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_protocol_acp::{DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_FRAME_BYTES, FramingLimits};
-use swallowtail_runtime::{BoxFuture, CleanupOutcome, HostServices, ProcessHandle, RuntimeFailure};
+use swallowtail_runtime::{CleanupOutcome, HostServices, ProcessHandle, RuntimeFailure};
 
 const RECEIVE_FRAMING_LIMITS: FramingLimits =
     FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES);
@@ -188,75 +188,19 @@ pub(crate) fn copilot_diagnostics() -> AcpDiagnostics {
     }
 }
 
-struct CopilotHooks {
-    turn: Mutex<Option<Arc<ActiveTurn>>>,
-}
-
-impl AcpConnectionHooks for CopilotHooks {
-    fn handle_request<'a>(
-        &'a self,
-        connection: &'a SharedConnection,
-        id: Value,
-        method: &'a str,
-        params: &'a Value,
-    ) -> BoxFuture<'a, Result<RequestDisposition, RuntimeFailure>> {
-        Box::pin(async move {
-            if method != "session/request_permission" {
-                return Ok(RequestDisposition::Unsupported);
-            }
-            connection.verify_session(params)?;
-            let options = params
-                .get("options")
-                .and_then(Value::as_array)
-                .ok_or_else(malformed)?;
-            let tool_call_id = params
-                .get("toolCall")
-                .and_then(|tool| tool.get("toolCallId"))
-                .and_then(Value::as_str)
-                .ok_or_else(malformed)?;
-            if options.len() > 32 {
-                return Err(malformed());
-            }
-            let turn = self
-                .turn
-                .lock()
-                .expect("ACP active lock poisoned")
-                .clone()
-                .ok_or_else(|| {
-                    failure(
-                        "swallowtail.copilot-cli.acp.permission_without_turn",
-                        "Copilot CLI requested permission without an active turn",
-                    )
-                })?;
-            turn.observe_permission(&id, tool_call_id)?;
-            connection
-                .notify("session/cancel", json!({"sessionId": turn.session_id()}))
-                .await?;
-            connection
-                .send_result(id, json!({"outcome": {"outcome": "cancelled"}}))
-                .await?;
-            Ok(RequestDisposition::Handled)
-        })
-    }
-}
-
 pub(crate) struct AcpConnection {
     inner: Arc<SharedConnection>,
-    hooks: Arc<CopilotHooks>,
 }
 
 impl AcpConnection {
     pub(crate) fn new(process: Arc<dyn ProcessHandle>, services: HostServices) -> Arc<Self> {
-        let hooks = Arc::new(CopilotHooks {
-            turn: Mutex::new(None),
-        });
         let inner = SharedConnection::new(
             AcpTransport::stdio(process, RECEIVE_FRAMING_LIMITS),
             services,
             copilot_diagnostics(),
-            Arc::clone(&hooks) as Arc<dyn AcpConnectionHooks>,
+            Arc::new(StandardAcpHooks),
         );
-        Arc::new(Self { inner, hooks })
+        Arc::new(Self { inner })
     }
 
     pub(crate) async fn initialize(&self) -> Result<Value, RuntimeFailure> {
@@ -292,22 +236,13 @@ impl AcpConnection {
     }
 
     pub(crate) fn set_active_turn(&self, turn: Arc<ActiveTurn>) -> Result<(), RuntimeFailure> {
-        let sink: Arc<dyn AcpTurnSink> = Arc::clone(&turn) as Arc<dyn AcpTurnSink>;
-        self.inner.set_active_turn(sink)?;
-        *self.hooks.turn.lock().expect("ACP active lock poisoned") = Some(turn);
-        Ok(())
+        let sink: Arc<dyn AcpTurnSink> = turn as Arc<dyn AcpTurnSink>;
+        self.inner.set_active_turn(sink)
     }
 
     pub(crate) fn clear_active_turn(&self, turn: &Arc<ActiveTurn>) {
         let sink: Arc<dyn AcpTurnSink> = Arc::clone(turn) as Arc<dyn AcpTurnSink>;
         self.inner.clear_active_turn(&sink);
-        let mut slot = self.hooks.turn.lock().expect("ACP active lock poisoned");
-        if slot
-            .as_ref()
-            .is_some_and(|current| Arc::ptr_eq(current, turn))
-        {
-            *slot = None;
-        }
     }
 
     pub(crate) async fn begin_close(&self) {

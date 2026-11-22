@@ -586,19 +586,18 @@ impl AcpConnection {
             .get("options")
             .and_then(Value::as_array)
             .ok_or_else(self.diagnostics.malformed)?;
-        if options.len() > 32
-            || params
-                .get("toolCall")
-                .and_then(|tool| tool.get("toolCallId"))
-                .and_then(Value::as_str)
-                .is_none()
-        {
+        let tool_call_id = params
+            .get("toolCall")
+            .and_then(|tool| tool.get("toolCallId"))
+            .and_then(Value::as_str)
+            .ok_or_else(self.diagnostics.malformed)?;
+        if options.len() > 32 {
             return Err((self.diagnostics.malformed)());
         }
         let turn = self
             .active_turn()
             .ok_or_else(self.diagnostics.permission_without_turn)?;
-        turn.observe_permission(&id)?;
+        turn.observe_permission_with_tool_call(&id, tool_call_id)?;
         self.notify("session/cancel", json!({"sessionId": turn.session_id()}))
             .await?;
         self.send_result(id, json!({"outcome": {"outcome": "cancelled"}}))

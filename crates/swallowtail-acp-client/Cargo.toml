@@ -17,6 +17,7 @@ remote = ["dep:swallowtail-transport-acp-remote"]
 
 [dependencies]
 futures-channel.workspace = true
+futures-core.workspace = true
 serde_json.workspace = true
 swallowtail-core.workspace = true
 swallowtail-protocol-acp.workspace = true

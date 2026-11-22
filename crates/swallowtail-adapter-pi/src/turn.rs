@@ -228,26 +228,25 @@ impl ActiveTurn {
     }
 
     fn finish_settled(&self, aborted: Option<bool>) -> Result<(), RuntimeFailure> {
+        let usage = *self.usage.lock().expect("Pi usage lock poisoned");
         let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
             (TerminalStatus::TimedOut, ActivityStatus::Failed)
         } else if self.cancelled.load(Ordering::SeqCst) || aborted.unwrap_or(false) {
             (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
+        } else if usage.is_none() {
+            (
+                TerminalStatus::RuntimeFailed(swallowtail_core::SafeDiagnostic::new(
+                    "swallowtail.pi.rpc.usage_missing",
+                    "Pi RPC completed without required token usage",
+                )),
+                ActivityStatus::Failed,
+            )
         } else {
             self.completed_prompts.fetch_add(1, Ordering::SeqCst);
             (TerminalStatus::Completed, ActivityStatus::Completed)
         };
         self.complete_activity(activity_status)?;
-        let usage = *self.usage.lock().expect("Pi usage lock poisoned");
-        if matches!(status, TerminalStatus::Completed) && usage.is_none() {
-            self.finish(TerminalStatus::RuntimeFailed(
-                swallowtail_core::SafeDiagnostic::new(
-                    "swallowtail.pi.rpc.usage_missing",
-                    "Pi RPC completed without required token usage",
-                ),
-            ));
-        } else {
-            self.finish_with_usage(status, usage);
-        }
+        self.finish_with_usage(status, usage);
         Ok(())
     }
 
@@ -585,6 +584,81 @@ mod tests {
             outcome.status(),
             TerminalStatus::RuntimeFailed(diagnostic)
                 if diagnostic.code() == "swallowtail.pi.rpc.disconnected"
+        ));
+    }
+
+    #[test]
+    fn settled_without_usage_fails_open_activities_and_does_not_increment_completed_prompts() {
+        use futures_util::StreamExt;
+        use swallowtail_runtime::ActivityLifecyclePhase;
+
+        let completed_prompts = Arc::new(AtomicU32::new(0));
+        let (turn, mut events, _callbacks, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("pi-usage-missing").expect("turn id is valid"),
+            Arc::clone(&completed_prompts),
+            Weak::new(),
+            false,
+        )
+        .expect("active turn constructs");
+        turn.handle_event(PiAgentEvent::ReasoningStarted)
+            .expect("reasoning starts");
+        turn.handle_event(PiAgentEvent::ToolStarted {
+            call_id: "tool-1".to_owned(),
+            name: "bash".to_owned(),
+        })
+        .expect("tool starts");
+        turn.handle_event(PiAgentEvent::Settled {
+            aborted: Some(false),
+        })
+        .expect("settled handles usage_missing");
+
+        assert_eq!(
+            completed_prompts.load(Ordering::SeqCst),
+            0,
+            "usage_missing must not consume a completed prompt slot"
+        );
+        let emitted: Vec<_> = futures_executor::block_on(async move {
+            let mut items = Vec::new();
+            while let Some(item) = events.next().await {
+                items.push(item.expect("event is valid"));
+            }
+            items
+        });
+        let completed_ok = emitted
+            .iter()
+            .filter(|event| {
+                matches!(
+                    event.kind(),
+                    RuntimeEventKind::Activity(observation)
+                        if observation.phase() == ActivityLifecyclePhase::Completed
+                            && observation.status() == ActivityStatus::Completed
+                )
+            })
+            .count();
+        let completed_failed = emitted
+            .iter()
+            .filter(|event| {
+                matches!(
+                    event.kind(),
+                    RuntimeEventKind::Activity(observation)
+                        if observation.phase() == ActivityLifecyclePhase::Completed
+                            && observation.status() == ActivityStatus::Failed
+                )
+            })
+            .count();
+        assert_eq!(
+            completed_ok, 0,
+            "open activities must not close as Completed on usage_missing"
+        );
+        assert_eq!(
+            completed_failed, 2,
+            "open reasoning and tool activities must close as Failed on usage_missing"
+        );
+        let outcome = futures_executor::block_on(terminal);
+        assert!(matches!(
+            outcome.status(),
+            TerminalStatus::RuntimeFailed(diagnostic)
+                if diagnostic.code() == "swallowtail.pi.rpc.usage_missing"
         ));
     }
 }

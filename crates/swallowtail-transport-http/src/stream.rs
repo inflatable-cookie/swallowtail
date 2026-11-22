@@ -259,6 +259,14 @@ impl<Item, Error> Subscription<Item, Error> {
         &mut self,
         context: &mut Context<'_>,
     ) -> Poll<Option<Result<StreamItem<Item>, StreamError<Error>>>> {
+        if self.receiver.is_none() {
+            return Poll::Ready(None);
+        }
+        if let Some(work) = self.work.as_mut()
+            && work.as_mut().poll(context).is_ready()
+        {
+            self.work = None;
+        }
         let Some(receiver) = self.receiver.as_mut() else {
             return Poll::Ready(None);
         };

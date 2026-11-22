@@ -100,6 +100,107 @@ impl AcpActivityProjection {
         })
     }
 
+    pub(crate) fn open_count(&self) -> usize {
+        self.open.len()
+    }
+
+    /// Computes `(observation_count, next_open_count)` for `update` without
+    /// mutating or cloning `open` / `closed` history.
+    pub(crate) fn projected_capacity(&self, update: &AcpSessionUpdate) -> (usize, usize) {
+        let open = self.open.len();
+        match update {
+            AcpSessionUpdate::Message(message) => {
+                if message.role == AcpMessageRole::User {
+                    return (0, open);
+                }
+                let Ok(text) = text_content(&message.content, self.config.malformed) else {
+                    return (0, open);
+                };
+                let label = match message.role {
+                    AcpMessageRole::Agent
+                        if self.config.message_classification
+                            == MessageClassification::ModeAndWarning
+                            && text.starts_with("[MODE_UPDATE]") =>
+                    {
+                        "mode-display"
+                    }
+                    AcpMessageRole::Agent => "assistant",
+                    AcpMessageRole::Thought
+                        if self.config.message_classification
+                            == MessageClassification::ModeAndWarning
+                            && text.starts_with("Warning:") =>
+                    {
+                        "warning"
+                    }
+                    AcpMessageRole::Thought => "thought",
+                    AcpMessageRole::User => unreachable!("user messages returned above"),
+                };
+                let provider_id = message.message_id.as_ref().map(|value| value.as_str());
+                let key = format!("{label}:{}", provider_id.unwrap_or("turn"));
+                let next_open = open.saturating_add(usize::from(!self.open.contains_key(&key)));
+                (1, next_open)
+            }
+            AcpSessionUpdate::Plan(_)
+                if self.config.plan_projection == PlanProjection::TaskList =>
+            {
+                let next_open = open.saturating_add(usize::from(!self.open.contains_key("plan")));
+                (1, next_open)
+            }
+            AcpSessionUpdate::ToolCall(call) => {
+                let key = format!("tool:{}", call.tool_call_id.as_str());
+                if self.closed.contains(&key) {
+                    return (0, open);
+                }
+                let status = tool_status(call.status);
+                if let Some(existing) = self.open.get(&key) {
+                    let reconciled = reconcile_status(existing.status, status);
+                    let next_open = if reconciled.is_terminal() {
+                        open.saturating_sub(1)
+                    } else {
+                        open
+                    };
+                    (1, next_open)
+                } else if status.is_terminal() {
+                    (2, open)
+                } else {
+                    (1, open.saturating_add(1))
+                }
+            }
+            AcpSessionUpdate::ToolCallUpdate(update) => {
+                let key = format!("tool:{}", update.tool_call_id.as_str());
+                if self.closed.contains(&key) {
+                    return (0, open);
+                }
+                if let Some(existing) = self.open.get(&key) {
+                    let reconciled = update.status.map_or(existing.status, |status| {
+                        reconcile_status(existing.status, tool_status(status))
+                    });
+                    let next_open = if reconciled.is_terminal() {
+                        open.saturating_sub(1)
+                    } else {
+                        open
+                    };
+                    (1, next_open)
+                } else if update
+                    .status
+                    .map(tool_status)
+                    .is_some_and(ActivityStatus::is_terminal)
+                {
+                    (2, open)
+                } else {
+                    (0, open)
+                }
+            }
+            AcpSessionUpdate::Unknown { .. } => (1, open),
+            AcpSessionUpdate::Plan(_)
+            | AcpSessionUpdate::AvailableCommands(_)
+            | AcpSessionUpdate::CurrentMode(_)
+            | AcpSessionUpdate::ConfigOptions(_)
+            | AcpSessionUpdate::SessionInfo { .. }
+            | AcpSessionUpdate::Usage(_) => (0, open),
+        }
+    }
+
     fn malformed(&self) -> RuntimeFailure {
         (self.config.malformed)()
     }
@@ -155,7 +256,7 @@ impl AcpActivityProjection {
             AcpMessageRole::User => unreachable!("user messages returned above"),
         };
         let key = format!("{label}:{}", provider_id.unwrap_or("turn"));
-        let activity = self.open_or_insert(
+        let (activity, is_new, next_id) = self.prepare_activity(
             &key,
             provider_id,
             kind,
@@ -174,19 +275,24 @@ impl AcpActivityProjection {
             })
             .transpose()?
             .flatten();
-        Ok(vec![self.observation(
+        let observation = self.observation(
             &activity,
             ActivityLifecyclePhase::Updated,
             ActivityStatus::InProgress,
             content,
-        )?])
+        )?;
+        self.next_id = next_id;
+        if is_new {
+            self.open.insert(key, activity);
+        }
+        Ok(vec![observation])
     }
 
     fn plan(
         &mut self,
         entries: &[AcpPlanEntry],
     ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
-        let activity = self.open_or_insert(
+        let (activity, is_new, next_id) = self.prepare_activity(
             "plan",
             None,
             ActivityKind::Plan,
@@ -205,6 +311,7 @@ impl AcpActivityProjection {
             ActivityContentStream::PlanText,
             self.config.malformed,
         )?;
+        let tasks = task_list(entries, self.config.malformed)?;
         let observation = self
             .observation(
                 &activity,
@@ -212,8 +319,12 @@ impl AcpActivityProjection {
                 ActivityStatus::InProgress,
                 content,
             )?
-            .with_task_list(task_list(entries, self.config.malformed)?)
+            .with_task_list(tasks)
             .map_err(|_| self.malformed())?;
+        self.next_id = next_id;
+        if is_new {
+            self.open.insert("plan".to_owned(), activity);
+        }
         Ok(vec![observation])
     }
 
@@ -250,7 +361,7 @@ impl AcpActivityProjection {
             return Ok(vec![observation]);
         }
         if status.is_terminal() {
-            let mut activity = self.open_or_insert(
+            let (mut activity, _, next_id) = self.prepare_activity(
                 &key,
                 Some(call.tool_call_id.as_str()),
                 ActivityKind::ProviderOwnedTool,
@@ -272,11 +383,11 @@ impl AcpActivityProjection {
                 status,
                 content,
             )?;
-            self.open.remove(&key);
+            self.next_id = next_id;
             self.closed.insert(key);
             return Ok(vec![started, completed]);
         }
-        let mut activity = self.open_or_insert(
+        let (mut activity, _, next_id) = self.prepare_activity(
             &key,
             Some(call.tool_call_id.as_str()),
             ActivityKind::ProviderOwnedTool,
@@ -286,13 +397,11 @@ impl AcpActivityProjection {
         )?;
         activity.label = label;
         activity.tool_kind = Some(call.kind.clone());
-        self.open.insert(key, activity.clone());
-        Ok(vec![self.observation(
-            &activity,
-            ActivityLifecyclePhase::Started,
-            status,
-            content,
-        )?])
+        let observation =
+            self.observation(&activity, ActivityLifecyclePhase::Started, status, content)?;
+        self.next_id = next_id;
+        self.open.insert(key, activity);
+        Ok(vec![observation])
     }
 
     fn tool_update(
@@ -329,7 +438,7 @@ impl AcpActivityProjection {
             let Some(status) = orphan_terminal_status else {
                 return Ok(Vec::new());
             };
-            let mut activity = self.open_or_insert(
+            let (mut activity, _, next_id) = self.prepare_activity(
                 &key,
                 Some(update.tool_call_id.as_str()),
                 ActivityKind::ProviderOwnedTool,
@@ -351,7 +460,7 @@ impl AcpActivityProjection {
                 status,
                 content,
             )?;
-            self.open.remove(&key);
+            self.next_id = next_id;
             self.closed.insert(key);
             return Ok(vec![started, completed]);
         };
@@ -381,13 +490,10 @@ impl AcpActivityProjection {
     }
 
     fn unknown(&mut self, namespace: &str) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
-        self.next_id = self.next_id.saturating_add(1);
+        let next_id = self.next_id.saturating_add(1);
         let activity = OpenActivity {
-            id: ActivityId::new(format!(
-                "{}:unknown:{}",
-                self.config.id_prefix, self.next_id
-            ))
-            .map_err(|_| self.malformed())?,
+            id: ActivityId::new(format!("{}:unknown:{next_id}", self.config.id_prefix))
+                .map_err(|_| self.malformed())?,
             provider_ref: None,
             kind: ActivityKind::Unknown(
                 ActivityNamespace::new(format!("{}.{namespace}", self.config.namespace_prefix))
@@ -399,30 +505,33 @@ impl AcpActivityProjection {
             label: None,
             tool_kind: None,
         };
-        Ok(vec![self.observation(
+        let observation = self.observation(
             &activity,
             ActivityLifecyclePhase::Completed,
             ActivityStatus::Completed,
             None,
-        )?])
+        )?;
+        self.next_id = next_id;
+        Ok(vec![observation])
     }
 
-    fn open_or_insert(
-        &mut self,
+    fn prepare_activity(
+        &self,
         key: &str,
         provider_ref: Option<&str>,
         kind: ActivityKind,
         assistant_phase: Option<ActivityAssistantPhase>,
         disclosure: ActivityDisclosure,
         status: ActivityStatus,
-    ) -> Result<OpenActivity, RuntimeFailure> {
+    ) -> Result<(OpenActivity, bool, u64), RuntimeFailure> {
         if let Some(activity) = self.open.get(key) {
-            return Ok(activity.clone());
+            return Ok((activity.clone(), false, self.next_id));
         }
+        let mut next_id = self.next_id;
         let id = ActivityId::new(format!("{}:{key}", self.config.id_prefix))
             .or_else(|_| {
-                self.next_id = self.next_id.saturating_add(1);
-                ActivityId::new(format!("{}:minted:{}", self.config.id_prefix, self.next_id))
+                next_id = next_id.saturating_add(1);
+                ActivityId::new(format!("{}:minted:{next_id}", self.config.id_prefix))
             })
             .map_err(|_| self.malformed())?;
         let provider_ref = provider_ref
@@ -439,8 +548,7 @@ impl AcpActivityProjection {
             label: None,
             tool_kind: None,
         };
-        self.open.insert(key.to_owned(), activity.clone());
-        Ok(activity)
+        Ok((activity, true, next_id))
     }
 
     fn observation(

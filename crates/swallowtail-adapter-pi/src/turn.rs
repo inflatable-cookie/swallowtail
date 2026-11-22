@@ -63,6 +63,9 @@ struct AbortSettlementState {
     pending_settled: Option<PendingSettled>,
 }
 
+#[cfg(test)]
+type ReconcileProbeHook = Arc<dyn Fn(bool) + Send + Sync>;
+
 pub(crate) struct ActiveTurn {
     runtime_id: RuntimeTurnId,
     events: TurnEvents,
@@ -83,6 +86,8 @@ pub(crate) struct ActiveTurn {
     finish_signal: Arc<Mutex<FinishedState>>,
     #[cfg(test)]
     after_abort_in_flight_check: Mutex<Option<Arc<dyn Fn() + Send + Sync>>>,
+    #[cfg(test)]
+    before_reconcile_lock: Mutex<Option<ReconcileProbeHook>>,
 }
 
 impl ActiveTurn {
@@ -126,6 +131,8 @@ impl ActiveTurn {
                 finish_signal: Arc::new(Mutex::new(FinishedState::default())),
                 #[cfg(test)]
                 after_abort_in_flight_check: Mutex::new(None),
+                #[cfg(test)]
+                before_reconcile_lock: Mutex::new(None),
             }),
             stream,
             exchange,
@@ -296,6 +303,19 @@ impl ActiveTurn {
     }
 
     pub(crate) fn reconcile_abort_response(&self, success: bool) -> Result<(), RuntimeFailure> {
+        #[cfg(test)]
+        if let Some(hook) = self
+            .before_reconcile_lock
+            .lock()
+            .expect("Pi test hook lock poisoned")
+            .clone()
+        {
+            let contended = matches!(
+                self.abort_state.try_lock(),
+                Err(std::sync::TryLockError::WouldBlock)
+            );
+            hook(contended);
+        }
         let pending = {
             let mut state = self
                 .abort_state
@@ -776,13 +796,13 @@ mod tests {
         use std::sync::mpsc;
         use std::time::Duration;
 
-        // Force `reconcile_abort_response` to run while `handle_event(Settled)`
-        // is paused between checking `abort_in_flight` and writing
-        // `pending_settled`. Under one mutex `reconcile_abort_response` must
-        // block until `pending_settled` is stored, then drain it and finish the
-        // turn. If the check and write are ever separated again,
-        // `reconcile_abort_response` completes inside the window and strands
-        // the turn.
+        // Pause `handle_event(Settled)` between checking `abort_in_flight` and
+        // storing `pending_settled`, then run `reconcile_abort_response`. The
+        // reconciliation probe runs `try_lock()` on `abort_state` while
+        // settlement is still paused and only releases the settlement gate
+        // after recording contention (or after reconciliation completes if
+        // uncontended). Any timeout is strictly a failure watchdog.
+        const WATCHDOG: Duration = Duration::from_secs(5);
         for success in [true, false] {
             let (turn, _events, _callbacks, terminal) = ActiveTurn::new(
                 RuntimeTurnId::new(format!("pi-toctou-gated-{success}")).expect("turn id is valid"),
@@ -796,30 +816,32 @@ mod tests {
             turn.mark_abort_in_flight();
 
             let (checked_tx, checked_rx) = mpsc::channel();
-            let (reconcile_entering_tx, reconcile_entering_rx) = mpsc::channel();
-            let (reconcile_done_tx, reconcile_done_rx) = mpsc::channel();
-            let slipped_through = Arc::new(AtomicBool::new(false));
-            let slipped_hook = Arc::clone(&slipped_through);
-            let reconcile_done_rx = Mutex::new(reconcile_done_rx);
-            let reconcile_entering_rx = Mutex::new(reconcile_entering_rx);
+            let (release_settled_tx, release_settled_rx) = mpsc::channel();
+            let probe_contended = Arc::new(AtomicBool::new(false));
+            let probe_contended_hook = Arc::clone(&probe_contended);
+            let release_settled_rx = Mutex::new(release_settled_rx);
+            let release_settled_hook = Mutex::new(Some(release_settled_tx.clone()));
 
             *turn
                 .after_abort_in_flight_check
                 .lock()
                 .expect("Pi test hook lock poisoned") = Some(Arc::new(move || {
                 checked_tx.send(()).expect("signal checked");
-                reconcile_entering_rx
+                release_settled_rx
                     .lock()
-                    .expect("entering rx lock")
-                    .recv()
-                    .expect("reconcile entering");
-                if reconcile_done_rx
-                    .lock()
-                    .expect("done rx lock")
-                    .recv_timeout(Duration::from_millis(25))
-                    .is_ok()
+                    .expect("release rx lock")
+                    .recv_timeout(WATCHDOG)
+                    .expect("watchdog: reconcile probe did not release settlement gate");
+            }));
+
+            *turn
+                .before_reconcile_lock
+                .lock()
+                .expect("Pi test hook lock poisoned") = Some(Arc::new(move |contended| {
+                probe_contended_hook.store(contended, Ordering::SeqCst);
+                if contended && let Some(tx) = release_settled_hook.lock().expect("tx lock").take()
                 {
-                    slipped_hook.store(true, Ordering::SeqCst);
+                    let _ = tx.send(());
                 }
             }));
 
@@ -832,19 +854,22 @@ mod tests {
                     .expect("settled succeeds");
             });
 
-            checked_rx.recv().expect("settled checked abort_in_flight");
-            reconcile_entering_tx
-                .send(())
-                .expect("notify reconcile entering");
+            checked_rx
+                .recv_timeout(WATCHDOG)
+                .expect("watchdog: settled did not reach abort_in_flight check");
             turn.reconcile_abort_response(success)
                 .expect("reconcile succeeds");
-            let _ = reconcile_done_tx.send(());
+            // If a broken split-lock implementation allowed `try_lock()` to
+            // succeed uncontended, `reconcile_abort_response` has already
+            // finished without draining `pending_settled`; releasing settlement
+            // now lets it write `pending_settled` late and strand the turn.
+            let _ = release_settled_tx.send(());
 
             settled_thread.join().expect("settled thread joins");
 
             assert!(
-                !slipped_through.load(Ordering::SeqCst),
-                "reconcile_abort_response must not complete between abort_in_flight check and pending_settled store (success={success})"
+                probe_contended.load(Ordering::SeqCst),
+                "reconcile_abort_response must observe abort_state lock contention while handle_event(Settled) is between check and store (success={success})"
             );
             assert!(
                 turn.is_finished(),

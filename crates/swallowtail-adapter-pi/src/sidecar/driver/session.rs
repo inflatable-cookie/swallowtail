@@ -107,6 +107,8 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                     "Pi SDK sidecar prompt timed out before acceptance",
                 ));
             }
+            self.connection
+                .reserve_caller_turn_id(request.turn_id().as_str())?;
             let (turn, events, terminal) = SidecarActiveTurn::new(
                 request.turn_id().clone(),
                 Arc::clone(&self.completed_prompts),

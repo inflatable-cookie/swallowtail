@@ -37,6 +37,7 @@ pub(crate) struct SidecarConnection {
     superseded_aborts: Mutex<BTreeSet<String>>,
     abandoned_close: Mutex<Option<String>>,
     used_ids: Mutex<BTreeSet<String>>,
+    used_caller_turn_ids: Mutex<BTreeSet<String>>,
     used_caller_command_ids: Mutex<BTreeSet<String>>,
     next_wire_id: AtomicU64,
     active_turn: Mutex<Option<Arc<SidecarActiveTurn>>>,
@@ -57,6 +58,7 @@ impl SidecarConnection {
             superseded_aborts: Mutex::new(BTreeSet::new()),
             abandoned_close: Mutex::new(None),
             used_ids: Mutex::new(BTreeSet::new()),
+            used_caller_turn_ids: Mutex::new(BTreeSet::new()),
             used_caller_command_ids: Mutex::new(BTreeSet::new()),
             next_wire_id: AtomicU64::new(1),
             active_turn: Mutex::new(None),
@@ -80,6 +82,24 @@ impl SidecarConnection {
         let id = format!("{prefix}:w-{seq}");
         debug_assert!(id.len() <= MAXIMUM_COMMAND_ID_BYTES);
         id
+    }
+
+    /// Reserves a caller-supplied turn ID for `prompt` independently of wire
+    /// IDs and scheduled command IDs so repeating a settled turn ID is rejected
+    /// before dispatch without colliding with connection-owned wire IDs.
+    pub(crate) fn reserve_caller_turn_id(&self, turn_id: &str) -> Result<(), RuntimeFailure> {
+        if !self
+            .used_caller_turn_ids
+            .lock()
+            .expect("sidecar caller turn id lock poisoned")
+            .insert(turn_id.to_owned())
+        {
+            return Err(failure(
+                "swallowtail.pi.sdk-sidecar.command_id_reused",
+                "Pi SDK sidecar command id was reused",
+            ));
+        }
+        Ok(())
     }
 
     /// Reserves a caller-supplied scheduled command ID independently of wire

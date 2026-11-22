@@ -1373,6 +1373,37 @@ fn sidecar_long_caller_ids_produce_bounded_wire_command_ids() {
     }
     drop(short_turn);
 
+    // Repeating a settled turn ID must be rejected before dispatch with no
+    // second prompt write on the wire.
+    let prompt_writes_before = mixed_process
+        .recorded_ids()
+        .iter()
+        .filter(|(cmd, _)| cmd == "prompt")
+        .count();
+    let duplicate_turn_req = TurnRequest::new(
+        RuntimeTurnId::new("w-1").expect("duplicate turn id"),
+        OperationContent::new("duplicate prompt").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(150)));
+    let duplicate_turn_err = futures_executor::block_on(
+        mixed_session.start_turn(duplicate_turn_req, mixed_services.clone()),
+    )
+    .err()
+    .expect("repeating a settled turn ID must be rejected before dispatch");
+    assert_eq!(
+        duplicate_turn_err.diagnostic().code(),
+        "swallowtail.pi.sdk-sidecar.command_id_reused"
+    );
+    assert_eq!(
+        mixed_process
+            .recorded_ids()
+            .iter()
+            .filter(|(cmd, _)| cmd == "prompt")
+            .count(),
+        prompt_writes_before,
+        "repeating a settled turn ID must not write a second prompt to the sidecar"
+    );
+
     // Oversized turn on the same connection must not collide with `"w-1"`.
     let oversized_req = TurnRequest::new(
         RuntimeTurnId::new("x".repeat(160)).expect("long turn id"),

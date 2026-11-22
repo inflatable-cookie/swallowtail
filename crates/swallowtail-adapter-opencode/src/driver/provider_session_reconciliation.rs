@@ -55,7 +55,7 @@ impl ProviderSessionReconciliationDriver for OpenCodeHttpDriver {
                     session_get(
                         agreement.binding().provider_session_ref().as_provider_value(),
                         directory,
-                    ),
+                    )?,
                     ReconciliationControl::new(
                         &services,
                         request.cancellation(),
@@ -114,7 +114,7 @@ impl ProviderSessionReconciliationDriver for OpenCodeHttpDriver {
                         agreement.deadline(),
                         &services,
                         cancelled,
-                        Some(request.cancellation()),
+                        ReplayControl::Reconciliation(request.cancellation()),
                     )
                     .await?;
                 Ok((

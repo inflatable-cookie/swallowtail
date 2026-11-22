@@ -4,11 +4,13 @@ use crate::driver::handle::SessionCancellation;
 use crate::driver::session::{ActiveSlot, PiSessionHandle};
 use crate::driver::validation::validate_open;
 use crate::failure::{failure, unsupported};
+use std::future::{Future, poll_fn};
 use std::sync::atomic::AtomicU32;
 use std::sync::{Arc, Mutex};
+use std::task::Poll;
 use swallowtail_core::PreflightPlan;
 use swallowtail_runtime::{
-    BoxFuture, CredentialLease, EnvironmentRef, ExecutableRef, HostServices,
+    BoxFuture, CredentialLease, Deadline, EnvironmentRef, ExecutableRef, HostServices,
     InteractiveSessionDriver, InteractiveSessionHandle, OpenSessionRequest, ProcessHandle,
     ProcessRequest, ResourceAccess, ResourceRepresentation, ResumeSessionRequest, RuntimeFailure,
     RuntimeSessionId, ScopeId, validate_session_resource_lease,
@@ -168,13 +170,18 @@ impl PiRpcDriver {
         ))
         .with_environment([self.environment.clone()])
         .with_working_resource(working_resource);
-        let process: Arc<dyn ProcessHandle> = match services
-            .process()
-            .expect("validated Pi process service")
-            .start(scope.clone(), process_request)
-            .await
+        let deadline = request.deadline();
+        let process: Arc<dyn ProcessHandle> = match start_process_before_deadline(
+            scope.clone(),
+            process_request,
+            deadline,
+            &services,
+            "swallowtail.pi.rpc.open_deadline_elapsed",
+            "Pi RPC session deadline elapsed during process start",
+        )
+        .await
         {
-            Ok(process) => Arc::from(process),
+            Ok(process) => process,
             Err(error) => {
                 let _ = resource_service
                     .release(resource.take().expect("Pi resource was resolved"))
@@ -210,10 +217,16 @@ impl PiRpcDriver {
                 return Err(error);
             }
         };
-        if let Err(error) = startup::configure(
-            &connection,
-            plan.provider_id().expect("validated Pi provider").as_str(),
-            plan.model_id().expect("validated Pi model").as_str(),
+        if let Err(error) = run_before_deadline(
+            startup::configure(
+                &connection,
+                plan.provider_id().expect("validated Pi provider").as_str(),
+                plan.model_id().expect("validated Pi model").as_str(),
+            ),
+            deadline,
+            &services,
+            "swallowtail.pi.rpc.open_deadline_elapsed",
+            "Pi RPC session deadline elapsed during startup configuration",
         )
         .await
         {
@@ -267,11 +280,133 @@ impl PiRpcDriver {
     }
 }
 
+pub(crate) fn deadline_elapsed(deadline: Option<Deadline>, services: &HostServices) -> bool {
+    deadline.is_some_and(|deadline| {
+        services.time().expect("validated Pi time service").now() >= deadline.instant()
+    })
+}
+
+pub(crate) async fn start_process_before_deadline(
+    scope: ScopeId,
+    process_request: ProcessRequest,
+    deadline: Option<Deadline>,
+    services: &HostServices,
+    timeout_code: &'static str,
+    timeout_message: &'static str,
+) -> Result<Arc<dyn ProcessHandle>, RuntimeFailure> {
+    if deadline_elapsed(deadline, services) {
+        return Err(failure(timeout_code, timeout_message));
+    }
+    let mut start_future = services
+        .process()
+        .expect("validated Pi process service")
+        .start(scope, process_request);
+    let process: Arc<dyn ProcessHandle> = match deadline {
+        None => Arc::from(start_future.await?),
+        Some(deadline) => {
+            let time = services.time().expect("validated Pi time service");
+            let mut wait = time.wait_until(deadline);
+            let started = poll_fn(|context| {
+                // Poll `start_future` first so a synchronous `ProcessService::start`
+                // that already spawned a child and returned a ready handle is
+                // extracted and explicitly reaped if the deadline elapsed during
+                // launch, rather than dropped without waiting.
+                if let Poll::Ready(result) = start_future.as_mut().poll(context) {
+                    return Poll::Ready(Ok(result));
+                }
+                if time.now() >= deadline.instant() || wait.as_mut().poll(context).is_ready() {
+                    return Poll::Ready(Err(failure(timeout_code, timeout_message)));
+                }
+                Poll::Pending
+            })
+            .await??;
+            Arc::from(started)
+        }
+    };
+    if deadline_elapsed(deadline, services) {
+        let _ = process.force_stop().await;
+        let _ = process.wait().await;
+        return Err(failure(timeout_code, timeout_message));
+    }
+    Ok(process)
+}
+
+pub(crate) async fn run_before_deadline<T, F>(
+    work: F,
+    deadline: Option<Deadline>,
+    services: &HostServices,
+    timeout_code: &'static str,
+    timeout_message: &'static str,
+) -> Result<T, RuntimeFailure>
+where
+    F: Future<Output = Result<T, RuntimeFailure>>,
+{
+    let Some(deadline) = deadline else {
+        return work.await;
+    };
+    let time = services.time().expect("validated Pi time service");
+    if time.now() >= deadline.instant() {
+        return Err(failure(timeout_code, timeout_message));
+    }
+    let mut wait = time.wait_until(deadline);
+    let mut work = Box::pin(work);
+    poll_fn(|context| {
+        if let Poll::Ready(result) = work.as_mut().poll(context) {
+            return Poll::Ready(result);
+        }
+        if wait.as_mut().poll(context).is_ready() {
+            return Poll::Ready(Err(failure(timeout_code, timeout_message)));
+        }
+        Poll::Pending
+    })
+    .await
+}
+
 pub use descriptor::pi_rpc_descriptor;
 
 #[cfg(test)]
 mod tests {
-    use swallowtail_runtime::{RequestId, RuntimeSessionId};
+    use super::run_before_deadline;
+    use std::sync::Arc;
+    use swallowtail_core::ExecutionHostId;
+    use swallowtail_runtime::{
+        BoxFuture, Deadline, DeadlineObservation, HostServices, MonotonicInstant, RequestId,
+        RuntimeFailure, RuntimeSessionId, TimeService,
+    };
+
+    struct ExpiredClock;
+
+    impl TimeService for ExpiredClock {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(10)
+        }
+
+        fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+            Box::pin(
+                async move { DeadlineObservation::new(deadline, MonotonicInstant::from_ticks(10)) },
+            )
+        }
+    }
+
+    #[test]
+    fn run_before_deadline_fails_pending_startup_when_deadline_elapses() {
+        let services = HostServices::new(
+            ExecutionHostId::new("pi.rpc.deadline-test").expect("host id is valid"),
+        )
+        .with_time(Arc::new(ExpiredClock));
+        let error = futures_executor::block_on(run_before_deadline(
+            std::future::pending::<Result<(), RuntimeFailure>>(),
+            Some(Deadline::at(MonotonicInstant::from_ticks(5))),
+            &services,
+            "swallowtail.pi.rpc.open_deadline_elapsed",
+            "Pi RPC session deadline elapsed during startup",
+        ))
+        .expect_err("pending startup must time out");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.pi.rpc.open_deadline_elapsed"
+        );
+    }
 
     #[test]
     fn oversized_request_ids_derive_runtime_session_ids_without_panicking() {

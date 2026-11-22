@@ -12,8 +12,8 @@ use std::task::{Context, Poll};
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind, HostServices,
-    ProcessExit, ProcessHandle, ProcessOutputChunk, RuntimeEvent, RuntimeEventSender,
-    RuntimeFailure, TerminalOutcome, TerminalStatus,
+    ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk, RuntimeEvent,
+    RuntimeEventSender, RuntimeFailure, StructuredRunRequest, TerminalOutcome, TerminalStatus,
 };
 
 /// Route identity stamped on every pump observation and failure.
@@ -36,6 +36,8 @@ pub(crate) struct PumpRoute {
     pub(crate) process_cleanup_failed: &'static str,
     /// Failure code for an event that could not reach the consumer.
     pub(crate) event_delivery_failed: &'static str,
+    /// Failure code for stdin close failing after writing the prompt.
+    pub(crate) stdin_close_failed: &'static str,
 }
 
 /// Route identity for the structured headless route.
@@ -49,6 +51,7 @@ pub(crate) const HEADLESS_PUMP_ROUTE: PumpRoute = PumpRoute {
     process_wait_failed: "swallowtail.claude_code.headless.process_wait_failed",
     process_cleanup_failed: "swallowtail.claude_code.headless.process_cleanup_failed",
     event_delivery_failed: "swallowtail.claude_code.headless.event_delivery_failed",
+    stdin_close_failed: "swallowtail.claude_code.headless.stdin_close_failed",
 };
 
 /// Route identity for the tool-free response-only route.
@@ -62,7 +65,27 @@ pub(crate) const RESPONSE_ONLY_PUMP_ROUTE: PumpRoute = PumpRoute {
     process_wait_failed: "swallowtail.claude_code.response_only.process_wait_failed",
     process_cleanup_failed: "swallowtail.claude_code.response_only.process_cleanup_failed",
     event_delivery_failed: "swallowtail.claude_code.response_only.event_delivery_failed",
+    stdin_close_failed: "swallowtail.claude_code.response_only.stdin_close_failed",
 };
+
+/// Writes the structured-run prompt to stdin and closes stdin so the CLI runs.
+pub(crate) async fn write_prompt(
+    route: &PumpRoute,
+    process: &dyn ProcessHandle,
+    request: &StructuredRunRequest,
+) -> Result<(), RuntimeFailure> {
+    process
+        .write_stdin(ProcessInputChunk::new(
+            request.content().as_str().as_bytes().to_vec(),
+        ))
+        .await?;
+    process.close_stdin().await.map_err(|_| {
+        RuntimeFailure::new(SafeDiagnostic::new(
+            route.stdin_close_failed,
+            format!("{} process stdin could not be closed", route.label),
+        ))
+    })
+}
 
 /// What one poll of the child process produced.
 pub(crate) enum NextOutput {

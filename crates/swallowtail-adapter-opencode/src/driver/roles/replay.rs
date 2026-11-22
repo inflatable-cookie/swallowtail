@@ -1,3 +1,10 @@
+#[derive(Clone, Copy)]
+enum ReplayControl<'a> {
+    SessionLoad,
+    Reconciliation(&'a swallowtail_runtime::ImmediateCancellation),
+    SessionHistory(&'a swallowtail_runtime::ImmediateCancellation),
+}
+
 impl OpenCodeHttpDriver {
     async fn load_replay(
         &self,
@@ -6,7 +13,7 @@ impl OpenCodeHttpDriver {
         deadline: Option<Deadline>,
         services: &HostServices,
         cancelled: Arc<AtomicBool>,
-        reconciliation_cancellation: Option<&swallowtail_runtime::ImmediateCancellation>,
+        control: ReplayControl<'_>,
     ) -> Result<Vec<swallowtail_runtime::SessionReplayItem>, RuntimeFailure> {
         let mut pages = Vec::new();
         let mut before = None;
@@ -21,9 +28,9 @@ impl OpenCodeHttpDriver {
                 source.directory,
                 CONTINUITY_PAGE_LIMIT,
                 before.as_deref(),
-            );
-            let response = match reconciliation_cancellation {
-                Some(cancellation) => {
+            )?;
+            let response = match control {
+                ReplayControl::Reconciliation(cancellation) => {
                     reconciliation_request(
                         &self.transport,
                         scope.clone(),
@@ -38,7 +45,23 @@ impl OpenCodeHttpDriver {
                     )
                     .await?
                 }
-                None => {
+                ReplayControl::SessionHistory(cancellation) => {
+                    reconciliation_request(
+                        &self.transport,
+                        scope.clone(),
+                        source.endpoint.to_owned(),
+                        message_request,
+                        ReconciliationControl::new(
+                            services,
+                            cancellation,
+                            deadline,
+                            Arc::clone(&cancelled),
+                        )
+                        .for_session_history(),
+                    )
+                    .await?
+                }
+                ReplayControl::SessionLoad => {
                     complete_before_deadline(
                         self.transport.request(
                             scope.clone(),

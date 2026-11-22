@@ -21,13 +21,16 @@ impl AppServerActivityProjection {
         child_status: SubagentStatus,
     ) -> Result<ActivityObservation, RuntimeFailure> {
         let source_key = format!("child-turn:{}:{provider_turn_id}", child.as_str());
+        let identity = ItemIdentity::new(
+            ActivityKind::SubagentOrCollaboration,
+            None,
+            ActivityDisclosure::IdentityAndLifecycleOnly,
+        );
+        let active = !matches!(phase, ActivityLifecyclePhase::Completed);
+        self.track_item(&source_key, identity.clone(), None, active)?;
         self.observation(
             ActivitySource::new(&source_key, Some(provider_turn_id)),
-            ItemIdentity::new(
-                ActivityKind::SubagentOrCollaboration,
-                None,
-                ActivityDisclosure::IdentityAndLifecycleOnly,
-            ),
+            identity,
             phase,
             status,
             ObservationDetail::with_subagent(
@@ -141,17 +144,13 @@ impl AppServerActivityProjection {
         let provider_id = required_text(item, "id")?;
         let projection =
             super::item::item_projection(item, phase, Some(self.root_provider_thread_id.as_str()))?;
-        if let Some(existing) = self.items.get(provider_id) {
-            if existing != &projection.identity {
-                return Err(malformed_notification());
-            }
-        } else {
-            self.items
-                .insert(provider_id.to_owned(), projection.identity.clone());
-        }
-        if let Some(label) = projection.label {
-            self.labels.insert(provider_id.to_owned(), label);
-        }
+        let active = !matches!(phase, ActivityLifecyclePhase::Completed);
+        self.track_item(
+            provider_id,
+            projection.identity.clone(),
+            projection.label,
+            active,
+        )?;
         let correlation = self.correlations.get(provider_id).cloned();
         Ok(vec![self.observation(
             ActivitySource::new(provider_id, Some(provider_id)),
@@ -173,11 +172,7 @@ impl AppServerActivityProjection {
         let provider_id = required_text(params, "itemId")?;
         let fallback =
             ItemIdentity::new(fallback_kind, fallback_assistant_phase, fallback_disclosure);
-        let identity = self
-            .items
-            .entry(provider_id.to_owned())
-            .or_insert(fallback)
-            .clone();
+        let identity = self.get_or_track_item(provider_id, || fallback)?;
         let correlation = self.correlations.get(provider_id).cloned();
         Ok(vec![self.observation(
             ActivitySource::new(provider_id, Some(provider_id)),
@@ -193,17 +188,13 @@ impl AppServerActivityProjection {
         params: &Value,
     ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
         let provider_id = required_text(params, "itemId")?;
-        let identity = self
-            .items
-            .entry(provider_id.to_owned())
-            .or_insert_with(|| {
-                ItemIdentity::new(
-                    ActivityKind::AssistantMessage,
-                    Some(ActivityAssistantPhase::ProviderUnspecified),
-                    ActivityDisclosure::IdentityAndLifecycleOnly,
-                )
-            })
-            .clone();
+        let identity = self.get_or_track_item(provider_id, || {
+            ItemIdentity::new(
+                ActivityKind::AssistantMessage,
+                Some(ActivityAssistantPhase::ProviderUnspecified),
+                ActivityDisclosure::IdentityAndLifecycleOnly,
+            )
+        })?;
         let content = match identity.assistant_phase {
             Some(ActivityAssistantPhase::Intermediate) => {
                 content::text_delta(params, ActivityContentStream::IntermediateAssistantText)?

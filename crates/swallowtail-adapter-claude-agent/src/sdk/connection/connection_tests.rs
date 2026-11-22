@@ -192,3 +192,23 @@ fn deadline_recipient_retains_until_drain_and_interrupt_command_settle() {
         );
     }
 }
+
+#[test]
+fn used_ids_stays_bounded_and_rejects_recent_duplicates() {
+    let mut set = BoundedIdSet::new(4);
+    for idx in 0..4 {
+        assert!(set.insert(format!("cmd:{idx}")));
+    }
+    assert!(
+        !set.insert("cmd:0".to_owned()),
+        "duplicate within window is rejected"
+    );
+    assert!(set.insert("cmd:4".to_owned()), "new id evicts oldest entry");
+    assert_eq!(set.len(), 4);
+    assert!(!set.insert("cmd:1".to_owned()), "recent id remains tracked");
+    assert!(
+        set.insert("cmd:0".to_owned()),
+        "evicted oldest id no longer consumes memory"
+    );
+    assert_eq!(set.len(), 4);
+}

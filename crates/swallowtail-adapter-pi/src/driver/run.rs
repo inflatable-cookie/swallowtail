@@ -45,7 +45,7 @@ impl StructuredRunDriver for PiRpcDriver {
                     .working_resource()
                     .expect("validated Pi working resource")
                     .clone(),
-                None,
+                request.deadline(),
                 SessionPlanAgreement::explicit(
                     SessionAccessPolicy::ambient_harness(ResourceAccess::Read),
                     Some(SessionProviderStatePolicy::Prohibited),

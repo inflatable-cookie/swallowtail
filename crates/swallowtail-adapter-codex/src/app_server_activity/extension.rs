@@ -23,13 +23,17 @@ impl AppServerActivityProjection {
         } else {
             ActivityStatus::InProgress
         };
+        let key = format!("hook:{id}");
+        let identity = ItemIdentity::new(
+            ActivityKind::Hook,
+            None,
+            ActivityDisclosure::AdapterNormalizedSummary,
+        );
+        let active = !matches!(phase, ActivityLifecyclePhase::Completed);
+        self.track_item(&key, identity.clone(), None, active)?;
         Ok(vec![self.observation(
-            ActivitySource::new(&format!("hook:{id}"), Some(id)),
-            ItemIdentity::new(
-                ActivityKind::Hook,
-                None,
-                ActivityDisclosure::AdapterNormalizedSummary,
-            ),
+            ActivitySource::new(&key, Some(id)),
+            identity,
             phase,
             status,
             ObservationDetail::primary(None, content::hook_summary(run, phase)?),

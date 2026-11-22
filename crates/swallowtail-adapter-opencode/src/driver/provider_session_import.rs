@@ -92,7 +92,7 @@ impl OpenCodeHttpDriver {
             ).await?;
             require_health_matches(&health, &version).map_err(import_revalidation)?;
             let lookup = controlled_request(
-                &self.transport, scope.clone(), access.endpoint.clone(), session_get(request.provider_session_ref().as_provider_value(), directory),
+                &self.transport, scope.clone(), access.endpoint.clone(), session_get(request.provider_session_ref().as_provider_value(), directory).map_err(import_revalidation)?,
                 &services, request.cancellation(), request.agreement().deadline(), ProviderSessionOperationFailureStage::ImportRevalidation,
             ).await?;
             let observed = parse_session_lookup(&lookup).map_err(import_revalidation)?;

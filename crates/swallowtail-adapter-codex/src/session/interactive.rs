@@ -212,7 +212,12 @@ impl InteractiveSessionHandle for CodexSessionHandle {
             services,
             Box::pin(async move {
             let close = self.connection.close_input().await;
-            let join = self.task.join_or_escalate(self.connection.process(), budget).await;
+            let join = self
+                .task
+                .join_or_escalate_with_abort(self.connection.process(), budget, || {
+                    self.connection.abort_pump();
+                })
+                .await;
             let process_cleanup = if close.is_err() || join.is_err() {
                 CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
                     "swallowtail.codex.app_server.session_close_failed",

@@ -67,34 +67,13 @@ impl CallbackHub {
         provider_request_id: Value,
         provider_call_id: String,
     ) -> Result<(), RuntimeFailure> {
-        let mut state = self.state.lock().expect("callback state lock poisoned");
-        if state.closed {
-            return Err(callback_closed());
-        }
-        if state.pending.len() >= CALLBACK_CAPACITY || state.requests.len() >= CALLBACK_CAPACITY {
-            return Err(failure(
-                "swallowtail.codex.app_server.callback_capacity_exceeded",
-                "Codex app-server exceeded the bounded callback capacity",
-            ));
-        }
-        if !state.provider_call_ids.insert(provider_call_id.clone()) {
-            return Err(failure(
-                "swallowtail.codex.app_server.callback_provider_id_reused",
-                "Codex app-server reused a dynamic tool call id",
-            ));
-        }
-        state.pending.insert(
-            request.callback_id().clone(),
-            PendingCallback {
-                provider_request_id,
-                provider_call_id,
-                operation_id: request.operation_id().clone(),
-                kind: PendingCallbackKind::DynamicTool,
-            },
-        );
-        state.requests.push_back(request);
-        wake(&mut state);
-        Ok(())
+        self.enqueue(
+            request,
+            provider_request_id,
+            provider_call_id,
+            PendingCallbackKind::DynamicTool,
+            "Codex app-server reused a dynamic tool call id",
+        )
     }
 
     pub(crate) fn enqueue_user_input(
@@ -103,6 +82,23 @@ impl CallbackHub {
         provider_request_id: Value,
         provider_call_id: String,
         user_input: HarnessUserInputRequest,
+    ) -> Result<(), RuntimeFailure> {
+        self.enqueue(
+            request,
+            provider_request_id,
+            provider_call_id,
+            PendingCallbackKind::UserInput(user_input),
+            "Codex app-server reused a user-input item id",
+        )
+    }
+
+    fn enqueue(
+        &self,
+        request: CallbackRequest,
+        provider_request_id: Value,
+        provider_call_id: String,
+        kind: PendingCallbackKind,
+        duplicate_message: &'static str,
     ) -> Result<(), RuntimeFailure> {
         let mut state = self.state.lock().expect("callback state lock poisoned");
         if state.closed {
@@ -117,7 +113,7 @@ impl CallbackHub {
         if !state.provider_call_ids.insert(provider_call_id.clone()) {
             return Err(failure(
                 "swallowtail.codex.app_server.callback_provider_id_reused",
-                "Codex app-server reused a user-input item id",
+                duplicate_message,
             ));
         }
         state.pending.insert(
@@ -126,7 +122,7 @@ impl CallbackHub {
                 provider_request_id,
                 provider_call_id,
                 operation_id: request.operation_id().clone(),
-                kind: PendingCallbackKind::UserInput(user_input),
+                kind,
             },
         );
         state.requests.push_back(request);

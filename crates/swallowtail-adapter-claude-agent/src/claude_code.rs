@@ -11,9 +11,9 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     ActivityOperationId, BoxFuture, EnvironmentRef, ExecutableRef, HostServices, ProcessHandle,
-    ProcessInputChunk, ProcessRequest, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
-    RuntimeRunId, RuntimeTurnId, ScopeId, StructuredRunDriver, StructuredRunRequest,
-    WatcherHostService, runtime_event_channel, terminal_outcome_channel,
+    ProcessRequest, RunHandle, RuntimeEvent, RuntimeEventKind, RuntimeFailure, RuntimeRunId,
+    RuntimeTurnId, ScopeId, StructuredRunDriver, StructuredRunRequest, WatcherHostService,
+    runtime_event_channel, terminal_outcome_channel,
 };
 
 pub(crate) const DRIVER_ID: &str = "swallowtail.claude-code.headless";
@@ -261,7 +261,13 @@ impl ClaudeCodeHeadlessDriver {
                     return Err(error);
                 }
             };
-        if let Err(error) = write_prompt(process.as_ref(), &request).await {
+        if let Err(error) = crate::claude_code_pump_common::write_prompt(
+            &crate::claude_code_pump_common::HEADLESS_PUMP_ROUTE,
+            process.as_ref(),
+            &request,
+        )
+        .await
+        {
             cleanup_failed_start(process.as_ref()).await;
             if let Some(binding) = watcher_binding {
                 let _ = binding
@@ -365,23 +371,6 @@ fn watcher_turn(request: &StructuredRunRequest) -> Result<RuntimeTurnId, Runtime
         failure(
             "swallowtail.claude_code.headless.turn_invalid",
             "Claude Code headless watcher turn identity was invalid",
-        )
-    })
-}
-
-async fn write_prompt(
-    process: &dyn ProcessHandle,
-    request: &StructuredRunRequest,
-) -> Result<(), RuntimeFailure> {
-    process
-        .write_stdin(ProcessInputChunk::new(
-            request.content().as_str().as_bytes().to_vec(),
-        ))
-        .await?;
-    process.close_stdin().await.map_err(|_| {
-        failure(
-            "swallowtail.claude_code.headless.stdin_close_failed",
-            "Claude Code headless process stdin could not be closed",
         )
     })
 }

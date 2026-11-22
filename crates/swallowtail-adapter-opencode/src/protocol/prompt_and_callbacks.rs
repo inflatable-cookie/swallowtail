@@ -12,6 +12,7 @@ pub(crate) fn prompt(
     directory: &str,
     payload: PromptPayload<'_>,
 ) -> Result<Request, RuntimeFailure> {
+    let session_id = safe_session_path_id(session_id)?;
     let mut body = json!({
         "model": {"providerID": provider_id, "modelID": model_id},
         "parts": [{"type": "text", "text": payload.content}]
@@ -225,15 +226,31 @@ fn typed_answers(
     Ok(json!({"answers": answers}))
 }
 
-fn safe_path_id(value: &str) -> Result<&str, RuntimeFailure> {
-    if value.is_empty()
-        || !value
+fn is_safe_path_id(value: &str) -> bool {
+    !value.is_empty()
+        && value != "."
+        && value != ".."
+        && value
             .bytes()
             .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-' | b'.' | b'~'))
-    {
-        Err(callback_malformed())
-    } else {
+}
+
+fn safe_path_id(value: &str) -> Result<&str, RuntimeFailure> {
+    if is_safe_path_id(value) {
         Ok(value)
+    } else {
+        Err(callback_malformed())
+    }
+}
+
+fn safe_session_path_id(session_id: &str) -> Result<&str, RuntimeFailure> {
+    if is_safe_path_id(session_id) {
+        Ok(session_id)
+    } else {
+        Err(failure(
+            "swallowtail.opencode.session_invalid",
+            "OpenCode session identity is not a safe HTTP path segment",
+        ))
     }
 }
 
@@ -244,21 +261,13 @@ fn callback_malformed() -> RuntimeFailure {
     )
 }
 
-pub(crate) fn abort(session_id: &str, directory: &str) -> Request {
-    Request::post(format!("/session/{session_id}/abort"), None).with_directory(directory)
+pub(crate) fn abort(session_id: &str, directory: &str) -> Result<Request, RuntimeFailure> {
+    let session_id = safe_session_path_id(session_id)?;
+    Ok(Request::post(format!("/session/{session_id}/abort"), None).with_directory(directory))
 }
 
 pub(crate) fn session_delete(session_id: &str, directory: &str) -> Result<Request, RuntimeFailure> {
-    if session_id.is_empty()
-        || !session_id
-            .bytes()
-            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-' | b'.' | b'~'))
-    {
-        return Err(failure(
-            "swallowtail.opencode.session_invalid",
-            "OpenCode session identity is not a safe HTTP path segment",
-        ));
-    }
+    let session_id = safe_session_path_id(session_id)?;
     Ok(Request::delete(format!("/session/{session_id}")).with_directory(directory))
 }
 

@@ -304,7 +304,12 @@ impl ActiveTurn {
     }
 
     fn content_event(&self, kind: RuntimeEventKind, value: String) -> Result<(), RuntimeFailure> {
-        let content = OperationContent::new(value).map_err(|_| malformed_ui_sequence())?;
+        let content = OperationContent::new(value).map_err(|_| {
+            failure(
+                "swallowtail.pi.rpc.event_content_invalid",
+                "Pi RPC event content was invalid",
+            )
+        })?;
         let sequence = self.next_sequence();
         self.events
             .send(RuntimeEvent::with_content(sequence, kind, content))
@@ -367,4 +372,29 @@ fn malformed_ui_sequence() -> RuntimeFailure {
         "swallowtail.pi.rpc.ui_request_invalid",
         "Pi RPC extension UI request was invalid",
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::Weak;
+    use std::sync::atomic::AtomicU32;
+
+    #[test]
+    fn content_event_reports_event_content_invalid_on_empty_content() {
+        let (turn, _events, _callbacks, _terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("pi-content-test").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+            Weak::new(),
+            false,
+        )
+        .expect("active turn constructs");
+        let error = turn
+            .content_event(RuntimeEventKind::OutputDelta, String::new())
+            .expect_err("empty content must be rejected");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.pi.rpc.event_content_invalid"
+        );
+    }
 }

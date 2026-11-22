@@ -7,9 +7,7 @@ use crate::session_input::CodexSessionInput;
 use crate::session_open::PendingSessionOpen;
 use crate::session_replay::{MAXIMUM_REPLAY_BYTES, MAXIMUM_REPLAY_ITEMS};
 use serde_json::Value;
-use std::future::poll_fn;
 use std::sync::Arc;
-use std::task::Poll;
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, Capability, CapabilityConstraint, DriverDescriptor,
     DriverRole, ExecutionLayer, HarnessConfigurationPosture, HostServiceKind, IntegrationFamilyId,
@@ -199,11 +197,19 @@ impl ModelCatalogDriver for CodexAppServerDriver {
                     },
                 )
                 .await?;
-            let result = match deadline {
-                Some(deadline) => {
-                    catalog_before_deadline(self.read_catalog(&connection), deadline).await
-                }
-                None => self.read_catalog(&connection).await,
+            let result = match crate::control_wait::wait_controlled_optional(
+                self.read_catalog(&connection),
+                None,
+                deadline,
+            )
+            .await
+            {
+                crate::control_wait::Controlled::Completed(result) => result,
+                crate::control_wait::Controlled::Deadline
+                | crate::control_wait::Controlled::Cancelled => Err(failure(
+                    "swallowtail.codex.app_server.catalog_timed_out",
+                    "Codex model discovery timed out",
+                )),
             };
             let budget = close_budget(&services, request.deadline());
             let cleanup = close_connection(&connection, task, budget).await;
@@ -217,29 +223,6 @@ impl ModelCatalogDriver for CodexAppServerDriver {
             }
         })
     }
-}
-
-async fn catalog_before_deadline<F>(
-    catalog: F,
-    mut deadline: BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
-) -> Result<Vec<ModelCatalogEntry>, RuntimeFailure>
-where
-    F: std::future::Future<Output = Result<Vec<ModelCatalogEntry>, RuntimeFailure>>,
-{
-    let mut catalog = Box::pin(catalog);
-    poll_fn(|context| {
-        if let Poll::Ready(result) = catalog.as_mut().poll(context) {
-            return Poll::Ready(result);
-        }
-        if deadline.as_mut().poll(context).is_ready() {
-            return Poll::Ready(Err(failure(
-                "swallowtail.codex.app_server.catalog_timed_out",
-                "Codex model discovery timed out",
-            )));
-        }
-        Poll::Pending
-    })
-    .await
 }
 
 include!("app_server/session_role.rs");

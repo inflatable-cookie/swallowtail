@@ -83,10 +83,21 @@ impl AppServerTask {
         self.task.join().await
     }
 
+    #[cfg(test)]
     pub(crate) async fn join_or_escalate(
+        self,
+        process: &dyn ProcessHandle,
+        budget: CloseBudget,
+    ) -> Result<(), RuntimeFailure> {
+        self.join_or_escalate_with_abort(process, budget, || {})
+            .await
+    }
+
+    pub(crate) async fn join_or_escalate_with_abort(
         mut self,
         process: &dyn ProcessHandle,
         budget: CloseBudget,
+        on_abort: impl FnOnce(),
     ) -> Result<(), RuntimeFailure> {
         let CloseBudget {
             time,
@@ -116,8 +127,19 @@ impl AppServerTask {
             return self.task.join().await;
         }
         let stop = process.force_stop().await;
-        let join = self.join().await;
-        stop.and(join)
+        if stop.is_ok() {
+            return self.join().await;
+        }
+        // When `force_stop` is refused and stdout remains open, wait up to the
+        // remaining budget for the pump to finish on its own; if it is still
+        // blocked on `read_output()` or `wait()`, abort the pump and join it
+        // cleanly so even join-on-drop hosts never block indefinitely.
+        let final_wait = stages.and_then(|(time, _, _)| deadline.map(|d| (time, d)));
+        if !self.finishes_before(wait_for(final_wait, blocking)).await {
+            on_abort();
+        }
+        let _ = self.join().await;
+        stop
     }
 
     async fn finishes_before(&mut self, wait: Wait<'_>) -> bool {

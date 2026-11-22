@@ -144,6 +144,9 @@ impl SidecarConnection {
             .active_turn
             .lock()
             .expect("sidecar active lock poisoned");
+        if self.closed.load(Ordering::SeqCst) {
+            return Err(self.closed_failure());
+        }
         if active.as_ref().is_some_and(|active| !active.is_finished()) {
             return Err(failure(
                 "swallowtail.pi.sdk-sidecar.turn_active",
@@ -152,6 +155,51 @@ impl SidecarConnection {
         }
         *active = Some(turn);
         Ok(())
+    }
+
+    /// Closes the connection to any further commands or turns when `turn`'s
+    /// abort was rejected while `turn` is still the active unfinished turn.
+    ///
+    /// If `turn` already settled (or a replacement turn now owns the slot),
+    /// the late refusal is ignored so it cannot terminate a replacement turn.
+    pub(crate) fn close_on_rejected_abort(
+        &self,
+        turn: &Arc<SidecarActiveTurn>,
+        diagnostic: SafeDiagnostic,
+    ) -> bool {
+        let mut active = self
+            .active_turn
+            .lock()
+            .expect("sidecar active lock poisoned");
+        let is_current_unfinished = !turn.is_finished()
+            && active
+                .as_ref()
+                .is_some_and(|current| Arc::ptr_eq(current, turn));
+        if !is_current_unfinished {
+            return false;
+        }
+        let pending = {
+            let mut pending = self.pending.lock().expect("sidecar pending lock poisoned");
+            *self
+                .terminal_error
+                .lock()
+                .expect("sidecar terminal-error lock poisoned") = Some(diagnostic.clone());
+            self.closed.store(true, Ordering::SeqCst);
+            std::mem::take(&mut *pending)
+        };
+        let active_turn = active.take();
+        drop(active);
+        for (_, pending) in pending {
+            pending
+                .sender
+                .complete(Err(RuntimeFailure::new(diagnostic.clone())));
+        }
+        if let Some(active_turn) = active_turn
+            && !active_turn.is_finished()
+        {
+            active_turn.fail_connection(diagnostic);
+        }
+        true
     }
 
     pub(crate) fn clear_active_turn(&self, turn: &Arc<SidecarActiveTurn>) {

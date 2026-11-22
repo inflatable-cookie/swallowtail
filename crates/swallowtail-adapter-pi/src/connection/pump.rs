@@ -197,7 +197,7 @@ impl PiConnection {
         Ok(())
     }
 
-    fn fail_pending(&self, error: RuntimeFailure) {
+    pub(super) fn fail_pending(&self, error: RuntimeFailure) {
         let pending = std::mem::take(&mut *self.pending.lock().expect("Pi pending lock poisoned"));
         for (_, pending) in pending {
             pending.sender.complete(Err(error.clone()));

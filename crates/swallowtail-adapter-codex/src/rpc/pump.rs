@@ -1,5 +1,28 @@
 impl RpcConnection {
     pub(crate) async fn pump(self: Arc<Self>) {
+        // Race the entire pump lifecycle (stdout reads, pump-owned dispatch
+        // writes, protocol-error force-stop, and process wait) against the
+        // abort signal so a refused stop can never strand the pump task on any
+        // pending host future.
+        let aborted = {
+            let mut body = std::pin::pin!(self.pump_body());
+            std::future::poll_fn(|context| {
+                if self.pump_stop.poll_stopped(context).is_ready() {
+                    return Poll::Ready(true);
+                }
+                match body.as_mut().poll(context) {
+                    Poll::Ready(()) => Poll::Ready(false),
+                    Poll::Pending => Poll::Pending,
+                }
+            })
+            .await
+        };
+        if aborted {
+            self.finish_pump_aborted();
+        }
+    }
+
+    async fn pump_body(&self) {
         let mut pending_bytes = Vec::new();
         let mut protocol_failure = None;
         loop {
@@ -56,6 +79,14 @@ impl RpcConnection {
             let _ = self.process.force_stop().await;
         }
         let exit = self.process.wait().await;
+        self.finish_pump(exit.is_ok(), protocol_failure);
+    }
+
+    fn finish_pump_aborted(&self) {
+        self.finish_pump(false, None);
+    }
+
+    fn finish_pump(&self, exit_ok: bool, protocol_failure: Option<RuntimeFailure>) {
         {
             // Setting `closed` under the pending lock orders it against
             // request registration: a request either lands before this drain
@@ -66,7 +97,7 @@ impl RpcConnection {
                 .expect("RPC pending-response lock poisoned");
             self.closed.store(true, Ordering::SeqCst);
         }
-        let cleanup = if exit.is_ok() {
+        let cleanup = if exit_ok {
             CleanupOutcome::Clean
         } else {
             CleanupOutcome::Failed(SafeDiagnostic::new(

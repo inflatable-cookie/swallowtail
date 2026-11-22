@@ -21,6 +21,50 @@ const PERMISSION_NAMESPACE: &str = "acp/session/request-permission";
 const CALLBACK_CAPACITY: usize = 16;
 const CALLBACK_BYTES: usize = 64 * 1024;
 const MAXIMUM_OPTION_ID_BYTES: usize = 512;
+/// Maximum number of recent provider callback ids retained for duplicate rejection.
+const MAXIMUM_TRACKED_PROVIDER_IDS: usize = 1024;
+
+pub(super) struct BoundedProviderIds {
+    entries: BTreeSet<String>,
+    order: VecDeque<String>,
+    capacity: usize,
+}
+
+impl BoundedProviderIds {
+    pub(super) fn new(capacity: usize) -> Self {
+        Self {
+            entries: BTreeSet::new(),
+            order: VecDeque::new(),
+            capacity,
+        }
+    }
+
+    fn insert(&mut self, id: String) -> bool {
+        if self.entries.contains(&id) {
+            return false;
+        }
+        while self.entries.len() >= self.capacity {
+            if let Some(oldest) = self.order.pop_front() {
+                self.entries.remove(&oldest);
+            } else {
+                break;
+            }
+        }
+        self.entries.insert(id.clone());
+        self.order.push_back(id);
+        true
+    }
+
+    fn clear(&mut self) {
+        self.entries.clear();
+        self.order.clear();
+    }
+
+    #[cfg(test)]
+    fn len(&self) -> usize {
+        self.entries.len()
+    }
+}
 
 #[must_use]
 /// Returns the extension namespace for Claude Agent permission callbacks.
@@ -38,6 +82,7 @@ enum PendingKind {
 
 struct PendingCallback {
     provider_id: Value,
+    provider_key: String,
     operation_id: CallbackOperationId,
     kind: PendingKind,
 }
@@ -45,7 +90,7 @@ struct PendingCallback {
 struct State {
     requests: VecDeque<CallbackRequest>,
     pending: BTreeMap<CallbackId, PendingCallback>,
-    provider_ids: BTreeSet<String>,
+    provider_ids: BoundedProviderIds,
     closed: bool,
     waiter: Option<Waker>,
 }
@@ -63,7 +108,7 @@ impl CallbackHub {
         let state = Arc::new(Mutex::new(State {
             requests: VecDeque::new(),
             pending: BTreeMap::new(),
-            provider_ids: BTreeSet::new(),
+            provider_ids: BoundedProviderIds::new(MAXIMUM_TRACKED_PROVIDER_IDS),
             closed: false,
             waiter: None,
         }));
@@ -178,7 +223,12 @@ impl CallbackHub {
                 "Claude Agent permission callback capacity was exceeded",
             ));
         }
-        if !state.provider_ids.insert(provider_key) {
+        if state
+            .pending
+            .values()
+            .any(|pending| pending.provider_key == provider_key)
+            || !state.provider_ids.insert(provider_key.clone())
+        {
             return Err(failure(
                 "swallowtail.claude_agent.acp.permission_provider_id_reused",
                 "Claude Agent reused a permission request id",
@@ -188,6 +238,7 @@ impl CallbackHub {
             callback_id.clone(),
             PendingCallback {
                 provider_id: provider_id.clone(),
+                provider_key,
                 operation_id: CallbackOperationId::Turn(turn_id.clone()),
                 kind: PendingKind::Permission {
                     options: accepted,
@@ -233,7 +284,12 @@ impl CallbackHub {
                 "Claude Agent callback capacity was exceeded",
             ));
         }
-        if !state.provider_ids.insert(provider_key) {
+        if state
+            .pending
+            .values()
+            .any(|pending| pending.provider_key == provider_key)
+            || !state.provider_ids.insert(provider_key.clone())
+        {
             return Err(failure(
                 "swallowtail.claude_agent.acp.callback_provider_id_reused",
                 "Claude Agent reused a callback request id",
@@ -243,6 +299,7 @@ impl CallbackHub {
             callback_id.clone(),
             PendingCallback {
                 provider_id: provider_id.clone(),
+                provider_key,
                 operation_id: CallbackOperationId::Turn(turn_id.clone()),
                 kind: PendingKind::UserInput(request),
             },
@@ -260,6 +317,7 @@ impl CallbackHub {
         state.closed = true;
         state.requests.clear();
         state.pending.clear();
+        state.provider_ids.clear();
         wake(&mut state);
     }
 }
@@ -306,4 +364,113 @@ fn closed() -> RuntimeFailure {
         "swallowtail.claude_agent.acp.permission_callback_closed",
         "Claude Agent permission callback exchange is closed",
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use swallowtail_runtime::{
+        HarnessQuestionId, HarnessQuestionOptionId, HarnessUserInputChoiceMode,
+        HarnessUserInputOption, HarnessUserInputQuestion, HarnessUserInputQuestionKind,
+        OperationContent,
+    };
+
+    fn permission_params() -> Value {
+        json!({
+            "toolCall": { "toolCallId": "tool-1" },
+            "options": [
+                { "optionId": "allow-1", "kind": "allow_once" },
+                { "optionId": "reject-1", "kind": "reject_once" }
+            ]
+        })
+    }
+
+    fn user_input_request() -> HarnessUserInputRequest {
+        HarnessUserInputRequest::new(
+            vec![
+                HarnessUserInputQuestion::new(
+                    HarnessQuestionId::new("q1").expect("id"),
+                    OperationContent::new("header").expect("content"),
+                    OperationContent::new("prompt").expect("content"),
+                    HarnessUserInputQuestionKind::Choice {
+                        mode: HarnessUserInputChoiceMode::Single,
+                        allow_other: false,
+                    },
+                    vec![
+                        HarnessUserInputOption::new(
+                            HarnessQuestionOptionId::new("a").expect("id"),
+                            OperationContent::new("A").expect("content"),
+                            None,
+                        ),
+                        HarnessUserInputOption::new(
+                            HarnessQuestionOptionId::new("b").expect("id"),
+                            OperationContent::new("B").expect("content"),
+                            None,
+                        ),
+                    ],
+                )
+                .expect("question"),
+            ],
+            None,
+            4,
+            4,
+            4096,
+        )
+        .expect("request")
+    }
+
+    #[test]
+    fn provider_ids_stays_bounded_and_rejects_recent_duplicates() {
+        let mut ids = BoundedProviderIds::new(3);
+        assert!(ids.insert("number:1".to_owned()));
+        assert!(ids.insert("number:2".to_owned()));
+        assert!(ids.insert("number:3".to_owned()));
+        assert!(!ids.insert("number:2".to_owned()));
+        assert!(ids.insert("number:4".to_owned()));
+        assert_eq!(ids.len(), 3);
+        assert!(!ids.insert("number:4".to_owned()));
+        assert!(ids.insert("number:1".to_owned()));
+        assert_eq!(ids.len(), 3);
+        ids.clear();
+        assert_eq!(ids.len(), 0);
+    }
+
+    #[test]
+    fn outstanding_pending_provider_id_stays_reserved_across_cache_turnover() {
+        let state = Arc::new(Mutex::new(State {
+            requests: VecDeque::new(),
+            pending: BTreeMap::new(),
+            provider_ids: BoundedProviderIds::new(2),
+            closed: false,
+            waiter: None,
+        }));
+        let hub = CallbackHub {
+            state,
+            exchanges_permissions: true,
+        };
+        let turn_id = RuntimeTurnId::new("turn-turnover").expect("turn id");
+        hub.enqueue_permission(&turn_id, 1, None, &json!(100), &permission_params())
+            .expect("first permission enqueues");
+        // Cycle two more provider IDs so "number:100" is evicted from the
+        // 2-entry recent-ID cache while callback 100 remains pending.
+        hub.enqueue_permission(&turn_id, 2, None, &json!(200), &permission_params())
+            .expect("second permission enqueues");
+        hub.enqueue_permission(&turn_id, 3, None, &json!(300), &permission_params())
+            .expect("third permission enqueues");
+
+        let dup_permission = hub
+            .enqueue_permission(&turn_id, 4, None, &json!(100), &permission_params())
+            .expect_err("pending provider id must remain reserved for permissions");
+        assert_eq!(
+            dup_permission.diagnostic().code(),
+            "swallowtail.claude_agent.acp.permission_provider_id_reused"
+        );
+        let dup_user_input = hub
+            .enqueue_user_input(&turn_id, 5, None, &json!(100), user_input_request())
+            .expect_err("pending provider id must remain reserved for user input");
+        assert_eq!(
+            dup_user_input.diagnostic().code(),
+            "swallowtail.claude_agent.acp.callback_provider_id_reused"
+        );
+    }
 }

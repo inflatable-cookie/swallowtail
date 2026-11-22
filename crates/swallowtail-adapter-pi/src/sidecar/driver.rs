@@ -147,6 +147,7 @@ impl InteractiveSessionDriver for PiSdkSidecarDriver {
                     "Pi SDK sidecar session deadline elapsed before startup",
                 ));
             }
+            let deadline = request.deadline();
             let pending = self
                 .spawn_session(
                     &plan,
@@ -157,14 +158,22 @@ impl InteractiveSessionDriver for PiSdkSidecarDriver {
                         .clone(),
                     request.access_policy(),
                     "session",
+                    deadline,
+                    "swallowtail.pi.sdk-sidecar.open_deadline_elapsed",
                     services,
                 )
                 .await?;
-            let session_ref = match startup::bootstrap(
-                &pending.connection,
-                &plan,
-                &pending.leased_cwd,
-                request.options(),
+            let session_ref = match crate::driver::run_before_deadline(
+                startup::bootstrap(
+                    &pending.connection,
+                    &plan,
+                    &pending.leased_cwd,
+                    request.options(),
+                ),
+                deadline,
+                &pending.services,
+                "swallowtail.pi.sdk-sidecar.open_deadline_elapsed",
+                "Pi SDK sidecar session deadline elapsed during bootstrap",
             )
             .await
             {
@@ -174,12 +183,18 @@ impl InteractiveSessionDriver for PiSdkSidecarDriver {
                     return Err(error);
                 }
             };
-            if let Err(error) = startup::check_state(
-                &pending.connection,
-                &plan,
-                &pending.leased_cwd,
-                request.options(),
-                Some(&session_ref),
+            if let Err(error) = crate::driver::run_before_deadline(
+                startup::check_state(
+                    &pending.connection,
+                    &plan,
+                    &pending.leased_cwd,
+                    request.options(),
+                    Some(&session_ref),
+                ),
+                deadline,
+                &pending.services,
+                "swallowtail.pi.sdk-sidecar.open_deadline_elapsed",
+                "Pi SDK sidecar session deadline elapsed during startup verification",
             )
             .await
             {
@@ -255,6 +270,7 @@ impl PiSdkSidecarDriver {
     /// Acquires the credential and resource leases, spawns the sidecar
     /// process, and starts the protocol pump, releasing leases in order on
     /// any failure.
+    #[allow(clippy::too_many_arguments)]
     pub(super) async fn spawn_session(
         &self,
         plan: &PreflightPlan,
@@ -262,6 +278,8 @@ impl PiSdkSidecarDriver {
         working_resource: WorkingResourceRef,
         access_policy: &swallowtail_core::SessionAccessPolicy,
         kind: &str,
+        deadline: Option<swallowtail_runtime::Deadline>,
+        deadline_code: &'static str,
         services: HostServices,
     ) -> Result<PendingSession, RuntimeFailure> {
         let scope = ScopeId::new(format!("pi-sdk-sidecar:{kind}:{}", request_id.as_str()))
@@ -345,13 +363,17 @@ impl PiSdkSidecarDriver {
         ))
         .with_environment([self.environment.clone()])
         .with_working_resource(working_resource);
-        let process: Arc<dyn ProcessHandle> = match services
-            .process()
-            .expect("validated sidecar process service")
-            .start(scope.clone(), process_request)
-            .await
+        let process: Arc<dyn ProcessHandle> = match crate::driver::start_process_before_deadline(
+            scope.clone(),
+            process_request,
+            deadline,
+            &services,
+            deadline_code,
+            "Pi SDK sidecar deadline elapsed during process start",
+        )
+        .await
         {
-            Ok(process) => Arc::from(process),
+            Ok(process) => process,
             Err(error) => {
                 let _ = resource_service
                     .release(resource.take().expect("sidecar resource was resolved"))

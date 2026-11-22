@@ -112,9 +112,9 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
             if let Err(error) =
                 event_sender.send(RuntimeEvent::new(1, RuntimeEventKind::Started))
             {
-                // Join the SSE worker instead of detaching it: dropping the
-                // subscription alone leaves the blocking fetch, its socket and
-                // its blocking slot running behind a turn that never started.
+                // Signal the SSE worker to stop before joining it so the
+                // blocking fetch exits promptly instead of stalling close.
+                stream_cancelled.store(true, Ordering::SeqCst);
                 let _ = subscription.close().await;
                 let _ = attachment.release().await;
                 return Err(error);
@@ -214,22 +214,28 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                     return Err(error);
                 }
             };
-            let prompt_response = self
-                .transport
-                .request(
+            let prompt_cancelled = Arc::new(AtomicBool::new(false));
+            let prompt_response = complete_before_deadline(
+                self.transport.request(
                     turn_scope.clone(),
                     self.endpoint.clone(),
                     prompt_request,
                     &services,
-                    Arc::new(AtomicBool::new(false)),
-                )
-                .await;
+                    Arc::clone(&prompt_cancelled),
+                ),
+                deadline,
+                &services,
+                prompt_cancelled,
+                "swallowtail.opencode.prompt_timed_out",
+                "OpenCode prompt submission timed out",
+            )
+            .await;
             let prompt_result = match prompt_response {
                 Ok(response) => require_no_content(&response),
                 Err(error) => Err(error),
             };
             if let Err(error) = prompt_result {
-                let _ = cancellation.request().await;
+                let _ = cancellation.request_bounded().await;
                 let _ = task.join().await;
                 let _ = attachment.release().await;
                 return Err(error);

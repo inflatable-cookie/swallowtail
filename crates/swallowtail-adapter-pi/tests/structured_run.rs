@@ -149,7 +149,7 @@ fn one_rpc_prompt_projects_as_a_private_structured_run_on_both_host_topologies()
 #[test]
 fn structured_run_deadline_aborts_then_joins_the_rpc_process() {
     let topology = ExecutionTopologyFixture::local();
-    let fixture = FixtureHost::new(Scenario::Hold).with_immediate_time();
+    let fixture = FixtureHost::new(Scenario::Hold);
     let selected = run_selection_for_topology(&topology);
     let services = fixture.services(topology.execution_host_id().clone());
     let driver = PiRpcDriver::new(
@@ -166,6 +166,7 @@ fn structured_run_deadline_aborts_then_joins_the_rpc_process() {
         services,
     ))
     .expect("run starts");
+    fixture.advance_time(1_001);
     let outcome = block_on(
         handle
             .take_terminal_outcome()

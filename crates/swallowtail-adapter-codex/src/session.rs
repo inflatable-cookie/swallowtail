@@ -146,7 +146,18 @@ impl TurnHandle for CodexTurnHandle {
             let cancelled = !self.cancellation.turn.is_finished();
             let interrupt = if cancelled {
                 match self.cancellation.request().await {
-                    Ok(_) => CleanupOutcome::NotApplicable,
+                    Ok(_) => {
+                        // A server that never replies `turn/completed` after
+                        // `turn/interrupt` would otherwise leave `deadline_task`
+                        // waiting until the full turn deadline. Finish the turn
+                        // so the deadline watcher exits promptly.
+                        if !self.cancellation.turn.is_finished() {
+                            self.cancellation
+                                .turn
+                                .finish(TerminalStatus::Cancelled, CleanupOutcome::NotApplicable);
+                        }
+                        CleanupOutcome::NotApplicable
+                    }
                     Err(error) => {
                         // Without an acknowledged interrupt no provider terminal
                         // event finishes the turn, so the deadline watcher would

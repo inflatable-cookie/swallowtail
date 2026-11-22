@@ -115,7 +115,7 @@
         assert_eq!(body["model"]["modelID"], "claude-sonnet");
         assert_eq!(body["parts"][0]["text"], "private prompt");
 
-        let abort = abort("ses_fixture", "/workspace/fixture");
+        let abort = abort("ses_fixture", "/workspace/fixture").expect("id is safe");
         assert_eq!(abort.path, "/session/ses_fixture/abort");
         assert!(abort.body.is_none());
 
@@ -126,9 +126,40 @@
             vec![("directory".to_owned(), "/workspace/fixture".to_owned())]
         );
         assert!(delete.body.is_none());
-        assert!(
-            session_delete("ses/unsafe", "/workspace/fixture").is_err(),
-            "provider identity cannot escape its path segment"
-        );
+        for unsafe_id in ["", "ses/unsafe", "..", ".", "ses?query=1", "ses#frag"] {
+            assert!(
+                crate::protocol::session_get(unsafe_id, "/workspace/fixture").is_err(),
+                "session_get must reject unsafe id {unsafe_id:?}"
+            );
+            assert!(
+                crate::protocol::session_messages(unsafe_id, "/workspace/fixture", 10, None)
+                    .is_err(),
+                "session_messages must reject unsafe id {unsafe_id:?}"
+            );
+            assert!(
+                crate::protocol::prompt(
+                    unsafe_id,
+                    "anthropic",
+                    "claude-sonnet",
+                    "/workspace/fixture",
+                    PromptPayload {
+                        content: "hi",
+                        reasoning: None,
+                        structured_output: None,
+                        file: None,
+                    },
+                )
+                .is_err(),
+                "prompt must reject unsafe id {unsafe_id:?}"
+            );
+            assert!(
+                crate::protocol::abort(unsafe_id, "/workspace/fixture").is_err(),
+                "abort must reject unsafe id {unsafe_id:?}"
+            );
+            assert!(
+                session_delete(unsafe_id, "/workspace/fixture").is_err(),
+                "session_delete must reject unsafe id {unsafe_id:?}"
+            );
+        }
     }
 

@@ -13,7 +13,7 @@ use super::wire::{
     encode_callback_response, encode_command,
 };
 use serde_json::Value;
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::future::Future;
 use std::pin::Pin;
 #[cfg(test)]
@@ -31,6 +31,45 @@ mod pump;
 mod stderr;
 
 const MAXIMUM_PENDING_COMMANDS: usize = 16;
+/// Maximum number of recent command ids retained for duplicate-id rejection.
+const MAXIMUM_TRACKED_COMMAND_IDS: usize = 4096;
+
+struct BoundedIdSet {
+    entries: BTreeSet<String>,
+    order: VecDeque<String>,
+    capacity: usize,
+}
+
+impl BoundedIdSet {
+    fn new(capacity: usize) -> Self {
+        Self {
+            entries: BTreeSet::new(),
+            order: VecDeque::new(),
+            capacity,
+        }
+    }
+
+    fn insert(&mut self, id: String) -> bool {
+        if self.entries.contains(&id) {
+            return false;
+        }
+        while self.entries.len() >= self.capacity {
+            if let Some(oldest) = self.order.pop_front() {
+                self.entries.remove(&oldest);
+            } else {
+                break;
+            }
+        }
+        self.entries.insert(id.clone());
+        self.order.push_back(id);
+        true
+    }
+
+    #[cfg(test)]
+    fn len(&self) -> usize {
+        self.entries.len()
+    }
+}
 
 pub(crate) struct CommandResult {
     pub(crate) success: bool,
@@ -43,7 +82,7 @@ pub(crate) struct SdkConnection {
     process: Arc<dyn ProcessHandle>,
     services: HostServices,
     pending: Mutex<BTreeMap<String, PendingCommand>>,
-    used_ids: Mutex<BTreeSet<String>>,
+    used_ids: Mutex<BoundedIdSet>,
     active_turn: Mutex<Option<Arc<SdkActiveTurn>>>,
     closed: AtomicBool,
     terminal_error: Mutex<Option<SafeDiagnostic>>,
@@ -59,7 +98,7 @@ impl SdkConnection {
             process,
             services,
             pending: Mutex::new(BTreeMap::new()),
-            used_ids: Mutex::new(BTreeSet::new()),
+            used_ids: Mutex::new(BoundedIdSet::new(MAXIMUM_TRACKED_COMMAND_IDS)),
             active_turn: Mutex::new(None),
             closed: AtomicBool::new(false),
             terminal_error: Mutex::new(None),
@@ -126,6 +165,12 @@ impl SdkConnection {
             // cannot register after that drain and wait forever.
             if self.closed.load(Ordering::SeqCst) {
                 return Err(self.closed_failure());
+            }
+            if pending.contains_key(&id) {
+                return Err(failure(
+                    "swallowtail.claude-agent.sdk.command_id_reused",
+                    "Claude Agent SDK sidecar command id was reused",
+                ));
             }
             if pending.len() >= MAXIMUM_PENDING_COMMANDS {
                 return Err(failure(

@@ -92,6 +92,10 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
                 "cursor-older",
             );
         } else if path.contains("before=") {
+            if matches!(fixture, StreamFixture::HoldHistoryPage) {
+                delete_gate.mark_dispatched_and_wait_for_release();
+                return;
+            }
             respond_json(
                 &mut stream,
                 200,
@@ -143,6 +147,15 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
             _ => respond_json(&mut stream, 200, "true"),
         }
     } else if path.contains("/prompt_async?") {
+        if matches!(
+            fixture,
+            StreamFixture::HoldPromptAndAbort | StreamFixture::HoldPromptAbortAndMalformedSse
+        ) {
+            while !stop.load(Ordering::SeqCst) {
+                thread::sleep(Duration::from_millis(5));
+            }
+            return;
+        }
         respond_empty(&mut stream, 204);
     } else if path.starts_with("/permission/per_fixture/reply?")
         || path.starts_with("/question/que_fixture/reply?")
@@ -152,6 +165,15 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
         respond_json(&mut stream, 200, "true");
     } else if path.contains("/abort?") {
         aborted.store(true, Ordering::SeqCst);
+        if matches!(
+            fixture,
+            StreamFixture::HoldPromptAndAbort | StreamFixture::HoldPromptAbortAndMalformedSse
+        ) {
+            while !stop.load(Ordering::SeqCst) {
+                thread::sleep(Duration::from_millis(5));
+            }
+            return;
+        }
         respond_json(&mut stream, 200, "true");
     } else if path.starts_with("/event?") {
         respond_sse(&mut stream, fixture, &aborted, &callback_replies, &stop);

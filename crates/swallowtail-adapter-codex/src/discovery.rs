@@ -160,14 +160,17 @@ async fn probe_process(
         Ok(process) => process,
         Err(error) => return Ok(process_start_failed(&error)),
     };
+    let time = services.time().expect("validated time service is present");
     if process.close_stdin().await.is_err() {
-        return Ok(stop_and_classify(process.as_ref(), exit_failed(None, &[], false)).await);
+        return Ok(stop_and_classify(
+            process.as_ref(),
+            time.as_ref(),
+            exit_failed(None, &[], false),
+        )
+        .await);
     }
 
-    let mut deadline = services
-        .time()
-        .expect("validated time service is present")
-        .wait_until(request.deadline());
+    let mut deadline = time.wait_until(request.deadline());
     let mut cancelled = request.cancellation().wait_requested();
     let mut stdout = Vec::new();
     let mut stderr = Vec::new();
@@ -177,23 +180,31 @@ async fn probe_process(
             ProbeSignal::Cancelled => {
                 return Ok(stop_and_classify(
                     process.as_ref(),
+                    time.as_ref(),
                     outcome(DiscoveryStatus::Cancelled),
                 )
                 .await);
             }
             ProbeSignal::TimedOut => {
-                return Ok(
-                    stop_and_classify(process.as_ref(), outcome(DiscoveryStatus::TimedOut)).await,
-                );
+                return Ok(stop_and_classify(
+                    process.as_ref(),
+                    time.as_ref(),
+                    outcome(DiscoveryStatus::TimedOut),
+                )
+                .await);
             }
             ProbeSignal::Output(Err(_)) => {
-                return Ok(stop_and_classify(process.as_ref(), output_failed()).await);
+                return Ok(
+                    stop_and_classify(process.as_ref(), time.as_ref(), output_failed()).await,
+                );
             }
             ProbeSignal::Output(Ok(Some(chunk)))
                 if chunk.stream() == ProcessOutputStream::Stdout =>
             {
                 if stdout.len().saturating_add(chunk.bytes().len()) > MAX_VERSION_OUTPUT_BYTES {
-                    return Ok(stop_and_classify(process.as_ref(), output_limit()).await);
+                    return Ok(
+                        stop_and_classify(process.as_ref(), time.as_ref(), output_limit()).await,
+                    );
                 }
                 stdout.extend_from_slice(chunk.bytes());
             }
@@ -210,9 +221,25 @@ async fn probe_process(
         }
     }
 
-    let exit = match process.wait().await {
-        Ok(exit) => exit,
-        Err(_) => return Ok(outcome(DiscoveryStatus::CleanupFailed)),
+    let exit = match wait_for_exit(process.as_ref(), &mut deadline, &mut cancelled).await {
+        ExitSignal::Exited(Ok(exit)) => exit,
+        ExitSignal::Exited(Err(_)) => return Ok(outcome(DiscoveryStatus::CleanupFailed)),
+        ExitSignal::Cancelled => {
+            return Ok(stop_and_classify(
+                process.as_ref(),
+                time.as_ref(),
+                outcome(DiscoveryStatus::Cancelled),
+            )
+            .await);
+        }
+        ExitSignal::TimedOut => {
+            return Ok(stop_and_classify(
+                process.as_ref(),
+                time.as_ref(),
+                outcome(DiscoveryStatus::TimedOut),
+            )
+            .await);
+        }
     };
     if !exit.success() {
         return Ok(exit_failed(exit.code(), &stderr, stderr_truncated));
@@ -258,17 +285,74 @@ async fn next_output(
     .await
 }
 
+enum ExitSignal {
+    Exited(Result<swallowtail_runtime::ProcessExit, RuntimeFailure>),
+    TimedOut,
+    Cancelled,
+}
+
+async fn wait_for_exit(
+    process: &dyn ProcessHandle,
+    deadline: &mut BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
+    cancelled: &mut BoxFuture<'static, ()>,
+) -> ExitSignal {
+    let mut wait = process.wait();
+    poll_fn(|context| {
+        if cancelled.as_mut().poll(context).is_ready() {
+            return Poll::Ready(ExitSignal::Cancelled);
+        }
+        if deadline.as_mut().poll(context).is_ready() {
+            return Poll::Ready(ExitSignal::TimedOut);
+        }
+        wait.as_mut().poll(context).map(ExitSignal::Exited)
+    })
+    .await
+}
+
+/// Dedicated teardown budget for reaping a stopped discovery child after the
+/// probe deadline or cancellation has already fired.
+const CLEANUP_WAIT_BUDGET_TICKS: u64 = 500;
+
+async fn bounded_teardown_step<T>(
+    mut step: BoxFuture<'_, T>,
+    cleanup_timer: &mut BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
+) -> Option<T> {
+    poll_fn(|context| {
+        if let Poll::Ready(result) = step.as_mut().poll(context) {
+            return Poll::Ready(Some(result));
+        }
+        if cleanup_timer.as_mut().poll(context).is_ready() {
+            return Poll::Ready(None);
+        }
+        Poll::Pending
+    })
+    .await
+}
+
 async fn stop_and_classify(
     process: &dyn ProcessHandle,
+    time: &dyn swallowtail_runtime::TimeService,
     desired: DiscoveryOutcome,
 ) -> DiscoveryOutcome {
-    let graceful = process.request_stop().await;
-    let forced = process.force_stop().await;
-    let waited = process.wait().await;
-    if graceful.is_err() || forced.is_err() || waited.is_err() {
-        outcome(DiscoveryStatus::CleanupFailed)
-    } else {
-        desired
+    let cleanup_deadline =
+        swallowtail_runtime::Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(
+            time.now().ticks().saturating_add(CLEANUP_WAIT_BUDGET_TICKS),
+        ));
+    let mut cleanup_timer = time.wait_until(cleanup_deadline);
+    let Some(graceful) = bounded_teardown_step(process.request_stop(), &mut cleanup_timer).await
+    else {
+        return outcome(DiscoveryStatus::CleanupFailed);
+    };
+    let Some(forced) = bounded_teardown_step(process.force_stop(), &mut cleanup_timer).await else {
+        return outcome(DiscoveryStatus::CleanupFailed);
+    };
+    let waited = bounded_teardown_step(process.wait(), &mut cleanup_timer).await;
+    // A child that already exited cleanly on `request_stop()` may cause
+    // `force_stop()` to fail (e.g. ESRCH). Only treat stop as failed when
+    // both stop attempts failed or any bounded teardown step timed out/failed.
+    match waited {
+        Some(Ok(_)) if graceful.is_ok() || forced.is_ok() => desired,
+        _ => outcome(DiscoveryStatus::CleanupFailed),
     }
 }
 

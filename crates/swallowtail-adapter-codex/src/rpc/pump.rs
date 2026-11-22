@@ -255,6 +255,9 @@ impl RpcConnection {
             Err(error) => {
                 self.reject_server_request(id, -32601, "Client callback unsupported")
                     .await?;
+                if turn.is_stopping() {
+                    return Ok(());
+                }
                 return Err(error);
             }
         };

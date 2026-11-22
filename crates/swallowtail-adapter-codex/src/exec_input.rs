@@ -49,7 +49,7 @@ impl SharedExecMaterializations {
 }
 
 impl ExecMaterializations {
-    fn new(
+    pub(crate) fn new(
         attachment_service: Option<Arc<dyn AttachmentService>>,
         schema_service: Option<Arc<dyn SchemaService>>,
     ) -> Self {

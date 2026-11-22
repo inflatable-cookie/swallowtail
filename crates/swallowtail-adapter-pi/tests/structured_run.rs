@@ -192,7 +192,7 @@ fn rejected_native_abort_is_reported_and_escalated_when_the_run_closes() {
         EnvironmentRef::new("pi.fixture.environment").expect("valid environment"),
         selected.credential,
     );
-    let handle = block_on(driver.start_run(
+    let mut handle = block_on(driver.start_run(
         selected.plan,
         run_request(
             "pi-abort-rejected",
@@ -202,6 +202,9 @@ fn rejected_native_abort_is_reported_and_escalated_when_the_run_closes() {
         services,
     ))
     .expect("run starts");
+    let terminal = handle
+        .take_terminal_outcome()
+        .expect("terminal outcome future is available");
 
     let refusal = block_on(handle.cancellation().request())
         .expect_err("the fixture refuses the native abort");
@@ -219,6 +222,15 @@ fn rejected_native_abort_is_reported_and_escalated_when_the_run_closes() {
             .map(swallowtail_core::SafeDiagnostic::code),
         Some("swallowtail.pi.rpc.abort_rejected"),
         "a refused abort is reported by close, not discarded"
+    );
+    let outcome = block_on(terminal);
+    assert!(
+        matches!(
+            outcome.status(),
+            TerminalStatus::RuntimeFailed(diag) if diag.code() == "swallowtail.pi.rpc.cancel_rejected"
+        ),
+        "refused native abort must resolve cancel_rejected rather than Cancelled, got {:?}",
+        outcome.status()
     );
     assert_eq!(
         fixture

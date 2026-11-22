@@ -2,15 +2,24 @@
 
 use futures_channel::oneshot;
 use futures_util::future::{Either, select};
+use std::future::{Future, poll_fn};
 use std::sync::{Arc, mpsc};
-use std::time::Duration;
+use std::task::Poll;
+use std::time::{Duration, Instant};
 use swallowtail_runtime::{
-    BlockingJob, BlockingWorkService, BoxFuture, Deadline, HostServices, JoinedTask,
-    MonotonicInstant, ProcessHandle, RuntimeFailure, ScopeId, ScopedTaskService, TimeService,
+    BlockingJob, BlockingWorkService, BoxFuture, Deadline, DeadlineObservation, HostServices,
+    JoinedTask, MonotonicInstant, ProcessHandle, RuntimeFailure, ScopeId, ScopedTaskService,
+    TimeService,
 };
 
 /// Grace given to EOF and then to graceful stop when there is no caller deadline.
 const CLOSE_GRACE: Duration = Duration::from_millis(250);
+/// Dedicated teardown budget (in monotonic ticks) when waiting for a pump to
+/// settle after a refused `force_stop()`.
+const REFUSED_STOP_BUDGET_TICKS: u64 = 500;
+/// Bounded wall-clock fallback grace when a host supplies neither a
+/// `TimeService` nor a `BlockingWorkService`.
+const CLOCKLESS_TEARDOWN_GRACE: Duration = Duration::from_millis(100);
 
 /// The host services a close uses to time its escalation stages.
 pub(crate) struct CloseBudget {
@@ -81,6 +90,133 @@ impl AppServerTask {
     pub(crate) async fn join(self) -> Result<(), RuntimeFailure> {
         let _ = self.finished.await;
         self.task.join().await
+    }
+
+    #[cfg(test)]
+    pub(crate) fn from_parts(
+        task: Box<dyn JoinedTask>,
+        finished: oneshot::Receiver<()>,
+        scope: ScopeId,
+    ) -> Self {
+        Self {
+            task,
+            finished,
+            scope,
+        }
+    }
+}
+
+/// Outcome of racing one stop-and-join close sequence against a shared teardown budget.
+pub(crate) struct BoundedCloseOutcome {
+    /// Result of the stop future when it completed before the teardown budget ran out,
+    /// or `None` when the stop step itself timed out.
+    pub(crate) stop: Option<Result<(), RuntimeFailure>>,
+    /// Whether the teardown budget ran out before the pump finished, triggering `on_abort`.
+    pub(crate) aborted: bool,
+    /// Result of joining the pump task.
+    pub(crate) join: Result<(), RuntimeFailure>,
+}
+
+/// Shared lazy teardown timer carried across stop and pump-completion steps.
+///
+/// Uses the host `TimeService` when available; without a clock, uses a bounded
+/// wall-clock grace independent of `BlockingWorkService` admission so a
+/// saturated or queued blocking pool can never delay or strand close teardown.
+struct CloseTimer {
+    time: Option<Arc<dyn TimeService>>,
+    deadline: Option<Deadline>,
+    deadline_wait: Option<BoxFuture<'static, DeadlineObservation>>,
+    clockless_deadline: Option<Instant>,
+    exhausted: bool,
+}
+
+impl CloseTimer {
+    fn new(budget: CloseBudget) -> Self {
+        Self {
+            time: budget.time,
+            deadline: budget.deadline,
+            deadline_wait: None,
+            clockless_deadline: None,
+            exhausted: false,
+        }
+    }
+
+    async fn race<T, F: Future<Output = T>>(&mut self, future: F) -> Option<T> {
+        let mut future = std::pin::pin!(future);
+        poll_fn(|context| {
+            if let Poll::Ready(value) = future.as_mut().poll(context) {
+                return Poll::Ready(Some(value));
+            }
+            if self.exhausted {
+                return Poll::Ready(None);
+            }
+            if let Some(time) = self.time.as_deref() {
+                let wait = self.deadline_wait.get_or_insert_with(|| {
+                    let budget_at = time.now().ticks().saturating_add(REFUSED_STOP_BUDGET_TICKS);
+                    let target = match self.deadline {
+                        Some(deadline) => at(deadline.instant().ticks().min(budget_at)),
+                        None => at(budget_at),
+                    };
+                    time.wait_until(target)
+                });
+                if wait.as_mut().poll(context).is_ready() {
+                    self.deadline_wait = None;
+                    self.exhausted = true;
+                    return Poll::Ready(None);
+                }
+                return Poll::Pending;
+            }
+            let deadline = *self
+                .clockless_deadline
+                .get_or_insert_with(|| Instant::now() + CLOCKLESS_TEARDOWN_GRACE);
+            if Instant::now() >= deadline {
+                self.exhausted = true;
+                return Poll::Ready(None);
+            }
+            std::thread::yield_now();
+            context.waker().wake_by_ref();
+            Poll::Pending
+        })
+        .await
+    }
+}
+
+impl AppServerTask {
+    /// Bounds both an optional stop future and waiting for pump completion
+    /// under one shared teardown budget, aborting and joining the pump if the
+    /// budget expires at either step.
+    pub(crate) async fn close_bounded<F>(
+        mut self,
+        budget: CloseBudget,
+        stop: Option<F>,
+        on_abort: impl FnOnce(),
+    ) -> BoundedCloseOutcome
+    where
+        F: Future<Output = Result<(), RuntimeFailure>>,
+    {
+        let mut timer = CloseTimer::new(budget);
+        let stop_result = match stop {
+            Some(stop_future) => timer.race(stop_future).await,
+            None => Some(Ok(())),
+        };
+        let finished_in_time = if self.finished.try_recv().is_err() {
+            true
+        } else if stop_result.is_none() {
+            false
+        } else {
+            timer.race(&mut self.finished).await.is_some()
+        };
+        drop(timer);
+        let aborted = !finished_in_time;
+        if aborted {
+            on_abort();
+        }
+        let join = self.join().await;
+        BoundedCloseOutcome {
+            stop: stop_result,
+            aborted,
+            join,
+        }
     }
 
     #[cfg(test)]

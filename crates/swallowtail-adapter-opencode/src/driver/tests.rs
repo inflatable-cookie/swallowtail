@@ -108,6 +108,95 @@ fn a_refused_cancellation_at_close_is_reported_not_discarded() {
 }
 
 #[test]
+fn stalled_abort_during_turn_close_and_close_active_is_bounded() {
+    use swallowtail_core::ExecutionHostId;
+    use swallowtail_runtime::{
+        BlockingJob, BlockingWorkService, BoxFuture, Deadline, DeadlineObservation,
+        MonotonicInstant, TimeService,
+    };
+
+    struct PastClock;
+
+    impl TimeService for PastClock {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(10)
+        }
+
+        fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+            Box::pin(async move {
+                DeadlineObservation::new(deadline, MonotonicInstant::from_ticks(u64::MAX))
+            })
+        }
+    }
+
+    struct StalledBlocking;
+
+    impl BlockingWorkService for StalledBlocking {
+        fn run(
+            &self,
+            _scope: ScopeId,
+            _job: BlockingJob,
+        ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+    }
+
+    fn make_cancellation(services: HostServices) -> Arc<TurnCancellation> {
+        Arc::new(TurnCancellation {
+            scope: ScopeId::new("opencode.test.abort-close").expect("scope"),
+            session_id: "session-1".to_owned(),
+            directory: "/workspace".to_owned(),
+            endpoint: "http://127.0.0.1:4096".to_owned(),
+            services,
+            transport: CurlTransport,
+            stream_cancelled: Arc::new(AtomicBool::new(false)),
+            requested: AtomicBool::new(false),
+            callbacks: None,
+        })
+    }
+
+    let services = HostServices::new(ExecutionHostId::new("opencode.abort.bound").expect("host"))
+        .with_time(Arc::new(PastClock))
+        .with_blocking_work(Arc::new(StalledBlocking));
+
+    // 1. OpenCodeTurnHandle::close bounds a stalled /abort.
+    let turn_handle = Box::new(OpenCodeTurnHandle {
+        runtime_id: RuntimeTurnId::new("turn-stalled-abort").expect("turn id"),
+        events: None,
+        terminal: None,
+        cancellation: make_cancellation(services.clone()),
+        detachment: None,
+        terminal_flag: Arc::new(AtomicBool::new(false)),
+        active: Arc::new(Mutex::new(None)),
+        callbacks: None,
+        attachment: input::SharedAttachment::default(),
+    });
+    let turn_cleanup = futures_executor::block_on(turn_handle.close());
+    assert_eq!(
+        turn_cleanup
+            .diagnostic()
+            .map(swallowtail_core::SafeDiagnostic::code),
+        Some("swallowtail.opencode.abort_timed_out")
+    );
+
+    // 2. close_active bounds a stalled /abort.
+    let active: ActiveSlot = Arc::new(Mutex::new(Some(ActiveTurn {
+        task: None,
+        terminal: Arc::new(AtomicBool::new(false)),
+        cancellation: make_cancellation(services),
+        detachment: None,
+        attachment: input::SharedAttachment::default(),
+    })));
+    let active_cleanup = futures_executor::block_on(close_active(&active));
+    assert_eq!(
+        active_cleanup
+            .diagnostic()
+            .map(swallowtail_core::SafeDiagnostic::code),
+        Some("swallowtail.opencode.abort_timed_out")
+    );
+}
+
+#[test]
 fn project_opencode_page_advances_cursor_when_full_page_is_filtered_by_directory() {
     use std::collections::BTreeMap;
     use std::num::NonZeroU32;

@@ -119,26 +119,23 @@ pub(crate) struct BoundedCloseOutcome {
 
 /// Shared lazy teardown timer carried across stop and pump-completion steps.
 ///
-/// The timer is started only on the first `Poll::Pending`, so fast synchronous
-/// exits do not consume extra `TimeService::wait_until` or blocking-pool slots.
+/// Uses the host `TimeService` when available; without a clock, uses a bounded
+/// wall-clock grace independent of `BlockingWorkService` admission so a
+/// saturated or queued blocking pool can never delay or strand close teardown.
 struct CloseTimer {
-    budget: CloseBudget,
-    scope: ScopeId,
+    time: Option<Arc<dyn TimeService>>,
+    deadline: Option<Deadline>,
     deadline_wait: Option<BoxFuture<'static, DeadlineObservation>>,
-    grace_cancel: Option<mpsc::Sender<()>>,
-    grace_wait: Option<BoxFuture<'static, Result<(), RuntimeFailure>>>,
     clockless_deadline: Option<Instant>,
     exhausted: bool,
 }
 
 impl CloseTimer {
-    fn new(budget: CloseBudget, scope: ScopeId) -> Self {
+    fn new(budget: CloseBudget) -> Self {
         Self {
-            budget,
-            scope,
+            time: budget.time,
+            deadline: budget.deadline,
             deadline_wait: None,
-            grace_cancel: None,
-            grace_wait: None,
             clockless_deadline: None,
             exhausted: false,
         }
@@ -153,10 +150,10 @@ impl CloseTimer {
             if self.exhausted {
                 return Poll::Ready(None);
             }
-            if let Some(time) = self.budget.time.as_deref() {
+            if let Some(time) = self.time.as_deref() {
                 let wait = self.deadline_wait.get_or_insert_with(|| {
                     let budget_at = time.now().ticks().saturating_add(REFUSED_STOP_BUDGET_TICKS);
-                    let target = match self.budget.deadline {
+                    let target = match self.deadline {
                         Some(deadline) => at(deadline.instant().ticks().min(budget_at)),
                         None => at(budget_at),
                     };
@@ -169,27 +166,6 @@ impl CloseTimer {
                 }
                 return Poll::Pending;
             }
-            if let Some(blocking) = self.budget.blocking.as_deref() {
-                let wait = self.grace_wait.get_or_insert_with(|| {
-                    let (cancel, cancelled) = mpsc::channel::<()>();
-                    self.grace_cancel = Some(cancel);
-                    let grace: BlockingJob = Box::new(move || {
-                        let _ = cancelled.recv_timeout(CLOSE_GRACE);
-                        Ok(())
-                    });
-                    blocking.run(self.scope.clone(), grace)
-                });
-                if wait.as_mut().poll(context).is_ready() {
-                    self.grace_wait = None;
-                    self.grace_cancel = None;
-                    self.exhausted = true;
-                    return Poll::Ready(None);
-                }
-                return Poll::Pending;
-            }
-            // Minimal `[Task, Process]` host with neither a time service nor a
-            // blocking-work service: yield within a bounded wall-clock grace so
-            // fast exits join cleanly while stuck stops or open stdout still abort.
             let deadline = *self
                 .clockless_deadline
                 .get_or_insert_with(|| Instant::now() + CLOCKLESS_TEARDOWN_GRACE);
@@ -202,13 +178,6 @@ impl CloseTimer {
             Poll::Pending
         })
         .await
-    }
-
-    async fn finish(mut self) {
-        drop(self.grace_cancel.take());
-        if let Some(wait) = self.grace_wait.take() {
-            let _ = wait.await;
-        }
     }
 }
 
@@ -225,7 +194,7 @@ impl AppServerTask {
     where
         F: Future<Output = Result<(), RuntimeFailure>>,
     {
-        let mut timer = CloseTimer::new(budget, self.scope.clone());
+        let mut timer = CloseTimer::new(budget);
         let stop_result = match stop {
             Some(stop_future) => timer.race(stop_future).await,
             None => Some(Ok(())),
@@ -237,7 +206,7 @@ impl AppServerTask {
         } else {
             timer.race(&mut self.finished).await.is_some()
         };
-        timer.finish().await;
+        drop(timer);
         let aborted = !finished_in_time;
         if aborted {
             on_abort();

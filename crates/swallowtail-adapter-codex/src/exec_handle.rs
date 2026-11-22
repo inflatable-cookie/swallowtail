@@ -642,4 +642,95 @@ mod tests {
             "expected process_cleanup_failed on clockless host with open stdout, got {cleanup:?}"
         );
     }
+
+    #[test]
+    fn closing_with_queued_blocking_work_bounds_open_stdout_and_allows_completed_pump() {
+        struct QueuedBlocking;
+
+        impl swallowtail_runtime::BlockingWorkService for QueuedBlocking {
+            fn run(
+                &self,
+                _scope: ScopeId,
+                _job: swallowtail_runtime::BlockingJob,
+            ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+                Box::pin(std::future::pending())
+            }
+        }
+
+        // 1. Open stdout with a permanently queued blocking pool and no clock
+        // must still hit the close deadline, abort the pump, and join cleanly.
+        let open_process = Arc::new(AcceptedStopOpenStdoutProcess {
+            forced: AtomicUsize::new(0),
+        });
+        let services = HostServices::new(
+            ExecutionHostId::new("codex.exec.queued-blocking-open").expect("host id"),
+        )
+        .with_blocking_work(Arc::new(QueuedBlocking));
+        let open_handle = spawn_pump_handle(
+            Arc::clone(&open_process) as Arc<dyn ProcessHandle>,
+            services.clone(),
+            "exec-queued-open",
+        );
+        let open_cleanup = futures_executor::block_on(open_handle.close());
+        assert_eq!(open_process.forced.load(Ordering::SeqCst), 1);
+        assert!(
+            matches!(open_cleanup, CleanupOutcome::Failed(ref diag) if diag.code() == "swallowtail.codex.exec.process_cleanup_failed"),
+            "expected process_cleanup_failed when blocking pool is queued and stdout stays open, got {open_cleanup:?}"
+        );
+
+        // 2. A pump that exits cleanly after force_stop must close cleanly even
+        // while the blocking pool is permanently queued.
+        struct ExitsOnStopProcess {
+            eof_tx: Mutex<Option<futures_channel::oneshot::Sender<()>>>,
+            eof_rx: Mutex<Option<futures_channel::oneshot::Receiver<()>>>,
+        }
+
+        impl ProcessHandle for ExitsOnStopProcess {
+            fn write_stdin(
+                &self,
+                _: ProcessInputChunk,
+            ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn read_output(
+                &self,
+            ) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+                let rx = self.eof_rx.lock().expect("eof_rx lock").take();
+                Box::pin(async move {
+                    if let Some(rx) = rx {
+                        let _ = rx.await;
+                    }
+                    Ok(None)
+                })
+            }
+            fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                if let Some(tx) = self.eof_tx.lock().expect("eof_tx lock").take() {
+                    let _ = tx.send(());
+                }
+                Box::pin(async { Ok(()) })
+            }
+            fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+                Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+            }
+        }
+
+        let (eof_tx, eof_rx) = futures_channel::oneshot::channel();
+        let exiting_process: Arc<dyn ProcessHandle> = Arc::new(ExitsOnStopProcess {
+            eof_tx: Mutex::new(Some(eof_tx)),
+            eof_rx: Mutex::new(Some(eof_rx)),
+        });
+        let exiting_handle = spawn_pump_handle(exiting_process, services, "exec-queued-exit");
+        let exit_cleanup = futures_executor::block_on(exiting_handle.close());
+        assert_eq!(
+            exit_cleanup,
+            CleanupOutcome::Clean,
+            "completed pump must close cleanly even while blocking pool is queued"
+        );
+    }
 }

@@ -812,11 +812,12 @@ fn secret_header_name_validation_matches_rfc9110_token_and_embedded_query_reject
 
 #[test]
 fn external_stream_cancellation_reports_cancelled_transport_error() {
-    let endpoint = serve(|mut stream| {
+    let (release_tx, release_rx) = std::sync::mpsc::channel::<()>();
+    let endpoint = serve(move |mut stream| {
         read_request(&mut stream);
         write_all(&mut stream, b"HTTP/1.1 200 OK\r\n\r\n");
         write_all(&mut stream, b"event: delta\ndata: first\n\n");
-        thread::sleep(Duration::from_secs(2));
+        let _ = release_rx.recv();
     });
     let signal = cancelled();
     let mut subscription = HttpTransport::new()
@@ -856,15 +857,17 @@ fn external_stream_cancellation_reports_cancelled_transport_error() {
         .is_none(),
         "subscription fuses after cancellation error"
     );
+    drop(release_tx);
 
-    // Subscription::close() still treats cancellation as clean close.
-    let endpoint_close = serve(|mut stream| {
+    // Subscription::close() still treats cancellation as clean close on an active stream.
+    let (close_release_tx, close_release_rx) = std::sync::mpsc::channel::<()>();
+    let endpoint_close = serve(move |mut stream| {
         read_request(&mut stream);
         write_all(&mut stream, b"HTTP/1.1 200 OK\r\n\r\n");
         write_all(&mut stream, b"event: delta\ndata: held\n\n");
-        thread::sleep(Duration::from_secs(2));
+        let _ = close_release_rx.recv();
     });
-    let close_subscription = HttpTransport::new()
+    let mut close_subscription = HttpTransport::new()
         .subscribe(
             scope(),
             &endpoint_close,
@@ -874,6 +877,13 @@ fn external_stream_cancellation_reports_cancelled_transport_error() {
             cancelled(),
         )
         .expect("close fixture subscription starts");
+    let held = futures_executor::block_on(futures_util::future::poll_fn(|context| {
+        close_subscription.poll_next(context)
+    }))
+    .expect("held frame arrives before close")
+    .expect("held frame decodes");
+    assert!(matches!(held, StreamItem::Body(_)));
     futures_executor::block_on(close_subscription.close())
         .expect("Subscription::close treats TransportError::Cancelled as Ok(())");
+    drop(close_release_tx);
 }

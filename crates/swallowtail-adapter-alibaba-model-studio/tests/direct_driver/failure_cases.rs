@@ -150,6 +150,54 @@ fn cancellation_and_deadline_end_session_with_unconfirmed_remote_truth() {
 }
 
 #[test]
+fn cancellation_after_response_completed_before_eof_retains_completed_output() {
+    let fixture = DriverFixture::new(ServerScenario::WaitForCancelAfterCompleted);
+    let mut session = open(&fixture, "cancel-after-completed");
+    let mut turn = block_on(session.start_turn(
+        turn_request("completed-then-cancelled", "private"),
+        fixture.services(),
+    ))
+    .expect("turn starts");
+    let mut events = turn.take_events().expect("events exist");
+    let terminal = turn.take_terminal_outcome().expect("terminal exists");
+
+    let mut saw_output_available = false;
+    block_on(async {
+        while let Some(event) = events.next().await {
+            let event = event.expect("event succeeds");
+            if matches!(
+                event.kind(),
+                swallowtail_runtime::RuntimeEventKind::OutputAvailable
+            ) {
+                saw_output_available = true;
+                break;
+            }
+        }
+    });
+    assert!(
+        saw_output_available,
+        "provider completed before cancellation was requested"
+    );
+
+    block_on(turn.cancellation().request()).expect("cancellation accepted");
+    let outcome = block_on(async {
+        while events.next().await.is_some() {}
+        terminal.await
+    });
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
+    assert!(
+        outcome.output().is_some(),
+        "completed output must be retained when cancellation arrives after response.completed"
+    );
+    assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
+    assert!(matches!(
+        block_on(session.close(cleanup_request(&fixture), fixture.services())),
+        CleanupOutcome::Degraded(_)
+    ));
+}
+
+#[test]
 fn unsupported_session_options_and_elapsed_deadline_fail_before_effects() {
     let fixture = DriverFixture::new(ServerScenario::Success);
     let options =

@@ -28,6 +28,7 @@ pub enum ServerScenario {
     ProviderError,
     Disconnect,
     WaitForCancel,
+    WaitForCancelAfterCompleted,
     CleanupFailure,
     RetainedSuccess,
     RetainedForeign,
@@ -183,6 +184,9 @@ fn respond(
                     write_response(stream, 200, "text/event-stream", DISCONNECT)
                 }
                 ServerScenario::WaitForCancel => wait_for_cancel(stream),
+                ServerScenario::WaitForCancelAfterCompleted => {
+                    wait_for_cancel_after_completed(stream)
+                }
                 ServerScenario::ManagedDeleteFailure => {
                     write_response(stream, 200, "text/event-stream", SUCCESS)
                 }
@@ -271,6 +275,22 @@ fn write_response(stream: &mut TcpStream, status: u16, content_type: &str, body:
 
 fn wait_for_cancel(stream: &mut TcpStream) {
     write!(stream, "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nX-Request-Id: req_fixture_01\r\nConnection: close\r\n\r\nevent: response.created\ndata: {{\"type\":\"response.created\",\"sequence_number\":0,\"response\":{{\"id\":\"resp_fixture_01\",\"status\":\"queued\",\"model\":\"qwen3.7-plus-2026-05-26\"}}}}\n\n").expect("stream starts");
+    for _ in 0..2_000 {
+        thread::sleep(Duration::from_millis(1));
+        if stream.write_all(b": keepalive\n\n").is_err() {
+            break;
+        }
+        let _ = stream.flush();
+    }
+}
+
+fn wait_for_cancel_after_completed(stream: &mut TcpStream) {
+    write!(
+        stream,
+        "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nX-Request-Id: req_fixture_01\r\nConnection: close\r\n\r\n{SUCCESS}"
+    )
+    .expect("completed stream writes");
+    let _ = stream.flush();
     for _ in 0..2_000 {
         thread::sleep(Duration::from_millis(1));
         if stream.write_all(b": keepalive\n\n").is_err() {

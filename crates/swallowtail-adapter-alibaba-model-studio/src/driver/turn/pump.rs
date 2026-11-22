@@ -80,9 +80,23 @@ pub(super) async fn pump_turn(
                 let _ = subscription.close().await;
                 let reason = cancellation.reason();
                 if reason == 1 {
+                    if let Some(output) = completed_output {
+                        return TerminalOutcome::new(
+                            TerminalStatus::Completed,
+                            CleanupOutcome::Clean,
+                        )
+                        .with_output(output);
+                    }
                     return uncertain(TerminalStatus::Cancelled, true);
                 }
                 if reason == 2 {
+                    if let Some(output) = completed_output {
+                        return TerminalOutcome::new(
+                            TerminalStatus::Completed,
+                            CleanupOutcome::Clean,
+                        )
+                        .with_output(output);
+                    }
                     return uncertain(TerminalStatus::TimedOut, true);
                 }
                 emit_wire_debug(&services, &error, "http.pump.transport");

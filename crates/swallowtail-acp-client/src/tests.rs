@@ -614,6 +614,131 @@ fn dropped_pending_responses_do_not_exhaust_correlation_limit() {
 }
 
 #[test]
+fn dropped_pending_response_preserves_correlation_for_late_reply_and_blocks_id_reuse() {
+    use std::collections::VecDeque;
+    use std::sync::Mutex;
+
+    struct ScriptedProcess {
+        outputs: Mutex<VecDeque<Vec<u8>>>,
+    }
+
+    impl ProcessHandle for ScriptedProcess {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            let chunk = self
+                .outputs
+                .lock()
+                .expect("output lock")
+                .pop_front()
+                .map(|bytes| {
+                    ProcessOutputChunk::new(swallowtail_runtime::ProcessOutputStream::Stdout, bytes)
+                });
+            Box::pin(async move { Ok(chunk) })
+        }
+
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+
+    block_on(async {
+        let process: Arc<dyn ProcessHandle> = Arc::new(ScriptedProcess {
+            outputs: Mutex::new(VecDeque::from([
+                b"{\"jsonrpc\":\"2.0\",\"id\":100,\"result\":{\"from\":\"a\"}}\n{\"jsonrpc\":\"2.0\",\"id\":101,\"result\":{\"from\":\"b\"}}\n".to_vec(),
+            ])),
+        });
+        let transport = AcpTransport::stdio(
+            process,
+            FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES),
+        );
+        let host = ExecutionHostId::new("local").expect("valid host");
+        let connection = AcpConnection::new(
+            transport,
+            HostServices::new(host),
+            test_diagnostics(),
+            Arc::new(StandardAcpHooks),
+        );
+
+        let waiter_a = connection
+            .begin_request_with_id(100, "test/a", json!({}))
+            .await
+            .expect("request A succeeds");
+        drop(waiter_a);
+
+        // Starting B prunes A's canceled slot into abandoned bookkeeping.
+        let waiter_b = connection
+            .begin_request_with_id(101, "test/b", json!({}))
+            .await
+            .expect("request B succeeds");
+
+        // Explicit ID reuse of A before A's reply arrives must be rejected.
+        let reuse_err = connection
+            .begin_request_with_id(100, "test/reuse", json!({}))
+            .await
+            .err()
+            .expect("reusing an abandoned correlation id before reply settles must fail");
+        assert_eq!(reuse_err.diagnostic().code(), "swallowtail.test.acp.limit");
+
+        // Pump A's late reply followed by B's reply: A is consumed harmlessly and B receives its own result.
+        Arc::clone(&connection).pump().await;
+        let reply_b = waiter_b
+            .await
+            .expect("B must receive its own result after A's late reply");
+        assert_eq!(reply_b, json!({"from": "b"}));
+
+        // A duplicate reply for an already-settled abandoned id must still fail with unknown_response.
+        let dup_process: Arc<dyn ProcessHandle> = Arc::new(ScriptedProcess {
+            outputs: Mutex::new(VecDeque::from([
+                b"{\"jsonrpc\":\"2.0\",\"id\":200,\"result\":{\"from\":\"a1\"}}\n{\"jsonrpc\":\"2.0\",\"id\":200,\"result\":{\"from\":\"a2\"}}\n".to_vec(),
+            ])),
+        });
+        let dup_transport = AcpTransport::stdio(
+            dup_process,
+            FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES),
+        );
+        let dup_host = ExecutionHostId::new("local").expect("valid host");
+        let dup_connection = AcpConnection::new(
+            dup_transport,
+            HostServices::new(dup_host),
+            test_diagnostics(),
+            Arc::new(StandardAcpHooks),
+        );
+        let dup_a = dup_connection
+            .begin_request_with_id(200, "test/a", json!({}))
+            .await
+            .expect("request A succeeds");
+        drop(dup_a);
+        let dup_b = dup_connection
+            .begin_request_with_id(201, "test/b", json!({}))
+            .await
+            .expect("request B succeeds");
+        Arc::clone(&dup_connection).pump().await;
+        let dup_err = dup_b
+            .await
+            .expect_err("duplicate reply for settled abandoned id must fail connection");
+        assert_eq!(dup_err.diagnostic().code(), "swallowtail.test.acp.unknown");
+    });
+}
+
+#[test]
 fn active_turn_finish_with_status_and_emit_event() {
     use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
     use swallowtail_runtime::RuntimeEventKind;

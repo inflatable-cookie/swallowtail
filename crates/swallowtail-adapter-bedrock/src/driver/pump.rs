@@ -3,6 +3,7 @@ const MAXIMUM_OUTPUT_BYTES: usize = 4 * 1024 * 1024;
 enum PumpSignal {
     Update(Option<Result<StreamUpdate, RuntimeFailure>>),
     Deadline,
+    WorkDone(Result<(), RuntimeFailure>),
 }
 
 struct RunPumpContext {
@@ -15,11 +16,18 @@ struct RunPumpContext {
 
 async fn next_signal(
     updates: &mut Pin<Box<dyn Stream<Item = Result<StreamUpdate, RuntimeFailure>> + Send>>,
+    blocking: &mut Option<BoxFuture<'static, Result<(), RuntimeFailure>>>,
     deadline: &mut Option<BoxFuture<'static, DeadlineObservation>>,
 ) -> PumpSignal {
     poll_fn(|context| {
         if let Poll::Ready(update) = updates.as_mut().poll_next(context) {
             return Poll::Ready(PumpSignal::Update(update));
+        }
+        if let Some(work) = blocking.as_mut()
+            && let Poll::Ready(result) = work.as_mut().poll(context)
+        {
+            *blocking = None;
+            return Poll::Ready(PumpSignal::WorkDone(result));
         }
         if let Some(deadline) = deadline && deadline.as_mut().poll(context).is_ready() {
             return Poll::Ready(PumpSignal::Deadline);
@@ -42,6 +50,8 @@ async fn pump_run(
         run_id,
     } = context;
     let mut updates: Pin<Box<dyn Stream<Item = Result<StreamUpdate, RuntimeFailure>> + Send>> = Box::pin(updates);
+    let mut blocking = Some(blocking);
+    let mut sdk_result = None;
     let mut sequence = 1;
     let mut output = String::new();
     let mut usage_seen = false;
@@ -51,11 +61,14 @@ async fn pump_run(
         swallowtail_runtime::ActivityOperationId::Run(run_id),
     );
     loop {
-        match next_signal(&mut updates, &mut deadline).await {
+        match next_signal(&mut updates, &mut blocking, &mut deadline).await {
             PumpSignal::Deadline => {
                 timed_out = true;
                 deadline = None;
                 cancellation.abort_signal();
+            }
+            PumpSignal::WorkDone(result) => {
+                sdk_result = Some(result);
             }
             PumpSignal::Update(Some(Err(error))) => {
                 emit_wire_debug(&services, &error, "http.pump.transport");
@@ -199,7 +212,13 @@ async fn pump_run(
         }
     }
     drop(updates);
-    let sdk_result = blocking.await;
+    let sdk_result = match sdk_result {
+        Some(result) => result,
+        None => match blocking {
+            Some(blocking) => blocking.await,
+            None => Ok(()),
+        },
+    };
     let cleanup = access.release(&services).await;
     let status = if timed_out {
         TerminalStatus::TimedOut

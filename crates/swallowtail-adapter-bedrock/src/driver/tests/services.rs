@@ -40,6 +40,30 @@ impl ScopedTaskService for FailingTaskService {
     }
 }
 
+struct LazyBlockingWorkService {
+    started: Arc<AtomicBool>,
+}
+
+impl BlockingWorkService for LazyBlockingWorkService {
+    fn run(
+        &self,
+        _scope: ScopeId,
+        job: BlockingJob,
+    ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        let started = Arc::clone(&self.started);
+        Box::pin(async move {
+            started.store(true, Ordering::SeqCst);
+            let (sender, receiver) = oneshot::channel();
+            thread::spawn(move || {
+                let _ = sender.send(job());
+            });
+            receiver
+                .await
+                .map_err(|_| failure("fixture.blocking_panicked", "Fixture blocking work panicked"))?
+        })
+    }
+}
+
 #[derive(Clone)]
 struct ThreadServices { origin: Instant }
 

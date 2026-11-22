@@ -2867,12 +2867,47 @@ fn await_cleanup_budget_never_repolls_completed_timer_on_early_ready() {
         ),
     ))
     .expect("delegated start succeeds");
-    let err = block_on(cancel_sign_in_async(session, &spurious_services))
-        .expect_err("re-armed timer must still time out wedged cleanup");
+    struct FlagWaker(std::sync::atomic::AtomicBool);
+    impl std::task::Wake for FlagWaker {
+        fn wake(self: Arc<Self>) {
+            self.0.store(true, Ordering::SeqCst);
+        }
+        fn wake_by_ref(self: &Arc<Self>) {
+            self.0.store(true, Ordering::SeqCst);
+        }
+    }
+
+    let flag_waker = Arc::new(FlagWaker(std::sync::atomic::AtomicBool::new(false)));
+    let waker = std::task::Waker::from(Arc::clone(&flag_waker));
+    let mut context = Context::from_waker(&waker);
+    let mut cancel_future = Box::pin(cancel_sign_in_async(session, &spurious_services));
+    let mut pending_polls = 0_usize;
+    let cancel_result = loop {
+        flag_waker.0.store(false, Ordering::SeqCst);
+        match cancel_future.as_mut().poll(&mut context) {
+            Poll::Ready(result) => break result,
+            Poll::Pending => {
+                pending_polls += 1;
+                assert!(
+                    flag_waker.0.load(Ordering::SeqCst),
+                    "Poll::Pending #{pending_polls} must schedule a wake so a non-waking cleanup future never stalls"
+                );
+                assert!(
+                    pending_polls < 64,
+                    "cancel future did not settle within 64 woken polls"
+                );
+            }
+        }
+    };
+    let err = cancel_result.expect_err("re-armed timer must still time out wedged cleanup");
     assert_eq!(err.kind(), SignInFailureKind::HostPort);
     assert_eq!(
         err.diagnostic().code(),
         "swallowtail.sign_in.cleanup_timed_out"
+    );
+    assert!(
+        pending_polls >= 2,
+        "must yield with a live wake at the per-poll early-timer retry limit before the later timer fires"
     );
     assert!(
         spurious_time.arms.load(Ordering::SeqCst) >= 11,

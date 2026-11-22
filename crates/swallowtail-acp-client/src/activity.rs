@@ -100,6 +100,20 @@ impl AcpActivityProjection {
         })
     }
 
+    pub(crate) fn snapshot(&self) -> Self {
+        Self {
+            config: self.config,
+            operation_id: self.operation_id.clone(),
+            open: self.open.clone(),
+            closed: self.closed.clone(),
+            next_id: self.next_id,
+        }
+    }
+
+    pub(crate) fn open_count(&self) -> usize {
+        self.open.len()
+    }
+
     fn malformed(&self) -> RuntimeFailure {
         (self.config.malformed)()
     }

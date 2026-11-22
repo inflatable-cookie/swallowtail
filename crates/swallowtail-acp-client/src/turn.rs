@@ -1,20 +1,23 @@
 use crate::activity::{AcpActivityProjection, text_content};
 use crate::connection::AcpConnection;
 use crate::diagnostics::{AcpDiagnostics, StopReasonPolicy, UsageProgressPolicy};
+use futures_core::Stream;
 use serde_json::{Value, json};
 use std::collections::VecDeque;
+use std::pin::Pin;
 use std::sync::{
     Arc, Mutex,
-    atomic::{AtomicBool, Ordering},
+    atomic::{AtomicBool, AtomicUsize, Ordering},
 };
+use std::task::{Context, Poll};
 use swallowtail_core::{CancellationScope, ProviderRequestRef, SafeDiagnostic, TurnRef};
 use swallowtail_protocol_acp::{AcpMessageRole, AcpSessionUpdate};
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CallbackId, CancellationAcknowledgement, CancellationControl,
     CleanupOutcome, JoinedTask, OperationContent, ProviderObservation, ProviderRequestObservation,
-    RuntimeEvent, RuntimeEventKind, RuntimeEventSender, RuntimeFailure, RuntimeTurnId,
-    TerminalOutcome, TerminalOutcomeFuture, TerminalOutcomeSender, TerminalStatus, TurnHandle,
-    runtime_event_channel, terminal_outcome_channel,
+    RuntimeEvent, RuntimeEventKind, RuntimeEventSender, RuntimeEventStream, RuntimeFailure,
+    RuntimeTurnId, TerminalOutcome, TerminalOutcomeFuture, TerminalOutcomeSender, TerminalStatus,
+    TurnHandle, runtime_event_channel, terminal_outcome_channel,
 };
 
 const EVENT_CAPACITY: usize = 128;
@@ -124,9 +127,31 @@ impl ActiveTurnConfig {
     }
 }
 
+struct TrackedEventStream {
+    inner: RuntimeEventStream,
+    buffered: Arc<AtomicUsize>,
+}
+
+impl Stream for TrackedEventStream {
+    type Item = Result<RuntimeEvent, RuntimeFailure>;
+
+    fn poll_next(mut self: Pin<&mut Self>, context: &mut Context<'_>) -> Poll<Option<Self::Item>> {
+        match Pin::new(&mut self.inner).poll_next(context) {
+            Poll::Ready(Some(Ok(event))) => {
+                self.buffered.fetch_sub(1, Ordering::SeqCst);
+                Poll::Ready(Some(Ok(event)))
+            }
+            other => other,
+        }
+    }
+}
+
 enum PendingEvent {
     Reserved(u64),
-    Event(Box<RuntimeEvent>),
+    Event {
+        event: Box<RuntimeEvent>,
+        staged: bool,
+    },
     Terminal(TerminalOutcome),
 }
 
@@ -175,7 +200,10 @@ impl TurnState {
             Some(content) => RuntimeEvent::with_content(sequence, kind, content),
             None => RuntimeEvent::new(sequence, kind),
         };
-        self.outbox.push_back(PendingEvent::Event(Box::new(event)));
+        self.outbox.push_back(PendingEvent::Event {
+            event: Box::new(event),
+            staged: true,
+        });
         self.staged_events += 1;
     }
 
@@ -185,7 +213,10 @@ impl TurnState {
             Some(content) => RuntimeEvent::with_content(sequence, kind, content),
             None => RuntimeEvent::new(sequence, kind),
         };
-        self.outbox.push_back(PendingEvent::Event(Box::new(event)));
+        self.outbox.push_back(PendingEvent::Event {
+            event: Box::new(event),
+            staged: false,
+        });
     }
 
     fn remove_reservation(&mut self, sequence: u64) -> bool {
@@ -202,14 +233,27 @@ impl TurnState {
         }
     }
 
-    fn check_non_terminal_capacity(&mut self, incoming: usize) -> Result<(), RuntimeFailure> {
+    fn terminal_reserve(&self) -> usize {
+        self.activity
+            .open_count()
+            .saturating_add(usize::from(!self.output.is_empty()))
+    }
+
+    fn check_non_terminal_capacity(
+        &self,
+        downstream_buffered: usize,
+        incoming: usize,
+        terminal_reserve: usize,
+    ) -> Result<(), RuntimeFailure> {
         if let Some(error) = &self.send_error {
             return Err(error.clone());
         }
-        if self.staged_events.saturating_add(incoming) > EVENT_CAPACITY {
-            let overflow = event_buffer_overflow();
-            self.send_error = Some(overflow.clone());
-            return Err(overflow);
+        let required = downstream_buffered
+            .saturating_add(self.staged_events)
+            .saturating_add(incoming)
+            .saturating_add(terminal_reserve);
+        if required > EVENT_CAPACITY {
+            return Err(event_buffer_overflow());
         }
         Ok(())
     }
@@ -292,6 +336,7 @@ pub struct ActiveTurn {
     runtime_id: RuntimeTurnId,
     session_id: String,
     events: RuntimeEventSender,
+    buffered: Arc<AtomicUsize>,
     terminal: TerminalOutcomeSender,
     state: Mutex<TurnState>,
     cancelled: AtomicBool,
@@ -309,6 +354,11 @@ impl ActiveTurn {
     ) -> Result<(Arc<Self>, BoxEventStream, TerminalOutcomeFuture), RuntimeFailure> {
         let (events, stream) = runtime_event_channel(EVENT_CAPACITY)?;
         events.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
+        let buffered = Arc::new(AtomicUsize::new(1));
+        let tracked = TrackedEventStream {
+            inner: stream,
+            buffered: Arc::clone(&buffered),
+        };
         let (terminal, future) = terminal_outcome_channel();
         // Use an internal sentinel factory inside `AcpActivityProjection` so
         // adapter-supplied diagnostic factories are never invoked while the
@@ -321,6 +371,7 @@ impl ActiveTurn {
                 runtime_id: runtime_id.clone(),
                 session_id,
                 events,
+                buffered,
                 terminal,
                 state: Mutex::new(TurnState {
                     next_sequence: 1,
@@ -338,7 +389,7 @@ impl ActiveTurn {
                 #[cfg(test)]
                 before_update_flush: Mutex::new(None),
             }),
-            Box::pin(stream),
+            Box::pin(tracked),
             future,
         ))
     }
@@ -372,7 +423,8 @@ impl ActiveTurn {
             if state.terminal {
                 return Ok(());
             }
-            state.check_non_terminal_capacity(1)?;
+            let downstream = self.buffered.load(Ordering::SeqCst);
+            state.check_non_terminal_capacity(downstream, 1, state.terminal_reserve())?;
             let sequence = state.allocate_sequence();
             state.outbox.push_back(PendingEvent::Reserved(sequence));
             state.staged_events += 1;
@@ -391,8 +443,10 @@ impl ActiveTurn {
                 if let Some(position) = state.outbox.iter().position(
                     |item| matches!(item, PendingEvent::Reserved(seq) if *seq == sequence),
                 ) {
-                    state.outbox[position] =
-                        PendingEvent::Event(Box::new(RuntimeEvent::new(sequence, kind)));
+                    state.outbox[position] = PendingEvent::Event {
+                        event: Box::new(RuntimeEvent::new(sequence, kind)),
+                        staged: true,
+                    };
                 }
                 Ok(())
             }
@@ -425,8 +479,11 @@ impl ActiveTurn {
             let next = {
                 let mut state = self.state.lock().expect("turn state lock poisoned");
                 match state.outbox.front() {
-                    Some(PendingEvent::Event(_)) => {
-                        state.staged_events = state.staged_events.saturating_sub(1);
+                    Some(PendingEvent::Event { staged, .. }) => {
+                        if *staged {
+                            state.staged_events = state.staged_events.saturating_sub(1);
+                        }
+                        self.buffered.fetch_add(1, Ordering::SeqCst);
                         state.outbox.pop_front()
                     }
                     Some(PendingEvent::Terminal(_)) => state.outbox.pop_front(),
@@ -441,8 +498,9 @@ impl ActiveTurn {
                 break;
             };
             match item {
-                PendingEvent::Event(event) => {
+                PendingEvent::Event { event, .. } => {
                     if let Err(error) = self.events.send(*event) {
+                        self.buffered.fetch_sub(1, Ordering::SeqCst);
                         {
                             let mut state = self.state.lock().expect("turn state lock poisoned");
                             if state.send_error.is_none() {
@@ -545,7 +603,8 @@ impl AcpTurnSink for ActiveTurn {
         let observation = {
             let mut state = self.state.lock().expect("turn state lock poisoned");
             if !state.terminal {
-                state.check_non_terminal_capacity(1)?;
+                let downstream = self.buffered.load(Ordering::SeqCst);
+                state.check_non_terminal_capacity(downstream, 1, state.terminal_reserve())?;
             }
             let sequence = state.allocate_sequence();
             let Ok(callback_id) = CallbackId::new(format!(
@@ -628,21 +687,33 @@ impl AcpTurnSink for ActiveTurn {
             if state.terminal {
                 return Ok(());
             }
-            let primary_count = usize::from(primary_event.is_some());
-            if let Err(error) = state.check_non_terminal_capacity(primary_count) {
-                Err(UpdateAdmissionError::SendFailed(error))
-            } else if let Some(text) = agent_text
+            if let Some(text) = agent_text
                 && state.output.len().saturating_add(text.len()) > MAXIMUM_OUTPUT_BYTES
             {
                 Err(UpdateAdmissionError::OutputLimitExceeded)
             } else {
-                match state.activity.project(&decoded.update) {
+                // Project onto a snapshot first so a rejected admission never
+                // mutates `state.activity`.
+                let mut next_activity = state.activity.snapshot();
+                match next_activity.project(&decoded.update) {
                     Err(_) => Err(UpdateAdmissionError::ActivityMalformed),
                     Ok(observations) => {
+                        let primary_count = usize::from(primary_event.is_some());
                         let total_incoming = primary_count.saturating_add(observations.len());
-                        if let Err(error) = state.check_non_terminal_capacity(total_incoming) {
+                        let next_has_output = !state.output.is_empty()
+                            || agent_text.is_some_and(|text| !text.is_empty());
+                        let next_terminal_reserve = next_activity
+                            .open_count()
+                            .saturating_add(usize::from(next_has_output));
+                        let downstream = self.buffered.load(Ordering::SeqCst);
+                        if let Err(error) = state.check_non_terminal_capacity(
+                            downstream,
+                            total_incoming,
+                            next_terminal_reserve,
+                        ) {
                             Err(UpdateAdmissionError::SendFailed(error))
                         } else {
+                            state.activity = next_activity;
                             if let Some(text) = agent_text {
                                 state.output.push_str(text);
                             }
@@ -683,20 +754,47 @@ impl AcpTurnSink for ActiveTurn {
     }
 
     fn finish_prompt(&self, stop_reason: &str) {
+        // Fast-path: if already terminal or a permission observation is already
+        // recorded, commit immediately under the lock without invoking any
+        // fallback stop-reason diagnostic factory.
+        let needs_fallback = {
+            let mut state = self.state.lock().expect("turn state lock poisoned");
+            if state.terminal {
+                return;
+            }
+            if let Some(observation) = state.provider_observation.clone() {
+                let transitioned =
+                    state.finish_locked(TerminalStatus::ProviderRequestObserved(observation));
+                if transitioned {
+                    self.finished.store(true, Ordering::SeqCst);
+                }
+                false
+            } else {
+                true
+            }
+        };
+        if !needs_fallback {
+            let _ = self.flush_outbox();
+            return;
+        }
         // Compute fallback stop status outside the turn state mutex so
         // adapter-supplied diagnostic factories cannot deadlock or poison it.
         let fallback_status = self.stop_reason_status(stop_reason);
         let transitioned = {
             let mut state = self.state.lock().expect("turn state lock poisoned");
-            let status = state
-                .provider_observation
-                .clone()
-                .map_or(fallback_status, TerminalStatus::ProviderRequestObserved);
-            let transitioned = state.finish_locked(status);
-            if transitioned {
-                self.finished.store(true, Ordering::SeqCst);
+            if state.terminal {
+                false
+            } else {
+                let status = state
+                    .provider_observation
+                    .clone()
+                    .map_or(fallback_status, TerminalStatus::ProviderRequestObserved);
+                let transitioned = state.finish_locked(status);
+                if transitioned {
+                    self.finished.store(true, Ordering::SeqCst);
+                }
+                transitioned
             }
-            transitioned
         };
         if transitioned {
             let _ = self.flush_outbox();

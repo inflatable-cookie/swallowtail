@@ -2811,6 +2811,7 @@ name = "swallowtail-acp-client"
 version = "0.6.0"
 dependencies = [
  "futures-channel",
+ "futures-core",
  "futures-executor",
  "serde_json",
  "swallowtail-core",

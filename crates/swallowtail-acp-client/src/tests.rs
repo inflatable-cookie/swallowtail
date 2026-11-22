@@ -1079,8 +1079,9 @@ fn active_turn_emit_event_allows_reentrant_calls_and_recovers_from_builder_panic
     assert_eq!(collected[0].sequence(), 0);
     assert_eq!(collected[1].sequence(), 2);
 
-    // 2. A stalled builder on another thread must not block terminal publication
-    //    and must still enforce the bounded outbox capacity at admission.
+    // 2. A stalled builder on another thread must not block terminal publication,
+    //    must account for both downstream buffered and staged events plus terminal
+    //    reserve at admission, and must leave every admitted + terminal stream item Ok.
     let (bounded_turn, bounded_events, bounded_terminal) = ActiveTurn::new(
         RuntimeTurnId::new("turn-bounded").expect("valid turn id"),
         "sess-bounded".to_owned(),
@@ -1105,10 +1106,11 @@ fn active_turn_emit_event_allows_reentrant_calls_and_recovers_from_builder_panic
     };
 
     builder_entered.wait();
-    // 1 slot is held by the paused reservation; each agent_message_chunk emits 2 events
-    // (OutputDelta + AssistantMessage activity), so 63 updates stage 1 + 126 = 127 events
-    // within EVENT_CAPACITY (128), and the 64th crosses the bound at admission.
-    for index in 0..63 {
+    // Downstream holds Started (1); paused builder holds 1 reservation; terminal reserve
+    // needs 2 slots once assistant text starts (AssistantMessage completion + OutputAvailable).
+    // Each agent_message_chunk emits 2 events (OutputDelta + AssistantMessage activity), so
+    // 62 chunks stage 124 events: 1 (downstream) + 1 (reservation) + 124 (chunks) + 2 (terminal) = 128.
+    for index in 0..62 {
         bounded_turn
             .handle_update(&json!({
                 "sessionId": "sess-bounded",
@@ -1127,22 +1129,162 @@ fn active_turn_emit_event_allows_reentrant_calls_and_recovers_from_builder_panic
                 "content": { "type": "text", "text": "overflow" }
             }
         }))
-        .expect_err("update beyond EVENT_CAPACITY must fail at admission");
+        .expect_err(
+            "update beyond combined downstream + staged + terminal capacity must fail at admission",
+        );
     assert_eq!(
         overflow.diagnostic().code(),
         "swallowtail.event_buffer_rejected"
     );
 
-    // Terminal must still progress and resolve while the builder is still paused.
+    // Terminal must still progress and resolve while the builder is still paused,
+    // and every event in the stream must succeed without downstream overflow.
     bounded_turn.finish_prompt("end_turn");
     let bounded_outcome = block_on(bounded_terminal);
     assert_eq!(bounded_outcome.status(), &TerminalStatus::Completed);
-    let _ = futures_executor::block_on_stream(bounded_events).count();
+    let bounded_collected: Vec<_> = futures_executor::block_on_stream(bounded_events)
+        .map(|event| {
+            event.expect("every admitted and terminal event must succeed without overflow")
+        })
+        .collect();
+    assert_eq!(
+        bounded_collected.len(),
+        127,
+        "Started (1) + 62*2 chunk events (124) + AssistantMessage completion (1) + OutputAvailable (1)"
+    );
+    let expected_output: String = (0..62).map(|index| index.to_string()).collect();
+    assert_eq!(
+        bounded_outcome.output().map(OperationContent::as_str),
+        Some(expected_output.as_str())
+    );
+    assert!(bounded_collected.iter().any(|event| {
+        matches!(event.kind(), RuntimeEventKind::OutputAvailable)
+            && event.content().map(OperationContent::as_str) == Some(expected_output.as_str())
+    }));
 
     builder_release.wait();
     paused_builder.join().expect("paused builder thread joins");
 
-    // 3. A panicking builder must not poison the turn state or wedge later completion.
+    // 3. A rejected terminal tool update must not mutate activity projection state,
+    //    so finishing the turn still emits the open tool's terminal completion.
+    let (tool_turn, tool_events, tool_terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-rejected-tool").expect("valid turn id"),
+        "sess-rejected-tool".to_owned(),
+        ActiveTurnConfig::new(test_diagnostics()),
+    )
+    .expect("turn creates");
+    tool_turn
+        .handle_update(&json!({
+            "sessionId": "sess-rejected-tool",
+            "update": {
+                "sessionUpdate": "tool_call",
+                "toolCallId": "tool-keep",
+                "title": "Read file",
+                "kind": "read",
+                "status": "in_progress"
+            }
+        }))
+        .expect("tool start succeeds");
+    // Drain Started + tool start so downstream buffer is empty (buffered == 0).
+    let mut tool_stream = futures_executor::block_on_stream(tool_events);
+    let _ = tool_stream
+        .next()
+        .expect("Started arrives")
+        .expect("Started is Ok");
+    let _ = tool_stream
+        .next()
+        .expect("tool start arrives")
+        .expect("tool start is Ok");
+
+    let tool_builder_entered = Arc::new(Barrier::new(3));
+    let tool_builder_release = Arc::new(Barrier::new(3));
+    let paused_tool_builders: Vec<_> = (0..2)
+        .map(|_| {
+            let turn = Arc::clone(&tool_turn);
+            let entered = Arc::clone(&tool_builder_entered);
+            let release = Arc::clone(&tool_builder_release);
+            std::thread::spawn(move || {
+                turn.emit_event(|_| {
+                    entered.wait();
+                    release.wait();
+                    Ok(RuntimeEventKind::Progress)
+                })
+                .expect("builder exits cleanly after terminal abandoned reservation")
+            })
+        })
+        .collect();
+    tool_builder_entered.wait();
+    // 2 reservations + 125 Progress + 1 open tool terminal reserve = 128.
+    for index in 0..125 {
+        tool_turn
+            .handle_update(&json!({
+                "sessionId": "sess-rejected-tool",
+                "update": {
+                    "sessionUpdate": "current_mode_update",
+                    "currentModeId": format!("mode-{index}")
+                }
+            }))
+            .expect("progress update within capacity is admitted");
+    }
+    // Attempting to stage one more Progress exceeds capacity (2 + 126 + 1 = 129 > 128).
+    let extra_err = tool_turn
+        .handle_update(&json!({
+            "sessionId": "sess-rejected-tool",
+            "update": {
+                "sessionUpdate": "current_mode_update",
+                "currentModeId": "mode-overflow"
+            }
+        }))
+        .expect_err("extra progress must be rejected");
+    assert_eq!(
+        extra_err.diagnostic().code(),
+        "swallowtail.event_buffer_rejected"
+    );
+    // A non-terminal tool update exceeding capacity (2 + 125 + 1 + 1 = 129 > 128)
+    // must be rejected without mutating `state.activity`.
+    let rejected_tool_update = tool_turn
+        .handle_update(&json!({
+            "sessionId": "sess-rejected-tool",
+            "update": {
+                "sessionUpdate": "tool_call_update",
+                "toolCallId": "tool-keep",
+                "status": "in_progress"
+            }
+        }))
+        .expect_err("tool update exceeding capacity must be rejected");
+    assert_eq!(
+        rejected_tool_update.diagnostic().code(),
+        "swallowtail.event_buffer_rejected"
+    );
+    // Finish the turn while builders are still paused: abandoning reservations frees slots
+    // and the still-open tool emits its terminal completion cleanly.
+    tool_turn.finish_prompt("end_turn");
+    let tool_outcome = block_on(tool_terminal);
+    assert_eq!(tool_outcome.status(), &TerminalStatus::Completed);
+    let tool_collected: Vec<_> = tool_stream
+        .map(|event| event.expect("every remaining event must succeed"))
+        .collect();
+    assert_eq!(
+        tool_collected
+            .iter()
+            .filter(|event| {
+                matches!(
+                    event.kind(),
+                    RuntimeEventKind::Activity(obs)
+                        if obs.phase() == ActivityLifecyclePhase::Completed
+                            && obs.kind() == &ActivityKind::ProviderOwnedTool
+                )
+            })
+            .count(),
+        1,
+        "open tool must still emit its terminal completion after rejected update"
+    );
+    tool_builder_release.wait();
+    for handle in paused_tool_builders {
+        handle.join().expect("paused tool builder joins");
+    }
+
+    // 4. A panicking builder must not poison the turn state or wedge later completion.
     let (panic_turn, panic_events, panic_terminal) = ActiveTurn::new(
         RuntimeTurnId::new("turn-panic").expect("valid turn id"),
         "sess-panic".to_owned(),
@@ -1170,13 +1312,15 @@ fn active_turn_emit_event_allows_reentrant_calls_and_recovers_from_builder_panic
 #[test]
 fn active_turn_finish_prompt_invokes_diagnostic_factories_outside_state_lock() {
     use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
-    use std::cell::RefCell;
+    use std::cell::{Cell, RefCell};
 
     thread_local! {
         static REENTRANT_TURN: RefCell<Option<Arc<ActiveTurn>>> = const { RefCell::new(None) };
+        static FACTORY_CALLS: Cell<usize> = const { Cell::new(0) };
     }
 
     fn reentrant_stop_reason_unsupported() -> RuntimeFailure {
+        FACTORY_CALLS.with(|count| count.set(count.get() + 1));
         REENTRANT_TURN.with(|slot| {
             if let Some(turn) = slot.borrow().as_ref() {
                 // If `finish_prompt` held `TurnState` while calling this factory,
@@ -1187,6 +1331,8 @@ fn active_turn_finish_prompt_invokes_diagnostic_factories_outside_state_lock() {
         test_failure("swallowtail.test.acp.stop", "stop")
     }
 
+    // 1. Without a recorded permission observation, the fallback factory runs outside the lock.
+    FACTORY_CALLS.with(|count| count.set(0));
     let mut diagnostics = test_diagnostics();
     diagnostics.stop_reason_unsupported = reentrant_stop_reason_unsupported;
     let (turn, _events, terminal) = ActiveTurn::new(
@@ -1202,6 +1348,37 @@ fn active_turn_finish_prompt_invokes_diagnostic_factories_outside_state_lock() {
 
     let outcome = block_on(terminal);
     assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
+    assert_eq!(FACTORY_CALLS.with(Cell::get), 1);
+
+    // 2. With a recorded permission observation, permission precedence wins and the
+    //    fallback diagnostic factory must not be invoked at all.
+    FACTORY_CALLS.with(|count| count.set(0));
+    let mut perm_diagnostics = test_diagnostics();
+    perm_diagnostics.stop_reason_unsupported = reentrant_stop_reason_unsupported;
+    let (perm_turn, _perm_events, perm_terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-perm-precedence").expect("valid turn id"),
+        "sess-perm-prec".to_owned(),
+        ActiveTurnConfig::new(perm_diagnostics),
+    )
+    .expect("turn creates");
+
+    let observation = perm_turn
+        .observe_permission(&json!(9))
+        .expect("permission observation records");
+    REENTRANT_TURN.with(|slot| *slot.borrow_mut() = Some(Arc::clone(&perm_turn)));
+    perm_turn.finish_prompt("unexpected_stop_reason");
+    REENTRANT_TURN.with(|slot| *slot.borrow_mut() = None);
+
+    let perm_outcome = block_on(perm_terminal);
+    assert_eq!(
+        perm_outcome.status(),
+        &TerminalStatus::ProviderRequestObserved(observation)
+    );
+    assert_eq!(
+        FACTORY_CALLS.with(Cell::get),
+        0,
+        "fallback stop diagnostic factory must not run when a permission observation is recorded"
+    );
 }
 
 #[test]

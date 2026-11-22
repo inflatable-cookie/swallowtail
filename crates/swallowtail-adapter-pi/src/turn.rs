@@ -60,6 +60,7 @@ pub(crate) struct ActiveTurn {
     ui_ids: Mutex<BTreeSet<String>>,
     steering_scheduled: AtomicBool,
     follow_up_scheduled: AtomicBool,
+    abort_in_flight: AtomicBool,
     cancelled: AtomicBool,
     timed_out: AtomicBool,
     require_aborted_settled: bool,
@@ -101,6 +102,7 @@ impl ActiveTurn {
                 ui_ids: Mutex::new(BTreeSet::new()),
                 steering_scheduled: AtomicBool::new(false),
                 follow_up_scheduled: AtomicBool::new(false),
+                abort_in_flight: AtomicBool::new(false),
                 cancelled: AtomicBool::new(false),
                 timed_out: AtomicBool::new(false),
                 require_aborted_settled,
@@ -194,7 +196,10 @@ impl ActiveTurn {
                 }
                 let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
                     (TerminalStatus::TimedOut, ActivityStatus::Failed)
-                } else if self.cancelled.load(Ordering::SeqCst) || aborted == Some(true) {
+                } else if self.cancelled.load(Ordering::SeqCst)
+                    || self.abort_in_flight.load(Ordering::SeqCst)
+                    || aborted == Some(true)
+                {
                     (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
                 } else {
                     self.completed_prompts.fetch_add(1, Ordering::SeqCst);
@@ -217,6 +222,16 @@ impl ActiveTurn {
         }
     }
 
+    pub(crate) fn mark_abort_in_flight(&self) {
+        self.abort_in_flight.store(true, Ordering::SeqCst);
+        self.callbacks.abandon(CallbackAbandonment::TurnCancelled);
+    }
+
+    pub(crate) fn mark_abort_acknowledged(&self) {
+        self.cancelled.store(true, Ordering::SeqCst);
+        self.abort_in_flight.store(false, Ordering::SeqCst);
+    }
+
     pub(crate) fn mark_cancelled(&self) {
         self.cancelled.store(true, Ordering::SeqCst);
         self.callbacks.abandon(CallbackAbandonment::TurnCancelled);
@@ -230,6 +245,14 @@ impl ActiveTurn {
     pub(crate) fn fail_connection(&self, diagnostic: swallowtail_core::SafeDiagnostic) {
         let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
             (TerminalStatus::TimedOut, ActivityStatus::Failed)
+        } else if self.abort_in_flight.load(Ordering::SeqCst) {
+            (
+                TerminalStatus::RuntimeFailed(swallowtail_core::SafeDiagnostic::new(
+                    "swallowtail.pi.rpc.cancel_rejected",
+                    "Pi could not abort the active turn",
+                )),
+                ActivityStatus::Failed,
+            )
         } else if self.cancelled.load(Ordering::SeqCst) {
             (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
         } else {

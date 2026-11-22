@@ -78,7 +78,7 @@ fn host_deadline_uses_native_abort_and_resolves_timed_out() {
     block_on(events.next())
         .expect("agent-start observation arrives")
         .expect("agent-start observation is valid");
-    fixture.fire_all_deadlines();
+    fixture.advance_time(deadline().instant().ticks());
 
     let terminal = block_on(
         turn.take_terminal_outcome()
@@ -90,6 +90,7 @@ fn host_deadline_uses_native_abort_and_resolves_timed_out() {
         .iter()
         .any(|value| value["command"] == "abort");
     let turn_cleanup = block_on(turn.close());
+    fixture.fire_all_deadlines();
     let cleanup = block_on(close_session(session, services));
     let cleanup_code = cleanup
         .diagnostic()

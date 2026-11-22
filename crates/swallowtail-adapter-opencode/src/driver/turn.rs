@@ -62,6 +62,28 @@ impl TurnHandle for OpenCodeTurnHandle {
     }
 }
 
+struct ObservedEventStream {
+    inner: swallowtail_runtime::RuntimeEventStream,
+    dropped: Arc<AtomicBool>,
+}
+
+impl futures_core::Stream for ObservedEventStream {
+    type Item = Result<RuntimeEvent, RuntimeFailure>;
+
+    fn poll_next(
+        mut self: std::pin::Pin<&mut Self>,
+        context: &mut std::task::Context<'_>,
+    ) -> Poll<Option<Self::Item>> {
+        std::pin::Pin::new(&mut self.inner).poll_next(context)
+    }
+}
+
+impl Drop for ObservedEventStream {
+    fn drop(&mut self) {
+        self.dropped.store(true, Ordering::SeqCst);
+    }
+}
+
 struct TurnPump {
     turn_id: RuntimeTurnId,
     subscription: Subscription,
@@ -70,6 +92,7 @@ struct TurnPump {
     cancellation: Arc<TurnCancellation>,
     detachment: Option<Arc<TurnDetachment>>,
     events: swallowtail_runtime::RuntimeEventSender,
+    events_dropped: Arc<AtomicBool>,
     terminal: swallowtail_runtime::TerminalOutcomeSender,
     terminal_flag: Arc<AtomicBool>,
     callback_hub: Option<callback::CallbackHub>,
@@ -85,6 +108,7 @@ async fn pump_turn(pump: TurnPump) {
         cancellation,
         detachment,
         events,
+        events_dropped,
         terminal,
         terminal_flag,
         callback_hub,
@@ -346,7 +370,8 @@ async fn pump_turn(pump: TurnPump) {
         callbacks.abandon(reason);
     }
     let cleanup = CleanupOutcome::merge(status.1, stream_cleanup);
-    let final_status = finalize_turn_events(&mut activity, &events, sequence, status.0, usage);
+    let final_status =
+        finalize_turn_events(&mut activity, &events, &events_dropped, sequence, status.0, usage);
     events.mark_terminal();
     let mut outcome = TerminalOutcome::new(final_status, cleanup);
     if let Some(output) = output {
@@ -359,6 +384,7 @@ async fn pump_turn(pump: TurnPump) {
 fn finalize_turn_events(
     activity: &mut crate::activity::OpenCodeActivityProjection,
     events: &swallowtail_runtime::RuntimeEventSender,
+    events_dropped: &AtomicBool,
     mut sequence: u64,
     mut status: TerminalStatus,
     usage: Option<swallowtail_runtime::TokenUsage>,
@@ -378,17 +404,17 @@ fn finalize_turn_events(
         match activity.complete(activity_status) {
             Ok(observations) => {
                 for observation in observations {
-                    // Best-effort delivery at terminalization: if the consumer
-                    // dropped or closed the event stream early, preserve the
-                    // authentic terminal status instead of replacing it with a
-                    // channel-closed RuntimeFailed.
-                    if events
-                        .send(RuntimeEvent::new(
-                            sequence,
-                            RuntimeEventKind::Activity(observation),
-                        ))
-                        .is_err()
-                    {
+                    if let Err(error) = events.send(RuntimeEvent::new(
+                        sequence,
+                        RuntimeEventKind::Activity(observation),
+                    )) {
+                        // Preserve the authentic terminal status when the
+                        // consumer already dropped the event stream; surface
+                        // real send/overflow failures while a consumer is still
+                        // attached (Contract 009).
+                        if !events_dropped.load(Ordering::SeqCst) {
+                            status = TerminalStatus::RuntimeFailed(error.diagnostic().clone());
+                        }
                         break;
                     }
                     sequence += 1;
@@ -401,13 +427,16 @@ fn finalize_turn_events(
             }
         }
     }
-    if let Some(usage) = usage {
-        let _ = events.send(RuntimeEvent::new(
+    if let Some(usage) = usage
+        && let Err(error) = events.send(RuntimeEvent::new(
             sequence,
             RuntimeEventKind::ProviderObservation(
                 swallowtail_runtime::ProviderObservation::Usage(usage),
             ),
-        ));
+        ))
+        && !events_dropped.load(Ordering::SeqCst)
+    {
+        status = TerminalStatus::RuntimeFailed(error.diagnostic().clone());
     }
     status
 }

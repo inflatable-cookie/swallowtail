@@ -179,10 +179,10 @@ impl ExecActivityProjection {
             projection.identity.assistant_phase,
             projection.identity.disclosure,
         )
-        .map_err(|_| malformed_stream())?
-        .with_provider_activity_ref(
-            ProviderActivityRef::new(provider_id).map_err(|_| malformed_stream())?,
-        );
+        .map_err(|_| malformed_stream())?;
+        if let Ok(provider_ref) = ProviderActivityRef::new(provider_id) {
+            observation = observation.with_provider_activity_ref(provider_ref);
+        }
         if let Some(label) = label {
             observation = observation
                 .with_label(label)
@@ -384,5 +384,54 @@ mod bounded_tests {
             overflow.diagnostic().code(),
             "swallowtail.codex.exec.activity_capacity_exceeded"
         );
+    }
+
+    #[test]
+    fn provider_item_id_over_512_bytes_keeps_minted_id_and_omits_provider_ref() {
+        let mut projection = ExecActivityProjection::with_item_capacity(
+            RuntimeRunId::new("exec-run-over-512").expect("run id"),
+            Version::new(0, 164, 0),
+            4,
+        );
+        // ProviderActivityRef caps at 512 bytes; an ID above that bound must
+        // still project with a stable minted ActivityId and omit provider_ref.
+        let huge_id = format!("cmd-{}", "z".repeat(600));
+        let started = projection
+            .project(
+                "item.started",
+                &json!({
+                    "item": {
+                        "id": huge_id,
+                        "type": "command_execution",
+                        "command": "echo hi",
+                        "status": "in_progress"
+                    }
+                }),
+            )
+            .expect("provider item ID over 512 bytes must start cleanly");
+        assert!(
+            started[0]
+                .activity_id()
+                .as_str()
+                .starts_with("codex-exec:minted-")
+        );
+        assert!(started[0].provider_activity_ref().is_none());
+
+        let completed = projection
+            .project(
+                "item.completed",
+                &json!({
+                    "item": {
+                        "id": huge_id,
+                        "type": "command_execution",
+                        "command": "echo hi",
+                        "status": "completed",
+                        "exit_code": 0
+                    }
+                }),
+            )
+            .expect("provider item ID over 512 bytes must complete cleanly");
+        assert_eq!(completed[0].activity_id(), started[0].activity_id());
+        assert!(completed[0].provider_activity_ref().is_none());
     }
 }

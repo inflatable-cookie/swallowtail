@@ -122,18 +122,30 @@ impl SidecarConnection {
             }
             pending.insert(id.clone(), PendingCommand { command, sender });
         }
-        if let Err(error) = self
-            .process
-            .write_stdin(ProcessInputChunk::new(bytes))
-            .await
-        {
-            self.pending
-                .lock()
-                .expect("sidecar pending lock poisoned")
-                .remove(&id);
-            return Err(error);
+        struct PendingGuard<'a> {
+            pending: &'a Mutex<BTreeMap<String, PendingCommand>>,
+            id: Option<String>,
         }
-        response.await
+        impl Drop for PendingGuard<'_> {
+            fn drop(&mut self) {
+                if let Some(id) = self.id.take() {
+                    self.pending
+                        .lock()
+                        .expect("sidecar pending lock poisoned")
+                        .remove(&id);
+                }
+            }
+        }
+        let mut guard = PendingGuard {
+            pending: &self.pending,
+            id: Some(id),
+        };
+        self.process
+            .write_stdin(ProcessInputChunk::new(bytes))
+            .await?;
+        let result = response.await;
+        guard.id = None;
+        result
     }
 
     pub(crate) fn set_active_turn(

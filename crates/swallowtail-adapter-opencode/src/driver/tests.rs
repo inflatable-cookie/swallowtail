@@ -274,7 +274,7 @@ fn project_opencode_page_advances_cursor_when_full_page_is_filtered_by_directory
 }
 
 #[test]
-fn finalize_turn_events_preserves_authentic_terminal_status_when_event_stream_closed() {
+fn finalize_turn_events_preserves_authentic_status_on_dropped_stream_and_surfaces_live_overflow() {
     let cases = [
         TerminalStatus::Completed,
         TerminalStatus::Cancelled,
@@ -285,11 +285,22 @@ fn finalize_turn_events_preserves_authentic_terminal_status_when_event_stream_cl
         )),
     ];
     for expected in cases {
-        let (events, stream) = runtime_event_channel(EVENT_CAPACITY).expect("channel constructs");
-        events.close();
+        let (events, raw_stream) = runtime_event_channel(1).expect("channel constructs");
+        let events_dropped = Arc::new(AtomicBool::new(false));
+        let stream = ObservedEventStream {
+            inner: raw_stream,
+            dropped: Arc::clone(&events_dropped),
+        };
+        // Fill the single-slot buffer, then drop the actual receiver stream
+        // without calling sender-side `close()`.
+        events
+            .send(RuntimeEvent::new(1, RuntimeEventKind::Started))
+            .expect("initial event fills buffer");
         drop(stream);
+        assert!(events_dropped.load(Ordering::SeqCst));
+
         let mut activity = crate::activity::OpenCodeActivityProjection::new(
-            RuntimeTurnId::new("turn-closed-events").expect("turn id"),
+            RuntimeTurnId::new("turn-dropped-events").expect("turn id"),
         );
         let _ = activity
             .project(&Event::ReasoningSnapshot {
@@ -299,11 +310,45 @@ fn finalize_turn_events_preserves_authentic_terminal_status_when_event_stream_cl
             })
             .expect("open reasoning activity projects");
         let usage = swallowtail_runtime::TokenUsage::new(Some(10), Some(5));
-        let preserved =
-            finalize_turn_events(&mut activity, &events, 2, expected.clone(), Some(usage));
+        let preserved = finalize_turn_events(
+            &mut activity,
+            &events,
+            &events_dropped,
+            2,
+            expected.clone(),
+            Some(usage),
+        );
         assert_eq!(
             preserved, expected,
-            "closed event stream must not overwrite authentic terminal status"
+            "dropped event stream must not overwrite authentic terminal status"
         );
     }
+
+    // With a still-attached consumer, buffer overflow on final delivery must
+    // surface RuntimeFailed instead of claiming Completed (Contract 009).
+    let (events, raw_stream) = runtime_event_channel(1).expect("channel constructs");
+    let events_dropped = Arc::new(AtomicBool::new(false));
+    let _attached_stream = ObservedEventStream {
+        inner: raw_stream,
+        dropped: Arc::clone(&events_dropped),
+    };
+    events
+        .send(RuntimeEvent::new(1, RuntimeEventKind::Started))
+        .expect("initial event fills buffer");
+    let mut activity = crate::activity::OpenCodeActivityProjection::new(
+        RuntimeTurnId::new("turn-live-overflow").expect("turn id"),
+    );
+    let usage = swallowtail_runtime::TokenUsage::new(Some(10), Some(5));
+    let outcome = finalize_turn_events(
+        &mut activity,
+        &events,
+        &events_dropped,
+        2,
+        TerminalStatus::Completed,
+        Some(usage),
+    );
+    assert!(
+        matches!(outcome, TerminalStatus::RuntimeFailed(_)),
+        "still-attached full event buffer must surface RuntimeFailed, got {outcome:?}"
+    );
 }

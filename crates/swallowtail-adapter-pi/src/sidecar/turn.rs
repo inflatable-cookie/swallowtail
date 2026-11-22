@@ -51,6 +51,7 @@ pub(crate) struct SidecarActiveTurn {
     usage: Mutex<Option<TokenUsage>>,
     steering_scheduled: AtomicBool,
     follow_up_scheduled: AtomicBool,
+    abort_in_flight: AtomicBool,
     cancelled: AtomicBool,
     timed_out: AtomicBool,
     finished: AtomicBool,
@@ -78,6 +79,7 @@ impl SidecarActiveTurn {
                 usage: Mutex::new(None),
                 steering_scheduled: AtomicBool::new(false),
                 follow_up_scheduled: AtomicBool::new(false),
+                abort_in_flight: AtomicBool::new(false),
                 cancelled: AtomicBool::new(false),
                 timed_out: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
@@ -156,7 +158,9 @@ impl SidecarActiveTurn {
             PiSdkSidecarEvent::Settled => {
                 let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
                     (TerminalStatus::TimedOut, ActivityStatus::Failed)
-                } else if self.cancelled.load(Ordering::SeqCst) {
+                } else if self.cancelled.load(Ordering::SeqCst)
+                    || self.abort_in_flight.load(Ordering::SeqCst)
+                {
                     (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
                 } else {
                     self.completed_prompts.fetch_add(1, Ordering::SeqCst);
@@ -178,6 +182,15 @@ impl SidecarActiveTurn {
         }
     }
 
+    pub(crate) fn mark_abort_in_flight(&self) {
+        self.abort_in_flight.store(true, Ordering::SeqCst);
+    }
+
+    pub(crate) fn mark_abort_acknowledged(&self) {
+        self.cancelled.store(true, Ordering::SeqCst);
+        self.abort_in_flight.store(false, Ordering::SeqCst);
+    }
+
     pub(crate) fn mark_cancelled(&self) {
         self.cancelled.store(true, Ordering::SeqCst);
     }
@@ -189,6 +202,14 @@ impl SidecarActiveTurn {
     pub(crate) fn fail_connection(&self, diagnostic: SafeDiagnostic) {
         let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
             (TerminalStatus::TimedOut, ActivityStatus::Failed)
+        } else if self.abort_in_flight.load(Ordering::SeqCst) {
+            (
+                TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
+                    "swallowtail.pi.sdk-sidecar.cancel_rejected",
+                    "Pi could not abort the active turn",
+                )),
+                ActivityStatus::Failed,
+            )
         } else if self.cancelled.load(Ordering::SeqCst) {
             (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
         } else {

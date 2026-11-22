@@ -120,11 +120,17 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 return Err(error);
             }
             let deadline = request.deadline().expect("validated turn deadline");
+            // Spawn the deadline watcher before sending `prompt` so a spawn
+            // failure rolls back cleanly without dispatching provider work, but
+            // keep it parked on `arm_rx` until `prompt` is accepted so
+            // `start_turn` remains the sole deadline owner during dispatch.
+            let (arm_tx, arm_rx) = futures_channel::oneshot::channel();
             let deadline_task = match spawn_deadline(
                 &services,
                 Arc::clone(&self.connection),
                 Arc::clone(&turn),
                 deadline,
+                arm_rx,
             ) {
                 Ok(task) => task,
                 Err(error) => {
@@ -134,14 +140,6 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                     return Err(error);
                 }
             };
-            *self
-                .active
-                .lock()
-                .expect("sidecar active-task lock poisoned") = Some(ActiveTask {
-                turn: Arc::clone(&turn),
-                deadline_task: Some(deadline_task),
-                attachment: materialization.clone(),
-            });
             let id = format!("prompt:{}", request.turn_id().as_str());
             let mut params = json!({"text": request.content().as_str()});
             if let Some(attachment) = attachment {
@@ -160,27 +158,36 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
             )
             .await;
             match response {
-                Ok(response) if response.success => Ok(Box::new(PiSdkSidecarTurnHandle::new(
-                    request.turn_id().clone(),
-                    events,
-                    Box::pin(terminal),
-                    PiSdkSidecarTurnBinding {
-                        connection: Arc::clone(&self.connection),
-                        turn,
-                        active: Arc::clone(&self.active),
-                        attachment: materialization,
-                    },
-                )) as Box<dyn TurnHandle>),
+                Ok(response) if response.success => {
+                    let _ = arm_tx.send(());
+                    *self
+                        .active
+                        .lock()
+                        .expect("sidecar active-task lock poisoned") = Some(ActiveTask {
+                        turn: Arc::clone(&turn),
+                        deadline_task: Some(deadline_task),
+                        attachment: materialization.clone(),
+                    });
+                    Ok(Box::new(PiSdkSidecarTurnHandle::new(
+                        request.turn_id().clone(),
+                        events,
+                        Box::pin(terminal),
+                        PiSdkSidecarTurnBinding {
+                            connection: Arc::clone(&self.connection),
+                            turn,
+                            active: Arc::clone(&self.active),
+                            attachment: materialization,
+                        },
+                    )) as Box<dyn TurnHandle>)
+                }
                 Ok(_) => {
+                    drop(arm_tx);
                     turn.fail_connection(swallowtail_core::SafeDiagnostic::new(
                         "swallowtail.pi.sdk-sidecar.prompt_rejected",
                         "Pi SDK sidecar rejected the prompt before acceptance",
                     ));
                     self.connection.clear_active_turn(&turn);
-                    // Join the deadline task and release the attachment this turn
-                    // already registered; a rejected prompt must leave nothing
-                    // running behind the session.
-                    let _ = reap_finished(&self.active).await;
+                    let _ = deadline_task.join().await;
                     let _ = materialization.release().await;
                     Err(failure(
                         "swallowtail.pi.sdk-sidecar.prompt_rejected",
@@ -188,9 +195,24 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                     ))
                 }
                 Err(error) => {
-                    turn.fail_connection(error.diagnostic().clone());
-                    self.connection.clear_active_turn(&turn);
-                    let _ = reap_finished(&self.active).await;
+                    drop(arm_tx);
+                    if error.diagnostic().code() == "swallowtail.pi.sdk-sidecar.prompt_timed_out" {
+                        // The prompt write may have already reached the sidecar
+                        // with unconfirmed settlement. Close this exact
+                        // connection and force-stop so live work cannot outlive
+                        // the timed-out call or collide with a subsequent turn.
+                        turn.mark_timed_out();
+                        if self
+                            .connection
+                            .close_on_rejected_abort(&turn, error.diagnostic().clone())
+                        {
+                            let _ = self.connection.force_stop().await;
+                        }
+                    } else {
+                        turn.fail_connection(error.diagnostic().clone());
+                        self.connection.clear_active_turn(&turn);
+                    }
+                    let _ = deadline_task.join().await;
                     let _ = materialization.release().await;
                     Err(error)
                 }
@@ -256,19 +278,25 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
     }
 }
 
+/// How long a deadline-triggered `abort` command may wait for acknowledgement
+/// before escalating to connection closure and `force_stop`.
+const ABORT_ACKNOWLEDGEMENT_GRACE_TICKS: u64 = 500;
+
 fn spawn_deadline(
     services: &HostServices,
     connection: Arc<SidecarConnection>,
     turn: Arc<SidecarActiveTurn>,
     deadline: swallowtail_runtime::Deadline,
+    arm: futures_channel::oneshot::Receiver<()>,
 ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
-    let mut wait = services
+    let time = services
         .time()
         .cloned()
-        .expect("validated sidecar time service")
-        .wait_until(deadline);
+        .expect("validated sidecar time service");
+    let mut wait = time.wait_until(deadline);
     let mut finished = Box::pin(turn.finished_future());
     let deadline_turn = Arc::clone(&turn);
+    let deadline_services = services.clone();
     let scope = ScopeId::new(format!(
         "pi-sdk-sidecar:deadline:{}",
         turn.runtime_id().as_str()
@@ -285,6 +313,9 @@ fn spawn_deadline(
         .spawn(
             scope,
             Box::pin(async move {
+                if arm.await.is_err() {
+                    return;
+                }
                 let timed_out = poll_fn(|context| {
                     if finished.as_mut().poll(context).is_ready() {
                         Poll::Ready(false)
@@ -298,9 +329,21 @@ fn spawn_deadline(
                 if timed_out {
                     deadline_turn.mark_timed_out();
                     let id = format!("deadline-abort:{}", deadline_turn.runtime_id().as_str());
-                    let abort = connection
-                        .command(id, PiSdkSidecarCommand::Abort, json!({}))
-                        .await;
+                    let abort_deadline = swallowtail_runtime::Deadline::at(
+                        swallowtail_runtime::MonotonicInstant::from_ticks(
+                            time.now()
+                                .ticks()
+                                .saturating_add(ABORT_ACKNOWLEDGEMENT_GRACE_TICKS),
+                        ),
+                    );
+                    let abort = crate::driver::run_before_deadline(
+                        connection.command(id, PiSdkSidecarCommand::Abort, json!({})),
+                        Some(abort_deadline),
+                        &deadline_services,
+                        "swallowtail.pi.sdk-sidecar.deadline_abort_timed_out",
+                        "Pi SDK sidecar deadline abort timed out awaiting acknowledgement",
+                    )
+                    .await;
                     if !matches!(abort, Ok(response) if response.success) {
                         let diagnostic = swallowtail_core::SafeDiagnostic::new(
                             "swallowtail.pi.sdk-sidecar.deadline_abort_failed",

@@ -49,7 +49,7 @@ impl CancellationControl for TurnCancellation {
                 }
                 return Ok(CancellationAcknowledgement::AlreadyRequested);
             }
-            self.turn.mark_cancelled();
+            self.turn.mark_abort_in_flight();
             let id = format!("abort:{}", self.turn.runtime_id().as_str());
             let error = match self
                 .connection
@@ -57,6 +57,7 @@ impl CancellationControl for TurnCancellation {
                 .await
             {
                 Ok(response) if response.success => {
+                    self.turn.mark_abort_acknowledged();
                     return Ok(CancellationAcknowledgement::Requested);
                 }
                 Ok(_) => failure(
@@ -585,6 +586,116 @@ mod tests {
                     if diagnostic.code() == "swallowtail.pi.sdk-sidecar.cancel_rejected"
             ),
             "rejected sidecar abort must resolve with cancel_rejected diagnostic, got {:?}",
+            outcome.status()
+        );
+    }
+
+    #[test]
+    fn sidecar_abort_write_followed_by_eof_before_ack_resolves_cancel_rejected() {
+        use swallowtail_runtime::TerminalStatus;
+
+        struct WriteOkThenEof {
+            written: Mutex<Option<futures_channel::oneshot::Sender<()>>>,
+            eof_gate: Mutex<Option<futures_channel::oneshot::Receiver<()>>>,
+        }
+
+        impl ProcessHandle for WriteOkThenEof {
+            fn write_stdin(
+                &self,
+                _: ProcessInputChunk,
+            ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                if let Some(tx) = self.written.lock().expect("written lock").take() {
+                    let _ = tx.send(());
+                }
+                Box::pin(async { Ok(()) })
+            }
+            fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn read_output(
+                &self,
+            ) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+                let rx = self.eof_gate.lock().expect("eof lock").take();
+                Box::pin(async move {
+                    if let Some(rx) = rx {
+                        let _ = rx.await;
+                    }
+                    Ok(None)
+                })
+            }
+            fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+                Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+            }
+        }
+
+        let (written_tx, written_rx) = futures_channel::oneshot::channel();
+        let (eof_tx, eof_rx) = futures_channel::oneshot::channel();
+        let services = HostServices::new(
+            ExecutionHostId::new("pi.sidecar.abort-eof-test").expect("host id is valid"),
+        );
+        let connection = SidecarConnection::new(
+            Arc::new(WriteOkThenEof {
+                written: Mutex::new(Some(written_tx)),
+                eof_gate: Mutex::new(Some(eof_rx)),
+            }),
+            services,
+        );
+        let (turn, events, terminal) = SidecarActiveTurn::new(
+            RuntimeTurnId::new("sidecar-abort-eof").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+        )
+        .expect("turn constructs");
+        connection
+            .set_active_turn(Arc::clone(&turn))
+            .expect("turn attaches");
+        let active: ActiveSlot = Arc::new(Mutex::new(None));
+        let mut handle = PiSdkSidecarTurnHandle::new(
+            RuntimeTurnId::new("sidecar-abort-eof").expect("turn id is valid"),
+            events,
+            Box::pin(terminal),
+            super::PiSdkSidecarTurnBinding {
+                connection: Arc::clone(&connection),
+                turn,
+                active,
+                attachment: SharedAttachmentMaterialization::default(),
+            },
+        );
+        let terminal_fut = handle
+            .take_terminal_outcome()
+            .expect("terminal outcome future is present");
+
+        let pump_conn = Arc::clone(&connection);
+        let pump_thread = std::thread::spawn(move || {
+            futures_executor::block_on(pump_conn.pump());
+        });
+
+        let cancel_thread =
+            std::thread::spawn(move || futures_executor::block_on(handle.cancellation().request()));
+
+        futures_executor::block_on(written_rx).expect("abort write completed");
+        eof_tx.send(()).expect("trigger EOF");
+
+        let cancel_result = cancel_thread.join().expect("cancel thread joins");
+        assert!(
+            cancel_result.is_err(),
+            "in-flight sidecar abort interrupted by EOF must return error"
+        );
+        pump_thread.join().expect("pump thread joins");
+
+        let outcome = futures_executor::block_on(terminal_fut);
+        assert!(
+            matches!(
+                outcome.status(),
+                TerminalStatus::RuntimeFailed(diagnostic)
+                    if diagnostic.code() == "swallowtail.pi.sdk-sidecar.cancel_rejected"
+            ),
+            "EOF before sidecar abort acknowledgement must resolve with cancel_rejected, got {:?}",
             outcome.status()
         );
     }

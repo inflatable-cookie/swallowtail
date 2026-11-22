@@ -98,88 +98,73 @@ struct CreatedSessionCleanup {
     deletion: RemoteResourceDeletionOutcome,
 }
 
-/// Grace for joining the turn, deleting its private session, and releasing leases.
+/// Grace for deleting the private session after its turn has joined.
 const RUN_SESSION_CLEANUP_GRACE_TICKS: u64 = 500;
 
 async fn close_run_session(session: OpenCodeSessionHandle) -> CreatedSessionCleanup {
-    let Some(time) = session.services.time() else {
-        return session.close_and_delete().await;
-    };
-    let deadline = Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(
-        time.now().ticks().saturating_add(RUN_SESSION_CLEANUP_GRACE_TICKS),
-    ));
-    let services = session.services.clone();
-    let expected_execution_host_id = session.resume_binding.execution_host_id().clone();
-    let deletion = Arc::new(Mutex::new(None));
-    let captured_deletion = Arc::clone(&deletion);
-    let cleanup = swallowtail_runtime::bound_session_cleanup(
-        expected_execution_host_id,
-        SessionCleanupRequest::new(deadline),
-        services,
-        Box::pin(async move {
-            let result = session.close_and_delete().await;
-            *captured_deletion
-                .lock()
-                .expect("OpenCode run deletion lock poisoned") = Some(result.deletion);
-            result.cleanup
-        }),
-    )
-    .await;
-    let deletion = deletion
-        .lock()
-        .expect("OpenCode run deletion lock poisoned")
-        .take()
-        .unwrap_or(RemoteResourceDeletionOutcome::Unconfirmed);
-    CreatedSessionCleanup { cleanup, deletion }
+    session
+        .close_and_delete(Arc::new(AtomicBool::new(false)))
+        .await
+}
+
+struct CancelDeleteOnDrop(Arc<AtomicBool>);
+
+impl Drop for CancelDeleteOnDrop {
+    fn drop(&mut self) {
+        self.0.store(true, Ordering::SeqCst);
+    }
 }
 
 impl OpenCodeSessionHandle {
-    async fn close_and_delete(mut self) -> CreatedSessionCleanup {
+    async fn delete_run_session(
+        &mut self,
+        cancelled: Arc<AtomicBool>,
+    ) -> Result<Response, RuntimeFailure> {
+        let delete_scope = scope("run-delete", self.request_id.as_str())?;
+        let request = session_delete(&self.provider_session_id, &self.directory)?;
+        let deadline = self.services.time().map(|time| {
+            Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(
+                time.now().ticks().saturating_add(RUN_SESSION_CLEANUP_GRACE_TICKS),
+            ))
+        });
+        let _cancel_on_drop = CancelDeleteOnDrop(Arc::clone(&cancelled));
+        complete_before_deadline(
+            self.transport.request(
+                delete_scope,
+                self.endpoint.clone(),
+                request,
+                &self.services,
+                Arc::clone(&cancelled),
+            ),
+            deadline,
+            &self.services,
+            cancelled,
+            "swallowtail.opencode.run_delete_timed_out",
+            "OpenCode structured-run session deletion timed out",
+        )
+        .await
+    }
+
+    async fn close_and_delete(mut self, cancelled: Arc<AtomicBool>) -> CreatedSessionCleanup {
         let active_cleanup = close_active(&self.active).await;
-        let delete_scope = scope("run-delete", self.request_id.as_str());
-        let deletion = match delete_scope {
-            Ok(delete_scope) => match session_delete(&self.provider_session_id, &self.directory) {
-                Ok(request) => {
-                    let cancelled = Arc::new(AtomicBool::new(false));
-                    match self
-                        .transport
-                        .request(
-                            delete_scope,
-                            self.endpoint.clone(),
-                            request,
-                            &self.services,
-                            cancelled,
-                        )
-                        .await
-                    {
-                        Ok(response) => match classify_session_delete(&response) {
-                            SessionDeleteResponse::Applied => (
-                                CleanupOutcome::Clean,
-                                RemoteResourceDeletionOutcome::Confirmed,
-                            ),
-                            SessionDeleteResponse::Rejected => (
-                                CleanupOutcome::Failed(SafeDiagnostic::new(
-                                    "swallowtail.opencode.run_delete_rejected",
-                                    "OpenCode rejected deletion of its structured-run session",
-                                )),
-                                RemoteResourceDeletionOutcome::Unconfirmed,
-                            ),
-                            SessionDeleteResponse::Unconfirmed => (
-                                CleanupOutcome::Failed(SafeDiagnostic::new(
-                                    "swallowtail.opencode.run_delete_unconfirmed",
-                                    "OpenCode did not confirm deletion of its structured-run session",
-                                )),
-                                RemoteResourceDeletionOutcome::Unconfirmed,
-                            ),
-                        },
-                        Err(error) => (
-                            CleanupOutcome::Failed(error.diagnostic().clone()),
-                            RemoteResourceDeletionOutcome::Unconfirmed,
-                        ),
-                    }
-                }
-                Err(error) => (
-                    CleanupOutcome::Failed(error.diagnostic().clone()),
+        let (delete_cleanup, deletion) = match self.delete_run_session(cancelled).await {
+            Ok(response) => match classify_session_delete(&response) {
+                SessionDeleteResponse::Applied => (
+                    CleanupOutcome::Clean,
+                    RemoteResourceDeletionOutcome::Confirmed,
+                ),
+                SessionDeleteResponse::Rejected => (
+                    CleanupOutcome::Failed(SafeDiagnostic::new(
+                        "swallowtail.opencode.run_delete_rejected",
+                        "OpenCode rejected deletion of its structured-run session",
+                    )),
+                    RemoteResourceDeletionOutcome::Unconfirmed,
+                ),
+                SessionDeleteResponse::Unconfirmed => (
+                    CleanupOutcome::Failed(SafeDiagnostic::new(
+                        "swallowtail.opencode.run_delete_unconfirmed",
+                        "OpenCode did not confirm deletion of its structured-run session",
+                    )),
                     RemoteResourceDeletionOutcome::Unconfirmed,
                 ),
             },
@@ -194,10 +179,10 @@ impl OpenCodeSessionHandle {
         };
         CreatedSessionCleanup {
             cleanup: CleanupOutcome::merge(
-                CleanupOutcome::merge(active_cleanup, deletion.0),
+                CleanupOutcome::merge(active_cleanup, delete_cleanup),
                 lease_cleanup,
             ),
-            deletion: deletion.1,
+            deletion,
         }
     }
 }

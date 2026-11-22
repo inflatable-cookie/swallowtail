@@ -104,6 +104,8 @@ fn prompt_command_times_out_when_deadline_elapses_before_acceptance() {
         error.diagnostic().code(),
         "swallowtail.pi.rpc.prompt_timed_out"
     );
+    // Limit the synthetic deadline firing to prompt dispatch. Close gets its own budget.
+    fixture.advance_time(deadline().instant().ticks());
     assert_eq!(
         block_on(close_session(session, services)),
         CleanupOutcome::Clean

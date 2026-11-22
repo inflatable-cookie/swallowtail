@@ -116,7 +116,7 @@ fn a_deadline_task_that_fails_to_join_is_reported_at_session_close() {
     let connection = connection();
     let active = active_turn(&connection, Some(Box::new(FailingJoin)));
 
-    let cleanup = futures_executor::block_on(settle_active_task(Some(active), &connection));
+    let cleanup = futures_executor::block_on(settle_active_task(Some(active)));
 
     assert!(
         matches!(&cleanup, CleanupOutcome::Failed(diagnostic) if diagnostic.message().contains("deadline_join_failed")),
@@ -126,10 +126,8 @@ fn a_deadline_task_that_fails_to_join_is_reported_at_session_close() {
 
 #[test]
 fn a_session_without_an_active_turn_settles_clean() {
-    let connection = connection();
-
     assert_eq!(
-        futures_executor::block_on(settle_active_task(None, &connection)),
+        futures_executor::block_on(settle_active_task(None)),
         CleanupOutcome::NotApplicable
     );
 }
@@ -921,4 +919,45 @@ fn deadline_abort_after_deferred_settlement_resolves_timed_out() {
     futures_executor::block_on(deadline_task.join()).expect("deadline task joins");
     process.close_stdout();
     pump_thread.join().expect("pump joins");
+}
+
+#[test]
+fn close_force_stops_an_unresponsive_rpc_child_and_releases_leases() {
+    use super::PiSessionHandle;
+    use crate::driver::close_tests::shutdown::{Pump, WedgedShutdown};
+    use crate::driver::handle::SessionCancellation;
+    use crate::selection::PiRpcVersionFeatures;
+    use std::sync::Mutex;
+    use swallowtail_runtime::{RequestId, RuntimeSessionId};
+
+    let host = ExecutionHostId::new("pi.rpc.wedged-close").expect("host id is valid");
+    let fixture = Arc::new(WedgedShutdown::new(host.clone()));
+    let services = fixture.services();
+    let connection = PiConnection::new(
+        fixture.clone(),
+        Arc::new(RefusingTasks),
+        fixture.clone(),
+        services.clone(),
+    );
+    let active = Arc::new(Mutex::new(None));
+    let (resource, credential) = WedgedShutdown::leases();
+    let session = PiSessionHandle {
+        request_id: RequestId::new("wedged-rpc-close").expect("request id is valid"),
+        runtime_id: RuntimeSessionId::new("pi-rpc:wedged").expect("session id is valid"),
+        execution_host_id: host,
+        connection: Arc::clone(&connection),
+        cancellation: SessionCancellation::new(Arc::clone(&connection), Arc::clone(&active)),
+        pump_task: Some(Box::new(Pump(Box::pin(connection.pump())))),
+        services: services.clone(),
+        resource,
+        credential,
+        active,
+        completed_prompts: Arc::new(AtomicU32::new(0)),
+        version_features: PiRpcVersionFeatures {
+            command_dispositions: false,
+            aborted_settled: false,
+        },
+        image_attachments: false,
+    };
+    fixture.assert_escalation(session, services, false);
 }

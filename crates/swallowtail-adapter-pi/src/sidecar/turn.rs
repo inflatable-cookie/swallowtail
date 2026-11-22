@@ -1,6 +1,7 @@
 use super::activity::SidecarActivityProjection;
 use super::failure::failure;
 use super::wire::PiSdkSidecarEvent;
+use crate::turn::TurnEvents;
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, AtomicU32, AtomicU64, Ordering};
@@ -12,8 +13,7 @@ use swallowtail_core::{
 use swallowtail_runtime::{
     ActivityStatus, BoxEventStream, CleanupOutcome, OperationContent, RuntimeEvent,
     RuntimeEventKind, RuntimeFailure, RuntimeTurnId, TerminalOutcome, TerminalOutcomeFuture,
-    TerminalOutcomeSender, TerminalStatus, TokenUsage, runtime_event_channel,
-    terminal_outcome_channel,
+    TerminalOutcomeSender, TerminalStatus, TokenUsage, terminal_outcome_channel,
 };
 
 const EVENT_CAPACITY: usize = 256;
@@ -43,7 +43,7 @@ impl Future for TurnFinishedFuture {
 
 pub(crate) struct SidecarActiveTurn {
     runtime_id: RuntimeTurnId,
-    events: swallowtail_runtime::RuntimeEventSender,
+    events: TurnEvents,
     terminal: TerminalOutcomeSender,
     sequence: AtomicU64,
     activity: Mutex<SidecarActivityProjection>,
@@ -66,7 +66,7 @@ impl SidecarActiveTurn {
         runtime_id: RuntimeTurnId,
         completed_prompts: Arc<AtomicU32>,
     ) -> Result<(Arc<Self>, BoxEventStream, TerminalOutcomeFuture), RuntimeFailure> {
-        let (events, stream) = runtime_event_channel(EVENT_CAPACITY)?;
+        let (events, stream) = TurnEvents::new(EVENT_CAPACITY)?;
         events.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
         let (terminal, future) = terminal_outcome_channel();
         let activity = Mutex::new(SidecarActivityProjection::new(runtime_id.clone()));
@@ -90,7 +90,7 @@ impl SidecarActiveTurn {
                 completed_prompts,
                 finish_signal: Arc::new(Mutex::new(FinishedState::default())),
             }),
-            Box::pin(stream),
+            stream,
             future,
         ))
     }
@@ -198,10 +198,12 @@ impl SidecarActiveTurn {
                 ActivityStatus::Failed,
             )
         } else {
-            self.completed_prompts.fetch_add(1, Ordering::SeqCst);
             (TerminalStatus::Completed, ActivityStatus::Completed)
         };
         self.complete_activity(activity_status)?;
+        if matches!(status, TerminalStatus::Completed) {
+            self.completed_prompts.fetch_add(1, Ordering::SeqCst);
+        }
         self.finish_with_usage(status, usage);
         Ok(())
     }
@@ -442,31 +444,13 @@ impl SidecarActiveTurn {
             .lock()
             .expect("sidecar output lock poisoned")
             .clone();
-        if !output.is_empty() {
-            let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
-            if let Ok(content) = OperationContent::new(output.clone()) {
-                let _ = self.events.send(RuntimeEvent::with_content(
-                    sequence,
-                    RuntimeEventKind::OutputAvailable,
-                    content,
-                ));
-            }
-        }
-        if let Some(usage) = usage {
-            let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
-            let _ = self.events.send(RuntimeEvent::new(
-                sequence,
-                RuntimeEventKind::ProviderObservation(
-                    swallowtail_runtime::ProviderObservation::Usage(usage),
-                ),
-            ));
-        }
-        self.events.mark_terminal();
+        let output = OperationContent::new(output).ok();
+        let status = self
+            .events
+            .finish(status, output.as_ref(), usage, || self.next_sequence());
         let mut outcome = TerminalOutcome::new(status, CleanupOutcome::NotApplicable);
-        if let Ok(content) = OperationContent::new(output)
-            && content.byte_len() != 0
-        {
-            outcome = outcome.with_output(content);
+        if let Some(output) = output {
+            outcome = outcome.with_output(output);
         }
         let _ = self.terminal.complete(outcome);
         let mut signal = self
@@ -485,6 +469,85 @@ mod tests {
     use super::*;
     use futures_util::StreamExt;
     use swallowtail_runtime::ActivityLifecyclePhase;
+
+    #[test]
+    fn failed_activity_completion_does_not_consume_a_prompt_slot() {
+        let completed_prompts = Arc::new(AtomicU32::new(0));
+        let (turn, _events, _terminal) = SidecarActiveTurn::new(
+            RuntimeTurnId::new("activity-overflow").expect("turn id is valid"),
+            Arc::clone(&completed_prompts),
+        )
+        .expect("turn constructs");
+        turn.handle_event(PiSdkSidecarEvent::ReasoningStarted)
+            .expect("reasoning starts");
+        for _ in 2..EVENT_CAPACITY {
+            turn.progress().expect("progress fills the event buffer");
+        }
+        turn.add_usage(TokenUsage::new(Some(2), Some(1)))
+            .expect("usage is valid");
+        let error = turn
+            .handle_event(PiSdkSidecarEvent::Settled)
+            .expect_err("activity completion overflows");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.event_buffer_rejected"
+        );
+        assert_eq!(completed_prompts.load(Ordering::SeqCst), 0);
+    }
+
+    #[test]
+    fn terminal_event_overflow_fails_turn_with_attached_consumer() {
+        for (buffered_output, consumer_attached) in [(true, true), (false, true), (true, false)] {
+            let (turn, events, terminal) = SidecarActiveTurn::new(
+                RuntimeTurnId::new("terminal-overflow").expect("turn id is valid"),
+                Arc::new(AtomicU32::new(0)),
+            )
+            .expect("turn constructs");
+            if buffered_output {
+                turn.output_delta("output".to_owned())
+                    .expect("output is valid");
+            }
+            for _ in (1 + usize::from(buffered_output))..EVENT_CAPACITY {
+                turn.progress().expect("progress fills the event buffer");
+            }
+            turn.add_usage(TokenUsage::new(Some(2), Some(1)))
+                .expect("usage is valid");
+            let consumer = if consumer_attached {
+                Some(events)
+            } else {
+                drop(events);
+                None
+            };
+            turn.handle_event(PiSdkSidecarEvent::Settled)
+                .expect("settled publishes a terminal outcome");
+            let outcome = futures_executor::block_on(terminal);
+            if let Some(mut events) = consumer {
+                assert!(
+                    matches!(
+                        outcome.status(),
+                        TerminalStatus::RuntimeFailed(diagnostic)
+                            if diagnostic.code() == "swallowtail.event_buffer_rejected"
+                    ),
+                    "output present: {buffered_output}, outcome: {outcome:?}"
+                );
+                let stream_error = futures_executor::block_on(async {
+                    use futures_util::StreamExt;
+                    while let Some(item) = events.next().await {
+                        if let Err(error) = item {
+                            return error;
+                        }
+                    }
+                    panic!("the attached consumer must observe the overflow");
+                });
+                assert_eq!(
+                    stream_error.diagnostic().code(),
+                    "swallowtail.event_buffer_rejected"
+                );
+            } else {
+                assert_eq!(outcome.status(), &TerminalStatus::Completed);
+            }
+        }
+    }
 
     #[test]
     fn eof_after_session_cancellation_or_acknowledged_retry_reports_cancelled() {

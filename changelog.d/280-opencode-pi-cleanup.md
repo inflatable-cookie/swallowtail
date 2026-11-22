@@ -1,0 +1,2 @@
+- OpenCode HTTP now signals stalled structured-run session deletes to stop and releases both session leases after the deletion deadline. Session cancellation during prompt setup aborts and joins the turn before returning an error.
+- Pi RPC and Pi SDK sidecar now escalate stalled session shutdown to force-stop, reap the child, and release session leases. Both routes report terminal event buffer overflow to attached consumers and count completed prompts only after activity completion succeeds.

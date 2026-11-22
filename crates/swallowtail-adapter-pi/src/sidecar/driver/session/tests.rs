@@ -874,3 +874,52 @@ fn sidecar_deadline_abort_after_deferred_settlement_resolves_timed_out() {
     process.close_stdout();
     pump_thread.join().expect("pump joins");
 }
+
+#[test]
+fn close_force_stops_an_unresponsive_sidecar_child_and_releases_leases() {
+    use super::PiSdkSidecarSessionHandle;
+    use crate::driver::close_tests::shutdown::{Pump, WedgedShutdown};
+    use crate::sidecar::connection::SidecarConnection;
+    use crate::sidecar::driver::handle::SessionCancellation;
+    use std::sync::atomic::AtomicU32;
+    use std::sync::{Arc, Mutex};
+    use swallowtail_core::{
+        ConfiguredInstanceId, ExecutionHostId, ModelId, ModelRouteId, SessionAccessPolicy,
+        SessionRef,
+    };
+    use swallowtail_runtime::{
+        RequestId, RuntimeSessionId, SessionResumeBinding, WorkingResourceRef,
+    };
+
+    let host = ExecutionHostId::new("pi.sidecar.wedged-close").expect("host id is valid");
+    let fixture = Arc::new(WedgedShutdown::new(host.clone()));
+    let services = fixture.services();
+    let connection = SidecarConnection::new(fixture.clone(), services.clone());
+    let active = Arc::new(Mutex::new(None));
+    let binding = SessionResumeBinding::new(
+        SessionRef::new("sidecar-wedged").expect("session ref is valid"),
+        ConfiguredInstanceId::new("pi.sidecar.inst").expect("instance id is valid"),
+        host.clone(),
+        ModelRouteId::new("pi.route").expect("route id is valid"),
+        ModelId::new("pi-model").expect("model id is valid"),
+        WorkingResourceRef::new("pi.fixture.workspace").expect("resource ref is valid"),
+        SessionAccessPolicy::read_only(),
+    );
+    let (resource, credential) = WedgedShutdown::leases();
+    let session = PiSdkSidecarSessionHandle {
+        request_id: RequestId::new("wedged-sidecar-close").expect("request id is valid"),
+        runtime_id: RuntimeSessionId::new("pi-sidecar:wedged").expect("session id is valid"),
+        execution_host_id: host,
+        binding,
+        connection: Arc::clone(&connection),
+        cancellation: SessionCancellation::new(Arc::clone(&connection), Arc::clone(&active)),
+        pump_task: Some(Box::new(Pump(Box::pin(connection.pump())))),
+        services: services.clone(),
+        resource,
+        credential,
+        active,
+        completed_prompts: Arc::new(AtomicU32::new(0)),
+        image_attachments: false,
+    };
+    fixture.assert_escalation(session, services, true);
+}

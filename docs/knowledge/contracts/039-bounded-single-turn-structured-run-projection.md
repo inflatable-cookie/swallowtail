@@ -327,9 +327,11 @@ return no binding. A raw provider run reference remains insufficient.
 Cancellation and deadline target the active provider turn or response first,
 then invalidate the operation-private session or connection.
 
-OpenCode HTTP and Pi RPC start a fresh 500-tick cleanup grace when closing a
-structured run's private session. This gives cleanup time to run after the
-turn's execution deadline expires.
+OpenCode HTTP gives the private session DELETE a fresh 500-tick grace after
+joining the turn. Expiry signals the HTTP worker to stop and records deletion
+as unconfirmed. Pi RPC gives its private process 500 ticks to exit gracefully,
+then force-stops and reaps it if the grace expires. Both routes release their
+leases after those stages, including when the grace expires.
 
 Every terminal path:
 
@@ -340,8 +342,8 @@ Every terminal path:
 - releases working resources, endpoints, and credentials in their contracted
   order
 
-When a profile promises operation-owned deletion, the deletion attempt joins
-before access and working-resource release. Terminal inference status and
+When a profile promises operation-owned deletion, the deletion attempt
+finishes or reaches its deadline before access and working-resource release. Terminal inference status and
 deletion truth remain separate. Confirmed deletion records the exact owned
 resource; failed or incomplete reconciliation records unconfirmed deletion
 and degraded cleanup. Drop performs no provider deletion and cannot report

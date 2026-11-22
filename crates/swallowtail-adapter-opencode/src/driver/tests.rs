@@ -469,3 +469,8 @@ fn finalize_turn_events_preserves_authentic_status_on_dropped_stream_and_surface
         "still-attached full event buffer must surface RuntimeFailed, got {outcome:?}"
     );
 }
+
+#[cfg(test)]
+mod session_cleanup_tests {
+    include!("tests/session_cleanup.rs");
+}

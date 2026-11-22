@@ -11,7 +11,7 @@ struct OpenCodeSessionHandle {
     transport: CurlTransport,
     access: Option<AccessLeases>,
     active: ActiveSlot,
-    cancellation: SessionCancellation,
+    cancellation: Arc<SessionCancellation>,
     reasoning_mode: Option<swallowtail_core::ReasoningMode>,
     structured_output: Option<StructuredOutputDescriptor>,
     image_attachments: bool,
@@ -47,10 +47,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
             validate_turn(&request, &services, self.image_attachments)?;
             let turn_scope = scope("turn", request.turn_id().as_str())?;
             if self.cancellation.requested.load(Ordering::SeqCst) {
-                return Err(failure(
-                    "swallowtail.opencode.session_cancelled",
-                    "OpenCode session was already cancelled",
-                ));
+                return Err(session_cancelled());
             }
             reap_finished(&self.active).await?;
             if self
@@ -241,19 +238,30 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                 Ok(response) => require_no_content(&response),
                 Err(error) => Err(error),
             };
-            if let Err(error) = prompt_result {
+            let mut task = Some(task);
+            let start_result = prompt_result.and_then(|()| {
+                let mut active = self.active.lock().expect("active turn lock poisoned");
+                // Session cancellation records its request before inspecting this slot.
+                if self.cancellation.requested.load(Ordering::SeqCst) {
+                    return Err(session_cancelled());
+                }
+                *active = Some(ActiveTurn {
+                    task: task.take(),
+                    cancellation: Arc::clone(&cancellation),
+                    detachment: detachment.clone(),
+                    terminal: Arc::clone(&terminal_flag),
+                    attachment: attachment.clone(),
+                });
+                Ok(())
+            });
+            if let Err(error) = start_result {
                 let _ = cancellation.request_bounded().await;
-                let _ = task.join().await;
+                if let Some(task) = task {
+                    let _ = task.join().await;
+                }
                 let _ = attachment.release().await;
                 return Err(error);
             }
-            *self.active.lock().expect("active turn lock poisoned") = Some(ActiveTurn {
-                task: Some(task),
-                cancellation: Arc::clone(&cancellation),
-                detachment: detachment.clone(),
-                terminal: Arc::clone(&terminal_flag),
-                attachment: attachment.clone(),
-            });
             Ok(Box::new(OpenCodeTurnHandle {
                 runtime_id: turn_id,
                 events: Some(Box::pin(event_stream)),
@@ -269,7 +277,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
     }
 
     fn cancellation(&self) -> &dyn CancellationControl {
-        &self.cancellation
+        self.cancellation.as_ref()
     }
 
     fn close(
@@ -292,4 +300,11 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
             }),
         )
     }
+}
+
+fn session_cancelled() -> RuntimeFailure {
+    failure(
+        "swallowtail.opencode.session_cancelled",
+        "OpenCode session was already cancelled",
+    )
 }

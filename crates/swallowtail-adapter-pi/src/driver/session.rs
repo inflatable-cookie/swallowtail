@@ -1,4 +1,5 @@
 use self::cleanup::{release_credential, release_resource};
+use super::cleanup::{graceful_shutdown_deadline, stop_session_process};
 use super::handle::{PiTurnBinding, PiTurnHandle, SessionCancellation};
 use super::input::{SharedAttachmentMaterialization, prepare_attachment};
 use super::validation::validate_turn;
@@ -14,7 +15,7 @@ use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::Poll;
 use swallowtail_runtime::{
-    BoxFuture, CancellationControl, CleanupOutcome, CredentialLease, HostServices,
+    BoxFuture, CancellationControl, CleanupOutcome, CredentialLease, Deadline, HostServices,
     InteractiveSessionHandle, JoinedTask, RequestId, ResourceLease, RuntimeFailure,
     RuntimeSessionId, ScopeId, TurnHandle, TurnRequest,
 };
@@ -307,46 +308,55 @@ impl InteractiveSessionHandle for PiSessionHandle {
         swallowtail_runtime::bound_session_cleanup(
             execution_host_id,
             request,
-            services,
-            Box::pin(self.close_session()),
+            services.clone(),
+            Box::pin(self.close_session(Some(request.deadline()), services)),
         )
     }
 }
 
-/// Grace for joining the private process and releasing the run's leases.
-const RUN_SESSION_CLEANUP_GRACE_TICKS: u64 = 500;
-
 impl PiSessionHandle {
     pub(super) async fn close_run(self) -> CleanupOutcome {
-        let Some(deadline) = grace_deadline(&self.services, RUN_SESSION_CLEANUP_GRACE_TICKS) else {
-            return self.close_session().await;
-        };
         let services = self.services.clone();
-        Box::new(self)
-            .close(
-                swallowtail_runtime::SessionCleanupRequest::new(deadline),
-                services,
-            )
-            .await
+        self.close_session(None, services).await
     }
 
-    async fn close_session(mut self) -> CleanupOutcome {
+    async fn close_session(
+        mut self,
+        hard_deadline: Option<Deadline>,
+        services: HostServices,
+    ) -> CleanupOutcome {
         let active = self
             .active
             .lock()
             .expect("Pi active-task lock poisoned")
             .take();
-        let active_cleanup = settle_active_task(active, &self.connection).await;
-        let process = match self.pump_task.take() {
-            Some(task) => match task.join().await {
-                Ok(()) => self.connection.cleanup_outcome(),
-                Err(_) => cleanup_failure(
-                    "pump_join_failed",
-                    "Pi RPC protocol task did not join cleanly",
-                ),
+        if let Some(active) = &active
+            && !active.turn.is_finished()
+        {
+            active.turn.mark_cancelled();
+        }
+        let deadline = graceful_shutdown_deadline(&services, hard_deadline);
+        let connection = &self.connection;
+        let process = stop_session_process(
+            connection.begin_close(),
+            async {
+                match self.pump_task.take() {
+                    Some(task) => match task.join().await {
+                        Ok(()) => connection.cleanup_outcome(),
+                        Err(_) => cleanup_failure(
+                            "pump_join_failed",
+                            "Pi RPC protocol task did not join cleanly",
+                        ),
+                    },
+                    None => CleanupOutcome::NotApplicable,
+                }
             },
-            None => CleanupOutcome::NotApplicable,
-        };
+            async { connection.force_stop().await },
+            deadline,
+            &services,
+        )
+        .await;
+        let active_cleanup = settle_active_task(active).await;
         let callbacks = self.connection.join_callback_tasks().await;
         let resource = release_resource(self.resource.take(), &self.services).await;
         let credential = release_credential(self.credential.take(), &self.services).await;
@@ -360,21 +370,11 @@ impl PiSessionHandle {
     }
 }
 
-/// Settles the active turn when a session closes: cancels it, joins its
-/// deadline task, and releases its attachment. Each failure merges into the
-/// returned outcome instead of being discarded.
-async fn settle_active_task(
-    active: Option<ActiveTask>,
-    connection: &PiConnection,
-) -> CleanupOutcome {
+/// Joins the active turn's deadline task and releases its attachment.
+async fn settle_active_task(active: Option<ActiveTask>) -> CleanupOutcome {
     let Some(mut active) = active else {
-        connection.begin_close().await;
         return CleanupOutcome::NotApplicable;
     };
-    if !active.turn.is_finished() {
-        active.turn.mark_cancelled();
-    }
-    connection.begin_close().await;
     let deadline = match active.deadline_task.take() {
         Some(task) => match task.join().await {
             Ok(()) => CleanupOutcome::Clean,

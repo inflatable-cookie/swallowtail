@@ -4,7 +4,7 @@ use crate::turn::AcpTurnSink;
 use futures_channel::oneshot;
 use serde_json::{Value, json};
 use std::{
-    collections::{BTreeMap, BTreeSet, VecDeque},
+    collections::{BTreeMap, BTreeSet},
     future::Future,
     pin::Pin,
     sync::{
@@ -102,7 +102,6 @@ struct PendingState {
     closed: bool,
     requests: BTreeMap<u64, oneshot::Sender<Result<Value, RuntimeFailure>>>,
     abandoned: BTreeSet<u64>,
-    abandoned_order: VecDeque<u64>,
 }
 
 impl PendingState {
@@ -116,21 +115,7 @@ impl PendingState {
                 true
             }
         });
-        for id in canceled_ids {
-            if self.abandoned.insert(id) {
-                self.abandoned_order.push_back(id);
-            }
-        }
-        while self.abandoned.len() > MAXIMUM_ABANDONED_REQUESTS {
-            let Some(oldest) = self.abandoned_order.pop_front() else {
-                break;
-            };
-            self.abandoned.remove(&oldest);
-        }
-        if self.abandoned_order.len() > MAXIMUM_ABANDONED_REQUESTS * 2 {
-            self.abandoned_order
-                .retain(|id| self.abandoned.contains(id));
-        }
+        self.abandoned.extend(canceled_ids);
     }
 }
 
@@ -190,7 +175,6 @@ impl AcpConnection {
                 closed: false,
                 requests: BTreeMap::new(),
                 abandoned: BTreeSet::new(),
-                abandoned_order: VecDeque::new(),
             }),
             session_id: Mutex::new(None),
             active_turn: Mutex::new(None),
@@ -307,6 +291,7 @@ impl AcpConnection {
             }
             pending.prune_canceled();
             if pending.requests.len() >= MAXIMUM_PENDING_REQUESTS
+                || pending.abandoned.len() >= MAXIMUM_ABANDONED_REQUESTS
                 || pending.requests.contains_key(&id)
                 || pending.abandoned.contains(&id)
             {
@@ -502,7 +487,6 @@ impl AcpConnection {
             let mut state = self.pending.lock().expect("ACP pending lock poisoned");
             state.closed = true;
             state.abandoned.clear();
-            state.abandoned_order.clear();
             std::mem::take(&mut state.requests)
         };
         for (_, sender) in pending {

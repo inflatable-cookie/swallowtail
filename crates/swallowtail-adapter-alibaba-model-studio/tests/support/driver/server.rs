@@ -78,7 +78,7 @@ impl FixtureServer {
                 }
                 if let Some(request) = read_request(&mut stream) {
                     state.0.lock().expect("request lock").push(request.clone());
-                    respond(&mut stream, &request, &state.1, scenario);
+                    respond(&mut stream, &request, &state.1, &state.2, scenario);
                 }
             }
         });
@@ -154,6 +154,7 @@ fn respond(
     stream: &mut TcpStream,
     request: &FixtureRequest,
     attempts: &AtomicUsize,
+    stop: &AtomicBool,
     scenario: ServerScenario,
 ) {
     if request.headers.get("authorization").map(String::as_str) != Some("Bearer fixture-secret") {
@@ -185,7 +186,7 @@ fn respond(
                 }
                 ServerScenario::WaitForCancel => wait_for_cancel(stream),
                 ServerScenario::WaitForCancelAfterCompleted => {
-                    wait_for_cancel_after_completed(stream)
+                    wait_for_cancel_after_completed(stream, stop)
                 }
                 ServerScenario::ManagedDeleteFailure => {
                     write_response(stream, 200, "text/event-stream", SUCCESS)
@@ -284,18 +285,25 @@ fn wait_for_cancel(stream: &mut TcpStream) {
     }
 }
 
-fn wait_for_cancel_after_completed(stream: &mut TcpStream) {
+fn wait_for_cancel_after_completed(stream: &mut TcpStream, stop: &AtomicBool) {
     write!(
         stream,
         "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nX-Request-Id: req_fixture_01\r\nConnection: close\r\n\r\n{SUCCESS}"
     )
     .expect("completed stream writes");
     let _ = stream.flush();
-    for _ in 0..2_000 {
-        thread::sleep(Duration::from_millis(1));
+    let deadline = std::time::Instant::now() + Duration::from_secs(10);
+    while !stop.load(Ordering::SeqCst) {
+        assert!(
+            std::time::Instant::now() < deadline,
+            "fixture timed out waiting for client disconnect or shutdown after response.completed"
+        );
+        thread::sleep(Duration::from_millis(5));
         if stream.write_all(b": keepalive\n\n").is_err() {
-            break;
+            return;
         }
-        let _ = stream.flush();
+        if stream.flush().is_err() {
+            return;
+        }
     }
 }

@@ -739,6 +739,121 @@ fn dropped_pending_response_preserves_correlation_for_late_reply_and_blocks_id_r
 }
 
 #[test]
+fn abandoned_correlation_saturation_preserves_first_id_and_recovers_on_settlement() {
+    use std::collections::VecDeque;
+    use std::sync::Mutex;
+
+    struct ScriptedProcess {
+        outputs: Mutex<VecDeque<Vec<u8>>>,
+    }
+
+    impl ProcessHandle for ScriptedProcess {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            let chunk = self
+                .outputs
+                .lock()
+                .expect("output lock")
+                .pop_front()
+                .map(|bytes| {
+                    ProcessOutputChunk::new(swallowtail_runtime::ProcessOutputStream::Stdout, bytes)
+                });
+            Box::pin(async move { Ok(chunk) })
+        }
+
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+
+    block_on(async {
+        let process: Arc<dyn ProcessHandle> = Arc::new(ScriptedProcess {
+            outputs: Mutex::new(VecDeque::from([
+                b"{\"jsonrpc\":\"2.0\",\"id\":1000,\"result\":{\"from\":\"first-abandoned\"}}\n{\"jsonrpc\":\"2.0\",\"id\":2000,\"result\":{\"from\":\"live-b\"}}\n".to_vec(),
+            ])),
+        });
+        let transport = AcpTransport::stdio(
+            process,
+            FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES),
+        );
+        let host = ExecutionHostId::new("local").expect("valid host");
+        let connection = AcpConnection::new(
+            transport,
+            HostServices::new(host),
+            test_diagnostics(),
+            Arc::new(StandardAcpHooks),
+        );
+
+        // Drop 255 unsettled requests (abandoned count reaches 255 when live B starts).
+        for id in 1000..1255 {
+            let pending = connection
+                .begin_request_with_id(id, "test/abandoned", json!({}))
+                .await
+                .expect("request within abandoned limit succeeds");
+            drop(pending);
+        }
+
+        let live_b = connection
+            .begin_request_with_id(2000, "test/live", json!({}))
+            .await
+            .expect("live waiter succeeds while abandoned slots are below cap");
+
+        // Drop the 256th unsettled request to saturate abandoned bookkeeping.
+        let last_abandoned = connection
+            .begin_request_with_id(1255, "test/abandoned", json!({}))
+            .await
+            .expect("256th request starts before saturation");
+        drop(last_abandoned);
+
+        // Once 256 unsettled abandoned IDs are reserved, further requests and explicit reuse of ID 1000 are rejected.
+        let saturated_err = connection
+            .begin_request_with_id(2001, "test/overflow", json!({}))
+            .await
+            .err()
+            .expect("saturated abandoned bookkeeping must refuse further requests");
+        assert_eq!(
+            saturated_err.diagnostic().code(),
+            "swallowtail.test.acp.limit"
+        );
+
+        let reuse_first_err = connection
+            .begin_request_with_id(1000, "test/reuse-first", json!({}))
+            .await
+            .err()
+            .expect("first abandoned id must remain reserved at saturation");
+        assert_eq!(
+            reuse_first_err.diagnostic().code(),
+            "swallowtail.test.acp.limit"
+        );
+
+        // Late reply for the first abandoned ID (1000) is still consumed harmlessly, and live B receives its own reply.
+        Arc::clone(&connection).pump().await;
+        let reply_b = live_b
+            .await
+            .expect("live waiter must receive its own result after first abandoned ID settles");
+        assert_eq!(reply_b, json!({"from": "live-b"}));
+    });
+}
+
+#[test]
 fn active_turn_finish_with_status_and_emit_event() {
     use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
     use swallowtail_runtime::RuntimeEventKind;

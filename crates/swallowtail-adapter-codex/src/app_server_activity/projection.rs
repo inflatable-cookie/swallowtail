@@ -151,7 +151,7 @@ impl AppServerActivityProjection {
             projection.label,
             active,
         )?;
-        let correlation = self.correlations.get(provider_id).cloned();
+        let correlation = self.correlation(provider_id);
         Ok(vec![self.observation(
             ActivitySource::new(provider_id, Some(provider_id)),
             projection.identity,
@@ -173,7 +173,7 @@ impl AppServerActivityProjection {
         let fallback =
             ItemIdentity::new(fallback_kind, fallback_assistant_phase, fallback_disclosure);
         let identity = self.get_or_track_item(provider_id, || fallback)?;
-        let correlation = self.correlations.get(provider_id).cloned();
+        let correlation = self.correlation(provider_id);
         Ok(vec![self.observation(
             ActivitySource::new(provider_id, Some(provider_id)),
             identity,
@@ -205,7 +205,7 @@ impl AppServerActivityProjection {
             Some(ActivityAssistantPhase::ProviderUnspecified) => None,
             None => return Err(malformed_notification()),
         };
-        let correlation = self.correlations.get(provider_id).cloned();
+        let correlation = self.correlation(provider_id);
         Ok(vec![self.observation(
             ActivitySource::new(provider_id, Some(provider_id)),
             identity,

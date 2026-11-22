@@ -8,6 +8,7 @@ mod subagent;
 use crate::turn_state::malformed_notification;
 use item::ItemIdentity;
 use serde_json::Value;
+use sha2::{Digest, Sha256};
 use std::borrow::Borrow;
 use std::collections::{HashMap, VecDeque};
 use std::hash::Hash;
@@ -21,6 +22,18 @@ use swallowtail_runtime::{
 const MAX_TRACKED_ACTIVITY_ENTRIES: usize = 2048;
 /// Maximum number of concurrent pending server requests tracked per turn.
 const MAX_TRACKED_REQUESTS: usize = 256;
+
+/// Fixed-size collision-resistant key for tracked provider IDs so multi-megabyte
+/// provider IDs never inflate retained memory.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+pub(super) struct ItemKey([u8; 32]);
+
+impl ItemKey {
+    pub(super) fn from_provider_id(provider_id: &str) -> Self {
+        let digest = Sha256::digest(provider_id.as_bytes());
+        Self(digest.into())
+    }
+}
 
 struct BoundedMap<K, V> {
     entries: HashMap<K, V>,
@@ -89,8 +102,8 @@ struct TrackedItem {
 /// when capacity is reached; if every slot is still active, inserting a new
 /// item fails explicitly rather than evicting an in-flight record.
 struct TrackedItemTable {
-    entries: HashMap<String, TrackedItem>,
-    order: VecDeque<String>,
+    entries: HashMap<ItemKey, TrackedItem>,
+    order: VecDeque<ItemKey>,
     capacity: usize,
 }
 
@@ -103,15 +116,15 @@ impl TrackedItemTable {
         }
     }
 
-    fn get(&self, key: &str) -> Option<&TrackedItem> {
+    fn get(&self, key: &ItemKey) -> Option<&TrackedItem> {
         self.entries.get(key)
     }
 
-    fn get_mut(&mut self, key: &str) -> Option<&mut TrackedItem> {
+    fn get_mut(&mut self, key: &ItemKey) -> Option<&mut TrackedItem> {
         self.entries.get_mut(key)
     }
 
-    fn insert(&mut self, key: String, item: TrackedItem) -> Result<(), RuntimeFailure> {
+    fn insert(&mut self, key: ItemKey, item: TrackedItem) -> Result<(), RuntimeFailure> {
         if let Some(existing) = self.entries.get_mut(&key) {
             *existing = item;
             return Ok(());
@@ -131,18 +144,23 @@ impl TrackedItemTable {
                 self.entries.remove(&evicted_key);
             }
         }
-        self.entries.insert(key.clone(), item);
+        self.entries.insert(key, item);
         self.order.push_back(key);
         Ok(())
+    }
+
+    #[cfg(test)]
+    fn len(&self) -> usize {
+        self.entries.len()
     }
 }
 
 pub(crate) struct AppServerActivityProjection {
     operation_id: ActivityOperationId,
     root_provider_thread_id: String,
-    identities: BoundedMap<String, ActivityId>,
+    identities: BoundedMap<ItemKey, ActivityId>,
     items: TrackedItemTable,
-    correlations: BoundedMap<String, ActivityCorrelation>,
+    correlations: BoundedMap<ItemKey, ActivityCorrelation>,
     requests: BoundedMap<ProviderRequestRef, RequestIdentity>,
     next_minted_id: u64,
 }
@@ -225,7 +243,8 @@ impl AppServerActivityProjection {
         status: ActivityStatus,
         detail: ObservationDetail,
     ) -> Result<ActivityObservation, RuntimeFailure> {
-        let (activity_id, label) = if let Some(tracked) = self.items.get(source.identity_key) {
+        let item_key = ItemKey::from_provider_id(source.identity_key);
+        let (activity_id, label) = if let Some(tracked) = self.items.get(&item_key) {
             (tracked.activity_id.clone(), tracked.label.clone())
         } else {
             (
@@ -243,10 +262,10 @@ impl AppServerActivityProjection {
             identity.disclosure,
         )
         .map_err(|_| malformed_notification())?;
-        if let Some(provider_ref) = source.provider_ref {
-            observation = observation.with_provider_activity_ref(
-                ProviderActivityRef::new(provider_ref).map_err(|_| malformed_notification())?,
-            );
+        if let Some(provider_ref) = source.provider_ref
+            && let Ok(provider_ref) = ProviderActivityRef::new(provider_ref)
+        {
+            observation = observation.with_provider_activity_ref(provider_ref);
         }
         if let Some(correlation) = detail.correlation {
             observation = observation.with_correlation(correlation);
@@ -286,13 +305,19 @@ impl AppServerActivityProjection {
     }
 
     fn activity_id(&mut self, provider_key: &str) -> Result<ActivityId, RuntimeFailure> {
-        if let Some(identity) = self.identities.get(provider_key) {
+        let key = ItemKey::from_provider_id(provider_key);
+        if let Some(identity) = self.identities.get(&key) {
             return Ok(identity.clone());
         }
         let identity = self.mint_activity_id(provider_key)?;
-        self.identities
-            .insert(provider_key.to_owned(), identity.clone());
+        self.identities.insert(key, identity.clone());
         Ok(identity)
+    }
+
+    fn correlation(&self, provider_id: &str) -> Option<ActivityCorrelation> {
+        self.correlations
+            .get(&ItemKey::from_provider_id(provider_id))
+            .cloned()
     }
 
     fn track_item(
@@ -302,7 +327,8 @@ impl AppServerActivityProjection {
         label: Option<ActivityLabel>,
         active: bool,
     ) -> Result<(), RuntimeFailure> {
-        if let Some(existing) = self.items.get_mut(provider_id) {
+        let key = ItemKey::from_provider_id(provider_id);
+        if let Some(existing) = self.items.get_mut(&key) {
             if existing.identity != identity {
                 return Err(malformed_notification());
             }
@@ -314,7 +340,7 @@ impl AppServerActivityProjection {
         }
         let activity_id = self.mint_activity_id(&format!("item:{provider_id}"))?;
         self.items.insert(
-            provider_id.to_owned(),
+            key,
             TrackedItem {
                 activity_id,
                 identity,
@@ -329,13 +355,14 @@ impl AppServerActivityProjection {
         provider_id: &str,
         make_identity: impl FnOnce() -> ItemIdentity,
     ) -> Result<ItemIdentity, RuntimeFailure> {
-        if let Some(existing) = self.items.get(provider_id) {
+        let key = ItemKey::from_provider_id(provider_id);
+        if let Some(existing) = self.items.get(&key) {
             return Ok(existing.identity.clone());
         }
         let identity = make_identity();
         let activity_id = self.mint_activity_id(&format!("item:{provider_id}"))?;
         self.items.insert(
-            provider_id.to_owned(),
+            key,
             TrackedItem {
                 activity_id,
                 identity: identity.clone(),
@@ -622,5 +649,55 @@ mod bounded_map_tests {
             overflow.diagnostic().code(),
             "swallowtail.codex.app_server.activity_capacity_exceeded"
         );
+    }
+
+    #[test]
+    fn provider_item_id_over_512_bytes_keeps_minted_id_and_omits_provider_ref() {
+        assert_eq!(std::mem::size_of::<super::ItemKey>(), 32);
+        let mut projection = AppServerActivityProjection::with_item_capacity(
+            RuntimeTurnId::new("turn-over-512").expect("turn id"),
+            "thread-root".to_owned(),
+            4,
+        );
+        // ProviderActivityRef caps at 512 bytes; an ID above that bound must
+        // still project with a stable minted ActivityId and omit provider_ref.
+        let huge_id = format!("cmd-{}", "z".repeat(600));
+        let started = projection
+            .project_notification(
+                "item/started",
+                &json!({
+                    "item": {
+                        "id": huge_id,
+                        "type": "commandExecution",
+                        "command": "echo hi",
+                        "status": "inProgress"
+                    }
+                }),
+            )
+            .expect("provider item ID over 512 bytes must start cleanly");
+        assert!(
+            started[0]
+                .activity_id()
+                .as_str()
+                .starts_with("codex-app-server:minted-")
+        );
+        assert!(started[0].provider_activity_ref().is_none());
+
+        let completed = projection
+            .project_notification(
+                "item/completed",
+                &json!({
+                    "item": {
+                        "id": huge_id,
+                        "type": "commandExecution",
+                        "command": "echo hi",
+                        "status": "completed"
+                    }
+                }),
+            )
+            .expect("provider item ID over 512 bytes must complete cleanly");
+        assert_eq!(completed[0].activity_id(), started[0].activity_id());
+        assert!(completed[0].provider_activity_ref().is_none());
+        assert!(projection.items.len() <= 4);
     }
 }

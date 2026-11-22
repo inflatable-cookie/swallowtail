@@ -3,6 +3,7 @@ use crate::exec_handle::{CodexExecRunHandle, ProcessCancellation};
 use crate::exec_input::{SharedExecMaterializations, prepare};
 use crate::exec_pump::{cleanup_failed_start, pump};
 use crate::model_verbosity::CodexModelVerbosity;
+use crate::process_close::{AppServerTask, close_budget};
 use crate::selection::{classify_exec_plan, codex_exec_claim};
 use std::sync::Arc;
 use swallowtail_core::{
@@ -156,7 +157,7 @@ impl CodexExecDriver {
                 }
             };
         if let Err(error) = write_prompt(process.as_ref(), &request).await {
-            cleanup_failed_start(process.as_ref()).await;
+            cleanup_failed_start(process.as_ref(), &services).await;
             let _ = materializations.release().await;
             return Err(error);
         }
@@ -168,13 +169,14 @@ impl CodexExecDriver {
                 .wait_until(deadline)
         });
         if let Err(error) = event_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started)) {
-            cleanup_failed_start(process.as_ref()).await;
+            cleanup_failed_start(process.as_ref(), &services).await;
             let _ = materializations.release().await;
             return Err(error);
         }
         let (terminal_sender, terminal_future) = terminal_outcome_channel();
         let cancellation = Arc::new(ProcessCancellation::new(Arc::clone(&process)));
-        let task = task_service.spawn(
+        let task = AppServerTask::spawn(
+            task_service,
             scope,
             Box::pin({
                 let pump_cancellation = Arc::clone(&cancellation);
@@ -202,11 +204,12 @@ impl CodexExecDriver {
         let task = match task {
             Ok(task) => task,
             Err(error) => {
-                cleanup_failed_start(process.as_ref()).await;
+                cleanup_failed_start(process.as_ref(), &services).await;
                 let _ = materializations.release().await;
                 return Err(error);
             }
         };
+        let budget = close_budget(&services, request.deadline());
         Ok(Box::new(CodexExecRunHandle::new(
             request.request_id().clone(),
             run_id,
@@ -214,6 +217,7 @@ impl CodexExecDriver {
             Box::pin(terminal_future),
             cancellation,
             task,
+            budget,
         )))
     }
 }

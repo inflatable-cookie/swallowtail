@@ -104,7 +104,9 @@ async fn close_active(active: &ActiveSlot) -> CleanupOutcome {
         })
         .map(|turn| Arc::clone(&turn.cancellation));
     let cancel_cleanup = match cancellation {
-        Some(cancellation) => cleanup_from_result(cancellation.request().await.map(|_| ())),
+        Some(cancellation) => {
+            cleanup_from_result(cancellation.request_bounded().await.map(|_| ()))
+        }
         None => CleanupOutcome::NotApplicable,
     };
     CleanupOutcome::merge(cancel_cleanup, join_active(active).await)

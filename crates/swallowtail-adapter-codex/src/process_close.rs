@@ -11,6 +11,9 @@ use swallowtail_runtime::{
 
 /// Grace given to EOF and then to graceful stop when there is no caller deadline.
 const CLOSE_GRACE: Duration = Duration::from_millis(250);
+/// Dedicated teardown budget (in monotonic ticks) when waiting for a pump to
+/// settle after a refused `force_stop()`.
+const REFUSED_STOP_BUDGET_TICKS: u64 = 500;
 
 /// The host services a close uses to time its escalation stages.
 pub(crate) struct CloseBudget {
@@ -81,6 +84,49 @@ impl AppServerTask {
     pub(crate) async fn join(self) -> Result<(), RuntimeFailure> {
         let _ = self.finished.await;
         self.task.join().await
+    }
+
+    #[cfg(test)]
+    pub(crate) fn from_parts(
+        task: Box<dyn JoinedTask>,
+        finished: oneshot::Receiver<()>,
+        scope: ScopeId,
+    ) -> Self {
+        Self {
+            task,
+            finished,
+            scope,
+        }
+    }
+
+    /// Waits up to the remaining teardown budget for the pump to finish on its
+    /// own after a refused `force_stop()`; if it is still running, signals
+    /// `on_abort` and joins it cleanly so `close()` cannot hang on open stdout.
+    pub(crate) async fn wait_or_abort(
+        mut self,
+        budget: CloseBudget,
+        on_abort: impl FnOnce(),
+    ) -> Result<(), RuntimeFailure> {
+        let CloseBudget {
+            time,
+            blocking,
+            deadline,
+        } = budget;
+        let final_wait = time.as_deref().map(|time| {
+            let budget_at = time.now().ticks().saturating_add(REFUSED_STOP_BUDGET_TICKS);
+            let target = match deadline {
+                Some(deadline) => at(deadline.instant().ticks().min(budget_at)),
+                None => at(budget_at),
+            };
+            (time, target)
+        });
+        if !self
+            .finishes_before(wait_for(final_wait, blocking.as_deref()))
+            .await
+        {
+            on_abort();
+        }
+        self.join().await
     }
 
     #[cfg(test)]

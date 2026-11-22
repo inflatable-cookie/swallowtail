@@ -1,4 +1,4 @@
-use super::{AppServerActivityProjection, RequestIdentity};
+use super::{AppServerActivityProjection, ItemKey, RequestIdentity};
 use crate::turn_state::{canonical_provider_request_id, malformed_notification};
 use serde_json::Value;
 use swallowtail_core::{
@@ -12,7 +12,7 @@ use swallowtail_runtime::{
 impl AppServerActivityProjection {
     pub(crate) fn register_callback(&mut self, provider_call_id: &str, callback_id: CallbackId) {
         self.correlations.insert(
-            provider_call_id.to_owned(),
+            ItemKey::from_provider_id(provider_call_id),
             ActivityCorrelation::Callback(callback_id),
         );
     }
@@ -32,10 +32,7 @@ impl AppServerActivityProjection {
             request_ref.as_provider_value()
         );
         let identity = self.activity_id(&activity_key)?;
-        let provider_ref = item_id
-            .map(ProviderActivityRef::new)
-            .transpose()
-            .map_err(|_| malformed_notification())?;
+        let provider_ref = item_id.and_then(|id| ProviderActivityRef::new(id).ok());
         let namespace = ActivityNamespace::new(format!("codex.app-server.request.{namespace}"))
             .map_err(|_| malformed_notification())?;
         self.requests.insert(

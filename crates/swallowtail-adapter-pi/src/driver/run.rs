@@ -185,7 +185,7 @@ impl CancellationControl for PiRunCancellation {
             if already {
                 return Ok(CancellationAcknowledgement::AlreadyRequested);
             }
-            self.turn.mark_cancelled();
+            self.turn.mark_abort_in_flight();
             let attempt = self.attempts.fetch_add(1, Ordering::SeqCst);
             let id = if attempt == 0 {
                 format!("abort:{}", self.turn.runtime_id().as_str())
@@ -194,10 +194,17 @@ impl CancellationControl for PiRunCancellation {
             };
             let response = self
                 .connection
-                .command(id.clone(), "abort", json!({"id": id, "type": "abort"}))
+                .abort_command(
+                    id.clone(),
+                    json!({"id": id, "type": "abort"}),
+                    Arc::clone(&self.turn),
+                )
                 .await;
             match response {
-                Ok(response) if response.success => Ok(CancellationAcknowledgement::Requested),
+                Ok(response) if response.success => {
+                    self.turn.mark_abort_acknowledged();
+                    Ok(CancellationAcknowledgement::Requested)
+                }
                 Ok(_) => {
                     // A refused abort is not acknowledged, so a later request
                     // (including the close escalation) may try again.
@@ -208,6 +215,7 @@ impl CancellationControl for PiRunCancellation {
                     ))
                 }
                 Err(error) => {
+                    let _ = self.turn.reconcile_abort_response(false);
                     self.requested.store(false, Ordering::SeqCst);
                     Err(error)
                 }
@@ -260,12 +268,10 @@ impl RunHandle for PiRunHandle {
             let cancellation = match self.cancellation.request().await {
                 Ok(_) => CleanupOutcome::NotApplicable,
                 Err(error) => {
-                    if error.diagnostic().code() == "swallowtail.pi.rpc.abort_rejected" {
-                        // A rejected native abort leaves the run live, so the join
-                        // below would wait for provider completion. Escalate to a
-                        // forced stop so the RPC process ends and the join can settle.
-                        let _ = self.cancellation.connection.force_stop().await;
-                    }
+                    // Any rejected or failed native abort leaves the run live, so
+                    // the join below would wait for provider completion. Escalate
+                    // to a forced stop so the RPC process ends and the join can settle.
+                    let _ = self.cancellation.connection.force_stop().await;
                     CleanupOutcome::Failed(error.diagnostic().clone())
                 }
             };
@@ -302,4 +308,173 @@ fn malformed_run_id() -> RuntimeFailure {
         "swallowtail.pi.rpc.run_id_invalid",
         "Pi RPC structured-run identity was invalid",
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::atomic::{AtomicU32, AtomicUsize};
+    use swallowtail_core::ExecutionHostId;
+    use swallowtail_runtime::{
+        Deadline, DeadlineObservation, MonotonicInstant, ProcessExit, ProcessHandle,
+        ProcessInputChunk, ProcessOutputChunk, ScopeId, ScopedTaskService, TerminalStatus,
+        TimeService,
+    };
+
+    struct RefusingStdinProcess {
+        force_stops: AtomicUsize,
+        stopped: Mutex<Option<futures_channel::oneshot::Sender<()>>>,
+    }
+
+    impl ProcessHandle for RefusingStdinProcess {
+        fn write_stdin(&self, _: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async {
+                Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "test.abort_write_failed",
+                    "abort write failed",
+                )))
+            })
+        }
+
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.force_stops.fetch_add(1, Ordering::SeqCst);
+            if let Some(tx) = self.stopped.lock().expect("stopped lock").take() {
+                let _ = tx.send(());
+            }
+            Box::pin(async { Ok(()) })
+        }
+
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+
+    struct DummyTaskService;
+
+    impl ScopedTaskService for DummyTaskService {
+        fn spawn(
+            &self,
+            _scope: ScopeId,
+            _task: BoxFuture<'static, ()>,
+        ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+            Err(RuntimeFailure::new(SafeDiagnostic::new(
+                "test.unused",
+                "unused",
+            )))
+        }
+    }
+
+    struct DummyTimeService;
+
+    impl TimeService for DummyTimeService {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(0)
+        }
+
+        fn wait_until(&self, _deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+            Box::pin(std::future::pending())
+        }
+    }
+
+    struct WaitForStopTask {
+        stopped: futures_channel::oneshot::Receiver<()>,
+    }
+
+    impl JoinedTask for WaitForStopTask {
+        fn join(self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            let stopped = self.stopped;
+            Box::pin(async move {
+                stopped.await.map_err(|_| {
+                    RuntimeFailure::new(SafeDiagnostic::new(
+                        "test.not_force_stopped",
+                        "force_stop was not called",
+                    ))
+                })
+            })
+        }
+    }
+
+    #[test]
+    fn abort_write_error_does_not_mark_cancelled_and_close_escalates_to_force_stop() {
+        let (stopped_tx, stopped_rx) = futures_channel::oneshot::channel();
+        let process = Arc::new(RefusingStdinProcess {
+            force_stops: AtomicUsize::new(0),
+            stopped: Mutex::new(Some(stopped_tx)),
+        });
+        let services =
+            HostServices::new(ExecutionHostId::new("pi.rpc.run-cancel-test").expect("host id"));
+        let connection = PiConnection::new(
+            Arc::clone(&process) as Arc<dyn ProcessHandle>,
+            Arc::new(DummyTaskService),
+            Arc::new(DummyTimeService),
+            services,
+        );
+        let (turn, events, callbacks, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("pi-run-abort-err").expect("turn id"),
+            Arc::new(AtomicU32::new(0)),
+            Arc::downgrade(&connection),
+            false,
+        )
+        .expect("turn constructs");
+        let cancellation = Arc::new(PiRunCancellation {
+            connection: Arc::clone(&connection),
+            turn: Arc::clone(&turn),
+            requested: AtomicBool::new(false),
+            attempts: AtomicU64::new(0),
+        });
+        let mut handle = Box::new(PiRunHandle {
+            request_id: RequestId::new("pi-run-abort-err-req").expect("request id"),
+            run_id: RuntimeRunId::new("pi-run-abort-err-run").expect("run id"),
+            events: Some(events),
+            callbacks: Some(callbacks),
+            terminal: Some(Box::pin(terminal)),
+            cancellation,
+            task: Box::new(WaitForStopTask {
+                stopped: stopped_rx,
+            }),
+        });
+        let terminal_fut = handle
+            .take_terminal_outcome()
+            .expect("terminal outcome future is present");
+
+        // 1. A failed abort write must return the error and must NOT mark the
+        // turn as cancelled; subsequent connection EOF resolves cancel_rejected.
+        let abort_err = futures_executor::block_on(handle.cancellation().request())
+            .expect_err("failed abort write returns error");
+        assert_eq!(abort_err.diagnostic().code(), "test.abort_write_failed");
+
+        // 2. Closing the run handle after a transport/write abort error must
+        // escalate to force_stop() so the task joins instead of hanging.
+        let cleanup = futures_executor::block_on(handle.close());
+        assert_eq!(process.force_stops.load(Ordering::SeqCst), 1);
+        assert!(
+            matches!(cleanup, CleanupOutcome::Failed(ref diag) if diag.code() == "test.abort_write_failed"),
+            "expected abort_write_failed cleanup failure, got {cleanup:?}"
+        );
+
+        // 3. When the turn settles via connection close after the rejected
+        // abort, it must NOT misreport TerminalStatus::Cancelled.
+        turn.fail_connection(SafeDiagnostic::new("test.eof", "eof"));
+        let outcome = futures_executor::block_on(terminal_fut);
+        assert!(
+            matches!(
+                outcome.status(),
+                TerminalStatus::RuntimeFailed(diag) if diag.code() == "swallowtail.pi.rpc.cancel_rejected"
+            ),
+            "rejected abort must not misreport TerminalStatus::Cancelled, got {:?}",
+            outcome.status()
+        );
+    }
 }

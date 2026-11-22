@@ -1,17 +1,20 @@
 use crate::exec_events::ExecEventParser;
 use crate::exec_handle::ProcessCancellation;
 use crate::exec_input::SharedExecMaterializations;
-use std::future::poll_fn;
+use std::future::{Future, poll_fn};
 use std::sync::Arc;
 use std::task::Poll;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind, HostServices,
-    ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender, RuntimeFailure,
-    TerminalOutcome, TerminalStatus,
+    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, DebugObservationKind, HostServices,
+    MonotonicInstant, ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender,
+    RuntimeFailure, TerminalOutcome, TerminalStatus,
 };
 
 const ROUTE: &str = "codex.exec";
+/// Dedicated teardown budget for reaping a stopped exec child during forced
+/// cleanup so a refused `force_stop()` or hung `wait()` cannot block forever.
+const CLEANUP_WAIT_BUDGET_TICKS: u64 = 500;
 
 pub(crate) async fn pump(
     process: Arc<dyn ProcessHandle>,
@@ -22,15 +25,26 @@ pub(crate) async fn pump(
     parser: ExecEventParser,
     services: HostServices,
 ) -> TerminalOutcome {
-    let outcome = pump_process(
-        &process,
-        &events,
-        &cancellation,
-        &mut deadline,
-        parser,
-        &services,
-    )
-    .await;
+    let outcome = {
+        let mut body = std::pin::pin!(pump_process(
+            &process,
+            &events,
+            &cancellation,
+            &mut deadline,
+            parser,
+            &services,
+        ));
+        poll_fn(|context| {
+            if cancellation.poll_pump_aborted(context).is_ready() {
+                return Poll::Ready(TerminalOutcome::new(
+                    TerminalStatus::Cancelled,
+                    process_cleanup_failed(),
+                ));
+            }
+            body.as_mut().poll(context)
+        })
+        .await
+    };
     with_cleanup(outcome, materializations.release().await)
 }
 
@@ -45,7 +59,7 @@ async fn pump_process(
     loop {
         match next_output(process.as_ref(), cancellation, deadline).await {
             NextOutput::Deadline => {
-                let cleanup = force_cleanup(process.as_ref()).await;
+                let cleanup = force_cleanup(process.as_ref(), services).await;
                 return TerminalOutcome::new(TerminalStatus::TimedOut, cleanup);
             }
             NextOutput::Process(Ok(Some(chunk)))
@@ -55,7 +69,7 @@ async fn pump_process(
                     Ok(parsed) => {
                         for event in parsed {
                             if events.send(event).is_err() {
-                                let cleanup = force_cleanup(process.as_ref()).await;
+                                let cleanup = force_cleanup(process.as_ref(), services).await;
                                 return TerminalOutcome::new(
                                     TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
                                         "swallowtail.codex.exec.event_delivery_failed",
@@ -68,7 +82,7 @@ async fn pump_process(
                     }
                     Err(failure) => {
                         emit_protocol_debug(services, &failure, "exec.pump.decode");
-                        let cleanup = force_cleanup(process.as_ref()).await;
+                        let cleanup = force_cleanup(process.as_ref(), services).await;
                         return TerminalOutcome::new(
                             TerminalStatus::RuntimeFailed(failure.diagnostic().clone()),
                             cleanup,
@@ -80,7 +94,7 @@ async fn pump_process(
             NextOutput::Process(Ok(None)) => break,
             NextOutput::Process(Err(failure)) => {
                 emit_host_process_debug(services, &failure, "exec.pump.read");
-                let cleanup = force_cleanup(process.as_ref()).await;
+                let cleanup = force_cleanup(process.as_ref(), services).await;
                 return TerminalOutcome::new(
                     TerminalStatus::HostFailed(failure.diagnostic().clone()),
                     cleanup,
@@ -179,18 +193,45 @@ async fn next_output(
     .await
 }
 
-pub(crate) async fn cleanup_failed_start(process: &dyn ProcessHandle) {
-    let _ = force_cleanup(process).await;
+pub(crate) async fn cleanup_failed_start(process: &dyn ProcessHandle, services: &HostServices) {
+    let _ = force_cleanup(process, services).await;
 }
 
-async fn force_cleanup(process: &dyn ProcessHandle) -> CleanupOutcome {
+async fn bounded_teardown_step<T>(
+    mut step: BoxFuture<'_, T>,
+    cleanup_timer: &mut Option<BoxFuture<'static, DeadlineObservation>>,
+) -> Option<T> {
+    poll_fn(|context| {
+        if let Poll::Ready(result) = step.as_mut().poll(context) {
+            return Poll::Ready(Some(result));
+        }
+        if let Some(timer) = cleanup_timer.as_mut()
+            && timer.as_mut().poll(context).is_ready()
+        {
+            return Poll::Ready(None);
+        }
+        Poll::Pending
+    })
+    .await
+}
+
+async fn force_cleanup(process: &dyn ProcessHandle, services: &HostServices) -> CleanupOutcome {
     let force = process.force_stop().await;
-    let wait = process.wait().await;
-    if force.is_err() || wait.is_err() {
-        process_cleanup_failed()
-    } else {
-        CleanupOutcome::Clean
+    if force.is_ok() {
+        return cleanup_from_wait(&process.wait().await);
     }
+    // `force_stop()` was refused, so the child may still be running. Bound
+    // `wait()` with a dedicated teardown budget when a time service is
+    // available; without one, return immediately instead of hanging forever.
+    let Some(time) = services.time() else {
+        return process_cleanup_failed();
+    };
+    let deadline = Deadline::at(MonotonicInstant::from_ticks(
+        time.now().ticks().saturating_add(CLEANUP_WAIT_BUDGET_TICKS),
+    ));
+    let mut cleanup_timer = Some(time.wait_until(deadline));
+    let _ = bounded_teardown_step(process.wait(), &mut cleanup_timer).await;
+    process_cleanup_failed()
 }
 
 fn cleanup_from_wait(
@@ -255,6 +296,88 @@ mod tests {
         assert!(matches!(
             combined.cleanup(),
             CleanupOutcome::Degraded(found) if found.code() == "materialization.degraded"
+        ));
+    }
+
+    #[test]
+    fn force_cleanup_bounds_refused_force_stop_with_teardown_budget() {
+        use super::force_cleanup;
+        use std::sync::Arc;
+        use swallowtail_core::ExecutionHostId;
+        use swallowtail_runtime::{
+            BoxFuture, Deadline, DeadlineObservation, HostServices, MonotonicInstant, ProcessExit,
+            ProcessHandle, ProcessInputChunk, ProcessOutputChunk, RuntimeFailure, TimeService,
+        };
+
+        struct RefusingHungWaitProcess;
+
+        impl ProcessHandle for RefusingHungWaitProcess {
+            fn write_stdin(
+                &self,
+                _: ProcessInputChunk,
+            ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn read_output(
+                &self,
+            ) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+                Box::pin(std::future::pending())
+            }
+            fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async {
+                    Err(RuntimeFailure::new(SafeDiagnostic::new(
+                        "test.force_stop_refused",
+                        "force stop refused",
+                    )))
+                })
+            }
+            fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+                Box::pin(std::future::pending())
+            }
+        }
+
+        struct PastClock;
+
+        impl TimeService for PastClock {
+            fn now(&self) -> MonotonicInstant {
+                MonotonicInstant::from_ticks(0)
+            }
+            fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+                Box::pin(async move {
+                    DeadlineObservation::new(deadline, MonotonicInstant::from_ticks(u64::MAX))
+                })
+            }
+        }
+
+        let services_with_time = HostServices::new(
+            ExecutionHostId::new("codex.exec.cleanup-budget-test").expect("host id"),
+        )
+        .with_time(Arc::new(PastClock));
+        let outcome = futures_executor::block_on(force_cleanup(
+            &RefusingHungWaitProcess,
+            &services_with_time,
+        ));
+        assert!(matches!(
+            outcome,
+            CleanupOutcome::Failed(ref diag) if diag.code() == "swallowtail.codex.exec.process_cleanup_failed"
+        ));
+
+        let services_without_time = HostServices::new(
+            ExecutionHostId::new("codex.exec.cleanup-notime-test").expect("host id"),
+        );
+        let outcome_without_time = futures_executor::block_on(force_cleanup(
+            &RefusingHungWaitProcess,
+            &services_without_time,
+        ));
+        assert!(matches!(
+            outcome_without_time,
+            CleanupOutcome::Failed(ref diag) if diag.code() == "swallowtail.codex.exec.process_cleanup_failed"
         ));
     }
 }

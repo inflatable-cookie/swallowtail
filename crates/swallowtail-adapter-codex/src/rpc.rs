@@ -437,7 +437,53 @@ pub(crate) fn failure(code: &'static str, message: impl Into<String>) -> Runtime
 
 #[cfg(test)]
 mod tests {
-    use super::BoundedIgnoredResponses;
+    use super::{BoundedIgnoredResponses, RpcConnection};
+    use crate::turn_state::ActiveTurn;
+    use serde_json::{Value, json};
+    use std::collections::BTreeSet;
+    use std::sync::{Arc, Mutex};
+    use swallowtail_core::{ExecutionHostId, ProviderRequestPolicy};
+    use swallowtail_runtime::{
+        BoxFuture, HostServices, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
+        RuntimeFailure, RuntimeTurnId,
+    };
+
+    #[derive(Default)]
+    struct RecordingProcess {
+        writes: Mutex<Vec<Value>>,
+    }
+
+    impl ProcessHandle for RecordingProcess {
+        fn write_stdin(
+            &self,
+            chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            let parsed: Value =
+                serde_json::from_slice(chunk.bytes()).expect("written RPC frame is valid JSON");
+            self.writes.lock().expect("writes lock").push(parsed);
+            Box::pin(async { Ok(()) })
+        }
+
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
 
     #[test]
     fn ignored_responses_evicts_oldest_entries_at_capacity() {
@@ -453,5 +499,50 @@ mod tests {
         assert!(ignored.remove(&4));
         assert!(ignored.remove(&3));
         assert_eq!(ignored.len(), 0);
+    }
+
+    #[test]
+    fn late_non_tool_server_request_on_stopping_turn_is_rejected_without_tearing_down_session() {
+        let process = Arc::new(RecordingProcess::default());
+        let services = HostServices::new(
+            ExecutionHostId::new("codex.app-server.late-request-test").expect("host id"),
+        );
+        let connection =
+            RpcConnection::new(Arc::clone(&process) as Arc<dyn ProcessHandle>, services);
+        let (turn, _events, _callbacks, _terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("turn-stopping").expect("turn id"),
+            None,
+            BTreeSet::new(),
+            None,
+            ProviderRequestPolicy::reject_all(),
+            "thread-1".to_owned(),
+            Arc::downgrade(&connection),
+        )
+        .expect("active turn constructs");
+        turn.set_provider_id("provider-turn-1")
+            .expect("provider turn id sets");
+        connection
+            .set_active_turn(Arc::clone(&turn))
+            .expect("active turn attaches");
+        turn.mark_cancelled();
+
+        let late_request = serde_json::to_vec(&json!({
+            "id": 99,
+            "method": "item/tool/requestUserInput",
+            "params": {
+                "threadId": "thread-1",
+                "turnId": "provider-turn-1",
+                "itemId": "item-1",
+                "questions": []
+            }
+        }))
+        .expect("serializes");
+        futures_executor::block_on(connection.dispatch(&late_request))
+            .expect("late non-tool server request on stopping turn must not fail the session");
+
+        let writes = process.writes.lock().expect("writes lock");
+        assert_eq!(writes.len(), 1);
+        assert_eq!(writes[0]["id"], json!(99));
+        assert_eq!(writes[0]["error"]["code"], json!(-32601));
     }
 }

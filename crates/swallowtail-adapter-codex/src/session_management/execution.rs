@@ -478,4 +478,100 @@ mod tests {
         // Note: stdout was never signalled EOF and `JoinOnDropThread` joins on
         // drop, proving the pump was aborted and joined cleanly before return.
     }
+
+    struct PendingDispatchWriteProcess {
+        initial_line: Mutex<Option<Vec<u8>>>,
+        write_entered: Mutex<Option<futures_channel::oneshot::Sender<()>>>,
+    }
+
+    impl ProcessHandle for PendingDispatchWriteProcess {
+        fn write_stdin(&self, _: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            if let Some(entered) = self
+                .write_entered
+                .lock()
+                .expect("write_entered lock")
+                .take()
+            {
+                let _ = entered.send(());
+            }
+            Box::pin(std::future::pending())
+        }
+
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            if let Some(line) = self.initial_line.lock().expect("initial_line lock").take() {
+                Box::pin(async move {
+                    Ok(Some(ProcessOutputChunk::new(
+                        swallowtail_runtime::ProcessOutputStream::Stdout,
+                        line,
+                    )))
+                })
+            } else {
+                Box::pin(std::future::pending())
+            }
+        }
+
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async {
+                Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "test.force_stop_refused",
+                    "force stop refused",
+                )))
+            })
+        }
+
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+    }
+
+    #[test]
+    fn refused_force_stop_aborts_and_joins_pump_stuck_in_dispatch_write() {
+        let host = ExecutionHostId::new("codex.lifecycle.cancel-dispatch-write").expect("host id");
+        let services = HostServices::new(host);
+        let (entered_tx, entered_rx) = futures_channel::oneshot::channel();
+        // Deliver a server request with no active turn so the pump calls
+        // `reject_server_request` -> `write_stdin`, which remains pending.
+        let process = Arc::new(PendingDispatchWriteProcess {
+            initial_line: Mutex::new(Some(
+                br#"{"id":99,"method":"item/tool/call","params":{}}"#
+                    .iter()
+                    .copied()
+                    .chain(std::iter::once(b'\n'))
+                    .collect(),
+            )),
+            write_entered: Mutex::new(Some(entered_tx)),
+        });
+        let connection = RpcConnection::new(
+            Arc::clone(&process) as Arc<dyn ProcessHandle>,
+            services.clone(),
+        );
+        let pump_connection = Arc::clone(&connection);
+        let task = AppServerTask::spawn(
+            Arc::new(ThreadTaskService),
+            ScopeId::new("codex.lifecycle.cancel-dispatch-write").expect("scope"),
+            Box::pin(async move { pump_connection.pump().await }),
+        )
+        .expect("task spawns");
+
+        // Wait until the pump is actually blocked inside `write_stdin`.
+        futures_executor::block_on(entered_rx).expect("pump entered pending dispatch write");
+
+        let cleanup = futures_executor::block_on(cancel_connection(
+            &connection,
+            task,
+            close_budget(&services, None),
+        ));
+        assert!(
+            matches!(cleanup, CleanupOutcome::Failed(ref diagnostic) if diagnostic.code() == "swallowtail.codex.lifecycle.cancel_cleanup_failed"),
+            "expected cancel_cleanup_failed, got {cleanup:?}"
+        );
+    }
 }

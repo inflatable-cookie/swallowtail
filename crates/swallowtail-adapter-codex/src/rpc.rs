@@ -79,10 +79,6 @@ impl PumpStop {
         }
     }
 
-    fn is_stopped(&self) -> bool {
-        self.stopped.load(Ordering::SeqCst)
-    }
-
     fn poll_stopped(&self, context: &mut Context<'_>) -> Poll<()> {
         if self.stopped.load(Ordering::SeqCst) {
             return Poll::Ready(());

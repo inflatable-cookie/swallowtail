@@ -160,6 +160,8 @@ pub fn swallowtail_acp_client::AcpTurnHandle::take_terminal_outcome(&mut self) -
 pub fn swallowtail_acp_client::AcpTurnHandle::turn_id(&self) -> &swallowtail_runtime::identity::RuntimeTurnId
 pub struct swallowtail_acp_client::ActiveTurn
 impl swallowtail_acp_client::ActiveTurn
+pub fn swallowtail_acp_client::ActiveTurn::emit_event<F>(&self, F) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure> where F: core::ops::function::FnOnce(u64) -> core::result::Result<swallowtail_runtime::event::RuntimeEventKind, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::ActiveTurn::finish_with_status(&self, swallowtail_runtime::outcome::TerminalStatus)
 pub fn swallowtail_acp_client::ActiveTurn::new(swallowtail_runtime::identity::RuntimeTurnId, alloc::string::String, swallowtail_acp_client::ActiveTurnConfig) -> core::result::Result<(alloc::sync::Arc<Self>, swallowtail_runtime::async_types::BoxEventStream, swallowtail_runtime::outcome::TerminalOutcomeFuture), swallowtail_runtime::failure::RuntimeFailure>
 pub fn swallowtail_acp_client::ActiveTurn::was_cancelled(&self) -> bool
 impl swallowtail_acp_client::AcpTurnSink for swallowtail_acp_client::ActiveTurn

@@ -562,3 +562,88 @@ fn duplicate_correlation_id_does_not_clobber_live_waiter() {
         assert_eq!(response, json!({"ok": true}));
     });
 }
+
+#[test]
+fn dropped_pending_responses_do_not_exhaust_correlation_limit() {
+    block_on(async {
+        let process: Arc<dyn ProcessHandle> = EofProcess::new();
+        let transport = AcpTransport::stdio(
+            process,
+            FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES),
+        );
+        let host = ExecutionHostId::new("local").expect("valid host");
+        let connection = AcpConnection::new(
+            transport,
+            HostServices::new(host),
+            test_diagnostics(),
+            Arc::new(StandardAcpHooks),
+        );
+
+        for _ in 0..40 {
+            let pending = connection
+                .begin_request("test/method", json!({}))
+                .await
+                .expect("dropped pending responses must not exhaust correlation slots");
+            drop(pending);
+        }
+
+        let mut live = Vec::new();
+        for _ in 0..32 {
+            live.push(
+                connection
+                    .begin_request("test/method", json!({}))
+                    .await
+                    .expect("live request within limit succeeds"),
+            );
+        }
+        let limit_err = connection
+            .begin_request("test/method", json!({}))
+            .await
+            .err()
+            .expect("33rd live request must hit correlation_limit");
+        assert_eq!(limit_err.diagnostic().code(), "swallowtail.test.acp.limit");
+
+        drop(live.pop());
+        let reclaimed = connection
+            .begin_request("test/method", json!({}))
+            .await
+            .expect("dropping one live waiter reclaims its correlation slot");
+        drop(reclaimed);
+        drop(live);
+    });
+}
+
+#[test]
+fn active_turn_finish_with_status_and_emit_event() {
+    use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
+    use swallowtail_runtime::RuntimeEventKind;
+
+    let (turn, events, terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-custom").expect("valid turn id"),
+        "sess-1".to_owned(),
+        ActiveTurnConfig::new(test_diagnostics()),
+    )
+    .expect("turn creates");
+
+    let observed_sequence = std::cell::Cell::new(0_u64);
+    turn.emit_event(|sequence| {
+        observed_sequence.set(sequence);
+        Ok(RuntimeEventKind::Progress)
+    })
+    .expect("emit_event succeeds");
+    assert_eq!(observed_sequence.get(), 1);
+
+    turn.finish_with_status(TerminalStatus::TimedOut);
+    assert!(turn.is_finished());
+    turn.finish_prompt("end_turn");
+
+    let outcome = block_on(terminal);
+    assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
+
+    let collected: Vec<_> = futures_executor::block_on_stream(events)
+        .map(|event| event.expect("runtime event succeeds"))
+        .collect();
+    assert_eq!(collected.len(), 2);
+    assert_eq!(collected[0].sequence(), 0);
+    assert_eq!(collected[1].sequence(), 1);
+}

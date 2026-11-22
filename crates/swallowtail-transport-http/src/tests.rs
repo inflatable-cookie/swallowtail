@@ -809,3 +809,71 @@ fn secret_header_name_validation_matches_rfc9110_token_and_embedded_query_reject
         "https://provider.example/base/v1/models?limit=2"
     );
 }
+
+#[test]
+fn external_stream_cancellation_reports_cancelled_transport_error() {
+    let endpoint = serve(|mut stream| {
+        read_request(&mut stream);
+        write_all(&mut stream, b"HTTP/1.1 200 OK\r\n\r\n");
+        write_all(&mut stream, b"event: delta\ndata: first\n\n");
+        thread::sleep(Duration::from_secs(2));
+    });
+    let signal = cancelled();
+    let mut subscription = HttpTransport::new()
+        .subscribe(
+            scope(),
+            &endpoint,
+            HttpRequest::new(Method::Get, "/events"),
+            SseDecoder::new(),
+            &services(),
+            Arc::clone(&signal),
+        )
+        .expect("fixture subscription starts");
+
+    let first = futures_executor::block_on(futures_util::future::poll_fn(|context| {
+        subscription.poll_next(context)
+    }))
+    .expect("first frame arrives")
+    .expect("first frame decodes");
+    assert!(matches!(first, StreamItem::Body(_)));
+
+    signal.store(true, Ordering::SeqCst);
+
+    let terminal = futures_executor::block_on(futures_util::future::poll_fn(|context| {
+        subscription.poll_next(context)
+    }))
+    .expect("external cancellation must surface an error rather than clean EOF")
+    .expect_err("external cancellation is a transport error");
+    assert_eq!(
+        terminal,
+        StreamError::Transport(TransportError::Cancelled),
+        "external cancellation must report TransportError::Cancelled"
+    );
+    assert!(
+        futures_executor::block_on(futures_util::future::poll_fn(|context| {
+            subscription.poll_next(context)
+        }))
+        .is_none(),
+        "subscription fuses after cancellation error"
+    );
+
+    // Subscription::close() still treats cancellation as clean close.
+    let endpoint_close = serve(|mut stream| {
+        read_request(&mut stream);
+        write_all(&mut stream, b"HTTP/1.1 200 OK\r\n\r\n");
+        write_all(&mut stream, b"event: delta\ndata: held\n\n");
+        thread::sleep(Duration::from_secs(2));
+    });
+    let close_subscription = HttpTransport::new()
+        .subscribe(
+            scope(),
+            &endpoint_close,
+            HttpRequest::new(Method::Get, "/events"),
+            SseDecoder::new(),
+            &services(),
+            cancelled(),
+        )
+        .expect("close fixture subscription starts");
+    futures_executor::block_on(close_subscription.close())
+        .expect("Subscription::close treats TransportError::Cancelled as Ok(())");
+}

@@ -1,34 +1,21 @@
-use crate::activity::{AcpActivityProjection, text_content};
-use crate::failure::{failure, malformed};
+use crate::connection::grok_diagnostics;
+use crate::failure::failure;
 use serde_json::Value;
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
-use std::sync::{Arc, Mutex, Weak};
-use swallowtail_core::ProviderRequestRef;
-use swallowtail_protocol_acp::{AcpMessageRole, AcpSessionUpdate};
+use std::sync::{Arc, Weak};
+use swallowtail_acp_client::{
+    AcpTurnSink, ActiveTurn as SharedActiveTurn, ActiveTurnConfig, StopReasonPolicy,
+    UsageProgressPolicy,
+};
 use swallowtail_runtime::{
-    BoxEventStream, CallbackAbandonment, CallbackExchange, CleanupOutcome, Deadline,
-    OperationContent, ProviderRequestObservation, RuntimeEvent, RuntimeEventKind, RuntimeFailure,
-    RuntimeTurnId, TerminalOutcome, TerminalOutcomeFuture, TerminalOutcomeSender, TerminalStatus,
-    runtime_event_channel, terminal_outcome_channel,
+    BoxEventStream, CallbackAbandonment, CallbackExchange, Deadline, ProviderRequestObservation,
+    RuntimeEventKind, RuntimeFailure, RuntimeTurnId, TerminalOutcomeFuture, TerminalStatus,
 };
 
-const EVENT_CAPACITY: usize = 128;
-const MAXIMUM_OUTPUT_BYTES: usize = 4 * 1024 * 1024;
-
 pub(crate) struct ActiveTurn {
+    inner: Arc<SharedActiveTurn>,
     runtime_id: RuntimeTurnId,
-    session_id: String,
-    events: swallowtail_runtime::RuntimeEventSender,
-    terminal: TerminalOutcomeSender,
-    sequence: AtomicU64,
-    output: Mutex<String>,
-    activity: Mutex<AcpActivityProjection>,
     deadline: Option<Deadline>,
     callbacks: Option<crate::permission::CallbackHub>,
-    provider_observation: Mutex<Option<ProviderRequestObservation>>,
-    cancelled: AtomicBool,
-    timed_out: AtomicBool,
-    finished: AtomicBool,
 }
 
 impl ActiveTurn {
@@ -47,9 +34,11 @@ impl ActiveTurn {
         ),
         RuntimeFailure,
     > {
-        let (events, stream) = runtime_event_channel(EVENT_CAPACITY)?;
-        events.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
-        let (terminal, future) = terminal_outcome_channel();
+        let config = ActiveTurnConfig::new(grok_diagnostics())
+            .with_stop_reason_policy(StopReasonPolicy::ExtendedProviderStops)
+            .with_usage_progress_policy(UsageProgressPolicy::EmitProgress);
+        let (inner, stream, future) =
+            SharedActiveTurn::new(runtime_id.clone(), session_id, config)?;
         let (callbacks, callback_exchange) = if exchanges_permissions {
             let (callbacks, exchange) = crate::permission::CallbackHub::new(connection, true);
             (Some(callbacks), Some(exchange))
@@ -58,82 +47,52 @@ impl ActiveTurn {
         };
         Ok((
             Arc::new(Self {
-                runtime_id: runtime_id.clone(),
-                session_id,
-                events,
-                terminal,
-                sequence: AtomicU64::new(1),
-                output: Mutex::new(String::new()),
-                activity: Mutex::new(AcpActivityProjection::new(runtime_id)),
+                inner,
+                runtime_id,
                 deadline,
                 callbacks,
-                provider_observation: Mutex::new(None),
-                cancelled: AtomicBool::new(false),
-                timed_out: AtomicBool::new(false),
-                finished: AtomicBool::new(false),
             }),
-            Box::pin(stream),
+            stream,
             callback_exchange,
             future,
         ))
     }
 
     pub(crate) fn session_id(&self) -> &str {
-        &self.session_id
+        self.inner.session_id()
     }
 
     pub(crate) fn is_finished(&self) -> bool {
-        self.finished.load(Ordering::SeqCst)
+        self.inner.is_finished()
     }
 
     pub(crate) fn was_cancelled(&self) -> bool {
-        self.cancelled.load(Ordering::SeqCst)
+        self.inner.was_cancelled()
     }
 
     pub(crate) fn mark_cancelled(&self) {
-        self.cancelled.store(true, Ordering::SeqCst);
+        self.inner.mark_cancelled();
         if let Some(callbacks) = &self.callbacks {
             callbacks.abandon(CallbackAbandonment::TurnCancelled);
         }
     }
 
     pub(crate) fn timeout(&self) {
-        self.timed_out.store(true, Ordering::SeqCst);
-        self.finish_with_abandonment(TerminalStatus::TimedOut, CallbackAbandonment::TimedOut);
+        if let Some(callbacks) = &self.callbacks {
+            callbacks.abandon(CallbackAbandonment::TimedOut);
+        }
+        self.inner.finish_with_status(TerminalStatus::TimedOut);
     }
 
     pub(crate) fn observe_permission(
         &self,
         provider_request_id: &Value,
-    ) -> Result<(), RuntimeFailure> {
-        let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
-        let callback_id = swallowtail_runtime::CallbackId::new(format!(
-            "{}:permission:{sequence}",
-            self.runtime_id.as_str()
-        ))
-        .map_err(|_| malformed())?;
-        let provider_request_ref = ProviderRequestRef::new(match provider_request_id {
-            Value::String(value) => format!("acp:{value}"),
-            Value::Number(value) => format!("acp:{value}"),
-            _ => return Err(malformed()),
-        })
-        .map_err(|_| malformed())?;
-        let observation = ProviderRequestObservation::new(
-            callback_id,
-            crate::grok_build_permission_namespace(),
-            provider_request_ref.clone(),
-        );
-        *self
-            .provider_observation
-            .lock()
-            .expect("permission observation lock poisoned") = Some(observation);
-        self.mark_cancelled();
-        self.emit(
-            RuntimeEventKind::ProviderObservation(
-                swallowtail_runtime::ProviderObservation::RequestCorrelation(provider_request_ref),
-            ),
-            None,
-        )
+    ) -> Result<ProviderRequestObservation, RuntimeFailure> {
+        let observation = self.inner.observe_permission(provider_request_id)?;
+        if let Some(callbacks) = &self.callbacks {
+            callbacks.abandon(CallbackAbandonment::TurnCancelled);
+        }
+        Ok(observation)
     }
 
     pub(crate) fn exchanges_permissions(&self) -> bool {
@@ -147,209 +106,71 @@ impl ActiveTurn {
         provider_request_id: &Value,
         params: &Value,
     ) -> Result<(), RuntimeFailure> {
-        let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
         let callbacks = self.callbacks.as_ref().ok_or_else(|| {
             failure(
                 "swallowtail.grok.acp.permission_exchange_unavailable",
                 "Grok Build permission exchange was not enabled for this turn",
             )
         })?;
-        let callback_id = callbacks.enqueue_permission(
-            &self.runtime_id,
-            sequence,
-            self.deadline,
-            provider_request_id,
-            params,
-        )?;
-        self.events.send(RuntimeEvent::new(
-            sequence,
-            RuntimeEventKind::CallbackRequested(callback_id),
-        ))
+        self.inner.emit_event(|sequence| {
+            let callback_id = callbacks.enqueue_permission(
+                &self.runtime_id,
+                sequence,
+                self.deadline,
+                provider_request_id,
+                params,
+            )?;
+            Ok(RuntimeEventKind::CallbackRequested(callback_id))
+        })
     }
 
     pub(crate) fn handle_update(&self, params: &Value) -> Result<(), RuntimeFailure> {
-        let decoded =
-            swallowtail_protocol_acp::decode_session_update(params).map_err(|_| malformed())?;
-        self.verify_session(decoded.session_id.as_str())?;
-        match &decoded.update {
-            AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Agent => {
-                let text = text_content(&message.content)?;
-                self.append_output(text)?;
-                self.emit_content(RuntimeEventKind::OutputDelta, text)?;
-            }
-            AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Thought => {
-                self.emit_content(
-                    RuntimeEventKind::ReasoningProgress,
-                    text_content(&message.content)?,
-                )?;
-            }
-            AcpSessionUpdate::Message(_)
-            | AcpSessionUpdate::Plan(_)
-            | AcpSessionUpdate::AvailableCommands(_)
-            | AcpSessionUpdate::CurrentMode(_)
-            | AcpSessionUpdate::ConfigOptions(_)
-            | AcpSessionUpdate::SessionInfo { .. }
-            | AcpSessionUpdate::Usage(_) => self.emit(RuntimeEventKind::Progress, None)?,
-            AcpSessionUpdate::ToolCall(_)
-            | AcpSessionUpdate::ToolCallUpdate(_)
-            | AcpSessionUpdate::Unknown { .. } => {}
-        }
-        let observations = self
-            .activity
-            .lock()
-            .expect("turn activity lock poisoned")
-            .project(&decoded.update)?;
-        for observation in observations {
-            self.emit(RuntimeEventKind::Activity(observation), None)?;
-        }
-        Ok(())
+        self.inner.handle_update(params)
     }
 
     pub(crate) fn finish_prompt(&self, stop_reason: &str) {
-        let status = if let Some(observation) = self
-            .provider_observation
-            .lock()
-            .expect("permission observation lock poisoned")
-            .clone()
-        {
-            TerminalStatus::ProviderRequestObserved(observation)
-        } else if self.timed_out.load(Ordering::SeqCst) {
-            TerminalStatus::TimedOut
-        } else {
-            match stop_reason {
-                "end_turn" => TerminalStatus::Completed,
-                "cancelled" => TerminalStatus::Cancelled,
-                "max_tokens" | "max_turn_requests" | "refusal" => {
-                    TerminalStatus::ProviderFailed(swallowtail_core::SafeDiagnostic::new(
-                        "swallowtail.grok.acp.prompt_stopped",
-                        "Grok Build stopped before completing the turn",
-                    ))
-                }
-                _ => TerminalStatus::RuntimeFailed(
-                    failure(
-                        "swallowtail.grok.acp.stop_reason_unsupported",
-                        "Grok Build returned an unsupported ACP stop reason",
-                    )
-                    .diagnostic()
-                    .clone(),
-                ),
-            }
-        };
-        self.finish(status);
+        if let Some(callbacks) = &self.callbacks {
+            callbacks.abandon(CallbackAbandonment::TurnTerminated);
+        }
+        self.inner.finish_prompt(stop_reason);
     }
 
     pub(crate) fn fail(&self, error: &RuntimeFailure) {
-        self.finish(TerminalStatus::RuntimeFailed(error.diagnostic().clone()));
-    }
-
-    fn finish(&self, status: TerminalStatus) {
-        self.finish_with_abandonment(status, CallbackAbandonment::TurnTerminated);
-    }
-
-    fn finish_with_abandonment(&self, status: TerminalStatus, reason: CallbackAbandonment) {
-        if self.finished.swap(true, Ordering::SeqCst) {
-            return;
-        }
         if let Some(callbacks) = &self.callbacks {
-            callbacks.abandon(reason);
+            callbacks.abandon(CallbackAbandonment::TurnTerminated);
         }
-        if let Ok(observations) = self
-            .activity
-            .lock()
-            .expect("turn activity lock poisoned")
-            .complete(&status)
-        {
-            for observation in observations {
-                let _ = self.emit(RuntimeEventKind::Activity(observation), None);
-            }
-        }
-        let output = self
-            .output
-            .lock()
-            .expect("turn output lock poisoned")
-            .clone();
-        let mut outcome = TerminalOutcome::new(status, CleanupOutcome::NotApplicable);
-        if let Ok(content) = OperationContent::new(output) {
-            let _ = self.emit(RuntimeEventKind::OutputAvailable, Some(content.clone()));
-            outcome = outcome.with_output(content);
-        }
-        self.events.mark_terminal();
-        let _ = self.terminal.complete(outcome);
-    }
-
-    fn append_output(&self, text: &str) -> Result<(), RuntimeFailure> {
-        let mut output = self.output.lock().expect("turn output lock poisoned");
-        if output.len().saturating_add(text.len()) > MAXIMUM_OUTPUT_BYTES {
-            return Err(failure(
-                "swallowtail.grok.acp.output_limit_exceeded",
-                "Grok Build output exceeded the adapter limit",
-            ));
-        }
-        output.push_str(text);
-        Ok(())
-    }
-
-    fn emit_content(&self, kind: RuntimeEventKind, text: &str) -> Result<(), RuntimeFailure> {
-        match OperationContent::new(text) {
-            Ok(content) => self.emit(kind, Some(content)),
-            Err(_) if text.trim().is_empty() => Ok(()),
-            Err(_) => Err(malformed()),
-        }
-    }
-
-    fn emit(
-        &self,
-        kind: RuntimeEventKind,
-        content: Option<OperationContent>,
-    ) -> Result<(), RuntimeFailure> {
-        let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
-        let event = match content {
-            Some(content) => RuntimeEvent::with_content(sequence, kind, content),
-            None => RuntimeEvent::new(sequence, kind),
-        };
-        self.events.send(event)
-    }
-
-    fn verify_session(&self, session_id: &str) -> Result<(), RuntimeFailure> {
-        if session_id == self.session_id {
-            Ok(())
-        } else {
-            Err(failure(
-                "swallowtail.grok.acp.session_mismatch",
-                "Grok Build update does not match the active session",
-            ))
-        }
+        self.inner.fail(error);
     }
 }
 
-impl swallowtail_acp_client::AcpTurnSink for ActiveTurn {
+impl AcpTurnSink for ActiveTurn {
     fn session_id(&self) -> &str {
         self.session_id()
     }
+
     fn is_finished(&self) -> bool {
         self.is_finished()
     }
+
     fn mark_cancelled(&self) {
         self.mark_cancelled();
     }
+
     fn observe_permission(
         &self,
         provider_request_id: &Value,
     ) -> Result<ProviderRequestObservation, RuntimeFailure> {
-        self.observe_permission(provider_request_id)?;
-        Ok(self
-            .provider_observation
-            .lock()
-            .expect("permission observation lock poisoned")
-            .clone()
-            .expect("observe_permission recorded observation"))
+        self.observe_permission(provider_request_id)
     }
+
     fn handle_update(&self, params: &Value) -> Result<(), RuntimeFailure> {
         self.handle_update(params)
     }
+
     fn finish_prompt(&self, stop_reason: &str) {
         self.finish_prompt(stop_reason);
     }
+
     fn fail(&self, error: &RuntimeFailure) {
         self.fail(error);
     }

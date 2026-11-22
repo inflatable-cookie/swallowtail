@@ -77,9 +77,16 @@ pub(super) async fn pump_turn(
                 return uncertain(provider_status(result), false);
             }
             Signal::Item(Err(error)) => {
+                let _ = subscription.close().await;
+                let reason = cancellation.reason();
+                if reason == 1 {
+                    return uncertain(TerminalStatus::Cancelled, true);
+                }
+                if reason == 2 {
+                    return uncertain(TerminalStatus::TimedOut, true);
+                }
                 emit_wire_debug(&services, &error, "http.pump.transport");
                 cancellation.fail_remote_uncertain();
-                let _ = subscription.close().await;
                 return uncertain(
                     TerminalStatus::ProviderFailed(error.diagnostic().clone()),
                     false,

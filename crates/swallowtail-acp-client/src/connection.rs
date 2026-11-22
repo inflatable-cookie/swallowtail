@@ -271,6 +271,7 @@ impl AcpConnection {
             if pending.closed {
                 return Err((self.diagnostics.connection_closed)());
             }
+            pending.requests.retain(|_, sender| !sender.is_canceled());
             if pending.requests.len() >= MAXIMUM_PENDING_REQUESTS
                 || pending.requests.contains_key(&id)
             {

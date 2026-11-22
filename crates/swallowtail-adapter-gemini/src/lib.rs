@@ -7,7 +7,6 @@
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]
 
-mod acp_activity;
 mod acp_mcp;
 mod catalogue;
 mod connection;

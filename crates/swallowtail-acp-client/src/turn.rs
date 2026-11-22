@@ -165,6 +165,21 @@ impl ActiveTurn {
         self.cancelled.load(Ordering::SeqCst)
     }
 
+    /// Completes the turn with an explicit [`TerminalStatus`] if it has not already finished.
+    pub fn finish_with_status(&self, status: TerminalStatus) {
+        self.finish(status);
+    }
+
+    /// Allocates the next event sequence number, constructs a [`RuntimeEventKind`], and sends it.
+    pub fn emit_event<F>(&self, build: F) -> Result<(), RuntimeFailure>
+    where
+        F: FnOnce(u64) -> Result<RuntimeEventKind, RuntimeFailure>,
+    {
+        let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
+        let kind = build(sequence)?;
+        self.events.send(RuntimeEvent::new(sequence, kind))
+    }
+
     fn finish(&self, status: TerminalStatus) {
         if self.finished.swap(true, Ordering::SeqCst) {
             return;

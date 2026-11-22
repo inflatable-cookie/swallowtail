@@ -6,7 +6,7 @@ use swallowtail_acp_client::{
 use swallowtail_protocol_acp::AcpSessionUpdate;
 #[cfg(test)]
 use swallowtail_protocol_acp::AcpToolCallContent;
-use swallowtail_runtime::{ActivityObservation, RuntimeFailure, RuntimeTurnId, TerminalStatus};
+use swallowtail_runtime::{ActivityObservation, RuntimeFailure, RuntimeTurnId};
 
 #[cfg(test)]
 use std::collections::BTreeMap;
@@ -85,13 +85,6 @@ impl AcpActivityProjection {
             _ => {}
         }
         self.inner.project(update)
-    }
-
-    pub(crate) fn complete(
-        &mut self,
-        terminal: &TerminalStatus,
-    ) -> Result<Vec<ActivityObservation>, RuntimeFailure> {
-        self.inner.complete(terminal)
     }
 
     #[cfg(test)]

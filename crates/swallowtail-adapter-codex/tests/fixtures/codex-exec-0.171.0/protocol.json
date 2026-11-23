@@ -54,7 +54,13 @@
     "codex-rs/linux-sandbox/src/launcher.rs": "adds transparent_tcp/require_system parameters for unselected transparent TCP mode; bundled bwrap fallback and digest check unchanged",
     "codex-rs/sandboxing/src/bwrap.rs": "adds pidfd_open+poll fast wait before try_wait loop when probing system bwrap user-namespace support",
     "codex-rs/sandboxing/src/seatbelt.rs": "adopts resolve_for_enforcement and denies TIOCSTI on ProcessWithInheritedTerminal; read-only exec keeps no workspace writable roots",
-    "bin/codex.js": "uses process.execve on non-Windows when available and improves signal forwarding in child fallback"
+    "bin/codex.js": "uses process.execve on non-Windows when available and improves signal forwarding in child fallback",
+    "codex-rs/cloud-config/src/bundle_loader.rs": "0.165.0 introduces managed_config_bundle_loader_for_storage; 0.166.0 wires exec/src/lib.rs to pass requirements_toml(); when host administrator/MDM requirements.toml declares [config_server], selects ConfigServerSource instead of ChatGPT cloud config; when [config_server] is absent, falls back to the identical ChatGPT managed-config service used in 0.164.0; 0.168.0 adds DeviceCode login helpers (uncalled by exec) and managed_config_bundle_loader_for_auth",
+    "codex-rs/cloud-config/src/config_server.rs": "0.165.0 adds ConfigServerSource for administrator-enrolled [config_server]; uses OAuthSessionManager::without_interactive_login (never launches interactive browser/device login) with DefaultKeyringStore and AuthRouteConfig::http_client_factory_for_bootstrap (local administrator bootstrap factory intersected via restrict_to_endpoints to config_bundle_url, oauth.token_url, and optional device_authorization_url); missing OAuth grant returns fatal CloudConfigBundleLoadErrorCode::Auth; 0.168.0 makes with_bearer_token fallible into fatal auth_failure",
+    "codex-rs/cloud-config/src/validation.rs": "0.171.0 redacts raw TOML and model-provider parse details in CloudConfigBundleLoadErrorCode::InvalidBundle messages; fail-closed validation preserved",
+    "codex-rs/config/src/config_server.rs": "validates administrator-enrolled [config_server] URLs as HTTPS-only without userinfo, fragments, or base_url query strings",
+    "codex-rs/login/src/outbound_proxy.rs": "http_client_factory_for_bootstrap uses local_bootstrap_factory (local admin network rules) restricted via restrict_to_endpoints to declared bootstrap endpoints",
+    "codex-rs/http-client/src/network_policy.rs": "restrict_to_endpoints intersects existing endpoint restrictions with the supplied endpoint set without widening"
   },
   "boundedUnmappedAdditions": [
     "--remote",
@@ -67,13 +73,27 @@
   ],
   "bwrapGateResolution": {
     "research463GateClosed": true,
-    "allElevenHopsSigstoreVerified": true,
+    "allElevenHopsTrustedSigstoreVerified": true,
+    "trustedRootVerified": true,
+    "fulcioChainVerifiedAtIntegratedTime": true,
+    "rekorSetVerifiedAgainstTrustedKey": true,
     "allElevenHopsEmbeddedInLinuxCodex": true,
     "bwrapSourceAndVendorCByteIdentical": true,
-    "toolchainTransitions": {
-      "0.164.0..=0.165.0": "rustc 1.99.1 (workspace version bump 0.164.0->0.165.0 shifts crate SVH/codegen layout; identical strings and C/Rust source)",
-      "0.166.0..=0.170.0": "rustc 1.95.0 (rust-toolchain.toml rollback; 0.166.0/0.167.0/0.167.1/0.168.0 share exact binary 77360cb751cc...; 0.169.0/0.169.1/0.170.0 share exact binary 15fd5f2673d2...)",
-      "0.171.0": "rustc 1.99.1 (rust-toolchain.toml return to 1.99.1)"
-    }
+    "provenanceScope": "Trusted Sigstore TUF verification binds every npm-shipped Linux x86_64 codex-resources/bwrap binary to openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v<VER> at the exact tag commit, with byte-identical codex-rs/bwrap and codex-rs/vendor/bubblewrap sources and matching embedded CODEX_BWRAP_SHA256.",
+    "unresolvedDeltaCause": "ELF .comment records rustc 1.99.1 (0.164.0-0.165.0), rustc 1.95.0 (0.166.0-0.170.0), and rustc 1.99.1 (0.171.0). The 16-byte .text difference between 0.164.0 and 0.165.0 under the same rustc 1.99.1 compiler is not independently reproduced from a local Linux musl build; trusted Sigstore provenance + byte-identical sources establish that both were built by the exact release workflow from identical bwrap sources."
+  },
+  "managedConfigServerClassification": {
+    "introducedInCloudConfig": "0.165.0",
+    "wiredIntoExec": "0.166.0",
+    "subsequentChanges": [
+      "0.168.0",
+      "0.171.0"
+    ],
+    "policyAuthority": "system/MDM requirements.toml only (never user or project config); --ignore-user-config intentionally leaves host-managed requirements authoritative per Research 410",
+    "fallbackWhenAbsent": "identical ChatGPT managed-config service path as 0.164.0",
+    "bootstrapDestinations": "HTTPS-only validated base_url/token_url/device_authorization_url, restricted via AuthRouteConfig::http_client_factory_for_bootstrap + NetworkPolicy::restrict_to_endpoints",
+    "nonInteractiveAuth": true,
+    "boundedFailure": "missing OAuth grant, invalid token, network timeout, or invalid bundle fails closed before turn start with non-zero exit mapped to swallowtail.codex.exec.process_failed",
+    "requiresOperatorRuling": false
   }
 }

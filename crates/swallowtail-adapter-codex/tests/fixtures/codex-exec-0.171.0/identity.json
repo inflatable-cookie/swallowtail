@@ -88,7 +88,18 @@
       "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.164.0",
       "fulcioCommitMatchesTag": true,
       "embeddedInLinuxCodexBinary": true,
-      "rustcComment": "rustc version 1.99.1 (58cf8f9c3 2026-10-13)"
+      "rustcComment": "rustc version 1.99.1 (58cf8f9c3 2026-10-13)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.164.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "b570206b836642f7299e9735792452de8eb162a155f942e0c839899dd38d6aba",
+      "leafCertDerSha256": "2959233406f0c51609bdcc7771daf327876f98442578fe5111e383845240ec11",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1792726298,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "6aaac694803004a63c6f393d153c96d22521a6b9",
+      "buildConfigDigest": "6aaac694803004a63c6f393d153c96d22521a6b9"
     },
     "0.165.0": {
       "sha256": "755c8d6a9b893905a4aabab058bd6c02c453e5e8653adb84fc08e570607f3f36",
@@ -100,7 +111,18 @@
       "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.165.0",
       "fulcioCommitMatchesTag": true,
       "embeddedInLinuxCodexBinary": true,
-      "rustcComment": "rustc version 1.99.1 (58cf8f9c3 2026-10-13)"
+      "rustcComment": "rustc version 1.99.1 (58cf8f9c3 2026-10-13)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.165.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "fc367e3276aeac0a6f5e346ae0d217578ec4cbc5fe9834701c22481e5a2cabd9",
+      "leafCertDerSha256": "8f9d8c692db842d09379e4741922466b57399f45785ed36c197fc1a599f62204",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1793126346,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "360319d8dee62d87e2d59fc0c21805d79519cfed",
+      "buildConfigDigest": "360319d8dee62d87e2d59fc0c21805d79519cfed"
     },
     "0.166.0": {
       "sha256": "77360cb751ccedc5971391444ac86a8a33c15b04d6b4a6fe45f5d25496e62c4c",
@@ -112,7 +134,18 @@
       "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.166.0",
       "fulcioCommitMatchesTag": true,
       "embeddedInLinuxCodexBinary": true,
-      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)"
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.166.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "502664c0d0aaa2dadae315951239b1d4812438db0122d404ac5eb8d167581033",
+      "leafCertDerSha256": "86e450fe4d6d488d484e43caea60605d2016255c67b0e003493be40a93de4fa8",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1793297071,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "6ff1e1ca3b30fc8b914720681fcf5fe62e95f856",
+      "buildConfigDigest": "6ff1e1ca3b30fc8b914720681fcf5fe62e95f856"
     },
     "0.167.0": {
       "sha256": "77360cb751ccedc5971391444ac86a8a33c15b04d6b4a6fe45f5d25496e62c4c",
@@ -124,7 +157,18 @@
       "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.167.0",
       "fulcioCommitMatchesTag": true,
       "embeddedInLinuxCodexBinary": true,
-      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)"
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.167.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "9b1fa9713fe278f26eefdddabcbb54d46eb431f9f62ab89f09a93bfc86814b34",
+      "leafCertDerSha256": "97c02efee49f3d1015def521c6366233d25fae021cc2defb023d44a43355300a",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1793922791,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "086ccc833bc9cf01024ad2dd6af7dbd421b6bf9a",
+      "buildConfigDigest": "086ccc833bc9cf01024ad2dd6af7dbd421b6bf9a"
     },
     "0.167.1": {
       "sha256": "77360cb751ccedc5971391444ac86a8a33c15b04d6b4a6fe45f5d25496e62c4c",
@@ -136,7 +180,18 @@
       "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.167.1",
       "fulcioCommitMatchesTag": true,
       "embeddedInLinuxCodexBinary": true,
-      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)"
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.167.1/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "9f3a185ed36c6910563c00411627bb04ac895c9cd2b858bafb5d8761dba1a6f6",
+      "leafCertDerSha256": "e5622213ee6977e2d3d9a9646d00a0f946481d49bec91f7cfe9289682202169e",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1794334831,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "0a94398fa60c4fac0e7659e4213a0a36e613dd46",
+      "buildConfigDigest": "0a94398fa60c4fac0e7659e4213a0a36e613dd46"
     },
     "0.167.2": {
       "sha256": "7df960565a0dece99240ea4b9d0e011307817f9f3b73176c7b71fda44fe84765",
@@ -148,7 +203,18 @@
       "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.167.2",
       "fulcioCommitMatchesTag": true,
       "embeddedInLinuxCodexBinary": true,
-      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)"
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.167.2/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "9f78eba089785e0cd9802aea04c409d385d27ac7352af5cd162c67d5f128d7d0",
+      "leafCertDerSha256": "0def5ba93576c9fc3c72ba9ab029992f83ed69e2f84e2a16131823cb303f13aa",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1794432688,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "ce21072c90d32c40af7a55b60b2fb35c84a43a6a",
+      "buildConfigDigest": "ce21072c90d32c40af7a55b60b2fb35c84a43a6a"
     },
     "0.168.0": {
       "sha256": "77360cb751ccedc5971391444ac86a8a33c15b04d6b4a6fe45f5d25496e62c4c",
@@ -160,7 +226,18 @@
       "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.168.0",
       "fulcioCommitMatchesTag": true,
       "embeddedInLinuxCodexBinary": true,
-      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)"
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.168.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "bf929c4c320e6c0b70ec5ecdfbb90b47e2948fe5f3b2e4d17f0db54a3d2331b3",
+      "leafCertDerSha256": "d3d690588a25bac869bc9410f91fbbfeb85f38fa099a88d8379a9e93cf8c38be",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1794519957,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "9480ec100c3edee9fc69172e8e80a4730444094d",
+      "buildConfigDigest": "9480ec100c3edee9fc69172e8e80a4730444094d"
     },
     "0.169.0": {
       "sha256": "15fd5f2673d2e1c2f80e34e5108462fd014f5e8bbc7b0731f1ab23d1ff1ac140",
@@ -172,7 +249,18 @@
       "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.169.0",
       "fulcioCommitMatchesTag": true,
       "embeddedInLinuxCodexBinary": true,
-      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)"
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.169.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "fd228f908d99cd2a025a617fa12c184a42e4e634ba69b41579c95e12afac7ec9",
+      "leafCertDerSha256": "1a1f767982f4a721fe603d012549786279fc331e979a53b3b9ca2f64a2afe246",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1794546331,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "d32063f96c2dff1dc96af839b3952abb6acfeda4",
+      "buildConfigDigest": "d32063f96c2dff1dc96af839b3952abb6acfeda4"
     },
     "0.169.1": {
       "sha256": "15fd5f2673d2e1c2f80e34e5108462fd014f5e8bbc7b0731f1ab23d1ff1ac140",
@@ -184,7 +272,18 @@
       "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.169.1",
       "fulcioCommitMatchesTag": true,
       "embeddedInLinuxCodexBinary": true,
-      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)"
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.169.1/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "2b491cb40be364637244230a341c48545257e7c4a72712b614fe33ceb32bc06c",
+      "leafCertDerSha256": "09a7a272b052dbec1a2df53851e3a292fe92a1d8b644575943500d067e12e569",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1794951044,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "c376cf7396eff83ce4c6ac61b9553df142e7a0be",
+      "buildConfigDigest": "c376cf7396eff83ce4c6ac61b9553df142e7a0be"
     },
     "0.170.0": {
       "sha256": "15fd5f2673d2e1c2f80e34e5108462fd014f5e8bbc7b0731f1ab23d1ff1ac140",
@@ -196,7 +295,18 @@
       "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.170.0",
       "fulcioCommitMatchesTag": true,
       "embeddedInLinuxCodexBinary": true,
-      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)"
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.170.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "c910242fcaada3ab3cf5eb3cf41f5bf8163b69f230743e33a28148616ebc9193",
+      "leafCertDerSha256": "d51295e31a12265f9c67e069f7b2c6387e949609cde92f4e2c015ae0c188a3a6",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1794969922,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "29eb79e9866b3262a777fdf8195c1b9e63684c91",
+      "buildConfigDigest": "29eb79e9866b3262a777fdf8195c1b9e63684c91"
     },
     "0.171.0": {
       "sha256": "91a245ea678a7ae642f383a22576c3c476d0d6d3e2321a553f3ed8d4d487ed74",
@@ -208,7 +318,18 @@
       "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.171.0",
       "fulcioCommitMatchesTag": true,
       "embeddedInLinuxCodexBinary": true,
-      "rustcComment": "rustc version 1.99.1 (58cf8f9c3 2026-10-13)"
+      "rustcComment": "rustc version 1.99.1 (58cf8f9c3 2026-10-13)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.171.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "77787c674164773a4ae6b433b701762adaf99c8380a7201e229b2fe4b46de3f1",
+      "leafCertDerSha256": "195321c6ca234d7daf93f2a1198ed9ec5d671615cac66d030f9f4c7f4d9e9cd4",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1795130715,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "ccf9be8cc458bd6b8336fe84d68d8893f2691a5e",
+      "buildConfigDigest": "ccf9be8cc458bd6b8336fe84d68d8893f2691a5e"
     }
   },
   "hops": [
@@ -575,5 +696,18 @@
         "provenance": "hashed-unexecuted-tarball-with-sigstore-bwrap"
       }
     }
-  ]
+  ],
+  "sigstoreTrustAnchor": {
+    "source": "gh attestation trusted-root (Sigstore Public Good TUF trusted_root.json)",
+    "trustedRootSha256": "844a1c6de3986c9f02070266b25e0d1a2fa99ceccc89f6b9ad90aae47b62a16e",
+    "rekorBaseUrl": "https://rekor.sigstore.dev",
+    "rekorLogIds": [
+      "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "cf1199155bddd051268d1f16ac5c0c75c009f6fb5a63f4177f8e18d7051e3fa0"
+    ],
+    "fulcioRootDerSha256s": [
+      "03a38ffb1f450100c2596d1d10b900ac4d504058006dda58199576bbeb9c73d0",
+      "3ba7b6cc4e95469d4d334b49cb257ad8537076fa84b0ca87ff4ecfe6a54680c1"
+    ]
+  }
 }

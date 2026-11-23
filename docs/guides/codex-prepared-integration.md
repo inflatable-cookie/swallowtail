@@ -85,11 +85,14 @@ remain authoritative and may deny model or search destinations; the adapter
 does not set `ignore_managed_requirements` or weaken those rules. The 0.156.0
 additive search results remain ignored while query progress is preserved. The
 unpublished `0.155.2` point stays a gap. Research 487 closes the Research 463
-Linux `bwrap` provenance gate via Sigstore Fulcio/Rekor verification and
-embedded `CODEX_BWRAP_SHA256`, walks all ten published hops `0.165.0`–`0.171.0`,
-and keeps the exec and app-server claims separate (`0.171.1` is
-`UnverifiedNewer`). Research 452 and Research 410 remain the earlier `0.164.0`
-and `0.161.0` records.
+Linux `bwrap` provenance gate via trusted Sigstore TUF verification (Fulcio CA
+chain, trusted Rekor SET key, OIDC extensions) and embedded
+`CODEX_BWRAP_SHA256`, classifies the `0.166.0` administrator-enrolled
+`[config_server]` managed-configuration path (system/MDM `requirements.toml`
+only, endpoint-restricted bootstrap policy, non-interactive OAuth, fail-closed
+startup), walks all ten published hops `0.165.0`–`0.171.0`, and keeps the exec
+and app-server claims separate (`0.171.1` is `UnverifiedNewer`). Research 452
+and Research 410 remain the earlier `0.164.0` and `0.161.0` records.
 
 The app-server claim independently qualifies `0.164.0` on
 `codex.app-server.v2.protected-aws-workspace-roots`. Research 388 remains the

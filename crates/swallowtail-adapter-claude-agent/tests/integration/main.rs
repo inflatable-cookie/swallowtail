@@ -40,6 +40,8 @@ mod addable_route;
 mod claude_agent_acp_0_100_0_identity;
 #[path = "../claude_agent_acp_0_106_0_inventory.rs"]
 mod claude_agent_acp_0_106_0_inventory;
+#[path = "../claude_agent_acp_0_109_1_identity.rs"]
+mod claude_agent_acp_0_109_1_identity;
 #[path = "../claude_agent_acp_0_81_2_delta_ledger.rs"]
 mod claude_agent_acp_0_81_2_delta_ledger;
 #[path = "../claude_agent_acp_identity.rs"]

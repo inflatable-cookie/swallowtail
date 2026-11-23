@@ -556,6 +556,58 @@ mod tests {
     use std::sync::atomic::AtomicU32;
 
     #[test]
+    fn additional_aborted_batch_records_project_public_tool_activity() {
+        use crate::protocol::{PiRpcDecoder, PiRpcRecord};
+        use futures_util::StreamExt;
+        use swallowtail_runtime::{ActivityKind, ActivityLifecyclePhase};
+
+        let before =
+            include_bytes!("../tests/fixtures/pi-rpc-1.6.0/aborted-batch-before-1.6.0.jsonl");
+        let newer = include_bytes!("../tests/fixtures/pi-rpc-1.6.0/aborted-batch-1.6.0.jsonl");
+        for (transcript, tool_count) in [(before.as_slice(), 1), (newer.as_slice(), 2)] {
+            let (turn, events, _callbacks, terminal) = ActiveTurn::new(
+                RuntimeTurnId::new("pi-aborted-tool-batch").expect("turn id is valid"),
+                Arc::new(AtomicU32::new(0)),
+                Weak::new(),
+                true,
+            )
+            .expect("active turn constructs");
+            let mut decoder = PiRpcDecoder::new();
+            turn.mark_abort_in_flight();
+            for record in decoder.push(transcript).expect("valid tool wire records") {
+                let PiRpcRecord::AgentEvent(event) = record else {
+                    panic!("tool batch contains only agent records");
+                };
+                turn.handle_event(event)
+                    .expect("tool activity is projected");
+            }
+            decoder.finish().expect("all records end with LF");
+            turn.reconcile_abort_response(true)
+                .expect("abort is acknowledged");
+
+            let events = futures_executor::block_on(events.collect::<Vec<_>>());
+            let activities = events.iter().filter_map(|event| {
+                match event.as_ref().expect("event succeeds").kind() {
+                    RuntimeEventKind::Activity(observation)
+                        if *observation.kind() == ActivityKind::ProviderOwnedTool =>
+                    {
+                        Some((observation.phase(), observation.status()))
+                    }
+                    _ => None,
+                }
+            });
+            let expected = [
+                (ActivityLifecyclePhase::Started, ActivityStatus::InProgress),
+                (ActivityLifecyclePhase::Completed, ActivityStatus::Failed),
+            ]
+            .repeat(tool_count);
+            assert!(activities.eq(expected));
+            let outcome = futures_executor::block_on(terminal);
+            assert!(matches!(outcome.status(), TerminalStatus::Cancelled));
+        }
+    }
+
+    #[test]
     fn failed_activity_completion_does_not_consume_a_prompt_slot() {
         let completed_prompts = Arc::new(AtomicU32::new(0));
         let (turn, _events, _callbacks, _terminal) = ActiveTurn::new(

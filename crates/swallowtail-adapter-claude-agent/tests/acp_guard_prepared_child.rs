@@ -555,32 +555,48 @@ fn checked_prepared_child_preserves_denial_without_permission_callback() {
 
 #[tokio::test]
 async fn checked_revocation_after_spawn_refuses_bootstrap_and_joins_children() {
-    fn children() -> std::collections::BTreeSet<u32> {
+    // libtest runs sibling tests in this process and they spawn children too,
+    // so a parent-PID count is not evidence for this test. Scope the
+    // observation to this test's fixture instead: Node's argv names the
+    // fixture's entry file, and the group owner is the process whose PID is
+    // the process group Node joined.
+    fn owned_children(root: &std::path::Path) -> std::collections::BTreeSet<u32> {
         let observer = std::process::Command::new("/bin/ps")
-            .args(["-axo", "pid=,ppid="])
+            .args(["-wwaxo", "pid=,ppid=,pgid=,command="])
             .stdin(std::process::Stdio::null())
-            .stdout(std::process::Stdio::piped())
-            .spawn()
+            .output()
             .expect("owned child observation");
-        let observer_pid = observer.id();
-        let output = observer.wait_with_output().expect("observer joined");
-        assert!(output.status.success());
-        String::from_utf8(output.stdout)
+        assert!(observer.status.success());
+        let parent = std::process::id();
+        let fixture = root.to_string_lossy();
+        // (pid, pgid, names this fixture) for each direct child of this process.
+        let rows: Vec<(u32, u32, bool)> = String::from_utf8(observer.stdout)
             .expect("process identities")
             .lines()
             .filter_map(|line| {
                 let mut values = line.split_whitespace();
-                let pid = values.next()?.parse().ok()?;
-                let parent = values.next()?.parse::<u32>().ok()?;
-                (parent == std::process::id() && pid != observer_pid).then_some(pid)
+                let pid = values.next()?.parse::<u32>().ok()?;
+                let ppid = values.next()?.parse::<u32>().ok()?;
+                let pgid = values.next()?.parse::<u32>().ok()?;
+                (ppid == parent).then(|| (pid, pgid, line.contains(fixture.as_ref())))
             })
+            .collect();
+        let joined_groups: std::collections::BTreeSet<u32> = rows
+            .iter()
+            .filter(|(_, _, names_fixture)| *names_fixture)
+            .map(|(_, pgid, _)| *pgid)
+            .collect();
+        rows.iter()
+            .filter(|(pid, pgid, names_fixture)| {
+                *names_fixture || (pid == pgid && joined_groups.contains(pid))
+            })
+            .map(|(pid, _, _)| *pid)
             .collect()
     }
     for revoke_runtime in [false, true] {
         let root = fixture();
         let graph = capture(&root, "process.stdout.write('ENTRY_EFFECT');");
         let host = fake_child(&root, graph);
-        let before = children();
         let pending = host.local.start_checked(
             ScopeId::new("revoked-bootstrap").expect("scope"),
             CheckedProcessRef::new("fixture.checked.binding").expect("binding"),
@@ -588,7 +604,7 @@ async fn checked_revocation_after_spawn_refuses_bootstrap_and_joins_children() {
                 ExecutableRef::new("claude-agent.prepared.executable").expect("target"),
             ),
         );
-        let started: Vec<_> = children().difference(&before).copied().collect();
+        let started: Vec<_> = owned_children(&root).into_iter().collect();
         assert_eq!(
             started.len(),
             2,

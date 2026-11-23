@@ -1268,6 +1268,8 @@ child-joining assertions are unchanged.
 - Prepare the coordinated `0.7.0` source candidate with 41 packages and all
   51 routes from `v0.6.0`. Restore the `0.6.0` baselines to the exact
   tagged bytes and freeze the candidate's own inventories.
+- Record the approved release-prepare replacement and retain the Effigy
+  diagnostics with the candidate's gate evidence.
 
 Removed `docs/knowledge/retired.toml` and the Northstar retired-concepts check; agents reimplementing retired ideas proved rare enough not to justify the check.
 

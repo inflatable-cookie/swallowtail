@@ -1,0 +1,79 @@
+{
+  "route": "codex.exec",
+  "selectedMappedSubsetUnchanged": true,
+  "noPrompt": true,
+  "noLiveSession": true,
+  "noHostMutation": true,
+  "downloadedBinariesExecuted": false,
+  "selectedArguments": [
+    "exec",
+    "--json",
+    "--ephemeral",
+    "--color",
+    "never",
+    "--ignore-user-config",
+    "--ignore-rules",
+    "--skip-git-repo-check",
+    "--sandbox",
+    "read-only",
+    "--model",
+    "--config",
+    "--image",
+    "--output-schema",
+    "-"
+  ],
+  "selectedConfigKeys": [
+    "approval_policy",
+    "shell_environment_policy.inherit",
+    "hide_agent_reasoning",
+    "show_raw_agent_reasoning",
+    "web_search",
+    "model_reasoning_effort",
+    "model_verbosity"
+  ],
+  "byteIdenticalThroughAllTenHops": {
+    "codex-rs/exec/src/exec_events.rs": "dafa872d7e86a099e56e28a329dcb9c03db90ed768c3b88cca8c91d46dc1d0e5",
+    "codex-rs/protocol/src/config_types.rs": "ce9b26223db7cc4b5cf474e571e4509e8cc52536e159510f153f94de0fcd37e8",
+    "codex-rs/linux-sandbox/src/bundled_bwrap.rs": "f2825debef7272c72ae039d94d8bec7ca9e84e3ab534c3d59a9c26ae02a2ed80",
+    "codex-rs/bwrap/src/main.rs": "1fdfa3549d633f7d260c9bccc896f59a7f32275b9130b72ee796622b639081aa",
+    "codex-rs/bwrap/Cargo.toml": "5b524ac2c30f4029cae77721c026d3487a6628473b042d26f354ab6075ec4a7c",
+    "codex-rs/bwrap/build.rs": "3ca3f0c90e075d38215e74ff19049df1ff6fdd80a04711ee05f3acd39dfd7b70",
+    "codex-rs/bwrap/config.h": "55f7dedf5504659f50b6575571eb4a4c884afc0597fa11435a8318e0cccccd1e",
+    "codex-rs/vendor/bubblewrap/bubblewrap.c": "9bc38fb46080b6854e0c414ccb5fbd369d9d7c0230fdfa877283d31aef0c5720",
+    "codex-rs/vendor/bubblewrap/bind-mount.c": "19a6ae020803e342667dd562efab027967b1c1f2965525ec7ee09521554f8f71",
+    "codex-rs/vendor/bubblewrap/network.c": "1cfe04fcc38d33d5197feb96fc503d3fd51d234fb9392699a00bf4780ed6e9f0",
+    "codex-rs/vendor/bubblewrap/utils.c": "c99f12bf7f74bb299e102852fb30ff76a6dfee0a2f6bfed5c840beb3249d4ddb"
+  },
+  "classifiedDeltas": {
+    "codex-rs/exec/src/cli.rs": "additive unselected flags (--remote, --remote-auth-token-env, --trust) only; all selected flags unchanged",
+    "codex-rs/exec/src/event_processor_with_jsonl_output.rs": "internal ThreadItem -> ThreadItemPayload refactor, unselected remote print_thread_started, and unselected BoundOutput for --output-last-message; JSONL event types, item payloads, and usage fields unchanged",
+    "codex-rs/exec/src/event_processor.rs": "adds print_thread_started and BoundOutput parameter for unselected --output-last-message",
+    "codex-rs/exec/src/lib.rs": "adds unselected --remote and --trust branches; untrusted project-local config warning goes to stderr only; default_cwd replaces ThreadStartParams.cwd without changing read-only sandbox; paginated turn-completion backfill is skipped because selected exec passes --ephemeral",
+    "codex-rs/linux-sandbox/src/bwrap.rs": "replaces external rg deny-glob scan with in-process ignore crate walk, adopts resolve_for_enforcement, and adds unselected BwrapNetworkMode::PreparedProxy; read-only exec keeps no workspace writable roots and retains PROTECTED_METADATA_PATH_NAMES including .aws",
+    "codex-rs/linux-sandbox/src/linux_run_main.rs": "adds unselected --transparent-tcp managed proxy mode and refactors bwrap supervisor/signal forwarding; selected read-only exec unchanged",
+    "codex-rs/linux-sandbox/src/launcher.rs": "adds transparent_tcp/require_system parameters for unselected transparent TCP mode; bundled bwrap fallback and digest check unchanged",
+    "codex-rs/sandboxing/src/bwrap.rs": "adds pidfd_open+poll fast wait before try_wait loop when probing system bwrap user-namespace support",
+    "codex-rs/sandboxing/src/seatbelt.rs": "adopts resolve_for_enforcement and denies TIOCSTI on ProcessWithInheritedTerminal; read-only exec keeps no workspace writable roots",
+    "bin/codex.js": "uses process.execve on non-Windows when available and improves signal forwarding in child fallback"
+  },
+  "boundedUnmappedAdditions": [
+    "--remote",
+    "--remote-auth-token-env",
+    "--trust",
+    "codex-rs/exec/src/remote.rs",
+    "codex-rs/linux-sandbox/src/managed_tcp.rs",
+    "codex-rs/linux-sandbox/src/tcp_namespace.rs",
+    "codex-rs/linux-sandbox/src/tcp_net_setup.rs"
+  ],
+  "bwrapGateResolution": {
+    "research463GateClosed": true,
+    "allElevenHopsSigstoreVerified": true,
+    "allElevenHopsEmbeddedInLinuxCodex": true,
+    "bwrapSourceAndVendorCByteIdentical": true,
+    "toolchainTransitions": {
+      "0.164.0..=0.165.0": "rustc 1.99.1 (workspace version bump 0.164.0->0.165.0 shifts crate SVH/codegen layout; identical strings and C/Rust source)",
+      "0.166.0..=0.170.0": "rustc 1.95.0 (rust-toolchain.toml rollback; 0.166.0/0.167.0/0.167.1/0.168.0 share exact binary 77360cb751cc...; 0.169.0/0.169.1/0.170.0 share exact binary 15fd5f2673d2...)",
+      "0.171.0": "rustc 1.99.1 (rust-toolchain.toml return to 1.99.1)"
+    }
+  }
+}

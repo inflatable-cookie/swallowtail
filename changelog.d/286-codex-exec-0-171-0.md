@@ -1,0 +1,1 @@
+- Qualified `codex.exec` through official stable `0.171.0` (`0.156.0..=0.171.0` on `codex.exec.jsonl-v1`), closing the Research 463/467 Linux `bwrap` binary provenance gate via Sigstore Fulcio/Rekor verification and embedded `CODEX_BWRAP_SHA256` across all ten published hops (`0.165.0`–`0.171.0`), while keeping `codex.app-server` untouched at `0.164.0` (Research 487).

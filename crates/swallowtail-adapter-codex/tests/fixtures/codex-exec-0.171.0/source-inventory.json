@@ -1,0 +1,123 @@
+{
+  "compared": [
+    "0.164.0",
+    "0.165.0",
+    "0.166.0",
+    "0.167.0",
+    "0.167.1",
+    "0.167.2",
+    "0.168.0",
+    "0.169.0",
+    "0.169.1",
+    "0.170.0",
+    "0.171.0"
+  ],
+  "inventoryDigests": {
+    "0.164.0": {
+      "fileCount": 9438,
+      "digest": "02b1e9b3c637008eddbd903b6a9ee9441705fef44732cf5a80ed5c63622b3030"
+    },
+    "0.165.0": {
+      "fileCount": 9507,
+      "digest": "c39481bcf4c96bb514d1fe54047c78e451a66067d0e833874287f6b07f8a3eb0"
+    },
+    "0.166.0": {
+      "fileCount": 9732,
+      "digest": "7b1e5e32bdd4ecd31b98a035ddce9aeee19f6c78c5aa6cf450aa73bc570a5a86"
+    },
+    "0.167.0": {
+      "fileCount": 9816,
+      "digest": "a02a573607328e614192bdf1f955b66cd9f65e2a0357449cba867b6f1e9d5f5e"
+    },
+    "0.167.1": {
+      "fileCount": 9818,
+      "digest": "e47cf82db4e7d287fbdfda82da999d0d2502a7dcaf772796f29d3678fe73db22"
+    },
+    "0.167.2": {
+      "fileCount": 9818,
+      "digest": "1d05487a20fd6ffddefaa60923264d7d3746b564d695933fa432326520030fda"
+    },
+    "0.168.0": {
+      "fileCount": 10040,
+      "digest": "ea05ecabae02bf63842fc3d9b672c6efc3e43e143a47c0676db14507b601594d"
+    },
+    "0.169.0": {
+      "fileCount": 10235,
+      "digest": "e2235ec72f22fd5bbd4e524e4c688f6d563e54d2b793b167fd908795ca8b6016"
+    },
+    "0.169.1": {
+      "fileCount": 10238,
+      "digest": "8fc933eb086435296caac63b158cea43833a227e9b63d77a8b370c8bd8bfc339"
+    },
+    "0.170.0": {
+      "fileCount": 10267,
+      "digest": "d840f4d3d379b18b49af44a5b83702231cac9024037858e2b5e5faf1024ddf1a"
+    },
+    "0.171.0": {
+      "fileCount": 10460,
+      "digest": "7e77e00b941d589c7b1b20e054641fbf317cc385487e82c6c9b6b698697459ae"
+    }
+  },
+  "hopCounts": {
+    "0.164.0->0.165.0": {
+      "added": 80,
+      "removed": 11,
+      "changed": 594,
+      "identical": 8833
+    },
+    "0.165.0->0.166.0": {
+      "added": 253,
+      "removed": 28,
+      "changed": 1426,
+      "identical": 8053
+    },
+    "0.166.0->0.167.0": {
+      "added": 92,
+      "removed": 8,
+      "changed": 888,
+      "identical": 8836
+    },
+    "0.167.0->0.167.1": {
+      "added": 2,
+      "removed": 0,
+      "changed": 9,
+      "identical": 9807
+    },
+    "0.167.1->0.167.2": {
+      "added": 0,
+      "removed": 0,
+      "changed": 7,
+      "identical": 9811
+    },
+    "0.167.2->0.168.0": {
+      "added": 233,
+      "removed": 11,
+      "changed": 1240,
+      "identical": 8567
+    },
+    "0.168.0->0.169.0": {
+      "added": 207,
+      "removed": 12,
+      "changed": 1446,
+      "identical": 8582
+    },
+    "0.169.0->0.169.1": {
+      "added": 3,
+      "removed": 0,
+      "changed": 39,
+      "identical": 10196
+    },
+    "0.169.1->0.170.0": {
+      "added": 31,
+      "removed": 2,
+      "changed": 450,
+      "identical": 9786
+    },
+    "0.170.0->0.171.0": {
+      "added": 226,
+      "removed": 33,
+      "changed": 1819,
+      "identical": 8415
+    }
+  }
+}

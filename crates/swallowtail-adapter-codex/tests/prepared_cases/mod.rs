@@ -115,7 +115,17 @@ fn prepared_compatibility_keeps_deprecated_and_unverified_newer_visible() {
         ("0.162.1", Some(InterfaceSupportStatus::Maintained)),
         ("0.163.0", Some(InterfaceSupportStatus::Maintained)),
         ("0.164.0", Some(InterfaceSupportStatus::Maintained)),
-        ("0.164.1", None),
+        ("0.165.0", Some(InterfaceSupportStatus::Maintained)),
+        ("0.166.0", Some(InterfaceSupportStatus::Maintained)),
+        ("0.167.0", Some(InterfaceSupportStatus::Maintained)),
+        ("0.167.1", Some(InterfaceSupportStatus::Maintained)),
+        ("0.167.2", Some(InterfaceSupportStatus::Maintained)),
+        ("0.168.0", Some(InterfaceSupportStatus::Maintained)),
+        ("0.169.0", Some(InterfaceSupportStatus::Maintained)),
+        ("0.169.1", Some(InterfaceSupportStatus::Maintained)),
+        ("0.170.0", Some(InterfaceSupportStatus::Maintained)),
+        ("0.171.0", Some(InterfaceSupportStatus::Maintained)),
+        ("0.171.1", None),
     ] {
         let fixture = fixture(CodexPreparedDriver::StructuredExec, "host.local", "codex");
         let (process, _) = FakeProcessService::completed(&format!("codex-cli {version}\n"));
@@ -132,7 +142,7 @@ fn prepared_compatibility_keeps_deprecated_and_unverified_newer_visible() {
             }
             (InstalledExecutableCompatibility::UnverifiedNewer(newer), None) => {
                 assert_eq!(newer.version().as_str(), version);
-                assert_eq!(newer.latest_qualified().as_str(), "0.164.0");
+                assert_eq!(newer.latest_qualified().as_str(), "0.171.0");
             }
             (actual, expected) => {
                 panic!("unexpected compatibility {actual:?} for expected {expected:?}")

@@ -22,7 +22,7 @@ pub const CODEX_APP_SERVER_BASELINE_VERSION: &str = "0.80.0";
 /// Oldest app-server version qualified for thread catalogue and import.
 pub const CODEX_APP_SERVER_THREAD_CATALOGUE_BASELINE_VERSION: &str = "0.105.0";
 /// Most recent qualified Codex CLI version for the exec route.
-pub const CODEX_LATEST_QUALIFIED_VERSION: &str = "0.164.0";
+pub const CODEX_LATEST_QUALIFIED_VERSION: &str = "0.171.0";
 /// Most recent qualified Codex CLI version for the app-server route.
 pub(crate) const CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION: &str = "0.164.0";
 /// Unpublished Codex stables inside the selected route windows.

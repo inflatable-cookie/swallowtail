@@ -160,12 +160,13 @@ fn decision_retains_previous_claims_until_gaps_close() {
         codex_exec_claim().assess(&version("0.155.2")),
         InterfaceCompatibilityAssessment::Incompatible
     );
-    let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+    let InterfaceCompatibilityAssessment::Qualified(matched) =
         codex_exec_claim().assess(&version("0.165.0"))
     else {
-        panic!("0.165.0 stays unverified newer");
+        panic!("codex.exec 0.165.0 is qualified after Research 487 closes the Linux bwrap gate");
     };
-    assert_eq!(newer.latest_qualified().as_str(), "0.164.0");
+    assert_eq!(matched.behavior_revision().as_str(), "codex.exec.jsonl-v1");
+    assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
     let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
         codex_app_server_claim().assess(&version("0.165.0"))
     else {

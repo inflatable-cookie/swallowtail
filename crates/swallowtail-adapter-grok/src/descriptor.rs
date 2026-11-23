@@ -66,7 +66,7 @@ pub fn grok_build_acp_descriptor() -> DriverDescriptor {
 ///
 /// This is separate from the ACP execution route: it only lists models
 /// through one bounded authenticated non-inference `models` process on the
-/// qualified `1.0.30..=1.0.70` executable window. It never opens ACP, starts a
+/// qualified `1.0.30..=1.0.92` executable window. It never opens ACP, starts a
 /// session, or sends a prompt.
 pub fn grok_build_catalogue_descriptor() -> DriverDescriptor {
     DriverDescriptor::new(

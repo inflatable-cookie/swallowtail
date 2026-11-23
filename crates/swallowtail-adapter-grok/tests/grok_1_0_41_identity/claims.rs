@@ -112,7 +112,7 @@ fn the_catalogue_window_does_not_borrow_the_acp_ceiling() {
         catalogue.assess(&version("1.0.70")),
         InterfaceCompatibilityAssessment::Qualified(_)
     ));
-    for rejected in ["1.0.4", "1.0.25", "1.0.29", "1.0.71"] {
+    for rejected in ["1.0.4", "1.0.25", "1.0.29", "1.0.93"] {
         assert_eq!(
             catalogue.assess(&version(rejected)),
             InterfaceCompatibilityAssessment::Incompatible,

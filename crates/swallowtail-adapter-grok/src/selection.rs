@@ -41,7 +41,7 @@ pub(crate) const GROK_BUILD_CATALOGUE_V1_LATEST_VERSION: &str = "1.0.45";
 /// First point whose executable can render the default-not-in-list marker.
 pub(crate) const GROK_BUILD_CATALOGUE_V2_BASELINE_VERSION: &str = "1.0.46";
 /// Newest qualified Grok Build catalogue point.
-pub(crate) const GROK_BUILD_CATALOGUE_LATEST_VERSION: &str = "1.0.70";
+pub(crate) const GROK_BUILD_CATALOGUE_LATEST_VERSION: &str = "1.0.92";
 pub(crate) const GROK_BUILD_CATALOGUE_BEHAVIOR_V1: &str = "grok-build.catalogue.models-text-v1";
 pub(crate) const GROK_BUILD_CATALOGUE_BEHAVIOR: &str = "grok-build.catalogue.models-text-v2";
 const MAX_VERSION_BYTES: usize = 64;
@@ -218,11 +218,10 @@ impl GrokCatalogueMapping {
 
 /// Returns the qualified compatibility claim for the Grok Build catalogue.
 ///
-/// Like the ACP claim this claim stays `QualifiedOnly`, but it carries two
-/// ordered segments: exact `1.0.30` through `1.0.45` keep the original
-/// listed-default-only mapping, and `1.0.46` through `1.0.70` add the
-/// default-not-in-list header mapping. Every older or newer point fails
-/// closed.
+/// The catalogue uses `QualifiedOnly` with two ordered segments.
+/// `1.0.30` through `1.0.45` keep the listed-default-only mapping.
+/// `1.0.46` through `1.0.92` also map the default-not-in-list header.
+/// Every older or newer point fails closed.
 pub fn grok_build_catalogue_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("grok-build.catalogue.executable-window-1")
@@ -477,7 +476,7 @@ mod tests {
                 GROK_BUILD_CATALOGUE_BEHAVIOR_V1
             );
         }
-        for point in ["1.0.46", "1.0.61", "1.0.62", "1.0.70"] {
+        for point in ["1.0.46", "1.0.61", "1.0.62", "1.0.70", "1.0.92"] {
             let InterfaceCompatibilityAssessment::Qualified(matched) =
                 claim.assess(&version(point))
             else {
@@ -498,7 +497,7 @@ mod tests {
             super::InterfaceNewerVersionPosture::QualifiedOnly
         );
         for rejected in [
-            "0.2.117", "1.0.4", "1.0.5", "1.0.25", "1.0.29", "1.0.71", "1.1.0",
+            "0.2.117", "1.0.4", "1.0.5", "1.0.25", "1.0.29", "1.0.93", "1.1.0",
         ] {
             assert_eq!(
                 claim.assess(&version(rejected)),
@@ -514,7 +513,7 @@ mod tests {
             grok_build_catalogue_mapping(&version("1.0.46")),
             Some(GrokCatalogueMapping::DefaultNotInList)
         );
-        assert_eq!(grok_build_catalogue_mapping(&version("1.0.71")), None);
+        assert_eq!(grok_build_catalogue_mapping(&version("1.0.93")), None);
     }
 
     fn version(value: &str) -> InterfaceVersion {

@@ -1,0 +1,2262 @@
+{
+  "target": "darwin-arm64",
+  "invocation_help": {
+    "arguments": [
+      "--no-auto-update",
+      "models",
+      "--help"
+    ],
+    "about": "List available models and exit",
+    "usage": "Usage: grok models [OPTIONS]",
+    "options": [
+      "--debug",
+      "--debug-file <FILE>",
+      "-h, --help",
+      "--leader-socket <PATH>"
+    ]
+  },
+  "format_pieces": {
+    "header": [
+      "Default model: ",
+      "",
+      "\n\nAvailable models:",
+      "\n"
+    ],
+    "default_row": [
+      "\n  * ",
+      " (default)"
+    ],
+    "plain_row": [
+      "\n  - "
+    ]
+  },
+  "note_literal": " (not in the list below)",
+  "auth_preamble_pieces": {
+    "api_key": "You are using XAI_API_KEY.",
+    "logged_in": [
+      "You are logged in with ",
+      "."
+    ],
+    "model_credentials": [
+      "Model '",
+      "' is using its own API key."
+    ],
+    "deployment_key": "You are authenticated via deployment key.",
+    "none": "You are not authenticated."
+  },
+  "hops": {
+    "1.0.70": {
+      "formatter_function": "0x100161480",
+      "auth_function": "0x100b8834c",
+      "header_reference": "0x10016a3c8",
+      "format_piece_table": "0x109fcb9d8",
+      "note_references": [
+        "0x10016a244",
+        "0x10016a33c"
+      ],
+      "default_row_references": [
+        "0x10016b878",
+        "0x10016bda4"
+      ],
+      "plain_row_references": [
+        "0x10016a2a8",
+        "0x10016b7cc"
+      ],
+      "request_references": [
+        "0x1001e9dc4",
+        "0x100cde200"
+      ],
+      "model_help_reference": "0x10158a7ec",
+      "update_flag_references": [
+        "0x10157bbac",
+        "0x10157f420"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x834a622",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x878ac96",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100161cc8",
+        "models_list_request_call": "0x1001690f4",
+        "empty_list_branch": "0x10016a1e0",
+        "list_id_compare": "0x10016a234",
+        "unmatched_id_loop_branch": "0x10016a238",
+        "matched_note_length_zero": "0x10016a23c",
+        "search_note_length_24": "0x10016a200",
+        "empty_list_note_length_24": "0x10016a344",
+        "first_row_id_compare": "0x10016a27c",
+        "first_row_equal_branch": "0x10016a280",
+        "remaining_row_id_compare": "0x10016b7b0",
+        "remaining_row_equal_branch": "0x10016b7b4"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x100b88400",
+        "auth_deployment": "0x100b883ac",
+        "auth_none": "0x100b8845c",
+        "auth_logged_in_data": "0x100b8849c"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "7c4b7362337c5112a21e57fa4cbbef85e0bfbd3039d3bdd25052c78997287396",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 239,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 106
+      }
+    },
+    "1.0.71": {
+      "formatter_function": "0x100161844",
+      "auth_function": "0x101306abc",
+      "header_reference": "0x10016984c",
+      "format_piece_table": "0x10a2aba20",
+      "note_references": [
+        "0x1001696bc",
+        "0x1001697bc"
+      ],
+      "default_row_references": [
+        "0x10016a3a8",
+        "0x10016a658"
+      ],
+      "plain_row_references": [
+        "0x100169724",
+        "0x10016a2f4"
+      ],
+      "request_references": [
+        "0x1001ea19c",
+        "0x1010eadb4"
+      ],
+      "model_help_reference": "0x101082d08",
+      "update_flag_references": [
+        "0x101067ac4",
+        "0x10106c40c"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x85d1902",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8a12816",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x1001622bc",
+        "models_list_request_call": "0x100168c64",
+        "empty_list_branch": "0x1001695f0",
+        "list_id_compare": "0x100169644",
+        "unmatched_id_loop_branch": "0x100169648",
+        "matched_note_length_zero": "0x10016964c",
+        "search_note_length_24": "0x100169610",
+        "empty_list_note_length_24": "0x1001697c4",
+        "first_row_id_compare": "0x1001696f8",
+        "first_row_equal_branch": "0x1001696fc",
+        "remaining_row_id_compare": "0x10016a2d8",
+        "remaining_row_equal_branch": "0x10016a2dc"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x101306b70",
+        "auth_deployment": "0x101306b1c",
+        "auth_none": "0x101306bcc",
+        "auth_logged_in_data": "0x101306c0c"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "7c4b7362337c5112a21e57fa4cbbef85e0bfbd3039d3bdd25052c78997287396",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 240,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 106
+      }
+    },
+    "1.0.72": {
+      "formatter_function": "0x100161bd8",
+      "auth_function": "0x100f486a4",
+      "header_reference": "0x10016aa54",
+      "format_piece_table": "0x10a2c3c08",
+      "note_references": [
+        "0x10016a8d8",
+        "0x10016a9cc"
+      ],
+      "default_row_references": [
+        "0x10016bce8",
+        "0x10016c21c"
+      ],
+      "plain_row_references": [
+        "0x10016a92c",
+        "0x10016bc48"
+      ],
+      "request_references": [
+        "0x1001ec560",
+        "0x100c7fa30"
+      ],
+      "model_help_reference": "0x1011bd830",
+      "update_flag_references": [
+        "0x1011ae368",
+        "0x1011b176c"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x85e3ca2",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8a249c6",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x1001625dc",
+        "models_list_request_call": "0x100169dd0",
+        "empty_list_branch": "0x10016a864",
+        "list_id_compare": "0x10016a8c0",
+        "unmatched_id_loop_branch": "0x10016a8cc",
+        "matched_note_length_zero": "0x10016a8d0",
+        "search_note_length_24": "0x10016a884",
+        "empty_list_note_length_24": "0x10016a9d4",
+        "first_row_id_compare": "0x10016a908",
+        "first_row_equal_branch": "0x10016a90c",
+        "remaining_row_id_compare": "0x10016bc2c",
+        "remaining_row_equal_branch": "0x10016bc38"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x100f48758",
+        "auth_deployment": "0x100f48704",
+        "auth_none": "0x100f487b4",
+        "auth_logged_in_data": "0x100f487f4"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "7c4b7362337c5112a21e57fa4cbbef85e0bfbd3039d3bdd25052c78997287396",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 240,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 106
+      }
+    },
+    "1.0.73": {
+      "formatter_function": "0x100161b3c",
+      "auth_function": "0x1014d2394",
+      "header_reference": "0x10016afc4",
+      "format_piece_table": "0x10a32fc18",
+      "note_references": [
+        "0x10016ae4c",
+        "0x10016af3c"
+      ],
+      "default_row_references": [
+        "0x10016bd10",
+        "0x10016c228"
+      ],
+      "plain_row_references": [
+        "0x10016aea0",
+        "0x10016bc70"
+      ],
+      "request_references": [
+        "0x1001ec200",
+        "0x10110193c"
+      ],
+      "model_help_reference": "0x100f3e7a8",
+      "update_flag_references": [
+        "0x100f22fa8",
+        "0x100f27aac"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x863bac9",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8a7ce26",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x1001625b0",
+        "models_list_request_call": "0x10016a3c4",
+        "empty_list_branch": "0x10016addc",
+        "list_id_compare": "0x10016ae34",
+        "unmatched_id_loop_branch": "0x10016ae40",
+        "matched_note_length_zero": "0x10016ae44",
+        "search_note_length_24": "0x10016adf8",
+        "empty_list_note_length_24": "0x10016af44",
+        "first_row_id_compare": "0x10016ae7c",
+        "first_row_equal_branch": "0x10016ae80",
+        "remaining_row_id_compare": "0x10016bc54",
+        "remaining_row_equal_branch": "0x10016bc60"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x1014d2448",
+        "auth_deployment": "0x1014d23f4",
+        "auth_none": "0x1014d24a4",
+        "auth_logged_in_data": "0x1014d24e4"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "7c4b7362337c5112a21e57fa4cbbef85e0bfbd3039d3bdd25052c78997287396",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 241,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 106
+      }
+    },
+    "1.0.74": {
+      "formatter_function": "0x100161ccc",
+      "auth_function": "0x1015d5548",
+      "header_reference": "0x10016b960",
+      "format_piece_table": "0x10a427e58",
+      "note_references": [
+        "0x10016b7d8",
+        "0x10016b8e0"
+      ],
+      "default_row_references": [
+        "0x10016c730",
+        "0x10016cc60"
+      ],
+      "plain_row_references": [
+        "0x10016b838",
+        "0x10016c680"
+      ],
+      "request_references": [
+        "0x1001ebcb8",
+        "0x1012f20a8"
+      ],
+      "model_help_reference": "0x100a6e068",
+      "update_flag_references": [
+        "0x100a5f710",
+        "0x100a629ac"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x87114ef",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8b52001",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100162a98",
+        "models_list_request_call": "0x10016ac5c",
+        "empty_list_branch": "0x10016b760",
+        "list_id_compare": "0x10016b7c0",
+        "unmatched_id_loop_branch": "0x10016b7cc",
+        "matched_note_length_zero": "0x10016b7d0",
+        "search_note_length_24": "0x10016b780",
+        "empty_list_note_length_24": "0x10016b8e8",
+        "first_row_id_compare": "0x10016b80c",
+        "first_row_equal_branch": "0x10016b810",
+        "remaining_row_id_compare": "0x10016c66c",
+        "remaining_row_equal_branch": "0x10016c670"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x1015d55fc",
+        "auth_deployment": "0x1015d55a8",
+        "auth_none": "0x1015d5658",
+        "auth_logged_in_data": "0x1015d5698"
+      },
+      "additional_default_header_tables": [
+        "0x10a421d90",
+        "0x10a421d50",
+        "0x10a421dd0",
+        "0x10a421dd0"
+      ],
+      "cli_help": {
+        "stdout_sha256": "7c4b7362337c5112a21e57fa4cbbef85e0bfbd3039d3bdd25052c78997287396",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 240,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.75": {
+      "formatter_function": "0x100160be0",
+      "auth_function": "0x100a3ce40",
+      "header_reference": "0x100169cb4",
+      "format_piece_table": "0x10a4fbd28",
+      "note_references": [
+        "0x100169b28",
+        "0x100169c34"
+      ],
+      "default_row_references": [
+        "0x10016aa70",
+        "0x10016af38"
+      ],
+      "plain_row_references": [
+        "0x100169b84",
+        "0x10016a9c8"
+      ],
+      "request_references": [
+        "0x1001eb1a4",
+        "0x10119da48"
+      ],
+      "model_help_reference": "0x100f8c254",
+      "update_flag_references": [
+        "0x100f70618",
+        "0x100f74d00"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x87c865f",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8c000a1",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x1001618e8",
+        "models_list_request_call": "0x1001691ac",
+        "empty_list_branch": "0x100169ab4",
+        "list_id_compare": "0x100169b10",
+        "unmatched_id_loop_branch": "0x100169b1c",
+        "matched_note_length_zero": "0x100169b20",
+        "search_note_length_24": "0x100169ad4",
+        "empty_list_note_length_24": "0x100169c3c",
+        "first_row_id_compare": "0x100169b58",
+        "first_row_equal_branch": "0x100169b5c",
+        "remaining_row_id_compare": "0x10016a9b4",
+        "remaining_row_equal_branch": "0x10016a9b8"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x100a3cef4",
+        "auth_deployment": "0x100a3cea0",
+        "auth_none": "0x100a3cf50",
+        "auth_logged_in_data": "0x100a3cf90"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "7c4b7362337c5112a21e57fa4cbbef85e0bfbd3039d3bdd25052c78997287396",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 240,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.76": {
+      "formatter_function": "0x100160c00",
+      "auth_function": "0x1012a1a28",
+      "header_reference": "0x100169cd4",
+      "format_piece_table": "0x10a50bd28",
+      "note_references": [
+        "0x100169b48",
+        "0x100169c54"
+      ],
+      "default_row_references": [
+        "0x10016aa90",
+        "0x10016af58"
+      ],
+      "plain_row_references": [
+        "0x100169ba4",
+        "0x10016a9e8"
+      ],
+      "request_references": [
+        "0x1001eb478",
+        "0x100e8cd30"
+      ],
+      "model_help_reference": "0x10131f918",
+      "update_flag_references": [
+        "0x1013038f4",
+        "0x101308170"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x87d40ef",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8c0b941",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100161908",
+        "models_list_request_call": "0x1001691cc",
+        "empty_list_branch": "0x100169ad4",
+        "list_id_compare": "0x100169b30",
+        "unmatched_id_loop_branch": "0x100169b3c",
+        "matched_note_length_zero": "0x100169b40",
+        "search_note_length_24": "0x100169af4",
+        "empty_list_note_length_24": "0x100169c5c",
+        "first_row_id_compare": "0x100169b78",
+        "first_row_equal_branch": "0x100169b7c",
+        "remaining_row_id_compare": "0x10016a9d4",
+        "remaining_row_equal_branch": "0x10016a9d8"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x1012a1adc",
+        "auth_deployment": "0x1012a1a88",
+        "auth_none": "0x1012a1b38",
+        "auth_logged_in_data": "0x1012a1b78"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "7c4b7362337c5112a21e57fa4cbbef85e0bfbd3039d3bdd25052c78997287396",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 239,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.77": {
+      "formatter_function": "0x100160b94",
+      "auth_function": "0x100c1901c",
+      "header_reference": "0x100169874",
+      "format_piece_table": "0x10a523d70",
+      "note_references": [
+        "0x1001696d0",
+        "0x1001697f0"
+      ],
+      "default_row_references": [
+        "0x10016ae5c",
+        "0x10016b324"
+      ],
+      "plain_row_references": [
+        "0x100169730",
+        "0x10016adbc"
+      ],
+      "request_references": [
+        "0x1001eb210",
+        "0x100e85b64"
+      ],
+      "model_help_reference": "0x1012a5de0",
+      "update_flag_references": [
+        "0x101290c7c",
+        "0x10129528c"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x87ecd7f",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8c1c001",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100161d94",
+        "models_list_request_call": "0x100168d40",
+        "empty_list_branch": "0x100169660",
+        "list_id_compare": "0x1001696c0",
+        "unmatched_id_loop_branch": "0x1001696c4",
+        "matched_note_length_zero": "0x1001696c8",
+        "search_note_length_24": "0x100169680",
+        "empty_list_note_length_24": "0x100169804",
+        "first_row_id_compare": "0x10016970c",
+        "first_row_equal_branch": "0x100169710",
+        "remaining_row_id_compare": "0x10016adb0",
+        "remaining_row_equal_branch": "0x10016adb4"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x100c190d0",
+        "auth_deployment": "0x100c1907c",
+        "auth_none": "0x100c1912c",
+        "auth_logged_in_data": "0x100c1916c"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 239,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.78": {
+      "formatter_function": "0x100160b10",
+      "auth_function": "0x100ea9210",
+      "header_reference": "0x1001697b0",
+      "format_piece_table": "0x10a563d70",
+      "note_references": [
+        "0x10016960c",
+        "0x10016972c"
+      ],
+      "default_row_references": [
+        "0x10016ad98",
+        "0x10016b260"
+      ],
+      "plain_row_references": [
+        "0x10016966c",
+        "0x10016acf8"
+      ],
+      "request_references": [
+        "0x1001eb3ec",
+        "0x1012abaf8"
+      ],
+      "model_help_reference": "0x10162a624",
+      "update_flag_references": [
+        "0x10160e774",
+        "0x101612dcc"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x8823a5f",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8c5ce81",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100161d10",
+        "models_list_request_call": "0x100168c7c",
+        "empty_list_branch": "0x10016959c",
+        "list_id_compare": "0x1001695fc",
+        "unmatched_id_loop_branch": "0x100169600",
+        "matched_note_length_zero": "0x100169604",
+        "search_note_length_24": "0x1001695bc",
+        "empty_list_note_length_24": "0x100169740",
+        "first_row_id_compare": "0x100169648",
+        "first_row_equal_branch": "0x10016964c",
+        "remaining_row_id_compare": "0x10016acec",
+        "remaining_row_equal_branch": "0x10016acf0"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x100ea92c4",
+        "auth_deployment": "0x100ea9270",
+        "auth_none": "0x100ea9320",
+        "auth_logged_in_data": "0x100ea9360"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 239,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.79": {
+      "formatter_function": "0x100160df8",
+      "auth_function": "0x100a5ae60",
+      "header_reference": "0x100168fbc",
+      "format_piece_table": "0x10a6f3f20",
+      "note_references": [
+        "0x100168e44",
+        "0x100168f38"
+      ],
+      "default_row_references": [
+        "0x10016a5d4",
+        "0x10016aa94"
+      ],
+      "plain_row_references": [
+        "0x100168e9c",
+        "0x10016a520"
+      ],
+      "request_references": [
+        "0x1001ef8f8",
+        "0x1012688f8"
+      ],
+      "model_help_reference": "0x1014d00ec",
+      "update_flag_references": [
+        "0x1014c0df0",
+        "0x1014c46e0"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x8981ecf",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8dbfbf1",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100161ef4",
+        "models_list_request_call": "0x100168400",
+        "empty_list_branch": "0x100168dd0",
+        "list_id_compare": "0x100168e2c",
+        "unmatched_id_loop_branch": "0x100168e38",
+        "matched_note_length_zero": "0x100168e3c",
+        "search_note_length_24": "0x100168df0",
+        "empty_list_note_length_24": "0x100168f4c",
+        "first_row_id_compare": "0x100168e78",
+        "first_row_equal_branch": "0x100168e7c",
+        "remaining_row_id_compare": "0x10016a504",
+        "remaining_row_equal_branch": "0x10016a508"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x100a5af14",
+        "auth_deployment": "0x100a5aec0",
+        "auth_none": "0x100a5af70",
+        "auth_logged_in_data": "0x100a5afb0"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 241,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.80": {
+      "formatter_function": "0x100160f14",
+      "auth_function": "0x10155de2c",
+      "header_reference": "0x100169784",
+      "format_piece_table": "0x10a7800a0",
+      "note_references": [
+        "0x1001695fc",
+        "0x1001696f4"
+      ],
+      "default_row_references": [
+        "0x10016a7b0",
+        "0x10016ad68"
+      ],
+      "plain_row_references": [
+        "0x10016965c",
+        "0x10016a6fc"
+      ],
+      "request_references": [
+        "0x1001f1de4",
+        "0x101450b9c"
+      ],
+      "model_help_reference": "0x100d15f84",
+      "update_flag_references": [
+        "0x100d061d4",
+        "0x100d095e4"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x89fab2f",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8e380e1",
+          "bytes": 2324,
+          "sha256": "c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x1001621dc",
+        "models_list_request_call": "0x100168c98",
+        "empty_list_branch": "0x100169594",
+        "list_id_compare": "0x1001695ec",
+        "unmatched_id_loop_branch": "0x1001695f0",
+        "matched_note_length_zero": "0x1001695f4",
+        "search_note_length_24": "0x1001695b8",
+        "empty_list_note_length_24": "0x100169708",
+        "first_row_id_compare": "0x100169638",
+        "first_row_equal_branch": "0x10016963c",
+        "remaining_row_id_compare": "0x10016a6e0",
+        "remaining_row_equal_branch": "0x10016a6e4"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x10155dee0",
+        "auth_deployment": "0x10155de8c",
+        "auth_none": "0x10155df3c",
+        "auth_logged_in_data": "0x10155df7c"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 241,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.81": {
+      "formatter_function": "0x100160cc0",
+      "auth_function": "0x100f6a028",
+      "header_reference": "0x10016998c",
+      "format_piece_table": "0x10a888138",
+      "note_references": [
+        "0x100169784",
+        "0x1001698f8"
+      ],
+      "default_row_references": [
+        "0x10016a8e4",
+        "0x10016adb0"
+      ],
+      "plain_row_references": [
+        "0x100169838",
+        "0x10016a830"
+      ],
+      "request_references": [
+        "0x1001f29dc",
+        "0x101024390"
+      ],
+      "model_help_reference": "0x100fcd784",
+      "update_flag_references": [
+        "0x100fb8f48",
+        "0x100fbdc7c"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x8ae36af",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8f164d1",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100161db8",
+        "models_list_request_call": "0x100168e7c",
+        "empty_list_branch": "0x100169764",
+        "list_id_compare": "0x1001697c8",
+        "unmatched_id_loop_branch": "0x1001697d4",
+        "matched_note_length_zero": "0x1001697d8",
+        "search_note_length_24": "0x10016978c",
+        "empty_list_note_length_24": "0x10016990c",
+        "first_row_id_compare": "0x100169814",
+        "first_row_equal_branch": "0x100169820",
+        "remaining_row_id_compare": "0x10016a810",
+        "remaining_row_equal_branch": "0x10016a81c"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x100f6a0dc",
+        "auth_deployment": "0x100f6a088",
+        "auth_none": "0x100f6a138",
+        "auth_logged_in_data": "0x100f6a178"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 239,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 3,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.82": {
+      "formatter_function": "0x100160cbc",
+      "auth_function": "0x10145580c",
+      "header_reference": "0x100169988",
+      "format_piece_table": "0x10a8a4108",
+      "note_references": [
+        "0x100169780",
+        "0x1001698f4"
+      ],
+      "default_row_references": [
+        "0x10016a8e0",
+        "0x10016adac"
+      ],
+      "plain_row_references": [
+        "0x100169834",
+        "0x10016a82c"
+      ],
+      "request_references": [
+        "0x1001f29ec",
+        "0x101547ab4"
+      ],
+      "model_help_reference": "0x100c3db48",
+      "update_flag_references": [
+        "0x100c2faac",
+        "0x100c32ec8"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x8aef56f",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8f2d011",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100161db4",
+        "models_list_request_call": "0x100168e78",
+        "empty_list_branch": "0x100169760",
+        "list_id_compare": "0x1001697c4",
+        "unmatched_id_loop_branch": "0x1001697d0",
+        "matched_note_length_zero": "0x1001697d4",
+        "search_note_length_24": "0x100169788",
+        "empty_list_note_length_24": "0x100169908",
+        "first_row_id_compare": "0x100169810",
+        "first_row_equal_branch": "0x10016981c",
+        "remaining_row_id_compare": "0x10016a80c",
+        "remaining_row_equal_branch": "0x10016a818"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x1014558c0",
+        "auth_deployment": "0x10145586c",
+        "auth_none": "0x10145591c",
+        "auth_logged_in_data": "0x10145595c"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 240,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 1,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.83": {
+      "formatter_function": "0x100160c78",
+      "auth_function": "0x100ffb19c",
+      "header_reference": "0x100169944",
+      "format_piece_table": "0x10a8c8108",
+      "note_references": [
+        "0x10016973c",
+        "0x1001698b0"
+      ],
+      "default_row_references": [
+        "0x10016a89c",
+        "0x10016ad68"
+      ],
+      "plain_row_references": [
+        "0x1001697f0",
+        "0x10016a7e8"
+      ],
+      "request_references": [
+        "0x1001f2908",
+        "0x101769df0"
+      ],
+      "model_help_reference": "0x101509394",
+      "update_flag_references": [
+        "0x1014faabc",
+        "0x1014fdd58"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x8b106af",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8f4e131",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100161d70",
+        "models_list_request_call": "0x100168e34",
+        "empty_list_branch": "0x10016971c",
+        "list_id_compare": "0x100169780",
+        "unmatched_id_loop_branch": "0x10016978c",
+        "matched_note_length_zero": "0x100169790",
+        "search_note_length_24": "0x100169744",
+        "empty_list_note_length_24": "0x1001698c4",
+        "first_row_id_compare": "0x1001697cc",
+        "first_row_equal_branch": "0x1001697d8",
+        "remaining_row_id_compare": "0x10016a7c8",
+        "remaining_row_equal_branch": "0x10016a7d4"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x100ffb250",
+        "auth_deployment": "0x100ffb1fc",
+        "auth_none": "0x100ffb2ac",
+        "auth_logged_in_data": "0x100ffb2ec"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 238,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 1,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.84": {
+      "formatter_function": "0x1001612a0",
+      "auth_function": "0x100dad5a4",
+      "header_reference": "0x100169e98",
+      "format_piece_table": "0x10a8b0118",
+      "note_references": [
+        "0x100169d04",
+        "0x100169e18"
+      ],
+      "default_row_references": [
+        "0x10016adf0",
+        "0x10016b254"
+      ],
+      "plain_row_references": [
+        "0x100169d64",
+        "0x10016ad38"
+      ],
+      "request_references": [
+        "0x1001f2dfc",
+        "0x1010b7650"
+      ],
+      "model_help_reference": "0x100ef4c98",
+      "update_flag_references": [
+        "0x100edcf48",
+        "0x100ee1498"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x8afe65f",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8f3d151",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100161eb0",
+        "models_list_request_call": "0x1001693d8",
+        "empty_list_branch": "0x100169c80",
+        "list_id_compare": "0x100169cec",
+        "unmatched_id_loop_branch": "0x100169cf8",
+        "matched_note_length_zero": "0x100169cfc",
+        "search_note_length_24": "0x100169cb0",
+        "empty_list_note_length_24": "0x100169e20",
+        "first_row_id_compare": "0x100169d3c",
+        "first_row_equal_branch": "0x100169d48",
+        "remaining_row_id_compare": "0x10016ad1c",
+        "remaining_row_equal_branch": "0x10016ad20"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x100dad658",
+        "auth_deployment": "0x100dad604",
+        "auth_none": "0x100dad6b4",
+        "auth_logged_in_data": "0x100dad6f4"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 240,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 1,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.85": {
+      "formatter_function": "0x1001617fc",
+      "auth_function": "0x10111720c",
+      "header_reference": "0x1001699c8",
+      "format_piece_table": "0x10a908288",
+      "note_references": [
+        "0x10016983c",
+        "0x10016993c"
+      ],
+      "default_row_references": [
+        "0x10016a8bc",
+        "0x10016ac88"
+      ],
+      "plain_row_references": [
+        "0x100169898",
+        "0x10016a7fc"
+      ],
+      "request_references": [
+        "0x1001f2d30",
+        "0x101332ecc"
+      ],
+      "model_help_reference": "0x100fc4b88",
+      "update_flag_references": [
+        "0x100fa7aec",
+        "0x100fac634"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x8b37daf",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8f75651",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100162c8c",
+        "models_list_request_call": "0x100168eb8",
+        "empty_list_branch": "0x1001697ac",
+        "list_id_compare": "0x10016981c",
+        "unmatched_id_loop_branch": "0x100169830",
+        "matched_note_length_zero": "0x100169834",
+        "search_note_length_24": "0x1001697d8",
+        "empty_list_note_length_24": "0x100169944",
+        "first_row_id_compare": "0x100169870",
+        "first_row_equal_branch": "0x100169884",
+        "remaining_row_id_compare": "0x10016a7d8",
+        "remaining_row_equal_branch": "0x10016a7dc"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x1011172c0",
+        "auth_deployment": "0x10111726c",
+        "auth_none": "0x10111731c",
+        "auth_logged_in_data": "0x10111735c"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 240,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 1,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.86": {
+      "formatter_function": "0x100164328",
+      "auth_function": "0x1010f0fc8",
+      "header_reference": "0x10016c4f4",
+      "format_piece_table": "0x10a93c350",
+      "note_references": [
+        "0x10016c368",
+        "0x10016c468"
+      ],
+      "default_row_references": [
+        "0x10016d3e8",
+        "0x10016d7b4"
+      ],
+      "plain_row_references": [
+        "0x10016c3c4",
+        "0x10016d328"
+      ],
+      "request_references": [
+        "0x1001f60fc",
+        "0x10179fbb4"
+      ],
+      "model_help_reference": "0x1011482fc",
+      "update_flag_references": [
+        "0x101138864",
+        "0x10113c240"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x8b6664f",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8fa5b81",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x1001657b8",
+        "models_list_request_call": "0x10016b9e4",
+        "empty_list_branch": "0x10016c2d8",
+        "list_id_compare": "0x10016c348",
+        "unmatched_id_loop_branch": "0x10016c35c",
+        "matched_note_length_zero": "0x10016c360",
+        "search_note_length_24": "0x10016c304",
+        "empty_list_note_length_24": "0x10016c470",
+        "first_row_id_compare": "0x10016c39c",
+        "first_row_equal_branch": "0x10016c3b0",
+        "remaining_row_id_compare": "0x10016d304",
+        "remaining_row_equal_branch": "0x10016d308"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x1010f107c",
+        "auth_deployment": "0x1010f1028",
+        "auth_none": "0x1010f10d8",
+        "auth_logged_in_data": "0x1010f1118"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 241,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 1,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.87": {
+      "formatter_function": "0x1001643cc",
+      "auth_function": "0x1016d9c78",
+      "header_reference": "0x10016c5bc",
+      "format_piece_table": "0x10a97c350",
+      "note_references": [
+        "0x10016c430",
+        "0x10016c530"
+      ],
+      "default_row_references": [
+        "0x10016d598",
+        "0x10016d964"
+      ],
+      "plain_row_references": [
+        "0x10016c48c",
+        "0x10016d4d8"
+      ],
+      "request_references": [
+        "0x1001f6738",
+        "0x1015a5938"
+      ],
+      "model_help_reference": "0x101848960",
+      "update_flag_references": [
+        "0x101833984",
+        "0x101837ec4"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x8b9e63a",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8fde711",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100165858",
+        "models_list_request_call": "0x10016ba54",
+        "empty_list_branch": "0x10016c3a0",
+        "list_id_compare": "0x10016c410",
+        "unmatched_id_loop_branch": "0x10016c424",
+        "matched_note_length_zero": "0x10016c428",
+        "search_note_length_24": "0x10016c3cc",
+        "empty_list_note_length_24": "0x10016c538",
+        "first_row_id_compare": "0x10016c464",
+        "first_row_equal_branch": "0x10016c478",
+        "remaining_row_id_compare": "0x10016d4b4",
+        "remaining_row_equal_branch": "0x10016d4b8"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x1016d9d2c",
+        "auth_deployment": "0x1016d9cd8",
+        "auth_none": "0x1016d9d88",
+        "auth_logged_in_data": "0x1016d9dc8"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 239,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 1,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.88": {
+      "formatter_function": "0x100167060",
+      "auth_function": "0x100f78cd8",
+      "header_reference": "0x10016f240",
+      "format_piece_table": "0x10a9f85b0",
+      "note_references": [
+        "0x10016f0b4",
+        "0x10016f1b4"
+      ],
+      "default_row_references": [
+        "0x10017021c",
+        "0x1001705e8"
+      ],
+      "plain_row_references": [
+        "0x10016f110",
+        "0x10017015c"
+      ],
+      "request_references": [
+        "0x1001f93bc",
+        "0x10123559c"
+      ],
+      "model_help_reference": "0x1011be5a8",
+      "update_flag_references": [
+        "0x1011a9610",
+        "0x1011adb50"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x8c0a81a",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x904aee1",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x1001684ec",
+        "models_list_request_call": "0x10016e6d8",
+        "empty_list_branch": "0x10016f024",
+        "list_id_compare": "0x10016f094",
+        "unmatched_id_loop_branch": "0x10016f0a8",
+        "matched_note_length_zero": "0x10016f0ac",
+        "search_note_length_24": "0x10016f050",
+        "empty_list_note_length_24": "0x10016f1bc",
+        "first_row_id_compare": "0x10016f0e8",
+        "first_row_equal_branch": "0x10016f0fc",
+        "remaining_row_id_compare": "0x100170138",
+        "remaining_row_equal_branch": "0x10017013c"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x100f78d8c",
+        "auth_deployment": "0x100f78d38",
+        "auth_none": "0x100f78de8",
+        "auth_logged_in_data": "0x100f78e28"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 241,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 1,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.89": {
+      "formatter_function": "0x100166eb0",
+      "auth_function": "0x100eb06c4",
+      "header_reference": "0x10016f070",
+      "format_piece_table": "0x10aa005b0",
+      "note_references": [
+        "0x10016eef8",
+        "0x10016efe4"
+      ],
+      "default_row_references": [
+        "0x1001702e4",
+        "0x100170868"
+      ],
+      "plain_row_references": [
+        "0x10016ef50",
+        "0x100170224"
+      ],
+      "request_references": [
+        "0x1001f7bb8",
+        "0x1014c16d4"
+      ],
+      "model_help_reference": "0x10101ef20",
+      "update_flag_references": [
+        "0x101009420",
+        "0x10100ca18"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x8c0b190",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x904cad1",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100168210",
+        "models_list_request_call": "0x10016e548",
+        "empty_list_branch": "0x10016ee90",
+        "list_id_compare": "0x10016eee8",
+        "unmatched_id_loop_branch": "0x10016eeec",
+        "matched_note_length_zero": "0x10016eef0",
+        "search_note_length_24": "0x10016eeb4",
+        "empty_list_note_length_24": "0x10016efec",
+        "first_row_id_compare": "0x10016ef28",
+        "first_row_equal_branch": "0x10016ef2c",
+        "remaining_row_id_compare": "0x100170200",
+        "remaining_row_equal_branch": "0x100170204"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x100eb0778",
+        "auth_deployment": "0x100eb0724",
+        "auth_none": "0x100eb07d4",
+        "auth_logged_in_data": "0x100eb0814"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 241,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 1,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.90": {
+      "formatter_function": "0x100166aac",
+      "auth_function": "0x101023dec",
+      "header_reference": "0x10016ed20",
+      "format_piece_table": "0x10a9a0660",
+      "note_references": [
+        "0x10016eba4",
+        "0x10016eca0"
+      ],
+      "default_row_references": [
+        "0x10016ff90",
+        "0x10017052c"
+      ],
+      "plain_row_references": [
+        "0x10016ec08",
+        "0x10016fee8"
+      ],
+      "request_references": [
+        "0x1001f7784",
+        "0x101242f44"
+      ],
+      "model_help_reference": "0x1017ad9b8",
+      "update_flag_references": [
+        "0x10179f104",
+        "0x1017a239c"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x8bb6308",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x8ff92a1",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100167e10",
+        "models_list_request_call": "0x10016e178",
+        "empty_list_branch": "0x10016eb3c",
+        "list_id_compare": "0x10016eb94",
+        "unmatched_id_loop_branch": "0x10016eb98",
+        "matched_note_length_zero": "0x10016eb9c",
+        "search_note_length_24": "0x10016eb60",
+        "empty_list_note_length_24": "0x10016eca8",
+        "first_row_id_compare": "0x10016ebd4",
+        "first_row_equal_branch": "0x10016ebd8",
+        "remaining_row_id_compare": "0x10016fec4",
+        "remaining_row_equal_branch": "0x10016fec8"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x101023e6c",
+        "auth_deployment": "0x101023e34",
+        "auth_none": "0x101023eb0",
+        "auth_logged_in_data": "0x101023ef0"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 240,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 1,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.91": {
+      "formatter_function": "0x100166bc0",
+      "auth_function": "0x1012ca784",
+      "header_reference": "0x10016ee3c",
+      "format_piece_table": "0x10a9d0660",
+      "note_references": [
+        "0x10016ecc0",
+        "0x10016edbc"
+      ],
+      "default_row_references": [
+        "0x1001700ac",
+        "0x100170648"
+      ],
+      "plain_row_references": [
+        "0x10016ed24",
+        "0x100170004"
+      ],
+      "request_references": [
+        "0x1001f79fc",
+        "0x10100a2dc"
+      ],
+      "model_help_reference": "0x100cfbd34",
+      "update_flag_references": [
+        "0x100ce8cc8",
+        "0x100cec6c4"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x8bdd178",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x90208c1",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x100167f24",
+        "models_list_request_call": "0x10016e294",
+        "empty_list_branch": "0x10016ec58",
+        "list_id_compare": "0x10016ecb0",
+        "unmatched_id_loop_branch": "0x10016ecb4",
+        "matched_note_length_zero": "0x10016ecb8",
+        "search_note_length_24": "0x10016ec7c",
+        "empty_list_note_length_24": "0x10016edc4",
+        "first_row_id_compare": "0x10016ecf0",
+        "first_row_equal_branch": "0x10016ecf4",
+        "remaining_row_id_compare": "0x10016ffe0",
+        "remaining_row_equal_branch": "0x10016ffe4"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x1012ca838",
+        "auth_deployment": "0x1012ca7e4",
+        "auth_none": "0x1012ca894",
+        "auth_logged_in_data": "0x1012ca8d4"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 239,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 1,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    },
+    "1.0.92": {
+      "formatter_function": "0x10016df78",
+      "auth_function": "0x1012b3234",
+      "header_reference": "0x100175c14",
+      "format_piece_table": "0x10aa3fd58",
+      "note_references": [
+        "0x100175a48",
+        "0x100175b8c"
+      ],
+      "default_row_references": [
+        "0x100176bb0",
+        "0x100177138"
+      ],
+      "plain_row_references": [
+        "0x100175aec",
+        "0x100176af4"
+      ],
+      "request_references": [
+        "0x1001f7934",
+        "0x10171ad58"
+      ],
+      "model_help_reference": "0x100cf5fb0",
+      "update_flag_references": [
+        "0x100ce78d8",
+        "0x100cead34"
+      ],
+      "embedded_documents": [
+        {
+          "file_offset": "0x8c423ef",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        },
+        {
+          "file_offset": "0x9086011",
+          "bytes": 2324,
+          "sha256": "da2d31772775ae693a6b2e6cea5a920483f3002e98ddd026c43f9a1fcebe1c1c",
+          "default": "grok-4.6",
+          "model_ids": [
+            "grok-4.6",
+            "grok-4.5"
+          ]
+        }
+      ],
+      "format_argument_count": 3,
+      "flow_sites": {
+        "auth_preamble_call": "0x10016f280",
+        "models_list_request_call": "0x1001750b4",
+        "empty_list_branch": "0x100175a1c",
+        "list_id_compare": "0x100175a84",
+        "unmatched_id_loop_branch": "0x100175a88",
+        "matched_note_length_zero": "0x100175a8c",
+        "search_note_length_24": "0x100175a50",
+        "empty_list_note_length_24": "0x100175b94",
+        "first_row_id_compare": "0x100175ac4",
+        "first_row_equal_branch": "0x100175ac8",
+        "remaining_row_id_compare": "0x100176ad4",
+        "remaining_row_equal_branch": "0x100176ad8"
+      },
+      "auth_literal_sites": {
+        "auth_api_key": "0x1012b32e8",
+        "auth_deployment": "0x1012b3294",
+        "auth_none": "0x1012b3344",
+        "auth_logged_in_data": "0x1012b3384"
+      },
+      "additional_default_header_tables": [],
+      "cli_help": {
+        "stdout_sha256": "9db07ad36b5186156edec4aaac73e6ffc06510fe39022c58da3010be29e3822d",
+        "exit_status": 0,
+        "stderr_bytes": 0
+      },
+      "literal_counts": {
+        "  * ": 3,
+        "  - ": 238,
+        " (default)\n": 5,
+        " is using its own API key.": 1,
+        "--no-auto-update": 4,
+        "Available models:": 1,
+        "Default model: ": 1,
+        "List available models and exit": 1,
+        "You are authenticated via deployment key.": 1,
+        "You are logged in with ": 1,
+        "You are not authenticated.": 1,
+        "You are using XAI_API_KEY.": 1,
+        "not in the list below)": 1,
+        "xai-grok-pager/src/models.rs": 1,
+        "x.ai/models/list": 1,
+        "\n\nAvailable models:": 1,
+        "\n  * ": 1,
+        "\n  - ": 107
+      }
+    }
+  }
+}

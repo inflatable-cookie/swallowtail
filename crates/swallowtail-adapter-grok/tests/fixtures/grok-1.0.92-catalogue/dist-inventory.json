@@ -1,0 +1,1570 @@
+{
+  "packages": [
+    "wrapper",
+    "darwin_arm64"
+  ],
+  "trees": {
+    "1.0.70": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "c1d4ab1197346f81dab4c506532d62992b217e3bd40607fbe2fe4cdf01ae3c4c"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 49928417,
+          "sha256": "21dc2170024a01aae1104f3af2d68a3dd7eb7454d71264a52880af3737eb8c5e"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "2385a4b15c0c4270dbc28ea09c32f4de3708a510f4485d5357be77d8522637ba"
+        }
+      }
+    },
+    "1.0.71": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "baddc628a307a16104d369097feeff497b3c3aa3560f009b6545571d938eafbf"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 50945396,
+          "sha256": "342a5afff85264a11d3382fa086e45ee3541be1090112b79d7b637d83381753c"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "f0a553f59092162ceda03c419995385f8b1e13066cd7d002d766c718dbf563f3"
+        }
+      }
+    },
+    "1.0.72": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "e3622f833ed0c832456d07555223674b0fca221598383beaf7e0654465be7bc5"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 50898311,
+          "sha256": "17d75c3992a53f01d56ad077e991e9afe9ea386122f05fe162f100f411fde872"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "e0272f7793bfd55c8d4028ac6a43eb2297988e96ba5dbf22c06e3f5c52cb1f55"
+        }
+      }
+    },
+    "1.0.73": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "abfdaed2754c2755e2bca60261ed1af313f936053761c39673c54172189adcb0"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 51079249,
+          "sha256": "3110a0ee3c22359a02a272e366b38de93f032423e011054aff21259da799af4c"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "6c6bfd2e3491a0838b6b168563c484124db90ba08ec82336d083b2559b6eaad6"
+        }
+      }
+    },
+    "1.0.74": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "f4d4940b2b93e3f087e274c4aefd7196cbdeb707a9388dfcb21e4acb547170b2"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 51261417,
+          "sha256": "c6495bb480ca4368edb5e45a15a6b3e13ab10a962d21f46f04a8582db63c8608"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "a366e381bb3cd8aa4f3b30e4f26e0741b356575ee29c58a062704dc356bb05fa"
+        }
+      }
+    },
+    "1.0.75": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "55755e6a43a48ae0cd4bb5cd6c893268414ed174c42fded70583293dba8cf613"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 51491148,
+          "sha256": "3d687d47ec380b36ff11910704c2c039cb3efb8740015e0e9d0ca76cbac9d3ae"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "855567bb2b1726482be6315fafb761bc45caed923cf69c4c501386e235f5e678"
+        }
+      }
+    },
+    "1.0.76": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "e9ece5aa7cdff141200f88ce707d22db665c30aef955c6ddfb837a7f35c63fad"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 51580633,
+          "sha256": "6ac690c28a60a677f522e8bdf3e7fa22529d4325a35240a63f0b130df34f0424"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "2fe7d437a5a4f1a7eae1de9aa62aed946a87db528647c824c3c4c779754a34d6"
+        }
+      }
+    },
+    "1.0.77": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "86732cc4590fa2501fd8e8a51185f9ad66996e1d8f916dc3d408e31f743d4743"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 51540403,
+          "sha256": "d0ba1baece95d56a0c561e7bf55eca5bf8042b79c02e9ef52a3d80099deb4976"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "3fde1a68fb4c6bc78ba1faf9be802b002d8f548c76da80487e36995581d93185"
+        }
+      }
+    },
+    "1.0.78": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "a786ba9cdf826d11ea0d2545b995c137a8358a9787c0378069e2d5690ebb7ef5"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 51742846,
+          "sha256": "b0fac981d6e8ae606a91e29a4d334a0131f1aa8e36fd0b3db10009dd122b2a31"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "a505d268ddfb1caa3d180fbff29618995a6ec30c998c9b41e59fb8367ef4c850"
+        }
+      }
+    },
+    "1.0.79": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "14088ea5897c6bfd1967c25f01742102c3bc8ac3d4d995929fc0211b2211acb9"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 52106291,
+          "sha256": "8b60c4222908e42def1e3551b87e856775f2fdf4b481f79ed6395ccf9e2ec5f4"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "d7b07bbeab041c7685cd03f60ed99e7f18958f05037f5e590a90cbfcf221aa24"
+        }
+      }
+    },
+    "1.0.80": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "1ae02f4ecbaa598f99e4a76876e1de8f01b2e9fca7215b86ca951ae4054c1925"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 52506050,
+          "sha256": "85fdaad4af02b4788158f64709d9edf1401b55cd1d9ba3c7a5c99afb78fd702f"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "33fb617fcf1c231a82c60df66720b71fd52e44a8ef4d74937a417855c2dd9b0f"
+        }
+      }
+    },
+    "1.0.81": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "8024d88aa04cee5e2dc1ca9ff65442038b50691630e75de0cfd0147ab676aa3e"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 52862784,
+          "sha256": "b89d723847a0621f09fe172da874c50c84146eba848099b176e2b0a90ff61783"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "8dfae3b1423c88b844bffe2efc5f5aa1ef2af64ed5580319bf72554d05acde3a"
+        }
+      }
+    },
+    "1.0.82": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "b4cdb43d6685cc51981e4dcc67714f0de8f3049e5f72efa277103312988d2b19"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 52787628,
+          "sha256": "bf13aef5cf7ed71b29388ac5b90aec23d66478d742a1b252ec5f1c9f4d68def7"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "5b5fb5f5f3959c8ba4de80fc01321e3dac7ff7dce59956ef15e4a6c328aec9b3"
+        }
+      }
+    },
+    "1.0.83": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "5e3b9ef58740652689b67a155cc49c3f50029423412694e6eb0c64c94e9149bc"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 52780045,
+          "sha256": "d7adbd2422938238dec5b374865231dd06296202214fd95a1181129ca5de5544"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "0b81c7a14998f48d9baa795285829b970bd8e6670d41eb209155975e2abaf211"
+        }
+      }
+    },
+    "1.0.84": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "4018839494a8ab23e6a244bc0fe96e0ea5f8d74121a58117778292f37790f5d3"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 52820303,
+          "sha256": "ef787860d1bebee1172bd862c366d6d184681f0d0b5240ec7ce2e7f728f00f13"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "a2554cacf981d54c64885a0d3e1da4bc5ce0cb055f215fe5dac4c840d14a783b"
+        }
+      }
+    },
+    "1.0.85": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "f1413a7e2f13c002c9d70b50026e36f4c8d24812b1687a36140cf6a243371173"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 52884397,
+          "sha256": "068e1f9b193b7077c64dc169f2390d680b5c997a1fdd8e851816b031d1c2526c"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "2d63663be420b8e0f156c09a540e61ce237cef3f088f9703ab013e5af626d0a6"
+        }
+      }
+    },
+    "1.0.86": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "d59092ee84e3e5cf249d0c17248e3f43cb4cb8e9af7fdb4654e3705de3fd17cb"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 53045472,
+          "sha256": "6b9dcb69049de78e804bafb00a023a72990b5e95530a147a3dc59a15029e5005"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "1b73c9c13933bb6db3c0684c91058372d3674ad87873e7695011c4874def7cb4"
+        }
+      }
+    },
+    "1.0.87": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "66785267a6403a20fa43831785a3a0612e76596ab27520e9749fc3c9a2d28c17"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 53179274,
+          "sha256": "2c0246fccb7456d62757f2f70b35a7fec0bf28f5b4b77446da46787ca7a9a6b9"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "dd7e7393e38bbc8fac7ef3890207345181f6bcd5cc61cd8d03631c0896838a03"
+        }
+      }
+    },
+    "1.0.88": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "8c6c3ae9c1ccdc89385e685339d1cae2d2b5cfc134542da334e8eb34ed3eb759"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 53085925,
+          "sha256": "cd0398fd91775397c2be2218a4928be1d96ba5c529feb6b6e66f70447e204b3e"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "1f1ad655634138264c307ac5c0dd6a7cc4600192ca2a1f9c712a58fb561e02f9"
+        }
+      }
+    },
+    "1.0.89": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "e19825550b7ef7e65400b6400a8d4176df432b6e39e9d166839570f117dd72f6"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 53117038,
+          "sha256": "b1298f56fb428ea4c3092df30c03002d9f7e6eb2472e0a6fcfe1bcc3cf99a55f"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "102f76fdbc330b4ea473186045880e6dbffbb83fe7b2d1f862217f0423ba5e78"
+        }
+      }
+    },
+    "1.0.90": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "3df5db3a72e637f3c2a49c216327e9c8682c7c6b39010d8d98b2deee4a2752cd"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 53333858,
+          "sha256": "70dd7ffe4768eb917db6a357c69e3ef975c32e30722e4e67317d9b814ee3c58c"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "22c2653c10a4b8406fd149140485bc6198e6e8b874f4c2eeb83375738bf56acf"
+        }
+      }
+    },
+    "1.0.91": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "3823d1036aadc9a119a3bc670bce0306d5ba24f2ae51ad22826e90effa8d4508"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 53349753,
+          "sha256": "9d8efdca804f5d4046fabbf2939f2702066eb33592c75a7324cf65c984e76854"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "bde351ceceb4bf8e4c66abfa9c830ff10f7ea8db454071a7fe5db4939f8ca51f"
+        }
+      }
+    },
+    "1.0.92": {
+      "wrapper": {
+        "README.md": {
+          "bytes": 1173,
+          "sha256": "b764b07c2de4f9dc5857b76e803384445ee954abdb8f61b6ca1dcfe9d95cd9f1"
+        },
+        "bin/grok": {
+          "bytes": 208,
+          "sha256": "1318858fefd9de11c5eb7e6a6f325aa7b0b6c1570981c9596085ed252fa68a51"
+        },
+        "bin/grok-bootstrap.js": {
+          "bytes": 5245,
+          "sha256": "15abbdc3e34d3c1e53b71def7f9c59f22bd793c51c5f6f88c645103742cc544e"
+        },
+        "bin/postinstall.js": {
+          "bytes": 10799,
+          "sha256": "9debd63b905270da66d3e0f29d2a16fee1b52c9eddd8b270e05e855e53b2f69d"
+        },
+        "package.json": {
+          "bytes": 817,
+          "sha256": "44bce85bf35d34f194ab4065ab019c49de57c9ad126bd741328d480f75883821"
+        }
+      },
+      "darwin_arm64": {
+        "README.md": {
+          "bytes": 379,
+          "sha256": "7724d078f35ac67bbe858396e1c0ff87e8e668888aaf91b3d85ed6dc37391eee"
+        },
+        "THIRD_PARTY_NOTICES.md": {
+          "bytes": 7995,
+          "sha256": "e8785a6098a7ee780cd2db35745b8e53061cfb1b6da19147a308579466ea4e50"
+        },
+        "bin/grok.br": {
+          "bytes": 53321377,
+          "sha256": "3ef91c6d7f54ef0e22e6ee13a056a0a04806439b741c4ed3fd2e04fc2b1d7a78"
+        },
+        "package.json": {
+          "bytes": 386,
+          "sha256": "108dcc1b95c5f05d5fbe4599b04c8da90a0ce88f579e2870b78f216306772e9d"
+        }
+      }
+    }
+  },
+  "adjacent_deltas": {
+    "1.0.71": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.72": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.73": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.74": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.75": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.76": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.77": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.78": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.79": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.80": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.81": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.82": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.83": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.84": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.85": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.86": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.87": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.88": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.89": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.90": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.91": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    },
+    "1.0.92": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "bin/grok.br",
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      }
+    }
+  }
+}

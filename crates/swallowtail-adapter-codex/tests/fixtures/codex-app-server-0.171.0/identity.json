@@ -1,0 +1,695 @@
+{
+  "axis": "codex.cli",
+  "package": "@openai/codex",
+  "routes": [
+    "codex.app-server"
+  ],
+  "siblingRoutesAlreadyQualified": [
+    "codex.exec"
+  ],
+  "previousCeiling": "0.164.0",
+  "officialLatest": "0.171.0",
+  "channelsAgree": true,
+  "prereleaseIgnored": "0.173.0-alpha.4",
+  "downloadedArtifactsExecuted": false,
+  "platformBinariesDownloaded": true,
+  "syntheticUnverifiedNewer": "0.171.1",
+  "hostObservation": {
+    "version": "0.171.0",
+    "cliOutput": "codex-cli 0.171.0",
+    "platform": "darwin-arm64",
+    "sha256": "fc8d77cf7585aded2b9bc487dad29c4ee2f066123e4e76dd3b17653a8322ce42",
+    "matchesOfficialDarwinArm64Cli": true,
+    "codesignAuthority": "Developer ID Application: OpenAI OpCo, LLC (2DC432GLL2)",
+    "codesignTeamId": "2DC432GLL2"
+  },
+  "reusedArtifactLedger": "crates/swallowtail-adapter-codex/tests/fixtures/codex-exec-0.171.0/dist-inventory.json",
+  "sigstoreTrustAnchor": {
+    "source": "gh attestation trusted-root (Sigstore Public Good TUF trusted_root.json)",
+    "trustedRootSha256": "844a1c6de3986c9f02070266b25e0d1a2fa99ceccc89f6b9ad90aae47b62a16e",
+    "rekorBaseUrl": "https://rekor.sigstore.dev",
+    "rekorLogIds": [
+      "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "cf1199155bddd051268d1f16ac5c0c75c009f6fb5a63f4177f8e18d7051e3fa0"
+    ],
+    "fulcioRootDerSha256s": [
+      "03a38ffb1f450100c2596d1d10b900ac4d504058006dda58199576bbeb9c73d0",
+      "3ba7b6cc4e95469d4d334b49cb257ad8537076fa84b0ca87ff4ecfe6a54680c1"
+    ]
+  },
+  "hops": [
+    {
+      "version": "0.164.0",
+      "role": "previous-ceiling",
+      "githubTag": "rust-v0.164.0",
+      "tagObject": "fe3b29455488c2e189e43ad5526a107900c5e1b7",
+      "commit": "6aaac694803004a63c6f393d153c96d22521a6b9",
+      "npmPublishedAt": "2026-10-23T04:52:29.240Z",
+      "githubPublishedAt": "2026-10-23T04:48:10Z",
+      "wrapper": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.164.0.tgz",
+        "integrity": "sha512-TWj7UGyPRe3Pj/A3ddNAxs1te3a/W/xAd+J0LHrrFTmsSfahGMOLF/vn88D3QCIgAT3B1rm1y/Z3NYE0rx6cZQ==",
+        "sha256": "afb117ec0d382744583dd13154ba0ca6b0f1980f8ed6a23bffb3aaadb6226e30",
+        "files": 3,
+        "binCodexJsSha256": "61b0194f3bb6534439c8d26a3ed57d0805f84b884588b761795323eeb92fcf70"
+      },
+      "darwinArm64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.164.0-darwin-arm64.tgz",
+        "integrity": "sha512-pDizgOUAtq3/k3AbUFHbaU19WpYKCja+oFpNSTLKrDQj4lTUNSDuTPJip4uQVn2/1EipQdpQrGMOQBVuI1znAA==",
+        "sha256": "9b5a35be1975ceb332eaf274032f375b017ab644ff0165737ead03277fae77cd",
+        "files": 43,
+        "cliSha256": "d8990e3ee7acfbc26f91265b12a1a83f0fee40d0e0f8f1f40a37d4ec21f499cf",
+        "provenance": "hashed-unexecuted-tarball"
+      },
+      "linuxX64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.164.0-linux-x64.tgz",
+        "integrity": "sha512-XLAoaWsGOT2khzl+P4FYDPTkzAr9W0VFXFaVkqlFdkM0soa1gH/4S0wSD57Ek3HHwkirAEGz2/Mwehseh+l5Mg==",
+        "sha256": "62659fefd9a8efa21a496402fde3c11c025bbeee735a582968f8ffd14cb5f79c",
+        "files": 45,
+        "cliSha256": "b93f6811d3f653f0fb83be4050d857fb9abbb111dfa2ce160563327daff7f306",
+        "bwrapSha256": "3a81c19ad10a70436529c58e77898e2a447abe80167f813fc20ec34bd9eafdeb",
+        "provenance": "hashed-unexecuted-tarball-with-sigstore-bwrap"
+      }
+    },
+    {
+      "version": "0.165.0",
+      "role": "intermediate-stable",
+      "githubTag": "rust-v0.165.0",
+      "tagObject": "e374836b2728d9b7aa981c2902649e640a2edaa8",
+      "commit": "360319d8dee62d87e2d59fc0c21805d79519cfed",
+      "npmPublishedAt": "2026-10-27T20:14:25.378Z",
+      "githubPublishedAt": "2026-10-27T20:09:38Z",
+      "wrapper": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.165.0.tgz",
+        "integrity": "sha512-aiwtQVp2KBhJld966CuU5bVfQ46VNB4mNTl6giX3WGZdt4euI3tv2RUqJpnupPNA8DXHg2z+RoQ0Zfw87dy8Lw==",
+        "sha256": "cb890818146db2401af6962bd1c2b4cb72a1b2b5df99f10ff2b36ae3d1c37f45",
+        "files": 3,
+        "binCodexJsSha256": "61b0194f3bb6534439c8d26a3ed57d0805f84b884588b761795323eeb92fcf70"
+      },
+      "darwinArm64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.165.0-darwin-arm64.tgz",
+        "integrity": "sha512-MQ/Z0Xw9v08DHunnzodi9NwA844MI3+RO72IM8o0Lr/UemnlEoBMCxpojstxX6mf5ZQwUrIg0yekDd9cFZ29hg==",
+        "sha256": "a991b0abcb6b6d2ae4d0221b55dd74afe8b87847044483ec68d290908a5a0f97",
+        "files": 43,
+        "cliSha256": "a45099154d7fb4a5ed8a56f40966a95deb938e508bab23e6985035c709e9a85a",
+        "provenance": "hashed-unexecuted-tarball"
+      },
+      "linuxX64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.165.0-linux-x64.tgz",
+        "integrity": "sha512-FotDc7bVHwaommtsdDP8PPrH0a5IwC/t8H/LhdEcH4EBqgeYFRCtptiHcuwgvNRCLbTbOyFE/Ur6GzYCljgaSQ==",
+        "sha256": "f997cd6ef5987126e19cd3c82e847a4a6461270f32f97340c5e99a65fb6f9b8a",
+        "files": 45,
+        "cliSha256": "c06a67fd8ac76508dc78bd99ce20c9f317b8d568beda59485f3f4134df9962d5",
+        "bwrapSha256": "755c8d6a9b893905a4aabab058bd6c02c453e5e8653adb84fc08e570607f3f36",
+        "provenance": "hashed-unexecuted-tarball-with-sigstore-bwrap"
+      }
+    },
+    {
+      "version": "0.166.0",
+      "role": "intermediate-stable",
+      "githubTag": "rust-v0.166.0",
+      "tagObject": "593389380740f7b4762771573c447ccfdc59742f",
+      "commit": "6ff1e1ca3b30fc8b914720681fcf5fe62e95f856",
+      "npmPublishedAt": "2026-10-29T19:56:19.746Z",
+      "githubPublishedAt": "2026-10-29T19:47:53Z",
+      "wrapper": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.166.0.tgz",
+        "integrity": "sha512-2Szlp1l1cz5TX1ccpX4Zok3DZrot9xeZe0km+6/1v8JmqxADwyJxKBJah4dBymkwtS25j/u6dipJusTOI97Z8Q==",
+        "sha256": "67ee6f4069d9328956401f54ac202c20369233159058af9f4ec1af731b87f5b7",
+        "files": 3,
+        "binCodexJsSha256": "e14fc83739c13c1074b12bd1acce4010c893c7f6fbfc1593b4a31d74cabb57af"
+      },
+      "darwinArm64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.166.0-darwin-arm64.tgz",
+        "integrity": "sha512-5fWH6qqUInACcRADIewjlnRxDb4QLe0uriwehiZz0+viuAAB8I+WWefqw4xwHvyKaxeiGX4uK56+vrgfvFk3FQ==",
+        "sha256": "181d2eda8addbeca0b689c996df207293947928bdd9c88a097837ae1c7e69ca5",
+        "files": 43,
+        "cliSha256": "39acf979729dd290f9a24ee38b2914e036c91b65952872e28ae2a6b88a7db7c1",
+        "provenance": "hashed-unexecuted-tarball"
+      },
+      "linuxX64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.166.0-linux-x64.tgz",
+        "integrity": "sha512-CxDm3+D1cpbGJeHrdzINoG+3wn9BVncP4qpZaaNYkxe8iPtRJOYyCJnnPoVjWRIBvI9vPKbRoifsMSA5xDaUpw==",
+        "sha256": "cbc00a26d3d0e2ceefc4be8891f8a81ef1e349b3b175bc0ae308762bc001fd93",
+        "files": 45,
+        "cliSha256": "b8a11fedf24b2dfb59a70c9e52b030f9a508dcd49cd2dd0d41956f4c785156b8",
+        "bwrapSha256": "77360cb751ccedc5971391444ac86a8a33c15b04d6b4a6fe45f5d25496e62c4c",
+        "provenance": "hashed-unexecuted-tarball-with-sigstore-bwrap"
+      }
+    },
+    {
+      "version": "0.167.0",
+      "role": "intermediate-stable",
+      "githubTag": "rust-v0.167.0",
+      "tagObject": "cb41599ccbe371272892f156286a236aa097bada",
+      "commit": "086ccc833bc9cf01024ad2dd6af7dbd421b6bf9a",
+      "npmPublishedAt": "2026-11-06T01:46:01.347Z",
+      "githubPublishedAt": "2026-11-06T01:40:00Z",
+      "wrapper": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.167.0.tgz",
+        "integrity": "sha512-1FSQgbTIKAdTub5Ln6z36NT4eXDmBRkinfigzycbgn9yLZdJ3UdkQZqr0N7jnl8/D1xxT/Pz3Fl2l7S2dmRaFA==",
+        "sha256": "e858522a37b85b5bbe695919190cfb0974aee5ae739d84d8d629c39735fb03a9",
+        "files": 3,
+        "binCodexJsSha256": "e14fc83739c13c1074b12bd1acce4010c893c7f6fbfc1593b4a31d74cabb57af"
+      },
+      "darwinArm64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.167.0-darwin-arm64.tgz",
+        "integrity": "sha512-7YtMDZX/jbWH9+fCVQg7BVsov8WvBzu4iuedXJEDlUdZxaTrYX2bEQwHIn3p0gxgSMfm30HGK9+bZm1aGSZaHw==",
+        "sha256": "6989512a93d5fc74cb221dd348c972bf3cd83592e471bfd9557bccb45eb6fffc",
+        "files": 43,
+        "cliSha256": "030316ecfbb41f4e7946e584b0063ef333b7a36cd312ba349f2f6869e39b62cc",
+        "provenance": "hashed-unexecuted-tarball"
+      },
+      "linuxX64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.167.0-linux-x64.tgz",
+        "integrity": "sha512-FNc7danfUng9Sp6w+Fh7kofNHHZpA6VMyNKWsWrS3OwHly69gywTWeiuwrUPXpJSho8Df4xqRsHfHRPzj7zYQg==",
+        "sha256": "2dc9aa871abb513c3539d20d025f701faf1974c46ee906bda3a1e1f5026d4434",
+        "files": 45,
+        "cliSha256": "cdcb45aaa01d0f14e298985e09465aebccd47f64ecd298aea44814af7b62bbda",
+        "bwrapSha256": "77360cb751ccedc5971391444ac86a8a33c15b04d6b4a6fe45f5d25496e62c4c",
+        "provenance": "hashed-unexecuted-tarball-with-sigstore-bwrap"
+      }
+    },
+    {
+      "version": "0.167.1",
+      "role": "intermediate-stable",
+      "githubTag": "rust-v0.167.1",
+      "tagObject": "595a35e837a1b6752e60a5de85b89adf415b0ccb",
+      "commit": "0a94398fa60c4fac0e7659e4213a0a36e613dd46",
+      "npmPublishedAt": "2026-11-10T21:39:51.990Z",
+      "githubPublishedAt": "2026-11-10T21:32:01Z",
+      "wrapper": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.167.1.tgz",
+        "integrity": "sha512-39uApTRT9bkhE8tMXTIfZxaZ27oi7hPqWoF2Coyp+iQFAD3NVHgH838IYVUfJaX85leMSP2s4JOmVw0mMSCN5Q==",
+        "sha256": "a5b60ca409e06544c15ce03aca7c2f7e4082e220383a2e57700e42a0c6830b03",
+        "files": 3,
+        "binCodexJsSha256": "e14fc83739c13c1074b12bd1acce4010c893c7f6fbfc1593b4a31d74cabb57af"
+      },
+      "darwinArm64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.167.1-darwin-arm64.tgz",
+        "integrity": "sha512-IMUByWGPhdbJFZzuk18iIdF/mfd21cPwalRTp5vGYIsOCyv3SJGRY5snbzZd0zO37WGuNjfUvH/62LvQHqNT2A==",
+        "sha256": "402f0e6678eef2842ce669da71f54c44ed4743f659527beb18185ef17306b154",
+        "files": 43,
+        "cliSha256": "ebabe5f0d79145a9e61274ce9ecf7c02c9021b7b04bfa59b7e61ad4461c32b0b",
+        "provenance": "hashed-unexecuted-tarball"
+      },
+      "linuxX64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.167.1-linux-x64.tgz",
+        "integrity": "sha512-qZteglyvMCj1QVymMyPyKdtw38HaXCv5gvw8WN+N0+JJstu3k/d8xiYj9ciL7OwFLhcujgP8bCGJgaREeqrHkw==",
+        "sha256": "944cbabe58a2c599a30141bc0220c31963205c33e69b43b414dd5da6adaf957f",
+        "files": 45,
+        "cliSha256": "dd5bfdf19d794dcc6fb482d2d5a2d9fb31d11f6caa44b303bb72890d461e8a02",
+        "bwrapSha256": "77360cb751ccedc5971391444ac86a8a33c15b04d6b4a6fe45f5d25496e62c4c",
+        "provenance": "hashed-unexecuted-tarball-with-sigstore-bwrap"
+      }
+    },
+    {
+      "version": "0.167.2",
+      "role": "intermediate-stable",
+      "githubTag": "rust-v0.167.2",
+      "tagObject": "08a3b12b3298577534a28b62ed976acf8de66eda",
+      "commit": "ce21072c90d32c40af7a55b60b2fb35c84a43a6a",
+      "npmPublishedAt": "2026-11-11T22:50:04.191Z",
+      "githubPublishedAt": "2026-11-11T22:44:46Z",
+      "wrapper": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.167.2.tgz",
+        "integrity": "sha512-6OFkr2ndzTdFb32OEiUlM9BgpeY8+wnMe8vRhuvt+22TnxVR39KnJ22Ghay98IY9OmEltoNgFN4GALUkxFQCOw==",
+        "sha256": "ee6f22155fd7514cd22c03f1bc281d854a89cc5d6c72d5b3e3b01043f4206c2f",
+        "files": 3,
+        "binCodexJsSha256": "e14fc83739c13c1074b12bd1acce4010c893c7f6fbfc1593b4a31d74cabb57af"
+      },
+      "darwinArm64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.167.2-darwin-arm64.tgz",
+        "integrity": "sha512-JB6L+L2jefDIaNgoHi7ePZKK1u2riDhlbwgm6zK57ZWpMGAYAwKgDYDb7l+xie7oUkRZuCVx307wsB/k4VsMKw==",
+        "sha256": "7dd03256d9c38110e8b5d26bb8f177cc938fa9603ee2f509a2c9fdb877fb363e",
+        "files": 43,
+        "cliSha256": "97bc82fd46f117cf10efb95e6ff0c81dc4784f5797bcdc2cb75093ba09e4def0",
+        "provenance": "hashed-unexecuted-tarball"
+      },
+      "linuxX64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.167.2-linux-x64.tgz",
+        "integrity": "sha512-2Rw3VkWonMxwCSgOw+NkiKLOuOzyoQNWmxU7x8GniesdMfhKc4asNqOzTgQwJLKCrSlPc4/6fYTaH7fYcuGWGQ==",
+        "sha256": "637bf17e7a3082b62f8cbd11ed1936601014af4dedac7ce78f8e3614c6e4adf6",
+        "files": 45,
+        "cliSha256": "a9672d0fa0dd8fcf8cad136fa0d056b914bc046f5ac3d78f4a5cf390655af56b",
+        "bwrapSha256": "7df960565a0dece99240ea4b9d0e011307817f9f3b73176c7b71fda44fe84765",
+        "provenance": "hashed-unexecuted-tarball-with-sigstore-bwrap"
+      }
+    },
+    {
+      "version": "0.168.0",
+      "role": "intermediate-stable",
+      "githubTag": "rust-v0.168.0",
+      "tagObject": "309da486f21e040868f4169723f4fdc8dc4218ec",
+      "commit": "9480ec100c3edee9fc69172e8e80a4730444094d",
+      "npmPublishedAt": "2026-11-13T04:00:31.594Z",
+      "githubPublishedAt": "2026-11-13T03:54:29Z",
+      "wrapper": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.168.0.tgz",
+        "integrity": "sha512-PnX7jM9QFmDyq5oGrFQ2l/TCrkn+/Q6amlSxxUEpyxGeBR0eVHNULU87jcbRPmnVup1V1Leyv3DIajlKkjl9Ug==",
+        "sha256": "7d15bc886135c9c1397f9074fb178e69e3604f1dd39fd9b002f3a2e5f17a66aa",
+        "files": 3,
+        "binCodexJsSha256": "e14fc83739c13c1074b12bd1acce4010c893c7f6fbfc1593b4a31d74cabb57af"
+      },
+      "darwinArm64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.168.0-darwin-arm64.tgz",
+        "integrity": "sha512-gnAO7m6o0wdiUm6EfYD1r1KLgrJdDL5W83VWzPz+uZwb3whAcX6fcTbs8ekBWimT3g+mP1XqEWRnNtOrJK5FMQ==",
+        "sha256": "085d6ea222b80c8942b8c726b7ec2e8411d8e0ae2f7d011f36a45241fbd1d7b8",
+        "files": 43,
+        "cliSha256": "1b7ee0f02650f3e2d31f50232699f667a1cbe60f431a57e118f2e785fe372c4b",
+        "provenance": "hashed-unexecuted-tarball"
+      },
+      "linuxX64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.168.0-linux-x64.tgz",
+        "integrity": "sha512-0RfDOlpWUh3JthqYuD0Eu1Ot4m58rO2JGbKkJIEbJEMb3MwdLeVLMEvlxgHwmsknq41sF8xXlr0RB5ygFWOMaw==",
+        "sha256": "de415213cf1ca175f5fb2f24131066f940a3a347dd39d812f3026de55425dc59",
+        "files": 45,
+        "cliSha256": "a8cb58c528c76e7313d4a70294ec614757b0f4c7bf9683e11c88ecad8c3d421b",
+        "bwrapSha256": "77360cb751ccedc5971391444ac86a8a33c15b04d6b4a6fe45f5d25496e62c4c",
+        "provenance": "hashed-unexecuted-tarball-with-sigstore-bwrap"
+      }
+    },
+    {
+      "version": "0.169.0",
+      "role": "intermediate-stable",
+      "githubTag": "rust-v0.169.0",
+      "tagObject": "a41fe5b443652cbdbee57717fbb9fd78d8d8b32a",
+      "commit": "d32063f96c2dff1dc96af839b3952abb6acfeda4",
+      "npmPublishedAt": "2026-11-13T08:43:21.818Z",
+      "githubPublishedAt": "2026-11-13T08:37:05Z",
+      "wrapper": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.169.0.tgz",
+        "integrity": "sha512-KhzYlkKPxoNssR8CEm45IjqnFWn7UtlF4CiD3tOJPea51xBs7MaHy0UQG9GSbCqk6Lrjn5QdJDV0QD1/FgWlGw==",
+        "sha256": "5928066ef039439ee241552ef071434925a9c4471ed579bb72caabc6e4a02280",
+        "files": 3,
+        "binCodexJsSha256": "e14fc83739c13c1074b12bd1acce4010c893c7f6fbfc1593b4a31d74cabb57af"
+      },
+      "darwinArm64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.169.0-darwin-arm64.tgz",
+        "integrity": "sha512-5WsWFBbVP78D+6FvNo1MMVxLPZdmcoQlqVJFrF4qx/TmvneLnMQKtLyXkUo54XOTDfoYKpNouTJ/F7gTVA8FnQ==",
+        "sha256": "d67d443253294438a21fde15753d7c1174e6a32147d842eb84428479d664c93d",
+        "files": 43,
+        "cliSha256": "739cda86e15d30a6e2b40cf8dcbbfb988aaf48b305b27065573bb8e9fd41d002",
+        "provenance": "hashed-unexecuted-tarball"
+      },
+      "linuxX64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.169.0-linux-x64.tgz",
+        "integrity": "sha512-o05NyAOCDygSPRo1yinzxvkRSdmsZyBD9E7mbpmjRanSfM8lypqWtQgEo4XfNkwhuCR2aFu8mlGOsQGFXVbVww==",
+        "sha256": "89801b4b97faba562eb80fe0a833159ac79399be674022f4b1a0ccab1d153faa",
+        "files": 45,
+        "cliSha256": "b452ca20f838a8855a88a41050ee4a694033fff4ea3ecdad5633e6e0e8d13f2b",
+        "bwrapSha256": "15fd5f2673d2e1c2f80e34e5108462fd014f5e8bbc7b0731f1ab23d1ff1ac140",
+        "provenance": "hashed-unexecuted-tarball-with-sigstore-bwrap"
+      }
+    },
+    {
+      "version": "0.169.1",
+      "role": "intermediate-stable",
+      "githubTag": "rust-v0.169.1",
+      "tagObject": "3f7d3da04eb2afde20a12c59cf4b1b988f64122f",
+      "commit": "c376cf7396eff83ce4c6ac61b9553df142e7a0be",
+      "npmPublishedAt": "2026-11-17T22:26:21.610Z",
+      "githubPublishedAt": "2026-11-17T22:21:10Z",
+      "wrapper": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.169.1.tgz",
+        "integrity": "sha512-2ZP53HuNspqL1lCX9Xc2XfoSq26VjjQ7XC08dTnkpetzH0kkAN1TTM3K1YOSwzAqikCdjQUzMV0haZmdxhPhjg==",
+        "sha256": "747ac070bea119ca93640055f996d9aacdfb91a5c586205fcbb49f0391019931",
+        "files": 3,
+        "binCodexJsSha256": "e14fc83739c13c1074b12bd1acce4010c893c7f6fbfc1593b4a31d74cabb57af"
+      },
+      "darwinArm64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.169.1-darwin-arm64.tgz",
+        "integrity": "sha512-yOKvCJktlbxdETtXAidz2GcC4z/WMYPmu2plncYJtUI5AhnFIExen8n9eL/El6n9hYbzzZFf1JgyW7yHx6kwTw==",
+        "sha256": "1a11a5744b18a211a6d2440dcd3295192e311e365edd83b3f8f1b4091c3ccdd1",
+        "files": 43,
+        "cliSha256": "ae90a6779b8f91073c392f6873f2481e4b06bf73f59c6dac31f8983e45dccca5",
+        "provenance": "hashed-unexecuted-tarball"
+      },
+      "linuxX64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.169.1-linux-x64.tgz",
+        "integrity": "sha512-KmlHQ/lB9jcn8Yy5z/tWCpSPsqBvI3pU+0PUPccr+pKiiU2NJSCvZcAD7s3dmIFq5ZvGYtGcSn2KdFFdaPQICg==",
+        "sha256": "4bda4d718be83d1655c77bd73bba17a1e0db732bd5aa04a7095e9ba58115b8a4",
+        "files": 45,
+        "cliSha256": "105102da93472e8641b839554c7713849817943a09f76db3f4ea333fd67ce8b5",
+        "bwrapSha256": "15fd5f2673d2e1c2f80e34e5108462fd014f5e8bbc7b0731f1ab23d1ff1ac140",
+        "provenance": "hashed-unexecuted-tarball-with-sigstore-bwrap"
+      }
+    },
+    {
+      "version": "0.170.0",
+      "role": "intermediate-stable",
+      "githubTag": "rust-v0.170.0",
+      "tagObject": "72f97c309fb0f78b6f35cce455adf416e6a51571",
+      "commit": "29eb79e9866b3262a777fdf8195c1b9e63684c91",
+      "npmPublishedAt": "2026-11-18T03:45:45.798Z",
+      "githubPublishedAt": "2026-11-18T03:40:48Z",
+      "wrapper": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.170.0.tgz",
+        "integrity": "sha512-dwoughgqjiik++CFaNkjQ5y6pJO6LUzu5P1z8Hy4LUeJ+aIYcX/QO1P5rOQnHmBG4agOM7Y+hc4LtVo/a4GFiw==",
+        "sha256": "d050bdcc0015ed5680c84e227e4aeca17fbfdd5ef1a3401f46bd73deaf983720",
+        "files": 3,
+        "binCodexJsSha256": "e14fc83739c13c1074b12bd1acce4010c893c7f6fbfc1593b4a31d74cabb57af"
+      },
+      "darwinArm64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.170.0-darwin-arm64.tgz",
+        "integrity": "sha512-sQyOGJabAUTEWCKe1O6GNsE7NKnHCHSjzLrazfYUgw8OFsFDeAQGVEwzvpXTK1yW1hJiLLAMRzC/W2Vu7m9DwQ==",
+        "sha256": "ab7ba154261db88eef760dfe69978fbb67018c2e1200ff536dc8c51ed9c758b5",
+        "files": 43,
+        "cliSha256": "9248cfeebec9b4cc3034d5114caab10fbf426cbfa79dba410c5fa1b72762abd6",
+        "provenance": "hashed-unexecuted-tarball"
+      },
+      "linuxX64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.170.0-linux-x64.tgz",
+        "integrity": "sha512-6cCZJaZL17tiTAvhd1Pirt8vsV1dP8CfG94+IHygUO4m24oYLQrIInJJLyKzcMv/uUonbu1dF2JmcXhA/s5bsg==",
+        "sha256": "67c4bccce8e6c3a2b9ae0e586750e0efac7e0b8cd85e6b4734ad474317d2cc32",
+        "files": 45,
+        "cliSha256": "880819aab735adcf16f36cd628940b9f1e652a36c01d10a5d32f83cc84902971",
+        "bwrapSha256": "15fd5f2673d2e1c2f80e34e5108462fd014f5e8bbc7b0731f1ab23d1ff1ac140",
+        "provenance": "hashed-unexecuted-tarball-with-sigstore-bwrap"
+      }
+    },
+    {
+      "version": "0.171.0",
+      "role": "official-latest",
+      "githubTag": "rust-v0.171.0",
+      "tagObject": "295eca93394bb83a6ec8e0841033f3997f97fcbd",
+      "commit": "ccf9be8cc458bd6b8336fe84d68d8893f2691a5e",
+      "npmPublishedAt": "2026-11-20T00:51:29.762Z",
+      "githubPublishedAt": "2026-11-20T00:44:47Z",
+      "wrapper": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.171.0.tgz",
+        "integrity": "sha512-1IOFzL2Xg86tLdw6kDo3GoKbkQENgQi7TI6rlEvN132R7ngSw7SNOIQoTcnKzSZZ8kf9N9GynCweSoaFbqk2Eg==",
+        "sha256": "5cbb7da9a9b628fb560ee9249f33a5149c983da6aa05e5aaf1155b2c56b4f0ea",
+        "files": 3,
+        "binCodexJsSha256": "0e0c66f50074965a40cbd12f625b0a35963baf41bbd8c201a93e32fddbe2e073"
+      },
+      "darwinArm64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.171.0-darwin-arm64.tgz",
+        "integrity": "sha512-hIYTkRUpuYpkVfTq4cpby0PXqhAVcIgE7f6FoyY1lt2RyARj3GXS1Can/dIYUBItVhXzhb98HYHZNzCX74QRlQ==",
+        "sha256": "185e1c789e5fd528390c1a89a6968dca791e9aa3138db830d53afffdc9079ae3",
+        "files": 43,
+        "cliSha256": "fc8d77cf7585aded2b9bc487dad29c4ee2f066123e4e76dd3b17653a8322ce42",
+        "provenance": "hashed-unexecuted-tarball"
+      },
+      "linuxX64": {
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.171.0-linux-x64.tgz",
+        "integrity": "sha512-l66NZkQgdk2C3pbcfULDz42yEUB581MVA6I+Y43Wp4OIqEy73HCdmZ0GTjeAHY2ycuH4N00d9VsLrwT1jxshTw==",
+        "sha256": "e13d67afb0533cc6160b5f4140e4ad07e2acd87adbaa081bbf69b82e90cf4e55",
+        "files": 45,
+        "cliSha256": "b76a027d6b210f9a8da7aaf321dd235c700f0ef7a794d4a5314b9af6c134f0f0",
+        "bwrapSha256": "91a245ea678a7ae642f383a22576c3c476d0d6d3e2321a553f3ed8d4d487ed74",
+        "provenance": "hashed-unexecuted-tarball-with-sigstore-bwrap"
+      }
+    }
+  ],
+  "bwrapProvenance": {
+    "0.164.0": {
+      "sha256": "3a81c19ad10a70436529c58e77898e2a447abe80167f813fc20ec34bd9eafdeb",
+      "size": 513520,
+      "sigstoreAsset": "bwrap-x86_64-unknown-linux-musl.sigstore",
+      "rekorHashMatches": true,
+      "rekorLogIndex": 3409176533,
+      "opensslSignatureVerified": true,
+      "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.164.0",
+      "fulcioCommitMatchesTag": true,
+      "embeddedInLinuxCodexBinary": true,
+      "rustcComment": "rustc version 1.99.1 (58cf8f9c3 2026-10-13)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.164.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "b570206b836642f7299e9735792452de8eb162a155f942e0c839899dd38d6aba",
+      "leafCertDerSha256": "2959233406f0c51609bdcc7771daf327876f98442578fe5111e383845240ec11",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1792726298,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "6aaac694803004a63c6f393d153c96d22521a6b9",
+      "buildConfigDigest": "6aaac694803004a63c6f393d153c96d22521a6b9"
+    },
+    "0.165.0": {
+      "sha256": "755c8d6a9b893905a4aabab058bd6c02c453e5e8653adb84fc08e570607f3f36",
+      "size": 513520,
+      "sigstoreAsset": "bwrap-x86_64-unknown-linux-musl.sigstore",
+      "rekorHashMatches": true,
+      "rekorLogIndex": 3522973325,
+      "opensslSignatureVerified": true,
+      "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.165.0",
+      "fulcioCommitMatchesTag": true,
+      "embeddedInLinuxCodexBinary": true,
+      "rustcComment": "rustc version 1.99.1 (58cf8f9c3 2026-10-13)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.165.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "fc367e3276aeac0a6f5e346ae0d217578ec4cbc5fe9834701c22481e5a2cabd9",
+      "leafCertDerSha256": "8f9d8c692db842d09379e4741922466b57399f45785ed36c197fc1a599f62204",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1793126346,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "360319d8dee62d87e2d59fc0c21805d79519cfed",
+      "buildConfigDigest": "360319d8dee62d87e2d59fc0c21805d79519cfed"
+    },
+    "0.166.0": {
+      "sha256": "77360cb751ccedc5971391444ac86a8a33c15b04d6b4a6fe45f5d25496e62c4c",
+      "size": 529776,
+      "sigstoreAsset": "bwrap-x86_64-unknown-linux-musl.sigstore",
+      "rekorHashMatches": true,
+      "rekorLogIndex": 3573128412,
+      "opensslSignatureVerified": true,
+      "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.166.0",
+      "fulcioCommitMatchesTag": true,
+      "embeddedInLinuxCodexBinary": true,
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.166.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "502664c0d0aaa2dadae315951239b1d4812438db0122d404ac5eb8d167581033",
+      "leafCertDerSha256": "86e450fe4d6d488d484e43caea60605d2016255c67b0e003493be40a93de4fa8",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1793297071,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "6ff1e1ca3b30fc8b914720681fcf5fe62e95f856",
+      "buildConfigDigest": "6ff1e1ca3b30fc8b914720681fcf5fe62e95f856"
+    },
+    "0.167.0": {
+      "sha256": "77360cb751ccedc5971391444ac86a8a33c15b04d6b4a6fe45f5d25496e62c4c",
+      "size": 529776,
+      "sigstoreAsset": "bwrap-x86_64-unknown-linux-musl.sigstore",
+      "rekorHashMatches": true,
+      "rekorLogIndex": 3704500433,
+      "opensslSignatureVerified": true,
+      "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.167.0",
+      "fulcioCommitMatchesTag": true,
+      "embeddedInLinuxCodexBinary": true,
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.167.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "9b1fa9713fe278f26eefdddabcbb54d46eb431f9f62ab89f09a93bfc86814b34",
+      "leafCertDerSha256": "97c02efee49f3d1015def521c6366233d25fae021cc2defb023d44a43355300a",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1793922791,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "086ccc833bc9cf01024ad2dd6af7dbd421b6bf9a",
+      "buildConfigDigest": "086ccc833bc9cf01024ad2dd6af7dbd421b6bf9a"
+    },
+    "0.167.1": {
+      "sha256": "77360cb751ccedc5971391444ac86a8a33c15b04d6b4a6fe45f5d25496e62c4c",
+      "size": 529776,
+      "sigstoreAsset": "bwrap-x86_64-unknown-linux-musl.sigstore",
+      "rekorHashMatches": true,
+      "rekorLogIndex": 3791032838,
+      "opensslSignatureVerified": true,
+      "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.167.1",
+      "fulcioCommitMatchesTag": true,
+      "embeddedInLinuxCodexBinary": true,
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.167.1/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "9f3a185ed36c6910563c00411627bb04ac895c9cd2b858bafb5d8761dba1a6f6",
+      "leafCertDerSha256": "e5622213ee6977e2d3d9a9646d00a0f946481d49bec91f7cfe9289682202169e",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1794334831,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "0a94398fa60c4fac0e7659e4213a0a36e613dd46",
+      "buildConfigDigest": "0a94398fa60c4fac0e7659e4213a0a36e613dd46"
+    },
+    "0.167.2": {
+      "sha256": "7df960565a0dece99240ea4b9d0e011307817f9f3b73176c7b71fda44fe84765",
+      "size": 529776,
+      "sigstoreAsset": "bwrap-x86_64-unknown-linux-musl.sigstore",
+      "rekorHashMatches": true,
+      "rekorLogIndex": 3818183184,
+      "opensslSignatureVerified": true,
+      "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.167.2",
+      "fulcioCommitMatchesTag": true,
+      "embeddedInLinuxCodexBinary": true,
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.167.2/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "9f78eba089785e0cd9802aea04c409d385d27ac7352af5cd162c67d5f128d7d0",
+      "leafCertDerSha256": "0def5ba93576c9fc3c72ba9ab029992f83ed69e2f84e2a16131823cb303f13aa",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1794432688,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "ce21072c90d32c40af7a55b60b2fb35c84a43a6a",
+      "buildConfigDigest": "ce21072c90d32c40af7a55b60b2fb35c84a43a6a"
+    },
+    "0.168.0": {
+      "sha256": "77360cb751ccedc5971391444ac86a8a33c15b04d6b4a6fe45f5d25496e62c4c",
+      "size": 529776,
+      "sigstoreAsset": "bwrap-x86_64-unknown-linux-musl.sigstore",
+      "rekorHashMatches": true,
+      "rekorLogIndex": 3840060480,
+      "opensslSignatureVerified": true,
+      "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.168.0",
+      "fulcioCommitMatchesTag": true,
+      "embeddedInLinuxCodexBinary": true,
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.168.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "bf929c4c320e6c0b70ec5ecdfbb90b47e2948fe5f3b2e4d17f0db54a3d2331b3",
+      "leafCertDerSha256": "d3d690588a25bac869bc9410f91fbbfeb85f38fa099a88d8379a9e93cf8c38be",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1794519957,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "9480ec100c3edee9fc69172e8e80a4730444094d",
+      "buildConfigDigest": "9480ec100c3edee9fc69172e8e80a4730444094d"
+    },
+    "0.169.0": {
+      "sha256": "15fd5f2673d2e1c2f80e34e5108462fd014f5e8bbc7b0731f1ab23d1ff1ac140",
+      "size": 507960,
+      "sigstoreAsset": "bwrap-x86_64-unknown-linux-musl.sigstore",
+      "rekorHashMatches": true,
+      "rekorLogIndex": 3846725555,
+      "opensslSignatureVerified": true,
+      "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.169.0",
+      "fulcioCommitMatchesTag": true,
+      "embeddedInLinuxCodexBinary": true,
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.169.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "fd228f908d99cd2a025a617fa12c184a42e4e634ba69b41579c95e12afac7ec9",
+      "leafCertDerSha256": "1a1f767982f4a721fe603d012549786279fc331e979a53b3b9ca2f64a2afe246",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1794546331,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "d32063f96c2dff1dc96af839b3952abb6acfeda4",
+      "buildConfigDigest": "d32063f96c2dff1dc96af839b3952abb6acfeda4"
+    },
+    "0.169.1": {
+      "sha256": "15fd5f2673d2e1c2f80e34e5108462fd014f5e8bbc7b0731f1ab23d1ff1ac140",
+      "size": 507960,
+      "sigstoreAsset": "bwrap-x86_64-unknown-linux-musl.sigstore",
+      "rekorHashMatches": true,
+      "rekorLogIndex": 3953943746,
+      "opensslSignatureVerified": true,
+      "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.169.1",
+      "fulcioCommitMatchesTag": true,
+      "embeddedInLinuxCodexBinary": true,
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.169.1/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "2b491cb40be364637244230a341c48545257e7c4a72712b614fe33ceb32bc06c",
+      "leafCertDerSha256": "09a7a272b052dbec1a2df53851e3a292fe92a1d8b644575943500d067e12e569",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1794951044,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "c376cf7396eff83ce4c6ac61b9553df142e7a0be",
+      "buildConfigDigest": "c376cf7396eff83ce4c6ac61b9553df142e7a0be"
+    },
+    "0.170.0": {
+      "sha256": "15fd5f2673d2e1c2f80e34e5108462fd014f5e8bbc7b0731f1ab23d1ff1ac140",
+      "size": 507960,
+      "sigstoreAsset": "bwrap-x86_64-unknown-linux-musl.sigstore",
+      "rekorHashMatches": true,
+      "rekorLogIndex": 3959192985,
+      "opensslSignatureVerified": true,
+      "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.170.0",
+      "fulcioCommitMatchesTag": true,
+      "embeddedInLinuxCodexBinary": true,
+      "rustcComment": "rustc version 1.95.0 (59807616e 2026-04-14)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.170.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "c910242fcaada3ab3cf5eb3cf41f5bf8163b69f230743e33a28148616ebc9193",
+      "leafCertDerSha256": "d51295e31a12265f9c67e069f7b2c6387e949609cde92f4e2c015ae0c188a3a6",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1794969922,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "29eb79e9866b3262a777fdf8195c1b9e63684c91",
+      "buildConfigDigest": "29eb79e9866b3262a777fdf8195c1b9e63684c91"
+    },
+    "0.171.0": {
+      "sha256": "91a245ea678a7ae642f383a22576c3c476d0d6d3e2321a553f3ed8d4d487ed74",
+      "size": 492984,
+      "sigstoreAsset": "bwrap-x86_64-unknown-linux-musl.sigstore",
+      "rekorHashMatches": true,
+      "rekorLogIndex": 4009668327,
+      "opensslSignatureVerified": true,
+      "fulcioWorkflowRef": "https://github.com/openai/codex/.github/workflows/rust-release.yml@refs/tags/rust-v0.171.0",
+      "fulcioCommitMatchesTag": true,
+      "embeddedInLinuxCodexBinary": true,
+      "rustcComment": "rustc version 1.99.1 (58cf8f9c3 2026-10-13)",
+      "sigstoreBundleUrl": "https://github.com/openai/codex/releases/download/rust-v0.171.0/bwrap-x86_64-unknown-linux-musl.sigstore",
+      "sigstoreBundleSha256": "77787c674164773a4ae6b433b701762adaf99c8380a7201e229b2fe4b46de3f1",
+      "leafCertDerSha256": "195321c6ca234d7daf93f2a1198ed9ec5d671615cac66d030f9f4c7f4d9e9cd4",
+      "rekorLogId": "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d",
+      "rekorIntegratedTime": 1795130715,
+      "rekorSetVerifiedAgainstTrustedRoot": true,
+      "fulcioChainVerifiedAtIntegratedTime": true,
+      "blobSignatureVerifiedAgainstLeafCert": true,
+      "oidcIssuer": "https://token.actions.githubusercontent.com",
+      "sourceRepositoryDigest": "ccf9be8cc458bd6b8336fe84d68d8893f2691a5e",
+      "buildConfigDigest": "ccf9be8cc458bd6b8336fe84d68d8893f2691a5e"
+    }
+  },
+  "claimAtObservation": {
+    "appServer": {
+      "claimId": "codex.app-server.cli-window-2",
+      "latest": "0.164.0",
+      "behavior": "codex.app-server.v2.protected-aws-workspace-roots"
+    },
+    "lifecycle": {
+      "claimId": "codex.app-server.lifecycle-window-1",
+      "latest": "0.164.0",
+      "behavior": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete"
+    }
+  },
+  "identityDecision": {
+    "appServerShape": "compatible-extension",
+    "lifecycleShape": "private-milestone",
+    "raiseLatestQualifiedTo": "0.171.0",
+    "keepClaimIds": true,
+    "keepGaps": [
+      "0.82.0",
+      "0.83.0",
+      "0.108.0",
+      "0.109.0",
+      "0.149.2",
+      "0.150.2",
+      "0.151.1",
+      "0.152.2",
+      "0.154.1",
+      "0.155.2"
+    ],
+    "appServerBehavior": "codex.app-server.v2.protected-aws-workspace-roots",
+    "lifecycle0_140_to_0_165Behavior": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
+    "lifecycle0_166_to_0_171Behavior": "codex.app-server.lifecycle.v1.best-effort-descendant-restore",
+    "newPublicOperation": false,
+    "consumerVisibleNarrowing": false
+  }
+}

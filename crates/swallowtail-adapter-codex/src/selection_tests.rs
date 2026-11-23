@@ -1,6 +1,6 @@
 use super::lifecycle::{
-    ARCHIVE_BEHAVIOR, DESCENDANT_ARCHIVE_BEHAVIOR, HARD_DELETE_BEHAVIOR, NOTIFICATIONS_BEHAVIOR,
-    RESTORE_BEHAVIOR,
+    ARCHIVE_BEHAVIOR, DESCENDANT_ARCHIVE_BEHAVIOR, DESCENDANT_RESTORE_BEHAVIOR,
+    HARD_DELETE_BEHAVIOR, NOTIFICATIONS_BEHAVIOR, RESTORE_BEHAVIOR,
 };
 use super::*;
 use swallowtail_core::{InterfaceSupportStatus, InterfaceVersion};
@@ -179,7 +179,8 @@ fn app_server_claim_dispatches_at_workspace_root_milestone() {
     );
     for version in [
         "0.159.0", "0.159.1", "0.159.2", "0.159.3", "0.160.0", "0.160.1", "0.161.0", "0.162.0",
-        "0.162.1", "0.163.0", "0.164.0",
+        "0.162.1", "0.163.0", "0.164.0", "0.165.0", "0.166.0", "0.167.0", "0.167.1", "0.167.2",
+        "0.168.0", "0.169.0", "0.169.1", "0.170.0", "0.171.0",
     ] {
         let matched = claim.classify(binding(version).version()).unwrap();
         assert_eq!(
@@ -205,11 +206,11 @@ fn app_server_claim_dispatches_at_workspace_root_milestone() {
         assert!(!claim.supports(binding(version).version()));
     }
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
-        claim.assess(binding("0.164.1").version())
+        claim.assess(binding("0.171.1").version())
     else {
         panic!("first newer stable above ceiling should be unverified-newer");
     };
-    assert_eq!(unverified.latest_qualified().as_str(), "0.164.0");
+    assert_eq!(unverified.latest_qualified().as_str(), "0.171.0");
     assert_eq!(
         unverified.behavior_revision().as_str(),
         CODEX_APP_SERVER_PROTECTED_AWS_BEHAVIOR
@@ -355,6 +356,56 @@ fn app_server_lifecycle_claim_preserves_session_range_with_narrower_capabilities
             HARD_DELETE_BEHAVIOR,
             InterfaceSupportStatus::Maintained,
         ),
+        (
+            "0.165.0",
+            HARD_DELETE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
+        (
+            "0.166.0",
+            DESCENDANT_RESTORE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
+        (
+            "0.167.0",
+            DESCENDANT_RESTORE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
+        (
+            "0.167.1",
+            DESCENDANT_RESTORE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
+        (
+            "0.167.2",
+            DESCENDANT_RESTORE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
+        (
+            "0.168.0",
+            DESCENDANT_RESTORE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
+        (
+            "0.169.0",
+            DESCENDANT_RESTORE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
+        (
+            "0.169.1",
+            DESCENDANT_RESTORE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
+        (
+            "0.170.0",
+            DESCENDANT_RESTORE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
+        (
+            "0.171.0",
+            DESCENDANT_RESTORE_BEHAVIOR,
+            InterfaceSupportStatus::Maintained,
+        ),
     ];
 
     for (version, behavior, status) in cases {
@@ -377,14 +428,14 @@ fn app_server_lifecycle_claim_preserves_session_range_with_narrower_capabilities
     }
 
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
-        claim.assess(binding("0.164.1").version())
+        claim.assess(binding("0.171.1").version())
     else {
         panic!("newer lifecycle version remains visible");
     };
-    assert_eq!(unverified.latest_qualified().as_str(), "0.164.0");
+    assert_eq!(unverified.latest_qualified().as_str(), "0.171.0");
     assert_eq!(
         unverified.behavior_revision().as_str(),
-        HARD_DELETE_BEHAVIOR
+        DESCENDANT_RESTORE_BEHAVIOR
     );
 }
 

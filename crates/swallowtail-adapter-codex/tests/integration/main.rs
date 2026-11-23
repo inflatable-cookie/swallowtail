@@ -30,6 +30,9 @@ mod codex_0_165_0_identity;
 #[path = "../codex_exec_0_171_0_identity.rs"]
 mod codex_exec_0_171_0_identity;
 
+#[path = "../codex_app_server_0_171_0_identity.rs"]
+mod codex_app_server_0_171_0_identity;
+
 #[path = "../exec_currentness_suite.rs"]
 mod exec_currentness_suite;
 

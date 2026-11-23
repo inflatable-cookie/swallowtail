@@ -101,7 +101,7 @@ fn attached_child_delete_refusal_is_failed_before_effect() {
 #[test]
 fn unverified_newer_attached_child_refusal_keeps_before_effect_truth() {
     let (outcome, state) = delete_outcome(
-        "0.165.0",
+        "0.171.1",
         "attached-child-refusal-newer",
         true,
         AppServerMode::AttachedChildDeleteRefusal,

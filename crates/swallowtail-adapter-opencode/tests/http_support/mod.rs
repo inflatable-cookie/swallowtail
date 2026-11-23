@@ -15,6 +15,8 @@ use swallowtail_runtime::{
 const HTTP_SUCCESS: &str = include_str!("../fixtures/opencode-1.14.48/http-success.json");
 const SUCCESS: &str = include_str!("../fixtures/opencode-1.14.48/success.sse");
 const PROVIDER_ERROR: &str = include_str!("../fixtures/opencode-1.14.48/provider-error.sse");
+const OVERFLOW_RECOVERY: &str =
+    include_str!("../fixtures/opencode-http-1.19.6/overflow-recovery.sse");
 const UNKNOWN: &str = include_str!("../fixtures/opencode-1.14.48/unknown-event.sse");
 const DISCONNECT: &str = include_str!("../fixtures/opencode-1.14.48/disconnect.sse");
 const ABORTED: &str = include_str!("../fixtures/opencode-1.14.48/aborted.sse");
@@ -30,6 +32,7 @@ use delete_gate::DeleteResponseGate;
 pub enum StreamFixture {
     Success,
     ProviderError,
+    OverflowRecovery,
     Unknown,
     Disconnect,
     DuplicateUsage,

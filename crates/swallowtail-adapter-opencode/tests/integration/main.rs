@@ -26,6 +26,9 @@ mod protocol_suite;
 #[path = "../opencode_http_1_19_5_delta_ledger.rs"]
 mod opencode_http_1_19_5_delta_ledger;
 
+#[path = "../opencode_http_1_19_6_evidence.rs"]
+mod opencode_http_1_19_6_evidence;
+
 #[path = "../acp_suite.rs"]
 mod acp_suite;
 

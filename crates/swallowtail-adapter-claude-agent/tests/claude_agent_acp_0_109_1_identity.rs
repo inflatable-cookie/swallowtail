@@ -23,10 +23,9 @@ fn frozen_newer_hops_still_require_guarded_qualification() {
     let hops = inventory["published_stables_after_ceiling"]
         .as_array()
         .expect("published ACP hops");
-    for version in hops
-        .iter()
-        .chain(std::iter::once(&inventory["first_unpublished_stable_after_latest"]))
-    {
+    for version in hops.iter().chain(std::iter::once(
+        &inventory["first_unpublished_stable_after_latest"],
+    )) {
         let version = version.as_str().expect("ACP adapter version");
         let assessed = InterfaceVersion::new(version).expect("valid ACP adapter version");
         assert!(

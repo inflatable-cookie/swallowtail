@@ -72,6 +72,37 @@ fn provider_disconnect_and_unknown_event_remain_distinct_and_redacted() {
 }
 
 #[test]
+fn unverified_1_19_6_overflow_followed_by_recovery_ends_the_local_turn() {
+    let version = "1.19.6";
+    let server = FixtureServer::start_with_version(StreamFixture::OverflowRecovery, version);
+    let fixture = Fixture::new_with_version(server.endpoint(), "host.overflow", version);
+    let mut session = block_on(OpenCodeHttpDriver::new().open_session(
+        fixture.plan(DriverRole::InteractiveSession),
+        open_session_request("overflow-session", fixture.resource.clone()),
+        fixture.services(),
+    ))
+    .expect("unverified newer session opens");
+    let mut turn = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("overflow-turn").expect("turn id is valid"),
+            OperationContent::new("exercise provider recovery").expect("content is valid"),
+        ),
+        fixture.services(),
+    ))
+    .expect("turn starts");
+    let outcome = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    let TerminalStatus::ProviderFailed(diagnostic) = outcome.status() else {
+        panic!("unexpected terminal status: {:?}", outcome.status());
+    };
+    assert_eq!(diagnostic.code(), "swallowtail.opencode.provider_failed");
+    let _ = block_on(turn.close());
+    let _ = block_on(close_session(session, &fixture));
+}
+
+#[test]
 fn unsupported_session_options_fail_before_network_work() {
     let server = FixtureServer::start(StreamFixture::Success);
     let fixture = Fixture::new(server.endpoint(), "host.local");

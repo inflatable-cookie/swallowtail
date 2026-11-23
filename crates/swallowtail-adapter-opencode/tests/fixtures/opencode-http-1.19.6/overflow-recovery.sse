@@ -1,0 +1,12 @@
+data: {"id":"evt_connected","type":"server.connected","properties":{}}
+
+data: {"id":"evt_busy","type":"session.status","properties":{"sessionID":"ses_fixture","status":{"type":"busy"}}}
+
+data: {"id":"evt_overflow","type":"session.error","properties":{"sessionID":"ses_fixture","error":{"name":"ContextOverflowError","data":{"message":"Request body too large"}}}}
+
+data: {"id":"evt_compacted","type":"session.compacted","properties":{"sessionID":"ses_fixture"}}
+
+data: {"id":"evt_usage","type":"message.part.updated","properties":{"sessionID":"ses_fixture","part":{"id":"prt_recovery","sessionID":"ses_fixture","messageID":"msg_recovery","type":"step-finish","reason":"stop","tokens":{"input":12,"output":4,"reasoning":2,"cache":{"read":3,"write":1}}}}}
+
+data: {"id":"evt_idle","type":"session.idle","properties":{"sessionID":"ses_fixture"}}
+

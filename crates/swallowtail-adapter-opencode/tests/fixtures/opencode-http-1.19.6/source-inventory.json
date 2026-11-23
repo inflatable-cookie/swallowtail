@@ -1,0 +1,252 @@
+{
+  "source_trees": {
+    "1.19.4": {
+      "entries": 6636,
+      "files": 6576,
+      "symlinks": 60,
+      "canonical_sha256": "ae0d6884639fda9deb79082e5b27483c9b6a6f45fb8868dadd89714722cbf287",
+      "source_archive_sha256": "2e553ed005b2df4a7efb9edd26db8fc3caafb1b4dfc3c5c3869192334584d8bb"
+    },
+    "1.19.5": {
+      "entries": 6627,
+      "files": 6567,
+      "symlinks": 60,
+      "canonical_sha256": "98d156015c7d31198a689d93fbe18bdc9a11c833228473e8334ee36c9973a56b",
+      "source_archive_sha256": "7d2ac43b5083a3a4687fe23b79ab153b8d93a6fb186fa07209ed28d4731e5c7a"
+    },
+    "1.19.6": {
+      "entries": 6651,
+      "files": 6591,
+      "symlinks": 60,
+      "canonical_sha256": "0ee067b3b6ba39ef6c4f752f0c29bb4b7d78401b78083d14e6c4add628c5e4d8",
+      "source_archive_sha256": "0dfc7c58a82a1f9ca635ebcfe8aad594009edb22a5ef752719d2b89fbe5918b8"
+    }
+  },
+  "hops": [
+    {
+      "from": "1.19.4",
+      "to": "1.19.5",
+      "counts": {
+        "added": 4,
+        "removed": 13,
+        "changed": 83,
+        "identical": 6540
+      },
+      "path_set_sha256": {
+        "added": "afe3f85b786e88bbf1d92505f987bdf05d09b9f7add5ce67a7d96ad6c2c6968a",
+        "removed": "11a9113311a6949ed859e968a95b19fa93e9c0209147a37e4aa364e5f98d9adc",
+        "changed": "4491c152d5e7302a381c25b020e351a15ae651133c37b5647469d76d0bc9f97f",
+        "identical": "a20f701230bca173b64da70b0fd199ee36910d7469e8e644dcbd48a05e7c1443"
+      }
+    },
+    {
+      "from": "1.19.5",
+      "to": "1.19.6",
+      "counts": {
+        "added": 42,
+        "removed": 18,
+        "changed": 118,
+        "identical": 6491
+      },
+      "path_set_sha256": {
+        "added": "31ee237188d15542cf508fc4f49709813c1e090c1824217c4017f2324846001d",
+        "removed": "454f430ecbc75c4c23dd908f5cabda5f04f0460b2226a0396d4e5b8158bb2125",
+        "changed": "abaa1d01a577b837c619cf9347fded27d5fb3128794f932d7b86b36f194e2d43",
+        "identical": "28c6a5b45ae08e23504696c0131cf413b1473ac842ef0f118909ef7c1f811778"
+      }
+    }
+  ],
+  "selected_openapi_paths": [
+    "/event",
+    "/global/event",
+    "/global/health",
+    "/permission/{requestID}/reply",
+    "/provider",
+    "/question/{requestID}/reject",
+    "/question/{requestID}/reply",
+    "/session",
+    "/session/status",
+    "/session/{sessionID}",
+    "/session/{sessionID}/abort",
+    "/session/{sessionID}/message",
+    "/session/{sessionID}/prompt_async"
+  ],
+  "selected_source_sha256": {
+    "packages/core/src/plugin/provider/gitlab.ts": {
+      "1.19.4": "d914ac478608b950c5e19c62d53773bc90693e78ba43726ab125e3721af579f8",
+      "1.19.5": "d914ac478608b950c5e19c62d53773bc90693e78ba43726ab125e3721af579f8",
+      "1.19.6": "d914ac478608b950c5e19c62d53773bc90693e78ba43726ab125e3721af579f8"
+    },
+    "packages/core/src/v1/session.ts": {
+      "1.19.4": "d5061bebc69e402022fabe1341179c1bf0e11ef746a7318bdf42e7495a88c566",
+      "1.19.5": "d5061bebc69e402022fabe1341179c1bf0e11ef746a7318bdf42e7495a88c566",
+      "1.19.6": "d5061bebc69e402022fabe1341179c1bf0e11ef746a7318bdf42e7495a88c566"
+    },
+    "packages/llm/src/provider-error.ts": {
+      "1.19.4": "652a9bbfa3fa2f5d1699e4ff20dc3361e7f8d2df1e1bf6dc3d2bbe99601494a8",
+      "1.19.5": "652a9bbfa3fa2f5d1699e4ff20dc3361e7f8d2df1e1bf6dc3d2bbe99601494a8",
+      "1.19.6": "92e58ec48bede460dae45f569f5ae660fe0538e708f0fdadf3809f91fb62ff18"
+    },
+    "packages/opencode/src/permission/arity.ts": {
+      "1.19.4": "4200d3074fa8b6b6a63100fa93deb201be16f92c655721401d47c2ca0a109832",
+      "1.19.5": "4200d3074fa8b6b6a63100fa93deb201be16f92c655721401d47c2ca0a109832",
+      "1.19.6": "4200d3074fa8b6b6a63100fa93deb201be16f92c655721401d47c2ca0a109832"
+    },
+    "packages/opencode/src/permission/evaluate.ts": {
+      "1.19.4": "0ee7b7fea6766c57ce0583bd6f23a303c5af314c0e5287018fa6bdfdc38e5a6e",
+      "1.19.5": "0ee7b7fea6766c57ce0583bd6f23a303c5af314c0e5287018fa6bdfdc38e5a6e",
+      "1.19.6": "0ee7b7fea6766c57ce0583bd6f23a303c5af314c0e5287018fa6bdfdc38e5a6e"
+    },
+    "packages/opencode/src/permission/index.ts": {
+      "1.19.4": "5b9e4aa65290a39363722b9fae4c68080188d8ed76896afa0d96cd9dbfd2821d",
+      "1.19.5": "5b9e4aa65290a39363722b9fae4c68080188d8ed76896afa0d96cd9dbfd2821d",
+      "1.19.6": "5b9e4aa65290a39363722b9fae4c68080188d8ed76896afa0d96cd9dbfd2821d"
+    },
+    "packages/opencode/src/provider/provider.ts": {
+      "1.19.4": "8d31296a58bc7955a1adb8b6d60da53a34ab7540d85644bab212a8ee27b8b69d",
+      "1.19.5": "8d31296a58bc7955a1adb8b6d60da53a34ab7540d85644bab212a8ee27b8b69d",
+      "1.19.6": "8d31296a58bc7955a1adb8b6d60da53a34ab7540d85644bab212a8ee27b8b69d"
+    },
+    "packages/opencode/src/provider/transform.ts": {
+      "1.19.4": "4fb803445f0e72a84fb3edf2b1721084437204d3e35582dab53e156f92f54007",
+      "1.19.5": "4fb803445f0e72a84fb3edf2b1721084437204d3e35582dab53e156f92f54007",
+      "1.19.6": "4fb803445f0e72a84fb3edf2b1721084437204d3e35582dab53e156f92f54007"
+    },
+    "packages/opencode/src/question/index.ts": {
+      "1.19.4": "7f1aa951067be95f020c508b5f8cf61446047019f8ffd31c2372eb551cc22f52",
+      "1.19.5": "7f1aa951067be95f020c508b5f8cf61446047019f8ffd31c2372eb551cc22f52",
+      "1.19.6": "7f1aa951067be95f020c508b5f8cf61446047019f8ffd31c2372eb551cc22f52"
+    },
+    "packages/opencode/src/question/schema.ts": {
+      "1.19.4": "97d4800bf60985bea7ff02719427f73474271611792b735e74bd62fa4eb8a791",
+      "1.19.5": "97d4800bf60985bea7ff02719427f73474271611792b735e74bd62fa4eb8a791",
+      "1.19.6": "97d4800bf60985bea7ff02719427f73474271611792b735e74bd62fa4eb8a791"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/groups/event.ts": {
+      "1.19.4": "fd1ba9befff410ef6e0ac3f4fd1c2427ca721c95c31aaad174c9db6e30bdd513",
+      "1.19.5": "fd1ba9befff410ef6e0ac3f4fd1c2427ca721c95c31aaad174c9db6e30bdd513",
+      "1.19.6": "fd1ba9befff410ef6e0ac3f4fd1c2427ca721c95c31aaad174c9db6e30bdd513"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/groups/global.ts": {
+      "1.19.4": "06437965490139ac8a8608dfc45dc06f743f43914a8fdb960bc3152998d93d58",
+      "1.19.5": "06437965490139ac8a8608dfc45dc06f743f43914a8fdb960bc3152998d93d58",
+      "1.19.6": "06437965490139ac8a8608dfc45dc06f743f43914a8fdb960bc3152998d93d58"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/groups/permission.ts": {
+      "1.19.4": "830a9dd784e3e12831a73e6f5e1cdc4c013c00b2f41e681771c65658b95b095d",
+      "1.19.5": "830a9dd784e3e12831a73e6f5e1cdc4c013c00b2f41e681771c65658b95b095d",
+      "1.19.6": "830a9dd784e3e12831a73e6f5e1cdc4c013c00b2f41e681771c65658b95b095d"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/groups/provider.ts": {
+      "1.19.4": "9e9c382d2d7b69dda7a5bab87ed999e400534a268d3f29f7e95d5cd95032d246",
+      "1.19.5": "9e9c382d2d7b69dda7a5bab87ed999e400534a268d3f29f7e95d5cd95032d246",
+      "1.19.6": "9e9c382d2d7b69dda7a5bab87ed999e400534a268d3f29f7e95d5cd95032d246"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/groups/question.ts": {
+      "1.19.4": "ba4d6d8bca1c5ca342bf75fd4416f0cfac4c49c81f3b7b25e58623ecad07e76b",
+      "1.19.5": "ba4d6d8bca1c5ca342bf75fd4416f0cfac4c49c81f3b7b25e58623ecad07e76b",
+      "1.19.6": "ba4d6d8bca1c5ca342bf75fd4416f0cfac4c49c81f3b7b25e58623ecad07e76b"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/groups/session.ts": {
+      "1.19.4": "3fd2ae22b6bbc211adc45011243a42fa869862355ad08c086c591792d8fa91dc",
+      "1.19.5": "3fd2ae22b6bbc211adc45011243a42fa869862355ad08c086c591792d8fa91dc",
+      "1.19.6": "3fd2ae22b6bbc211adc45011243a42fa869862355ad08c086c591792d8fa91dc"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/event.ts": {
+      "1.19.4": "64985bf2d4d5e1002bdef7b3f64217cdd830c8b0dadfe3faf84ad0dffc5c5ba6",
+      "1.19.5": "64985bf2d4d5e1002bdef7b3f64217cdd830c8b0dadfe3faf84ad0dffc5c5ba6",
+      "1.19.6": "64985bf2d4d5e1002bdef7b3f64217cdd830c8b0dadfe3faf84ad0dffc5c5ba6"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/global.ts": {
+      "1.19.4": "c16bada73332142b026e7b2e52f777fe4fffede29673a791d7d76477d3e45f60",
+      "1.19.5": "c16bada73332142b026e7b2e52f777fe4fffede29673a791d7d76477d3e45f60",
+      "1.19.6": "c16bada73332142b026e7b2e52f777fe4fffede29673a791d7d76477d3e45f60"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/permission.ts": {
+      "1.19.4": "9b17cfb60c8a4b4933a5771dbb06dfbfa8d3b15d643d72a20c44abfb3f7d33a6",
+      "1.19.5": "9b17cfb60c8a4b4933a5771dbb06dfbfa8d3b15d643d72a20c44abfb3f7d33a6",
+      "1.19.6": "9b17cfb60c8a4b4933a5771dbb06dfbfa8d3b15d643d72a20c44abfb3f7d33a6"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/provider.ts": {
+      "1.19.4": "0a42588ae88dea589963f41f8a65c354a05e82c0a864b31896e1e50439fee077",
+      "1.19.5": "0a42588ae88dea589963f41f8a65c354a05e82c0a864b31896e1e50439fee077",
+      "1.19.6": "0a42588ae88dea589963f41f8a65c354a05e82c0a864b31896e1e50439fee077"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/question.ts": {
+      "1.19.4": "dd9b4ed60243d1387ba1f92c3c086f3a87a23c444eab335e3c8385d3769b8319",
+      "1.19.5": "dd9b4ed60243d1387ba1f92c3c086f3a87a23c444eab335e3c8385d3769b8319",
+      "1.19.6": "dd9b4ed60243d1387ba1f92c3c086f3a87a23c444eab335e3c8385d3769b8319"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/session.ts": {
+      "1.19.4": "3ce829f386267181da442d499d841463a9e532db827f75a6f41d501de6f71cf6",
+      "1.19.5": "3ce829f386267181da442d499d841463a9e532db827f75a6f41d501de6f71cf6",
+      "1.19.6": "3ce829f386267181da442d499d841463a9e532db827f75a6f41d501de6f71cf6"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/lifecycle.ts": {
+      "1.19.4": "88618adc27b27bebbc596207c7cf4324c112b7b49b696972e22050f8d5ca4adb",
+      "1.19.5": "88618adc27b27bebbc596207c7cf4324c112b7b49b696972e22050f8d5ca4adb",
+      "1.19.6": "88618adc27b27bebbc596207c7cf4324c112b7b49b696972e22050f8d5ca4adb"
+    },
+    "packages/opencode/src/session/compaction.ts": {
+      "1.19.4": "8d478570a7e4ad32b746030d4f86a1c673949b1e2259bd716b3885d99283289a",
+      "1.19.5": "8d478570a7e4ad32b746030d4f86a1c673949b1e2259bd716b3885d99283289a",
+      "1.19.6": "8d478570a7e4ad32b746030d4f86a1c673949b1e2259bd716b3885d99283289a"
+    },
+    "packages/opencode/src/session/message-v2.ts": {
+      "1.19.4": "b55648c31423ace5c730ca085ef5429a966486fcd7bf84ab25e59453a1a9417a",
+      "1.19.5": "b55648c31423ace5c730ca085ef5429a966486fcd7bf84ab25e59453a1a9417a",
+      "1.19.6": "b85e4314c68ae466113672e50f20fba622d07bace85e639818f21ed52ee1d166"
+    },
+    "packages/opencode/src/session/processor.ts": {
+      "1.19.4": "0b31e207beda56bd9a4b9b88c9e42d89a0651dd011773748c8e2938dfc3dcb74",
+      "1.19.5": "0b31e207beda56bd9a4b9b88c9e42d89a0651dd011773748c8e2938dfc3dcb74",
+      "1.19.6": "0b31e207beda56bd9a4b9b88c9e42d89a0651dd011773748c8e2938dfc3dcb74"
+    },
+    "packages/opencode/src/session/prompt.ts": {
+      "1.19.4": "f0c5bc64c0f0e966693d4a57f7ede1e9d6e188b396152f04b55303dc75b9b768",
+      "1.19.5": "f0c5bc64c0f0e966693d4a57f7ede1e9d6e188b396152f04b55303dc75b9b768",
+      "1.19.6": "f0c5bc64c0f0e966693d4a57f7ede1e9d6e188b396152f04b55303dc75b9b768"
+    },
+    "packages/opencode/src/session/session.ts": {
+      "1.19.4": "0c56ae3535e29cae0de51156eaba2842c0896309f1d6b12525566b4a8ba4c7f2",
+      "1.19.5": "0c56ae3535e29cae0de51156eaba2842c0896309f1d6b12525566b4a8ba4c7f2",
+      "1.19.6": "0c56ae3535e29cae0de51156eaba2842c0896309f1d6b12525566b4a8ba4c7f2"
+    },
+    "packages/opencode/src/session/status.ts": {
+      "1.19.4": "dbbbdee83c292379c1665a1d482b810a13754b6ae2143169b24c75ced5841b42",
+      "1.19.5": "dbbbdee83c292379c1665a1d482b810a13754b6ae2143169b24c75ced5841b42",
+      "1.19.6": "dbbbdee83c292379c1665a1d482b810a13754b6ae2143169b24c75ced5841b42"
+    },
+    "packages/sdk/openapi.json": {
+      "1.19.4": "d224c1a7506ae981c8d4fc1a8d1f58ac185e27324f94d4daf1b8f84fc2552d26",
+      "1.19.5": "d224c1a7506ae981c8d4fc1a8d1f58ac185e27324f94d4daf1b8f84fc2552d26",
+      "1.19.6": "d224c1a7506ae981c8d4fc1a8d1f58ac185e27324f94d4daf1b8f84fc2552d26"
+    }
+  },
+  "linux_x64_binary_literal_observations": {
+    "1.19.4": {
+      "GITLAB_DIRECT_ACCESS_CACHE_DIR": false,
+      "\"6.19.0\"": true,
+      "\"6.23.1\"": false,
+      "This image was removed to reduce the request size": false,
+      "request body too large": false,
+      "multimodal data size is too large": false
+    },
+    "1.19.5": {
+      "GITLAB_DIRECT_ACCESS_CACHE_DIR": true,
+      "\"6.19.0\"": false,
+      "\"6.23.1\"": true,
+      "This image was removed to reduce the request size": false,
+      "request body too large": false,
+      "multimodal data size is too large": false
+    },
+    "1.19.6": {
+      "GITLAB_DIRECT_ACCESS_CACHE_DIR": true,
+      "\"6.19.0\"": false,
+      "\"6.23.1\"": true,
+      "This image was removed to reduce the request size": true,
+      "request body too large": true,
+      "multimodal data size is too large": true
+    }
+  }
+}

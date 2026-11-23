@@ -1,0 +1,512 @@
+{
+  "1.19.4": {
+    "opencode-darwin-arm64": {
+      "github_archive_sha256": "c400a2f8c8ab7e99478a7f4dd1a466b57bf33888e520d85c55780a5464c4b689",
+      "github_asset": "opencode-darwin-arm64.zip",
+      "github_files": {
+        "opencode": "417af53923f3d529759ab85ce3e8dd09116f742efcd332de591d2da6ebae696b"
+      },
+      "npm_files": {
+        "package/bin/opencode": "417af53923f3d529759ab85ce3e8dd09116f742efcd332de591d2da6ebae696b",
+        "package/package.json": "2446e50604122378d205e3d2bf89fcc71ca4021d84a8ec7f76baea27473e096e"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-31sy6eA88QO2vXra395rPxe995a2G0IKKAqm7B/ZESwIGVK9auMdYfKd7mf5icI72oFMLUwRJGQ1f4B/ykbDJg==",
+      "npm_tarball_sha256": "79e4e8fc2b461d9ed2141a41b128b82120b590ff50276878a6ae3ab26c2fa12b"
+    },
+    "opencode-darwin-x64": {
+      "github_archive_sha256": "123ebd72609c4f8dbae0485cdac39b9aedfeb6576b2eef64f2e73152b1de82f4",
+      "github_asset": "opencode-darwin-x64.zip",
+      "github_files": {
+        "opencode": "6d6a980039553a6b4efe2221fdbd5e8945abf3c2365d97fcab097713a327228f"
+      },
+      "npm_files": {
+        "package/bin/opencode": "6d6a980039553a6b4efe2221fdbd5e8945abf3c2365d97fcab097713a327228f",
+        "package/package.json": "9a4fed147a155819618041a722f22f310b2ec31d34098b3e9270b0e53c392bf6"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-ILgql0oUVdZeWnWVGsv5by/gPeY9ytYS5KTCQSoxgo0H1TzbnNMSd+IAn9dHL1H4XSZBtgPTfdMK9r1sWPbYbA==",
+      "npm_tarball_sha256": "ea8a402c01a8543d55ffc36e72bbf35c841d8aecf88abf25e16a46e1c9fe7210"
+    },
+    "opencode-darwin-x64-baseline": {
+      "github_archive_sha256": "7ad6170131ed5b8dab9ebd82f5ad5581d0051f8d50754f88460515ad61e1f37e",
+      "github_asset": "opencode-darwin-x64-baseline.zip",
+      "github_files": {
+        "opencode": "362c45dcd36a16215dce88c6b5232fe230f542c25960f01ba4e4a35588f42de9"
+      },
+      "npm_files": {
+        "package/bin/opencode": "362c45dcd36a16215dce88c6b5232fe230f542c25960f01ba4e4a35588f42de9",
+        "package/package.json": "bb80baeeaf33001d7357ec018c6518dc111a590254355121c4afac8bd8cb2782"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-hy8iFxdW2CFbr842M8uzCO1bgCAEm6UIRgtSJKj19+a4UtZyS+PwbAat2R2rwIx+O6PqavzDas5DNE+dz0+K3A==",
+      "npm_tarball_sha256": "8b20bbd63cfee88ee7cbe02958e6a6ac781541dc9f7de928dc0a98993fdfaa67"
+    },
+    "opencode-linux-arm64": {
+      "github_archive_sha256": "8568230ccd847dc93e95b9f6894379077d3e014a16b48040743573e77c23e85f",
+      "github_asset": "opencode-linux-arm64.tar.gz",
+      "github_files": {
+        "opencode": "eba0da50d9cc22f2dd062c32e0e7e58d7ece301aa50aabdad1e9dba4ffbf25b4"
+      },
+      "npm_files": {
+        "package/bin/opencode": "eba0da50d9cc22f2dd062c32e0e7e58d7ece301aa50aabdad1e9dba4ffbf25b4",
+        "package/package.json": "7d076e76ae83ac1fd17c70a991d2b7fa40ada3b75f2dc49bc9b1535f788fab26"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-bA/QpgwRgv20xVay0b4EGo3IjMQQl4GbODjhXWGUvovoJYYyFosueox2aLASxTbHK6oP1zpUxaZRFhgNrhhfgA==",
+      "npm_tarball_sha256": "019c374e3eb3af5d2c2cdf1d2d6e1f9eee0bc9f3289e02570e4310d25df0a991"
+    },
+    "opencode-linux-arm64-musl": {
+      "github_archive_sha256": "aa32a91f62cfddfa4615ba4deffc2b13696e77cbee83551824e3f16e6770b37e",
+      "github_asset": "opencode-linux-arm64-musl.tar.gz",
+      "github_files": {
+        "opencode": "2a0cfa6fe7d96ebb89da8d880bd884598d5cdca10e6c3a5b2e63f92c569f1452"
+      },
+      "npm_files": {
+        "package/bin/opencode": "2a0cfa6fe7d96ebb89da8d880bd884598d5cdca10e6c3a5b2e63f92c569f1452",
+        "package/package.json": "3d738a7db97ca2daa20c16023358da081920154dcbe9f8188dc185d9e20cd8e6"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-Sn41KddzgT+UBXtwuOR7/4X4ww8xOIEaw1bS74X0cO+BBgj7EY28gSRN4DNSJatXdDRJhDvhmNebWxly/cfYCw==",
+      "npm_tarball_sha256": "23134af27357847251acb2687d9448d8235e4f778dd54b8e3808b24622eeef31"
+    },
+    "opencode-linux-x64": {
+      "github_archive_sha256": "849bd6b3d959a1d2ef200ed1634a51c79a45ca236aa26665d75debd694805cce",
+      "github_asset": "opencode-linux-x64.tar.gz",
+      "github_files": {
+        "opencode": "538fcb1b6408c8d4608822acee19f7ff5b3a3eb3383c0633c4f06170857312a7"
+      },
+      "npm_files": {
+        "package/bin/opencode": "538fcb1b6408c8d4608822acee19f7ff5b3a3eb3383c0633c4f06170857312a7",
+        "package/package.json": "4ecaa3280873d0c7b2b1727b8eb20e83b0a5350437a37f779d47c7a1ff887875"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-rQ/l3jmJoxf8ZYnBargg9alURlz6buEilysGODtzkcmcYtcZ91LOgF034oUUHHQl8/y1hbRTDvg6ujqUjQsMXw==",
+      "npm_tarball_sha256": "dca7b06bbb4e4a1ab3681b799cd328057b356d9399e8e47336cf53b7ae658d0d"
+    },
+    "opencode-linux-x64-baseline": {
+      "github_archive_sha256": "1697ef40558d378bd2f72efa8fafe1bed1f0e664f09247b9357556b95dbc7cbc",
+      "github_asset": "opencode-linux-x64-baseline.tar.gz",
+      "github_files": {
+        "opencode": "538fcb1b6408c8d4608822acee19f7ff5b3a3eb3383c0633c4f06170857312a7"
+      },
+      "npm_files": {
+        "package/bin/opencode": "538fcb1b6408c8d4608822acee19f7ff5b3a3eb3383c0633c4f06170857312a7",
+        "package/package.json": "08c1185908fda302e3fe44628a8008a1632d991bf70d4839ec351f8dd5403cfe"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-oU1Plu0b4x8DRdUHxjnEdQ/IR01THw6teGf3blNysJHKS5fqXztsHiFiy6sXD1Isne+1Oa7Wi0sysfXEaBrudQ==",
+      "npm_tarball_sha256": "0ad0f6ac9cd7fafee464191c438a5917402025db03e5676e1f81200588c17db7"
+    },
+    "opencode-linux-x64-baseline-musl": {
+      "github_archive_sha256": "592fcff7847fab2eecda4b5357f66032ea2b413b9e93ce92dab03ee7b40a722c",
+      "github_asset": "opencode-linux-x64-baseline-musl.tar.gz",
+      "github_files": {
+        "opencode": "ad5ae0ab7b5f0c6fec273648eb91c798fd49ffe0e3f222dcec3ab2d680b132d8"
+      },
+      "npm_files": {
+        "package/bin/opencode": "ad5ae0ab7b5f0c6fec273648eb91c798fd49ffe0e3f222dcec3ab2d680b132d8",
+        "package/package.json": "40825cb73a81f4dc92e3d1c841be0fc3f540ac15673d18f99f3f98acbe036ebd"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-HxG4Y5XlpyQ64tlbQ3PMTwtIXlOLEuhI2VZ9CfKdAsSvsfo2Nh2w0FzS1esuLXNvdaDaO1CWZ3p7wk1JrerSkg==",
+      "npm_tarball_sha256": "ab3126cc859b7812d34802e8d23ba07b26229ef217f0f97f5efec577e7550123"
+    },
+    "opencode-linux-x64-musl": {
+      "github_archive_sha256": "265bd8027e84fe01837f72df8b7615d2959491f45569d52a21f2fcdbec9decdf",
+      "github_asset": "opencode-linux-x64-musl.tar.gz",
+      "github_files": {
+        "opencode": "ad5ae0ab7b5f0c6fec273648eb91c798fd49ffe0e3f222dcec3ab2d680b132d8"
+      },
+      "npm_files": {
+        "package/bin/opencode": "ad5ae0ab7b5f0c6fec273648eb91c798fd49ffe0e3f222dcec3ab2d680b132d8",
+        "package/package.json": "cb9f6f1b42db74bec61665a3d99cf9c9e7bf5959bef77f90ef234f1ae5c28b61"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-SW/DNSbM2fjLN2q1IfPHgWTNSpQ8TgXjRUVNLc1VWlgKROfizpPTtWmjGWmxie2nZVuBcSVw/RlQE3ulgA8vVA==",
+      "npm_tarball_sha256": "d47d62a68b7e14decb110e42bfcd0a0ca1cc363dadcdbeeaf329ee8a48ba46fc"
+    },
+    "opencode-windows-arm64": {
+      "github_archive_sha256": "36e696fd1d275b469ab02a1ccc00d161bfdcc0a4ffa93c2b7a4e57399f3ff347",
+      "github_asset": "opencode-windows-arm64.zip",
+      "github_files": {
+        "opencode.exe": "92c6c5f6f656e60d6809c029a911ecb578204085945dd2f6e2639981ecab8749"
+      },
+      "npm_files": {
+        "package/bin/opencode.exe": "92c6c5f6f656e60d6809c029a911ecb578204085945dd2f6e2639981ecab8749",
+        "package/package.json": "e7ee80549e7e375a269580285dc1d970dfe408d4347a6b66675d07af8df9eded"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-4rY75jyh4A/q0eIWLzo3g4yigWceRLdFUpb49hHeGFJgEXjNIWWT0P+OUzYcA3EQeJtTyRcIlLOjFqr+AeMi1Q==",
+      "npm_tarball_sha256": "05cde8bdc0003d2b3f8df0a4344f24882cf258ce593a1ae784b46e1e55053c83"
+    },
+    "opencode-windows-x64": {
+      "github_archive_sha256": "93b899277bd6f68803009e32bf71772ce43c34b18adf1e93b9b4d8780fdf62e5",
+      "github_asset": "opencode-windows-x64.zip",
+      "github_files": {
+        "opencode.exe": "41c848c0986720c02d39b015bd2672e454a221052f6947854bc508d8765d9711"
+      },
+      "npm_files": {
+        "package/bin/opencode.exe": "41c848c0986720c02d39b015bd2672e454a221052f6947854bc508d8765d9711",
+        "package/package.json": "c715dbd939ba502a53e34e01aa1199aa7d9457352c733bffea2451e410c5b09e"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-Rr5k+esRBsEBGCjqjVwvFpybQMmDO18Hu5vlBWGj4m0aMMoeR/m+qcW/tJGIKhQXy7Mu31izTn60LXjDMwfFAg==",
+      "npm_tarball_sha256": "f7e99cd758187a26daae50c7d2429642013f26bdab4a8b3c12b76428e95dc4e1"
+    },
+    "opencode-windows-x64-baseline": {
+      "github_archive_sha256": "21cac96abb146b0f6e770680ea7855fc4f354c7966aab39f5be9859b0df1deac",
+      "github_asset": "opencode-windows-x64-baseline.zip",
+      "github_files": {
+        "opencode.exe": "eba9fc042ac622648a66ac5764c5ad41a73244eabcd7a00527d651b7c443efbd"
+      },
+      "npm_files": {
+        "package/bin/opencode.exe": "eba9fc042ac622648a66ac5764c5ad41a73244eabcd7a00527d651b7c443efbd",
+        "package/package.json": "1d947f94881f71c1f6878cb3479ae9dcb126f9e449d5b839cf02856e95dabf9c"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-7CPsIyrI6Jzef8e0YlCHQ3HgmNADSTZWgzfS2e/P8LScMG7D5xVFro/2pHkE+VCjZ42NGs1ZdMnSdfsKpx6h8g==",
+      "npm_tarball_sha256": "c073236510d05de65a99918435051d77db6564118905ab3700371c15741f61c8"
+    }
+  },
+  "1.19.5": {
+    "opencode-darwin-arm64": {
+      "github_archive_sha256": "c1c9e62521192192ef4c3ed1355ada2144055bddb61682217e997b03c55203c1",
+      "github_asset": "opencode-darwin-arm64.zip",
+      "github_files": {
+        "opencode": "feaafead8cd563af0c2dcb386b0757e4355e327ebb6bd1aaad5440fe2f83596c"
+      },
+      "npm_files": {
+        "package/bin/opencode": "feaafead8cd563af0c2dcb386b0757e4355e327ebb6bd1aaad5440fe2f83596c",
+        "package/package.json": "572a647cf34d4b1decda0087d885a45841515762120359b45352155cbdf8d13b"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-0MbSbKkmwVHtgP31GJyyECe6QVy4T7W4Wp7s2TsmXHTPPyf01ne3dWSX97X9dkNK28Lc6kt+zMPQUP/9GgDLZg==",
+      "npm_tarball_sha256": "40e4d4313a0575cfe0f325cdce39ef7e430a436a83c77b2479344f1ebcb78af4"
+    },
+    "opencode-darwin-x64": {
+      "github_archive_sha256": "b0212efa6db347187225a17fa3a31c6b261bf4c9f1589a290b0ca902d720d250",
+      "github_asset": "opencode-darwin-x64.zip",
+      "github_files": {
+        "opencode": "4b15c8aab1844936e9e1d1327213355d94c820de8c7084fad88d3812a067d3d0"
+      },
+      "npm_files": {
+        "package/bin/opencode": "4b15c8aab1844936e9e1d1327213355d94c820de8c7084fad88d3812a067d3d0",
+        "package/package.json": "59e4ab061ddaf30c075ff9fd72042beac883e3a9c7adfce1de12cf016c7f39de"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-+DO7IMPTCrX12UJXnL4pL3ckcwR6BR6f6tA9QIlVQ5nZx66T5U7FRMJT4n5rsOnJxLM/pZ2vfX1G8vrnvXO8FA==",
+      "npm_tarball_sha256": "e6ee5733370c0ed89fe9b1f14b12b04505c70ca560878f028934d1582536aa0c"
+    },
+    "opencode-darwin-x64-baseline": {
+      "github_archive_sha256": "e1235374cb7e712cdc15e21ba915a029a5d22312b460606d0783754739706775",
+      "github_asset": "opencode-darwin-x64-baseline.zip",
+      "github_files": {
+        "opencode": "27d2aa00d9868aa81374e0a00ce0ade50a57fe35b8d13c50ff8e4b56b0c275a1"
+      },
+      "npm_files": {
+        "package/bin/opencode": "27d2aa00d9868aa81374e0a00ce0ade50a57fe35b8d13c50ff8e4b56b0c275a1",
+        "package/package.json": "9ec1f31017b91ba05ab5cef28356f3d1a0e32a588c6fd912c80cb7463f84442d"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-rftvAoHBWPVkvwBLr3SQWRZvcIjyMTN0SlhMzlt+lgvoQBBGNEmZQ/7sS/Ux1oHsJV/++UDuLVso4n5L95YD5Q==",
+      "npm_tarball_sha256": "cc09d3763d383bbaac4552701cc4428e416faa7e1de4a1a55670fe1f1e73febc"
+    },
+    "opencode-linux-arm64": {
+      "github_archive_sha256": "fae5be262d693b7c5e562856cc473e59e741772936db0c0600ac0d5ed5bd088b",
+      "github_asset": "opencode-linux-arm64.tar.gz",
+      "github_files": {
+        "opencode": "dab85b46f4ea4813da5367997f99a60aab64a2118d58ebf552980e792747436c"
+      },
+      "npm_files": {
+        "package/bin/opencode": "dab85b46f4ea4813da5367997f99a60aab64a2118d58ebf552980e792747436c",
+        "package/package.json": "8283564c65561fb01c06aa92e802dfd31ef6ab3532cb396028f38b4fb82d68d2"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-u2HFRI6v1nNMVKiV34An8XrGBxJeZ+RCg2tYu3SqlGODKqKsr5RoEbaX1tnsfGb+rETh9AJVX9kS8dSZXPufsA==",
+      "npm_tarball_sha256": "ba14f4ce5c8fe567a00bac1c50aafe7eda6e1de7aa37964994c66148a28d529a"
+    },
+    "opencode-linux-arm64-musl": {
+      "github_archive_sha256": "3522eccafd30d84a2d770b72a56d4877c576b9072b36a5a9ea0fa30ed82b896e",
+      "github_asset": "opencode-linux-arm64-musl.tar.gz",
+      "github_files": {
+        "opencode": "70c562c04d593316d03835401d2d9f04755d1de93135e8ea20c556ec2b14fd71"
+      },
+      "npm_files": {
+        "package/bin/opencode": "70c562c04d593316d03835401d2d9f04755d1de93135e8ea20c556ec2b14fd71",
+        "package/package.json": "05ca400465dd2b04b7b74de31c790a6995a938e01e356739924134dddfde04c5"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-YxvpVPJ/jeevV93DVRiuOVbhkoJAuwQUadPDHPaw65aZkAKZ6OE7XySwCS+Rjlhzt7fPryisvAOjUtZkwfMBuQ==",
+      "npm_tarball_sha256": "bd8540c01e8aed1a3bb228b7291d86cf455a364118502dcdab9ca9f436dc642c"
+    },
+    "opencode-linux-x64": {
+      "github_archive_sha256": "588310a336fa3b9df36b3f0225b26f679d453efaad0cf3d66c3651ef3ec1647a",
+      "github_asset": "opencode-linux-x64.tar.gz",
+      "github_files": {
+        "opencode": "7df4e4136301f16589b0f30bf91a61380fca5f8ef22dd36570f5ebe1d4ec802c"
+      },
+      "npm_files": {
+        "package/bin/opencode": "7df4e4136301f16589b0f30bf91a61380fca5f8ef22dd36570f5ebe1d4ec802c",
+        "package/package.json": "2312290f8379ee64f4521a913cca3cbdb69eaf1c61ac63b46cdbd921465a3a5a"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-i1qh7VooLGML9xX6ud93y0JA8j/1aPeDYRKjsmYXrJX1TjIWHgBBMkEbEJPZthpWbsJg//XfBgR6Kb7+NPaJiQ==",
+      "npm_tarball_sha256": "2d7cfc303decc6cbbcdb22ff1be258b03ce2b5eae57583545afc8f12c01dd5e0"
+    },
+    "opencode-linux-x64-baseline": {
+      "github_archive_sha256": "17c200fd4b2289954cc01552559f9b6d03ec157b2ddfb5eb54144f491656333d",
+      "github_asset": "opencode-linux-x64-baseline.tar.gz",
+      "github_files": {
+        "opencode": "7df4e4136301f16589b0f30bf91a61380fca5f8ef22dd36570f5ebe1d4ec802c"
+      },
+      "npm_files": {
+        "package/bin/opencode": "7df4e4136301f16589b0f30bf91a61380fca5f8ef22dd36570f5ebe1d4ec802c",
+        "package/package.json": "191e800facc1dd0c0ab72aa85a9ff74a1946c4419e97a32696852d56d3954ae9"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-9kA+st3XXtCXMPx5f3Ld1u19uoHTO2u2Btt8a2cqhJ4GIqVbD1mXLevj3LHFEmtuQoFGk+UstGnl38sCqXj5sQ==",
+      "npm_tarball_sha256": "2249989386aab6b4055d0e8b79fa09874e715c3b15805728543211514b872d88"
+    },
+    "opencode-linux-x64-baseline-musl": {
+      "github_archive_sha256": "e796ccff81070b527b2aea144741928e56bdbc6650cd90fb5564d5c114f0e08b",
+      "github_asset": "opencode-linux-x64-baseline-musl.tar.gz",
+      "github_files": {
+        "opencode": "528058cf8f2a7196ec94dc113052b785f8f94f6802ced3980ad7359369ddacc8"
+      },
+      "npm_files": {
+        "package/bin/opencode": "528058cf8f2a7196ec94dc113052b785f8f94f6802ced3980ad7359369ddacc8",
+        "package/package.json": "2b42a5a41c3fa64d8e63992c67735ef70d4a6b98ec70bfcb6aee3ca8ab41f014"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-kwt6hmTaI6nujjAzdAkXv3j2rDzXNOMfMk8Jf8bwacHtwUl8CWA2psDVg3nWyb4zByAa6F1jSIlmHCPHBq1K/Q==",
+      "npm_tarball_sha256": "1f4c1fcc646d4d03d1ea0997a54d1e8b9fe17af6356ac54dde2c65e53fedc682"
+    },
+    "opencode-linux-x64-musl": {
+      "github_archive_sha256": "e8d5be23bf8f3f69bc3206f3311215c049329cd6afa7c06d733987cc2d33b568",
+      "github_asset": "opencode-linux-x64-musl.tar.gz",
+      "github_files": {
+        "opencode": "528058cf8f2a7196ec94dc113052b785f8f94f6802ced3980ad7359369ddacc8"
+      },
+      "npm_files": {
+        "package/bin/opencode": "528058cf8f2a7196ec94dc113052b785f8f94f6802ced3980ad7359369ddacc8",
+        "package/package.json": "eb61de0413e0d72f0d5319bd01fc2b46e44ebc91ef49ff8dc3c01ba7b894317e"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-y6nUbH3ViajN37KaVVy0/KnWv/i48Bx5QPv9Ul9ONJya1ossV7CHVb+ZNFc61M5GqlVtjCvZV7T0eBMqhJG7mg==",
+      "npm_tarball_sha256": "33fc5689591cbb65049b193ff84f2cb248fe7e3e4052ff54ae12526009e1a4d2"
+    },
+    "opencode-windows-arm64": {
+      "github_archive_sha256": "5d49139bd917511ff35a3c06065c9f47918346668f05ea020e778286f302fbb7",
+      "github_asset": "opencode-windows-arm64.zip",
+      "github_files": {
+        "opencode.exe": "83ced6c9fe84f287768a04bf0abc522489373ebc2f0bfb1de48bb692fb5833ea"
+      },
+      "npm_files": {
+        "package/bin/opencode.exe": "83ced6c9fe84f287768a04bf0abc522489373ebc2f0bfb1de48bb692fb5833ea",
+        "package/package.json": "d2064ecd9d2dc69edc5b1728f175c7e40ff144a1e735adebad28968730e496f3"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-aySF/MDji5KO3I5yl9Ec4g8kW/QIx4Jj5FXwBhh/FrDu0w6L8HAOGH7cyjFb3t8TW7pxRkH3Ei3rfkWAE7cScw==",
+      "npm_tarball_sha256": "dea3022476782fd45a9522cd730a54154ec328aaade18147cc7b005832da37a4"
+    },
+    "opencode-windows-x64": {
+      "github_archive_sha256": "09a6e693157f0887e504f2cf4357a8cbddc5ead5d0dffb9a269dcc47c48640f5",
+      "github_asset": "opencode-windows-x64.zip",
+      "github_files": {
+        "opencode.exe": "d7b473388cb62555970e400ce54cdfb6d6573608beea6f8fdf382cd1a698a3fa"
+      },
+      "npm_files": {
+        "package/bin/opencode.exe": "d7b473388cb62555970e400ce54cdfb6d6573608beea6f8fdf382cd1a698a3fa",
+        "package/package.json": "31c3b50fcf44402ce0047add67056d268b99ac0514d52c773845c09f0345a410"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-xCVbrA8A/qQTAdBIKyhK5tx3/mcq18yF82Mi8phry0MJb2631nnnpxF9m6FFfWAVHyer4qFGrO7hbWXesHQ1Gg==",
+      "npm_tarball_sha256": "68c46cf6b788b2a2ba3db313012420280714d4c7dae7da25a3e0c0ec8c586169"
+    },
+    "opencode-windows-x64-baseline": {
+      "github_archive_sha256": "e4dac5cd38a182a24e7b3e18853f01d08cdb137e50b3bd1397c1a89e54d28c63",
+      "github_asset": "opencode-windows-x64-baseline.zip",
+      "github_files": {
+        "opencode.exe": "6f15c8f241f3df22375f174753193a71c488f6c0a6bbbae3f9fa34d112673b7b"
+      },
+      "npm_files": {
+        "package/bin/opencode.exe": "6f15c8f241f3df22375f174753193a71c488f6c0a6bbbae3f9fa34d112673b7b",
+        "package/package.json": "c7424584b569d36c905a163b9d862d66db23b414c64bae20c22026bde5abaf38"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-yRHN+TsfLjfLmdQVAVWqTGfGP1yq8YtUFy9Jw33XhlPIp77slBdCJrj2PC4amuEl6BJtaIQDhDFbpJ8+a5z7Qw==",
+      "npm_tarball_sha256": "b4b6b93eaaf6de64730a7bc98a538daa9bc93155f8948a12ca3eb786331204a1"
+    }
+  },
+  "1.19.6": {
+    "opencode-darwin-arm64": {
+      "github_archive_sha256": "c0be3f34dde2fdcb31b25120f303c6ed5b69b828f16e5e0fbecff21a882adda1",
+      "github_asset": "opencode-darwin-arm64.zip",
+      "github_files": {
+        "opencode": "caf965f08f58574a79a9b5b579856d1cf443e8ed55d310e3529ddd5ae8cf5698"
+      },
+      "npm_files": {
+        "package/bin/opencode": "caf965f08f58574a79a9b5b579856d1cf443e8ed55d310e3529ddd5ae8cf5698",
+        "package/package.json": "36d1b39163552e95a93bc525a70c44705d0c69e6fc87bb4eb99d1521753f8158"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-GZjEsOTlr/e8fUF+lsFtTJGNIyHfUZcN9+iN6uXAbsH6t1PJABZrWE+5Lu2raX7g/EUXXCCB9NJ9L0AyMcWkKA==",
+      "npm_tarball_sha256": "7abf8124df8dcb4c8dc08811fdc686acc4bbed6417869e5fe7982420836b3cd8"
+    },
+    "opencode-darwin-x64": {
+      "github_archive_sha256": "39aabb10005059f80f007a119a33405dcd46325300993eb6cbcc961c7243dd31",
+      "github_asset": "opencode-darwin-x64.zip",
+      "github_files": {
+        "opencode": "fb9971ed709d4e3c2c2b51d83295b375754a62f61dbfedf097b56b2144cbd060"
+      },
+      "npm_files": {
+        "package/bin/opencode": "fb9971ed709d4e3c2c2b51d83295b375754a62f61dbfedf097b56b2144cbd060",
+        "package/package.json": "1dd6c14b0603139f6dbe6dba7e211f064057dd5bca74a21a0c6e3c452c794593"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-70AIcsjh9ywsh+cuRmSkMziKm/doJ0u9J/5BvU/ZCBpRYPWlKupGNWFRNua3xfjMqSjGuAmbQI2HjFpN+1OPyg==",
+      "npm_tarball_sha256": "e278a37fee89eacbc830b11e9626df476aa66cf1b1e6ee2427da8d639164df3e"
+    },
+    "opencode-darwin-x64-baseline": {
+      "github_archive_sha256": "5f08d3f7d7555fdef8025f57aef89c5bc2448460827d4e225f815a308ce6976b",
+      "github_asset": "opencode-darwin-x64-baseline.zip",
+      "github_files": {
+        "opencode": "7bbfae1858ea68bd3a6b9331c5b601e22f1a5a69be6324e6845bae276fe0ad1f"
+      },
+      "npm_files": {
+        "package/bin/opencode": "7bbfae1858ea68bd3a6b9331c5b601e22f1a5a69be6324e6845bae276fe0ad1f",
+        "package/package.json": "93cb670e9ea7ea49e9472d582cd0357b8e3ce5d6e746ecbf1b5995a0b598ad3c"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-UkAI+p9HgDEnAlCOBLTAIqN4gW2+7yBEJxlNeioI1393n9RuMpJlHcOscvJG6yZn+wRRaFlSN2ct4sSLHGMhBQ==",
+      "npm_tarball_sha256": "f4510f64f5fba31aa0f186e99e7de18f487945551f703e6569ea8d6c8db7c432"
+    },
+    "opencode-linux-arm64": {
+      "github_archive_sha256": "5b68c1f4c5e75b4134e664cc8f36d634d64208d4fcfe5bcf3b48bab699c2dbac",
+      "github_asset": "opencode-linux-arm64.tar.gz",
+      "github_files": {
+        "opencode": "0dc19cfbfaa07fbde5a8b574aab2319e898e2215a138618d7a7bd41ae7dee567"
+      },
+      "npm_files": {
+        "package/bin/opencode": "0dc19cfbfaa07fbde5a8b574aab2319e898e2215a138618d7a7bd41ae7dee567",
+        "package/package.json": "10ebd526d32d82144d2e3dc25a3dbc8cbb3891c1acd2d7252367ea67e5feba5d"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-WnlZe6BgxKMeauniWrfiKNSq2tkz4FGwAdsBMeN5WPwsxURVu6Qm2eQuv1SvmJYGEmNKxyVfX3m1worvcP+c9Q==",
+      "npm_tarball_sha256": "a5931cbf47a2ddd72b966e2e46b7752902026f54d088736337a524ee198232e3"
+    },
+    "opencode-linux-arm64-musl": {
+      "github_archive_sha256": "45407388777dfc1894591c9727c169f202ad92c75757038950630a0fbb12ca97",
+      "github_asset": "opencode-linux-arm64-musl.tar.gz",
+      "github_files": {
+        "opencode": "d906a85a0c0a9a99b4f9c486b32f23137d2e2472bb02530b8560d00b2c873fe9"
+      },
+      "npm_files": {
+        "package/bin/opencode": "d906a85a0c0a9a99b4f9c486b32f23137d2e2472bb02530b8560d00b2c873fe9",
+        "package/package.json": "dc18159f4a9f224a13c029c4d90f51d7f7057c33b0790987a030cbd697e12d76"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-mEKapEaz3mYXj27b2qXQT0da7whVAMr0hojM1EO7O4wo63XiJnTUVnMj6C3B6vh8yo5Y7ONFwpFq/264+4FCyQ==",
+      "npm_tarball_sha256": "46646fba41f8e6f0505a706da0d274ed1cc8aab46cbda956c282f68e8d04d351"
+    },
+    "opencode-linux-x64": {
+      "github_archive_sha256": "47734e08968b30cc22a0bffb6d9feeed76ad4aa743213a12122040392d09a057",
+      "github_asset": "opencode-linux-x64.tar.gz",
+      "github_files": {
+        "opencode": "aab0a58cd7fc5a1f17495b76c08e79989d331653d8b63156aca2f6e9e36d1173"
+      },
+      "npm_files": {
+        "package/bin/opencode": "aab0a58cd7fc5a1f17495b76c08e79989d331653d8b63156aca2f6e9e36d1173",
+        "package/package.json": "818c683dafca45e85c092c4f4e378be094864b38863f0740b2472605253ab7bd"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-SUQS023u46+2+wMUej1Cm8VSFpHUd2c6cO4m2r7suRaCgrdIjR1iXr7ebl31xb/gHzaYS65xnj1fxRqHpzhU1A==",
+      "npm_tarball_sha256": "378f7ba827c63e61390e35b9b26336c56b202bfe71a531cd10b488da771321ff"
+    },
+    "opencode-linux-x64-baseline": {
+      "github_archive_sha256": "8443113b3f3dfebf8b0fa91c4377e5519a62b9231732d9344a5df001e4a852b3",
+      "github_asset": "opencode-linux-x64-baseline.tar.gz",
+      "github_files": {
+        "opencode": "aab0a58cd7fc5a1f17495b76c08e79989d331653d8b63156aca2f6e9e36d1173"
+      },
+      "npm_files": {
+        "package/bin/opencode": "aab0a58cd7fc5a1f17495b76c08e79989d331653d8b63156aca2f6e9e36d1173",
+        "package/package.json": "b03ee0e65e35f80935b88c31473a656dc4bd7d84d448a927bfc0312555ab2145"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-514i1cj8ZGcgQKXg3EqAe2YVV5ID7EK3u6LuIqsSPhpVnWDwWjiJejYzhOWHbRMYpfbVbt6DHabs9BUbwHn7zg==",
+      "npm_tarball_sha256": "99493c1b96d102faa5e3807c5f2e20f7f1dfc2e5915f0c03c37663adc308a5be"
+    },
+    "opencode-linux-x64-baseline-musl": {
+      "github_archive_sha256": "bc6b0d702163d859161ee8e43ea3f16d1bd43b305ac7ce17742eb01ba72489f3",
+      "github_asset": "opencode-linux-x64-baseline-musl.tar.gz",
+      "github_files": {
+        "opencode": "062ec6f3c045d34cb906e114d431b068042702609078ce3de10fc2cb4dfcb12c"
+      },
+      "npm_files": {
+        "package/bin/opencode": "062ec6f3c045d34cb906e114d431b068042702609078ce3de10fc2cb4dfcb12c",
+        "package/package.json": "8b3feaa24a35450780324307055ff258df0eb2ebbc90b5c4325d0330bb2b15e8"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-qCdyZ7YMqwQ2KD7o9usUqA1B8B7pp4w/JozlN7NvVKHBIKE4t/hSYzVsovnsJK1zHkPY+yYa4qK5YQH333/+Yw==",
+      "npm_tarball_sha256": "f5777dbcd2afedac566545725b7c702304d6513ec3b4a9344b269b345eee5e74"
+    },
+    "opencode-linux-x64-musl": {
+      "github_archive_sha256": "2a22da39d0b69681272f4daeb51316244eda5c3d606d9e507d61bbf5c1b868a2",
+      "github_asset": "opencode-linux-x64-musl.tar.gz",
+      "github_files": {
+        "opencode": "062ec6f3c045d34cb906e114d431b068042702609078ce3de10fc2cb4dfcb12c"
+      },
+      "npm_files": {
+        "package/bin/opencode": "062ec6f3c045d34cb906e114d431b068042702609078ce3de10fc2cb4dfcb12c",
+        "package/package.json": "ebdb1f5ad9355d199de47e1a2715eb2b9bdc2f5fa16995f7505a993b5d41d57b"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-8hpOy4jogGewFDKDIyh4sLiDKsMKYmP0s6Y5xh2EgVgAkIjvj9sftxw2s9u6Ah4xKoUZ9nbu1Zbf4K03jL4qmg==",
+      "npm_tarball_sha256": "4a3db72eea1701a28dbeb1dd73168cd6777c72eba80786fbd6e5127ff1a443ac"
+    },
+    "opencode-windows-arm64": {
+      "github_archive_sha256": "dc72cf0cc9d5b434607e83efc4d172b19020bbc749842681fa195a4c051a4deb",
+      "github_asset": "opencode-windows-arm64.zip",
+      "github_files": {
+        "opencode.exe": "81acea1a5118eb32812e822a16b44d186e26ca443e722b3105e45726f0a08399"
+      },
+      "npm_files": {
+        "package/bin/opencode.exe": "81acea1a5118eb32812e822a16b44d186e26ca443e722b3105e45726f0a08399",
+        "package/package.json": "821cbfcf92a0a5096d92e7f1834f564f5eb10becfc94145797afce5c2fb9446f"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-vs0YKh09rQyDcr5bro3WL3MewGVT5EuPr990RtJFMk7o1fmUeGHAMlpMn42m50GsQpBEjRhG6JWbP5QEp7Mpvw==",
+      "npm_tarball_sha256": "ee5af584f4d35767f4957037e6fec626d4bf72e2aba198f32dc0c275216198ec"
+    },
+    "opencode-windows-x64": {
+      "github_archive_sha256": "fa31c9ec0bac7611ab12699ef8e2fc4c173fb95ac977b09b189b255b8f559bcc",
+      "github_asset": "opencode-windows-x64.zip",
+      "github_files": {
+        "opencode.exe": "9a735720499bfaed8fc62db6f45123aebff929f33af885038068e8068da51cf5"
+      },
+      "npm_files": {
+        "package/bin/opencode.exe": "9a735720499bfaed8fc62db6f45123aebff929f33af885038068e8068da51cf5",
+        "package/package.json": "419204d33890c0b1309ca842b564c0e7f41a3f6fbf28843fc2b05ca7833a7fbb"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-qCh34hNhX4yaNmOfXZXjxbai5Y/HXgTgWKaTk/5TfDEAs+0QWr9OFiebJU/J3tvZnCLktjsEMAXJsoYwKI2mxg==",
+      "npm_tarball_sha256": "193569560a6e3fbb2977737ac3a7b7a05b7f262dec9bef29974967ffdacb1d7a"
+    },
+    "opencode-windows-x64-baseline": {
+      "github_archive_sha256": "d4fc63f09bd14ee2308c05d34c231a8d09c3e945fd2e86ef4ea1a41b31dd1830",
+      "github_asset": "opencode-windows-x64-baseline.zip",
+      "github_files": {
+        "opencode.exe": "520970e4fb362a1be91b52b79960aa5fb24031ceb33f4c47e38a751a6b8a24b9"
+      },
+      "npm_files": {
+        "package/bin/opencode.exe": "520970e4fb362a1be91b52b79960aa5fb24031ceb33f4c47e38a751a6b8a24b9",
+        "package/package.json": "93dcfb92274e3ae434f3c15c1ffce2a43017964b04554a29d2ee157ad6ad690d"
+      },
+      "npm_git_head": null,
+      "npm_integrity": "sha512-oUE9xI2iSucbdg4agPyQZeEpR3Ma06I2cchvWi6tUujSFAiLj4WjkYfMSxNRjIwOkVhDQ3Sh840bweMzRTExNg==",
+      "npm_tarball_sha256": "5ad1c6a984fc63cc9062c0250d089da86f32539d54f2fc87caf1d4ddfde463ac"
+    }
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "family": "opencode.http",
+  "axis": "opencode.server",
+  "observed_utc": "2026-11-23",
+  "official": {
+    "npm_latest": "1.19.6",
+    "github_latest": "v1.19.6"
+  },
+  "published_hops": [
+    "1.19.5",
+    "1.19.6"
+  ],
+  "unpublished_gap": "1.18.36",
+  "first_unpublished_later_stable": "1.19.7",
+  "decision": "stop",
+  "qualified_ceiling": "1.19.4",
+  "qualification_gates": {
+    "1.19.5": "GitLab catalogue and turn effects need selected-path proof with isolated fake services",
+    "1.19.6": "the current HTTP driver ends the turn on the ContextOverflowError that upstream can emit before compaction and recovery"
+  },
+  "releases": {
+    "1.19.4": {
+      "npm_published_at": "2026-10-22T13:03:43.704Z",
+      "npm_wrapper": {
+        "url": "https://registry.npmjs.org/opencode-ai/-/opencode-ai-1.19.4.tgz",
+        "git_head": null,
+        "sha256": "2ceca45c7e0bbd50ddd3f4d6d651ed43645647d74279d656e7c7747a4b6a9137",
+        "integrity": "sha512-O3rTc9OCd6CeeJohCAjFYD3MX5U0weKzKnySfsJ9sw9uAbNZZK4meIcjd+7k3inmZB5G2qONSen3yA45yECiFA==",
+        "files": {
+          "package/package.json": "96a86bbaad6c6fce496e8e2504758a1c6a630aca18b82c4009e2d272ea23a7d6",
+          "package/LICENSE": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+          "package/bin/opencode.exe": "21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+          "package/postinstall.mjs": "5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+        }
+      },
+      "github_published_at": "2026-10-22T13:03:41Z",
+      "github_release_id": 420695951,
+      "github_immutable_release_attestation": {
+        "predicate_type": "https://in-toto.io/attestation/release/v0.2",
+        "tag_commit": "148842ef7cb1bc34192b3fff57d0f9721ab9c801",
+        "verified_native_asset_subjects": {
+          "opencode-darwin-arm64.zip": "c400a2f8c8ab7e99478a7f4dd1a466b57bf33888e520d85c55780a5464c4b689",
+          "opencode-darwin-x64.zip": "123ebd72609c4f8dbae0485cdac39b9aedfeb6576b2eef64f2e73152b1de82f4",
+          "opencode-darwin-x64-baseline.zip": "7ad6170131ed5b8dab9ebd82f5ad5581d0051f8d50754f88460515ad61e1f37e",
+          "opencode-linux-arm64.tar.gz": "8568230ccd847dc93e95b9f6894379077d3e014a16b48040743573e77c23e85f",
+          "opencode-linux-arm64-musl.tar.gz": "aa32a91f62cfddfa4615ba4deffc2b13696e77cbee83551824e3f16e6770b37e",
+          "opencode-linux-x64.tar.gz": "849bd6b3d959a1d2ef200ed1634a51c79a45ca236aa26665d75debd694805cce",
+          "opencode-linux-x64-baseline.tar.gz": "1697ef40558d378bd2f72efa8fafe1bed1f0e664f09247b9357556b95dbc7cbc",
+          "opencode-linux-x64-baseline-musl.tar.gz": "592fcff7847fab2eecda4b5357f66032ea2b413b9e93ce92dab03ee7b40a722c",
+          "opencode-linux-x64-musl.tar.gz": "265bd8027e84fe01837f72df8b7615d2959491f45569d52a21f2fcdbec9decdf",
+          "opencode-windows-arm64.zip": "36e696fd1d275b469ab02a1ccc00d161bfdcc0a4ffa93c2b7a4e57399f3ff347",
+          "opencode-windows-x64.zip": "93b899277bd6f68803009e32bf71772ce43c34b18adf1e93b9b4d8780fdf62e5",
+          "opencode-windows-x64-baseline.zip": "21cac96abb146b0f6e770680ea7855fc4f354c7966aab39f5be9859b0df1deac"
+        }
+      }
+    },
+    "1.19.5": {
+      "npm_published_at": "2026-10-28T06:17:11.100Z",
+      "npm_wrapper": {
+        "url": "https://registry.npmjs.org/opencode-ai/-/opencode-ai-1.19.5.tgz",
+        "git_head": null,
+        "sha256": "1f97e49381f8a42a629482eff8be98aa96d62e2e94410a8ec98e738f9c787680",
+        "integrity": "sha512-tEqMvQahfhdDj8vceYpXtoIrvjPXm5XRfetWnPN5YISueU7adNx9JcUA3zZ+2GKuDVgDpGdQe1ZLtCZDjqodvA==",
+        "files": {
+          "package/package.json": "b611692992fefe03641adf42bd26d1d3affc2ed7848122d6347879aa7890afc7",
+          "package/LICENSE": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+          "package/bin/opencode.exe": "21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+          "package/postinstall.mjs": "5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+        }
+      },
+      "github_published_at": "2026-10-28T06:17:49Z",
+      "github_release_id": 426304080,
+      "github_immutable_release_attestation": {
+        "predicate_type": "https://in-toto.io/attestation/release/v0.2",
+        "tag_commit": "810c0eba1a7348036f8bdf61e6632d0c36c6876c",
+        "verified_native_asset_subjects": {
+          "opencode-darwin-arm64.zip": "c1c9e62521192192ef4c3ed1355ada2144055bddb61682217e997b03c55203c1",
+          "opencode-darwin-x64.zip": "b0212efa6db347187225a17fa3a31c6b261bf4c9f1589a290b0ca902d720d250",
+          "opencode-darwin-x64-baseline.zip": "e1235374cb7e712cdc15e21ba915a029a5d22312b460606d0783754739706775",
+          "opencode-linux-arm64.tar.gz": "fae5be262d693b7c5e562856cc473e59e741772936db0c0600ac0d5ed5bd088b",
+          "opencode-linux-arm64-musl.tar.gz": "3522eccafd30d84a2d770b72a56d4877c576b9072b36a5a9ea0fa30ed82b896e",
+          "opencode-linux-x64.tar.gz": "588310a336fa3b9df36b3f0225b26f679d453efaad0cf3d66c3651ef3ec1647a",
+          "opencode-linux-x64-baseline.tar.gz": "17c200fd4b2289954cc01552559f9b6d03ec157b2ddfb5eb54144f491656333d",
+          "opencode-linux-x64-baseline-musl.tar.gz": "e796ccff81070b527b2aea144741928e56bdbc6650cd90fb5564d5c114f0e08b",
+          "opencode-linux-x64-musl.tar.gz": "e8d5be23bf8f3f69bc3206f3311215c049329cd6afa7c06d733987cc2d33b568",
+          "opencode-windows-arm64.zip": "5d49139bd917511ff35a3c06065c9f47918346668f05ea020e778286f302fbb7",
+          "opencode-windows-x64.zip": "09a6e693157f0887e504f2cf4357a8cbddc5ead5d0dffb9a269dcc47c48640f5",
+          "opencode-windows-x64-baseline.zip": "e4dac5cd38a182a24e7b3e18853f01d08cdb137e50b3bd1397c1a89e54d28c63"
+        }
+      }
+    },
+    "1.19.6": {
+      "npm_published_at": "2026-11-17T07:22:20.263Z",
+      "npm_wrapper": {
+        "url": "https://registry.npmjs.org/opencode-ai/-/opencode-ai-1.19.6.tgz",
+        "git_head": null,
+        "sha256": "ef5c2a900b41cdcddcd0009a535c8a9f34e536f91240d0156be4e2d0b0287d13",
+        "integrity": "sha512-x0yTvlq3Cyhp3z1IhsNlktLa9M/FSbpMWiDlcGljKMTlBKdHM/um/03JedJa71N2yNlHkOvOPI0H4tbyXuuGwA==",
+        "files": {
+          "package/package.json": "5c6892b9762e6ef393e4915f0df70dd1b1e3551f22b9f14646515ba49de37556",
+          "package/LICENSE": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+          "package/bin/opencode.exe": "21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+          "package/postinstall.mjs": "5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+        }
+      },
+      "github_published_at": "2026-11-17T07:21:32Z",
+      "github_release_id": 448257298,
+      "github_immutable_release_attestation": {
+        "predicate_type": "https://in-toto.io/attestation/release/v0.2",
+        "tag_commit": "f4e363c8295fa90a03dddc451882fffe8fbce357",
+        "verified_native_asset_subjects": {
+          "opencode-darwin-arm64.zip": "c0be3f34dde2fdcb31b25120f303c6ed5b69b828f16e5e0fbecff21a882adda1",
+          "opencode-darwin-x64.zip": "39aabb10005059f80f007a119a33405dcd46325300993eb6cbcc961c7243dd31",
+          "opencode-darwin-x64-baseline.zip": "5f08d3f7d7555fdef8025f57aef89c5bc2448460827d4e225f815a308ce6976b",
+          "opencode-linux-arm64.tar.gz": "5b68c1f4c5e75b4134e664cc8f36d634d64208d4fcfe5bcf3b48bab699c2dbac",
+          "opencode-linux-arm64-musl.tar.gz": "45407388777dfc1894591c9727c169f202ad92c75757038950630a0fbb12ca97",
+          "opencode-linux-x64.tar.gz": "47734e08968b30cc22a0bffb6d9feeed76ad4aa743213a12122040392d09a057",
+          "opencode-linux-x64-baseline.tar.gz": "8443113b3f3dfebf8b0fa91c4377e5519a62b9231732d9344a5df001e4a852b3",
+          "opencode-linux-x64-baseline-musl.tar.gz": "bc6b0d702163d859161ee8e43ea3f16d1bd43b305ac7ce17742eb01ba72489f3",
+          "opencode-linux-x64-musl.tar.gz": "2a22da39d0b69681272f4daeb51316244eda5c3d606d9e507d61bbf5c1b868a2",
+          "opencode-windows-arm64.zip": "dc72cf0cc9d5b434607e83efc4d172b19020bbc749842681fa195a4c051a4deb",
+          "opencode-windows-x64.zip": "fa31c9ec0bac7611ab12699ef8e2fc4c173fb95ac977b09b189b255b8f559bcc",
+          "opencode-windows-x64-baseline.zip": "d4fc63f09bd14ee2308c05d34c231a8d09c3e945fd2e86ef4ea1a41b31dd1830"
+        }
+      }
+    }
+  },
+  "gitlab_package": {
+    "6.19.0": {
+      "tarball_sha256": "0ddd9d12e4d1b832c2ae7da10fab41d5d6a5c1454e5e1323c2fad10ca6cdbdbd",
+      "index_mjs_map_sha256": "774bba8b53a3efe3aeb3c5388e143498d370dd59f01e25ae96e1ec1b577b6c89"
+    },
+    "6.23.1": {
+      "tarball_sha256": "37f7145ae868eff1104172277bcd380167ec6605cc9073908a6f90c27195e038",
+      "index_mjs_map_sha256": "1285dfdc89efa5b6bb518027bcba9fa0174a9ce014f4db8c5925c36ceba2c1f6"
+    }
+  }
+}

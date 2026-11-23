@@ -106,6 +106,7 @@ fn respond_sse(
         | StreamFixture::ImportGated
         | StreamFixture::RepeatedCursor => write_fixture(stream, SUCCESS.as_bytes()),
         StreamFixture::ProviderError => write_fixture(stream, PROVIDER_ERROR.as_bytes()),
+        StreamFixture::OverflowRecovery => write_fixture(stream, OVERFLOW_RECOVERY.as_bytes()),
         StreamFixture::Unknown => write_fixture(stream, UNKNOWN.as_bytes()),
         StreamFixture::Disconnect => write_fixture(stream, DISCONNECT.as_bytes()),
         StreamFixture::DuplicateUsage => write_fixture(stream, DUPLICATE_USAGE.as_bytes()),

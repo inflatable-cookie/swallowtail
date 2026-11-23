@@ -9,6 +9,7 @@ Promote accepted findings into [knowledge](../knowledge/README.md). Do not
 leave implementation-critical rules here.
 
 ## Research Records
+- [486 OpenCode HTTP 1.19.6 Identity](./486-opencode-http-1-19-6-identity.md) — binds the npm native payloads to the attested GitHub releases and records the GitLab and overflow-recovery gates above the `1.19.4` HTTP ceiling.
 - [485 Pi RPC 1.6.0 Identity](./485-pi-rpc-1-6-0-identity.md) — freezes every published hop above `1.4.0` through `1.6.0`; 1.5.1 enables idle cache warming by default, and 1.6.0 emits public tool activity for skipped calls in an aborted batch. Qualification stays at `1.4.0` pending adaptation.
 - [484 Flagship Version Currentness Checkpoint (Codex, Claude, OpenCode, Pi, Grok)](./484-flagship-version-currentness-checkpoint.md) — Contract 029 docs-only checkpoint covering Codex, Claude (Code, Agent SDK, Agent ACP), OpenCode (HTTP, ACP, 2.x), Pi (RPC, SDK sidecar), and Grok (ACP, catalogue), with local observations, external stable channels, open lane stops, and recommended one-family dispatch order
 - [483 Claude Agent ACP 0.106.0 evidence](./483-claude-agent-acp-0-106-0-evidence.md) — records exact artifact hops, dependencies and selected permission and idle-compaction boundaries without extending the claim

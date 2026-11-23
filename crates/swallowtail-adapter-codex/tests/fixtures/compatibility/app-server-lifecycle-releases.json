@@ -101,7 +101,8 @@
       "archived_target": "applied",
       "unarchived_target": "error",
       "missing_target": "error",
-      "descendants": "not-restored"
+      "descendants_through_0_165": "not-restored",
+      "descendants_from_0_166": "best-effort"
     },
     "delete": {
       "request": {"method": "thread/delete", "params": {"threadId": "<bound-thread-id>"}},

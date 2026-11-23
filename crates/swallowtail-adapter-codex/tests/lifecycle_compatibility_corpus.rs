@@ -114,7 +114,8 @@ fn wire_contract_does_not_overclaim_idempotency_or_descendant_archive() {
 
     assert_eq!(wire["restore"]["guaranteed_scope"], "target-only");
     assert_eq!(wire["restore"]["unarchived_target"], "error");
-    assert_eq!(wire["restore"]["descendants"], "not-restored");
+    assert_eq!(wire["restore"]["descendants_through_0_165"], "not-restored");
+    assert_eq!(wire["restore"]["descendants_from_0_166"], "best-effort");
 
     assert_eq!(wire["delete"]["strength"], "provider-hard-deleted");
     assert_eq!(

@@ -1,0 +1,234 @@
+{
+  "family": "opencode.acp",
+  "axis": "opencode.executable",
+  "compared": [
+    "1.19.4",
+    "1.19.5",
+    "1.19.6"
+  ],
+  "official_latest": {
+    "npm": "1.19.6",
+    "github": "v1.19.6"
+  },
+  "qualified_ceiling": "1.19.4",
+  "unpublished_gap": "1.18.36",
+  "first_unpublished_later_stable": "1.19.7",
+  "http_mcp_live_exact_version": "1.18.18",
+  "acp_sdk_pin": "0.21.0",
+  "gitlab_provider_pins": [
+    "6.19.0",
+    "6.23.1",
+    "6.23.1"
+  ],
+  "qualification_gates": {
+    "1.19.5": [
+      "gitlab_catalogue_and_turn"
+    ],
+    "1.19.6": [
+      "gitlab_catalogue_and_turn",
+      "overflow_recovery_and_image_history"
+    ]
+  },
+  "source_archive_sha256": {
+    "1.19.4": "2e553ed005b2df4a7efb9edd26db8fc3caafb1b4dfc3c5c3869192334584d8bb",
+    "1.19.5": "7d2ac43b5083a3a4687fe23b79ab153b8d93a6fb186fa07209ed28d4731e5c7a",
+    "1.19.6": "0dfc7c58a82a1f9ca635ebcfe8aad594009edb22a5ef752719d2b89fbe5918b8"
+  },
+  "shared_ledger_sha256": {
+    "identity.json": "fdd0bb24788e450cfd59ad4da8dcc80535d6d99cbe9de7442caaae18e7b730c1",
+    "native-inventory.json": "61c1532ca4a8eab94a8e115921de8c1bf67aff741f13854300d1e4c0ec5422a1",
+    "source-inventory.json": "2b249846dca35d14babf0e478daaa4fe7a2ba9dc903126b2a392861f25296750"
+  },
+  "selected_source_sha256": {
+    "bun.lock": [
+      "70cf5a7f721531cbd98916ffdfb39b3ab2d919442a53e80b10d2a58c470083dd",
+      "f65cf6d303cf0634b8e09bb545b99de33c6be31d4314008f4b5e7a4a85bb9327",
+      "3dcba6333708d2829ac29e550aebf117ce90dbec187c63e55c2190330ea80487"
+    ],
+    "packages/core/package.json": [
+      "8122449bb90b82ac24a7ad562e5a03f5672bf66f26ba8ad66b1f23fef374dd54",
+      "ec367e16b9528957d07e3889478d449c9eead3df2a8f0082e35c20b3d2243022",
+      "447c942ce68d456f86546135c7cf922378163fd642d4e0e9a3c844a435f8e6e6"
+    ],
+    "packages/core/src/config/mcp.ts": [
+      "5e5c1ed7d3d1a786edd6acc9774f5b4c91d6487279a34a8409c4090c42f95633",
+      "5e5c1ed7d3d1a786edd6acc9774f5b4c91d6487279a34a8409c4090c42f95633",
+      "5e5c1ed7d3d1a786edd6acc9774f5b4c91d6487279a34a8409c4090c42f95633"
+    ],
+    "packages/core/src/plugin/provider/gitlab.ts": [
+      "d914ac478608b950c5e19c62d53773bc90693e78ba43726ab125e3721af579f8",
+      "d914ac478608b950c5e19c62d53773bc90693e78ba43726ab125e3721af579f8",
+      "d914ac478608b950c5e19c62d53773bc90693e78ba43726ab125e3721af579f8"
+    ],
+    "packages/core/src/v1/config/mcp.ts": [
+      "7993ec591f75a42fc2763e5d22de20c7b216d73cb944e03c6729ecfa331072a9",
+      "7993ec591f75a42fc2763e5d22de20c7b216d73cb944e03c6729ecfa331072a9",
+      "7993ec591f75a42fc2763e5d22de20c7b216d73cb944e03c6729ecfa331072a9"
+    ],
+    "packages/llm/src/provider-error.ts": [
+      "652a9bbfa3fa2f5d1699e4ff20dc3361e7f8d2df1e1bf6dc3d2bbe99601494a8",
+      "652a9bbfa3fa2f5d1699e4ff20dc3361e7f8d2df1e1bf6dc3d2bbe99601494a8",
+      "92e58ec48bede460dae45f569f5ae660fe0538e708f0fdadf3809f91fb62ff18"
+    ],
+    "packages/opencode/package.json": [
+      "9825647d55cdbc693e2965048e448b21540a1d290023b31a3af8b1d5da0fede5",
+      "65ec3d533de3c7b1d78572955863a87e25f17895bc0f4bcc1571fcc07abec99f",
+      "51e9030b288ef6804d3055daf074d4b41b7f307a3e1ad68da16723cd34440ca3"
+    ],
+    "packages/opencode/src/acp/agent.ts": [
+      "3bf7c0a31bbf8c3dd5b3d06ddf38eff0c988858e5df6bb46d3abecc906f15a57",
+      "3bf7c0a31bbf8c3dd5b3d06ddf38eff0c988858e5df6bb46d3abecc906f15a57",
+      "3bf7c0a31bbf8c3dd5b3d06ddf38eff0c988858e5df6bb46d3abecc906f15a57"
+    ],
+    "packages/opencode/src/acp/config-option.ts": [
+      "4545cf9639b12b4a9a0bd28d9a5f61b3d8e7e6706558f04c66454773813ed1a1",
+      "4545cf9639b12b4a9a0bd28d9a5f61b3d8e7e6706558f04c66454773813ed1a1",
+      "4545cf9639b12b4a9a0bd28d9a5f61b3d8e7e6706558f04c66454773813ed1a1"
+    ],
+    "packages/opencode/src/acp/content.ts": [
+      "8b3c0bc40893eb18a2a4b8f8709a2188ffe5aa11e4d93232b4bd80989ba2bbc3",
+      "8b3c0bc40893eb18a2a4b8f8709a2188ffe5aa11e4d93232b4bd80989ba2bbc3",
+      "8b3c0bc40893eb18a2a4b8f8709a2188ffe5aa11e4d93232b4bd80989ba2bbc3"
+    ],
+    "packages/opencode/src/acp/directory.ts": [
+      "c4f0f38ef433713afdd50f89d7ecf2ce8130f5104dc7606a2ff3f090726109b4",
+      "c4f0f38ef433713afdd50f89d7ecf2ce8130f5104dc7606a2ff3f090726109b4",
+      "c4f0f38ef433713afdd50f89d7ecf2ce8130f5104dc7606a2ff3f090726109b4"
+    ],
+    "packages/opencode/src/acp/error.ts": [
+      "60657818576b13275c4d3e665e6c586f686d98cc5ef30ac2ef4c0402c2c8080b",
+      "60657818576b13275c4d3e665e6c586f686d98cc5ef30ac2ef4c0402c2c8080b",
+      "60657818576b13275c4d3e665e6c586f686d98cc5ef30ac2ef4c0402c2c8080b"
+    ],
+    "packages/opencode/src/acp/event.ts": [
+      "bbbfe1e210ba7ddf7b76a8d7d829e6f7e44d4d714c79dce832681ced9314d9ca",
+      "bbbfe1e210ba7ddf7b76a8d7d829e6f7e44d4d714c79dce832681ced9314d9ca",
+      "bbbfe1e210ba7ddf7b76a8d7d829e6f7e44d4d714c79dce832681ced9314d9ca"
+    ],
+    "packages/opencode/src/acp/permission.ts": [
+      "b83f1b30015f92f432e56a444a7304e131b1824b06870e7842c70db6bd969743",
+      "b83f1b30015f92f432e56a444a7304e131b1824b06870e7842c70db6bd969743",
+      "b83f1b30015f92f432e56a444a7304e131b1824b06870e7842c70db6bd969743"
+    ],
+    "packages/opencode/src/acp/profile.ts": [
+      "e18bc3b08f5a26506394434436333fddc88ac15dcc9fbfbc0eb09944486e3c3a",
+      "e18bc3b08f5a26506394434436333fddc88ac15dcc9fbfbc0eb09944486e3c3a",
+      "e18bc3b08f5a26506394434436333fddc88ac15dcc9fbfbc0eb09944486e3c3a"
+    ],
+    "packages/opencode/src/acp/service.ts": [
+      "238750d52e220080db7b7f4992432fbfc7fb7ec5a15a6175460f8f0832a2c8de",
+      "238750d52e220080db7b7f4992432fbfc7fb7ec5a15a6175460f8f0832a2c8de",
+      "238750d52e220080db7b7f4992432fbfc7fb7ec5a15a6175460f8f0832a2c8de"
+    ],
+    "packages/opencode/src/acp/session.ts": [
+      "cc73f70f7d7071fd6bf808871c65bcb87d9f737f9e292be5e279ee51f5c9507e",
+      "cc73f70f7d7071fd6bf808871c65bcb87d9f737f9e292be5e279ee51f5c9507e",
+      "cc73f70f7d7071fd6bf808871c65bcb87d9f737f9e292be5e279ee51f5c9507e"
+    ],
+    "packages/opencode/src/acp/tool.ts": [
+      "decfa2d51b4edcf5a2259b754e1d6528b4d42aeff1309981c5ec19ff09d45e3e",
+      "decfa2d51b4edcf5a2259b754e1d6528b4d42aeff1309981c5ec19ff09d45e3e",
+      "decfa2d51b4edcf5a2259b754e1d6528b4d42aeff1309981c5ec19ff09d45e3e"
+    ],
+    "packages/opencode/src/acp/usage.ts": [
+      "09b2c0ec9a31a78cf85d5810d8bc7aa8d9b0fa460b16f4d0008d7d5b4d3fc38b",
+      "09b2c0ec9a31a78cf85d5810d8bc7aa8d9b0fa460b16f4d0008d7d5b4d3fc38b",
+      "09b2c0ec9a31a78cf85d5810d8bc7aa8d9b0fa460b16f4d0008d7d5b4d3fc38b"
+    ],
+    "packages/opencode/src/cli/cmd/acp.ts": [
+      "104d1dfe498154fca38c5971deec8330be4793cedf122e36c5a38589089e1b23",
+      "104d1dfe498154fca38c5971deec8330be4793cedf122e36c5a38589089e1b23",
+      "104d1dfe498154fca38c5971deec8330be4793cedf122e36c5a38589089e1b23"
+    ],
+    "packages/opencode/src/config/config.ts": [
+      "87a9071af1ddb04d65947dba49be3fb4c94ecf63e120f17ce46ee81ff25dd45a",
+      "839c934f014c29a40f06cafd8bf2da1f0b2976ecd9e3e0f71b859792837ab14d",
+      "839c934f014c29a40f06cafd8bf2da1f0b2976ecd9e3e0f71b859792837ab14d"
+    ],
+    "packages/opencode/src/config/markdown.ts": [
+      "bcb87009e9ffc760e0e2f0878543f582b5ca7ecc67bebb2087de2467ae28cbfe",
+      "699563cb415587d5c75f7e7362c5efb1de2285ce4efc09a99a1b3592a9d5e38f",
+      "699563cb415587d5c75f7e7362c5efb1de2285ce4efc09a99a1b3592a9d5e38f"
+    ],
+    "packages/opencode/src/index.ts": [
+      "bddea4eb640adb6fe72193f292c1ae75526ff1bf5bc507ff7c539e4e93825dbc",
+      "bddea4eb640adb6fe72193f292c1ae75526ff1bf5bc507ff7c539e4e93825dbc",
+      "bddea4eb640adb6fe72193f292c1ae75526ff1bf5bc507ff7c539e4e93825dbc"
+    ],
+    "packages/opencode/src/mcp/index.ts": [
+      "82c459309dfd005d25daecfabc1007d807d4bee23f6078434974277938a1c026",
+      "82c459309dfd005d25daecfabc1007d807d4bee23f6078434974277938a1c026",
+      "82c459309dfd005d25daecfabc1007d807d4bee23f6078434974277938a1c026"
+    ],
+    "packages/opencode/src/plugin/index.ts": [
+      "47c62b7cfae891d268e6b239edb0f1c46df5cb35eb11ccfd8bd4186c156024e9",
+      "47c62b7cfae891d268e6b239edb0f1c46df5cb35eb11ccfd8bd4186c156024e9",
+      "47c62b7cfae891d268e6b239edb0f1c46df5cb35eb11ccfd8bd4186c156024e9"
+    ],
+    "packages/opencode/src/provider/provider.ts": [
+      "8d31296a58bc7955a1adb8b6d60da53a34ab7540d85644bab212a8ee27b8b69d",
+      "8d31296a58bc7955a1adb8b6d60da53a34ab7540d85644bab212a8ee27b8b69d",
+      "8d31296a58bc7955a1adb8b6d60da53a34ab7540d85644bab212a8ee27b8b69d"
+    ],
+    "packages/opencode/src/server/routes/instance/httpapi/groups/mcp.ts": [
+      "06fb822ef79a07981a0342e03e418685efdab9e931a4fc7bded1c868a8d63eb7",
+      "06fb822ef79a07981a0342e03e418685efdab9e931a4fc7bded1c868a8d63eb7",
+      "06fb822ef79a07981a0342e03e418685efdab9e931a4fc7bded1c868a8d63eb7"
+    ],
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/config.ts": [
+      "9a65c453b4abc05936a1eaed066f6b70b53657a1c544bd32d4b857f4a45839d1",
+      "9a65c453b4abc05936a1eaed066f6b70b53657a1c544bd32d4b857f4a45839d1",
+      "9a65c453b4abc05936a1eaed066f6b70b53657a1c544bd32d4b857f4a45839d1"
+    ],
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/mcp.ts": [
+      "0f800a0abb57d9af0ace7340de0a041997e91f70e368d00d88d0563009ed5799",
+      "0f800a0abb57d9af0ace7340de0a041997e91f70e368d00d88d0563009ed5799",
+      "0f800a0abb57d9af0ace7340de0a041997e91f70e368d00d88d0563009ed5799"
+    ],
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/session.ts": [
+      "3ce829f386267181da442d499d841463a9e532db827f75a6f41d501de6f71cf6",
+      "3ce829f386267181da442d499d841463a9e532db827f75a6f41d501de6f71cf6",
+      "3ce829f386267181da442d499d841463a9e532db827f75a6f41d501de6f71cf6"
+    ],
+    "packages/opencode/src/session/compaction.ts": [
+      "8d478570a7e4ad32b746030d4f86a1c673949b1e2259bd716b3885d99283289a",
+      "8d478570a7e4ad32b746030d4f86a1c673949b1e2259bd716b3885d99283289a",
+      "8d478570a7e4ad32b746030d4f86a1c673949b1e2259bd716b3885d99283289a"
+    ],
+    "packages/opencode/src/session/instruction.ts": [
+      "fee79c023eae44f720d4d600f334a987ad5f7615c4a008a20c89131a92684a8f",
+      "5b10b4f6c68c18be47e2f609e829485c1889c7abaae81087460d9cdc26542c95",
+      "5b10b4f6c68c18be47e2f609e829485c1889c7abaae81087460d9cdc26542c95"
+    ],
+    "packages/opencode/src/session/llm.ts": [
+      "5f1dcfb734853e39760e4dd05470f0c7d8752fc5dcc64e118c065149602e402d",
+      "6bc3c459b3004fa5bf3cd4d6465d16bacb194285694be0fa5fc3fa12eba28f4e",
+      "6bc3c459b3004fa5bf3cd4d6465d16bacb194285694be0fa5fc3fa12eba28f4e"
+    ],
+    "packages/opencode/src/session/llm/request.ts": [
+      "90077551a9a46e11a37f44279c584832918d722c0ba0407ff8cad8d3437dd0de",
+      "fb03673ee5ddfb0658ec5f1b9f50ac0f0355446af0de6a6796c20df367598687",
+      "fb03673ee5ddfb0658ec5f1b9f50ac0f0355446af0de6a6796c20df367598687"
+    ],
+    "packages/opencode/src/session/message-v2.ts": [
+      "b55648c31423ace5c730ca085ef5429a966486fcd7bf84ab25e59453a1a9417a",
+      "b55648c31423ace5c730ca085ef5429a966486fcd7bf84ab25e59453a1a9417a",
+      "b85e4314c68ae466113672e50f20fba622d07bace85e639818f21ed52ee1d166"
+    ],
+    "packages/opencode/src/session/overflow.ts": [
+      "fa0d52e8a59b737e8129d6473f9f6416567cd765c6068f854e4ea0dd3d351d10",
+      "47dfe71e6f96737518c494744561611fffe955594ceb10220dd7c751c3ec139c",
+      "47dfe71e6f96737518c494744561611fffe955594ceb10220dd7c751c3ec139c"
+    ],
+    "packages/opencode/src/session/processor.ts": [
+      "0b31e207beda56bd9a4b9b88c9e42d89a0651dd011773748c8e2938dfc3dcb74",
+      "0b31e207beda56bd9a4b9b88c9e42d89a0651dd011773748c8e2938dfc3dcb74",
+      "0b31e207beda56bd9a4b9b88c9e42d89a0651dd011773748c8e2938dfc3dcb74"
+    ],
+    "packages/opencode/src/session/prompt.ts": [
+      "f0c5bc64c0f0e966693d4a57f7ede1e9d6e188b396152f04b55303dc75b9b768",
+      "f0c5bc64c0f0e966693d4a57f7ede1e9d6e188b396152f04b55303dc75b9b768",
+      "f0c5bc64c0f0e966693d4a57f7ede1e9d6e188b396152f04b55303dc75b9b768"
+    ]
+  }
+}

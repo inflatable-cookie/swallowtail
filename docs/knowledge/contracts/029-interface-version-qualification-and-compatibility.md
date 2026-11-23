@@ -248,6 +248,11 @@ item, the same way an unavailable matrix cell is.
 - `UnverifiedNewer` under `AllowUnverified` remains the posture while the
   adaptation task is open. A stop with no owning task is a defect.
 
+Shared native payload identity can support multiple routes. Each route
+still needs its own selected-path proof. OpenCode's distinct overflow
+settlement paths illustrate the boundary. [ACP evidence](../../research/489-opencode-acp-1-19-6-identity.md),
+[HTTP evidence](../../research/486-opencode-http-1-19-6-identity.md).
+
 ### Artifact Authority Without Public Source
 
 Some published packages cannot be correlated to public source: metadata may

@@ -18,6 +18,9 @@ mod catalogue_suite;
 #[path = "../grok_1_0_70_catalogue_identity.rs"]
 mod grok_1_0_70_catalogue_identity;
 
+#[path = "../grok_1_0_92_catalogue_identity.rs"]
+mod grok_1_0_92_catalogue_identity;
+
 #[path = "../grok_1_0_41_identity.rs"]
 mod grok_1_0_41_identity;
 

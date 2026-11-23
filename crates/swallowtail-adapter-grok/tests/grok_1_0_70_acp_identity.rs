@@ -586,7 +586,7 @@ fn production_claim_keeps_1_0_46_while_catalogue_names_1_0_70() {
         InterfaceCompatibilityAssessment::Qualified(_)
     ));
     assert_eq!(
-        catalogue.assess(&version("1.0.71")),
+        catalogue.assess(&version("1.0.93")),
         InterfaceCompatibilityAssessment::Incompatible
     );
     for candidate in ["1.0.4", "1.0.5"] {

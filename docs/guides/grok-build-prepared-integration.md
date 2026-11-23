@@ -14,7 +14,7 @@ Reject it when the application needs hosted xAI inference, usage, or public
 provider-session management.
 The separate `grok-build.catalogue` route (`GrokCatalogueDriver`,
 `swallowtail.grok-build.catalogue`) lists installed models across the qualified
-window `1.0.30..=1.0.70`; see Model Catalogue below. It never opens ACP or
+window `1.0.30..=1.0.92`. See Model Catalogue below. It never opens ACP or
 sends a prompt.
 
 ## Route And Operation Shapes
@@ -88,11 +88,11 @@ success, failure, timeout, and cleanup failure. It never retries, updates the
 CLI, opens ACP, sends a prompt, opens a model session, dispatches a tool, or
 falls back to an execution default.
 
-Preparation admits installed `1.0.30` through `1.0.70` under the
+Preparation admits installed `1.0.30` through `1.0.92` under the
 `QualifiedOnly` claim `grok-build.catalogue.executable-window-1`. Two ordered
 segments carry the decode: `1.0.30..=1.0.45` keep
 `grok-build.catalogue.models-text-v1` as a deprecated segment, and
-`1.0.46..=1.0.70` use `grok-build.catalogue.models-text-v2`. Every older or
+`1.0.46..=1.0.92` use `grok-build.catalogue.models-text-v2`. Every older or
 newer point fails closed before any process starts. Preparation also requires
 the same delegated subscription access readiness as the ACP operations.
 
@@ -142,8 +142,10 @@ the accepted live capsule; Research 306 keeps the corrected boundary and the
 historical `1.0.25` capsule, and Research 305 keeps the static command/output
 evidence with a correction note. Research 405 preserves the `1.0.46` identity
 stop and its frozen corpus; Research 443 refreshes the selected channel to
-`1.0.70`, decodes the marker formatter, and qualifies the window. None of them
-includes a live catalogue observation beyond the exact `1.0.30` capsule.
+`1.0.70`, decodes the marker formatter, and qualifies that window.
+Research 491 extends the same revision through `1.0.92` using official Darwin
+ARM64 artifacts, sealed help probes and static formatter inspection. The live
+catalogue observation is exact to the `1.0.30` capsule.
 
 ## Structured Run
 

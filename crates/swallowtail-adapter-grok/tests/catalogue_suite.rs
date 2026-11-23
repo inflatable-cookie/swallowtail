@@ -29,7 +29,10 @@ use swallowtail_runtime::{
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
 const MODELS: &str = include_str!("fixtures/grok-1.0.30-catalogue/models.txt");
-const CATALOGUE_IDENTITY: &str = include_str!("fixtures/grok-1.0.70-catalogue/identity.json");
+const BASELINE_CATALOGUE_IDENTITY: &str =
+    include_str!("fixtures/grok-1.0.70-catalogue/identity.json");
+const CURRENT_CATALOGUE_IDENTITY: &str =
+    include_str!("fixtures/grok-1.0.92-catalogue/identity.json");
 const UNKNOWN_IDS: &str = include_str!("fixtures/grok-1.0.30-catalogue/unknown-ids.txt");
 const VERSION_OUTPUT: &str = "grok 1.0.30 (04b7ffed98c6) [stable]\n";
 
@@ -51,7 +54,7 @@ fn temporary_root(prefix: &str) -> PathBuf {
 }
 
 #[test]
-fn catalogue_claim_keeps_1_0_30_and_admits_every_hop_through_1_0_70() {
+fn catalogue_claim_keeps_1_0_30_and_admits_every_hop_through_1_0_92() {
     assert_eq!(GROK_BUILD_CATALOGUE_VERSION, "1.0.30");
     let claim = grok_build_catalogue_claim();
     assert_eq!(
@@ -59,7 +62,7 @@ fn catalogue_claim_keeps_1_0_30_and_admits_every_hop_through_1_0_70() {
         "grok-build.catalogue.executable-window-1"
     );
     assert_eq!(claim.baseline().as_str(), "1.0.30");
-    assert_eq!(claim.latest_qualified().as_str(), "1.0.70");
+    assert_eq!(claim.latest_qualified().as_str(), "1.0.92");
     let milestones = claim
         .milestones()
         .map(|segment| {
@@ -82,13 +85,13 @@ fn catalogue_claim_keeps_1_0_30_and_admits_every_hop_through_1_0_70() {
             ),
             (
                 "1.0.46".to_owned(),
-                "1.0.70".to_owned(),
+                "1.0.92".to_owned(),
                 "grok-build.catalogue.models-text-v2".to_owned(),
                 swallowtail_core::InterfaceSupportStatus::Maintained,
             ),
         ]
     );
-    for (minor, expected) in (30..=70).map(|minor| {
+    for (minor, expected) in (30..=92).map(|minor| {
         let revision = if minor <= 45 {
             "grok-build.catalogue.models-text-v1"
         } else {
@@ -111,7 +114,7 @@ fn catalogue_claim_keeps_1_0_30_and_admits_every_hop_through_1_0_70() {
         );
     }
     for candidate in [
-        "0.2.117", "1.0.4", "1.0.5", "1.0.25", "1.0.29", "1.0.71", "1.1.0",
+        "0.2.117", "1.0.4", "1.0.5", "1.0.25", "1.0.29", "1.0.93", "1.0.94", "1.1.0",
     ] {
         assert_eq!(
             claim.assess(&version(candidate)),
@@ -139,7 +142,7 @@ fn catalogue_claim_stays_independent_of_the_acp_execution_window() {
         Some("grok-4.6")
     );
     // The ACP window keeps its own 1.0.46 ceiling while the catalogue window
-    // reaches 1.0.70: the two claims stay independent, and neither ceiling
+    // reaches 1.0.92: the two claims stay independent, and neither ceiling
     // borrows the other's evidence.
     let catalogue = grok_build_catalogue_claim();
     assert!(matches!(
@@ -147,15 +150,15 @@ fn catalogue_claim_stays_independent_of_the_acp_execution_window() {
         InterfaceCompatibilityAssessment::Qualified(_)
     ));
     assert!(matches!(
-        catalogue.assess(&version("1.0.70")),
+        catalogue.assess(&version("1.0.92")),
         InterfaceCompatibilityAssessment::Qualified(_)
     ));
     assert_eq!(grok_build_acp_claim().latest_qualified().as_str(), "1.0.46");
     assert!(matches!(
-        grok_build_acp_claim().assess(&version("1.0.70")),
+        grok_build_acp_claim().assess(&version("1.0.92")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
-    for rejected in ["1.0.25", "1.0.29", "1.0.71"] {
+    for rejected in ["1.0.25", "1.0.29", "1.0.93", "1.0.94"] {
         assert_eq!(
             catalogue.assess(&version(rejected)),
             InterfaceCompatibilityAssessment::Incompatible,
@@ -265,7 +268,7 @@ fn catalogue_preparation_rejects_points_outside_the_claim() {
         ),
         (
             "catalogue.reject.new",
-            "grok 1.0.71 (123456789abc) [stable]\n",
+            "grok 1.0.93 (123456789abc) [stable]\n",
         ),
     ] {
         let prepared = prepared_integration(prefix, version_output);
@@ -322,17 +325,18 @@ fn catalogue_prepares_on_the_deprecated_1_0_45_segment() {
 }
 
 #[test]
-fn catalogue_maps_the_default_not_in_list_header_on_1_0_70() {
+fn catalogue_maps_the_default_not_in_list_header_on_1_0_92() {
     let header = "You are logged in with Example Account.\n\nDefault model: grok-4.7 (not in the list below)\n\nAvailable models:\n  - grok-4.6\n  - grok-4.5\n";
-    // Catalogue owns 1.0.70. ACP discovery does not pin this banner; any
-    // 7..=40 hex build id still parses, and the catalogue claim classifies it.
     let prepared = prepared_integration(
         "catalogue.unlisted",
-        "grok 1.0.70 (f50904eaee6c) [stable]\n",
+        &format!(
+            "grok 1.0.92 ({}) [stable]\n",
+            frozen_runtime_build_id("1.0.92")
+        ),
     );
     let catalogue = prepared
         .prepare_catalogue(catalogue_input(request_id("catalogue.unlisted")))
-        .expect("1.0.70 prepares");
+        .expect("1.0.92 prepares");
     let (process, state) = FakeProcessService::completed(header);
     let listing = block_on(catalogue.list_models_recorded(services(
         ExecutionHostId::new("catalogue.unlisted.host").expect("host"),
@@ -723,24 +727,27 @@ fn real_local_host_runs_the_bounded_catalogue_command() {
 
 /// Reads the statically carved self-reported build id for one frozen hop.
 ///
-/// Catalogue identity freezes this revision through `1.0.70`. ACP discovery
-/// pins exact banners only through the ACP ceiling `1.0.46`.
+/// Research 443 and Research 491 freeze the executable build ids.
 fn frozen_runtime_build_id(version: &str) -> String {
-    let identity: serde_json::Value =
-        serde_json::from_str(CATALOGUE_IDENTITY).expect("catalogue identity fixture");
-    identity["hops"]
-        .as_array()
-        .expect("hops")
-        .iter()
-        .find(|hop| hop["version"] == version)
-        .and_then(|hop| hop["darwin_arm64"]["runtime_build_id"].as_str())
+    [BASELINE_CATALOGUE_IDENTITY, CURRENT_CATALOGUE_IDENTITY]
+        .into_iter()
+        .find_map(|fixture| {
+            let identity: serde_json::Value =
+                serde_json::from_str(fixture).expect("catalogue identity fixture");
+            identity["hops"]
+                .as_array()
+                .expect("hops")
+                .iter()
+                .find(|hop| hop["version"] == version)
+                .and_then(|hop| hop["darwin_arm64"]["runtime_build_id"].as_str())
+                .map(str::to_owned)
+        })
         .unwrap_or_else(|| panic!("{version} has a frozen build id"))
-        .to_owned()
 }
 
 #[test]
 fn prepared_facade_admits_every_claimed_point() {
-    for minor in 30..=70 {
+    for minor in 30..=92 {
         let version = format!("1.0.{minor}");
         let prefix = format!("catalogue.sweep.{minor}");
         let prepared = prepared_integration(

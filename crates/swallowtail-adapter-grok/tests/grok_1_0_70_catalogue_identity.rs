@@ -436,11 +436,10 @@ fn dist_inventory_covers_every_hop_without_path_drift() {
 }
 
 #[test]
-fn claim_admits_every_proposed_point_and_rejects_outside_bounds() {
+fn claim_preserves_the_research_443_points_and_older_exclusions() {
     assert_eq!(GROK_BUILD_CATALOGUE_VERSION, "1.0.30");
     let claim = grok_build_catalogue_claim();
     assert_eq!(claim.baseline().as_str(), "1.0.30");
-    assert_eq!(claim.latest_qualified().as_str(), "1.0.70");
     for (minor, revision, status) in (30..=70).map(|minor| {
         if minor <= 45 {
             (
@@ -465,7 +464,7 @@ fn claim_admits_every_proposed_point_and_rejects_outside_bounds() {
         assert_eq!(matched.behavior_revision().as_str(), revision);
         assert_eq!(matched.support_status(), status);
     }
-    for candidate in ["1.0.29", "1.0.71", "1.1.0", "0.2.117"] {
+    for candidate in ["1.0.29", "0.2.117"] {
         assert_eq!(
             claim.assess(&version(candidate)),
             InterfaceCompatibilityAssessment::Incompatible,

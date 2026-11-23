@@ -14,6 +14,8 @@ pub(super) const DESCENDANT_ARCHIVE_BEHAVIOR: &str =
     "codex.app-server.lifecycle.v1.best-effort-descendant-archive";
 pub(super) const HARD_DELETE_BEHAVIOR: &str =
     "codex.app-server.lifecycle.v1.strict-descendant-hard-delete";
+pub(super) const DESCENDANT_RESTORE_BEHAVIOR: &str =
+    "codex.app-server.lifecycle.v1.best-effort-descendant-restore";
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum CodexLifecycleBehavior {
@@ -22,6 +24,7 @@ pub(crate) enum CodexLifecycleBehavior {
     ArchiveRestoreNotifications,
     BestEffortDescendantArchive,
     StrictDescendantHardDelete,
+    BestEffortDescendantRestore,
 }
 
 impl CodexLifecycleBehavior {
@@ -29,9 +32,10 @@ impl CodexLifecycleBehavior {
         match action {
             ProviderSessionManagementAction::Archive => true,
             ProviderSessionManagementAction::Restore => !matches!(self, Self::ArchiveResponse),
-            ProviderSessionManagementAction::Delete(_) => {
-                matches!(self, Self::StrictDescendantHardDelete)
-            }
+            ProviderSessionManagementAction::Delete(_) => matches!(
+                self,
+                Self::StrictDescendantHardDelete | Self::BestEffortDescendantRestore
+            ),
         }
     }
 
@@ -46,7 +50,7 @@ impl CodexLifecycleBehavior {
                 Capability::ProviderSessionArchive,
                 Capability::ProviderSessionRestore,
             ],
-            Self::StrictDescendantHardDelete => &[
+            Self::StrictDescendantHardDelete | Self::BestEffortDescendantRestore => &[
                 Capability::ProviderSessionArchive,
                 Capability::ProviderSessionRestore,
                 Capability::ProviderSessionDelete,
@@ -62,9 +66,10 @@ impl CodexLifecycleBehavior {
             ProviderSessionManagementAction::Archive | ProviderSessionManagementAction::Restore => {
                 !matches!(self, Self::ArchiveResponse | Self::ArchiveRestoreResponse)
             }
-            ProviderSessionManagementAction::Delete(_) => {
-                matches!(self, Self::StrictDescendantHardDelete)
-            }
+            ProviderSessionManagementAction::Delete(_) => matches!(
+                self,
+                Self::StrictDescendantHardDelete | Self::BestEffortDescendantRestore
+            ),
         }
     }
 
@@ -74,7 +79,10 @@ impl CodexLifecycleBehavior {
     ) -> ProviderSessionAffectedScope {
         match action {
             ProviderSessionManagementAction::Delete(_)
-                if matches!(self, Self::StrictDescendantHardDelete) =>
+                if matches!(
+                    self,
+                    Self::StrictDescendantHardDelete | Self::BestEffortDescendantRestore
+                ) =>
             {
                 ProviderSessionAffectedScope::ProviderDefinedDescendants
             }
@@ -83,7 +91,10 @@ impl CodexLifecycleBehavior {
     }
 
     pub(crate) const fn delete_action(self) -> Option<ProviderSessionManagementAction> {
-        if matches!(self, Self::StrictDescendantHardDelete) {
+        if matches!(
+            self,
+            Self::StrictDescendantHardDelete | Self::BestEffortDescendantRestore
+        ) {
             Some(ProviderSessionManagementAction::Delete(
                 ProviderSessionDeletionStrength::ProviderHardDeleted,
             ))
@@ -108,6 +119,7 @@ pub(crate) fn classify_lifecycle_version(
         NOTIFICATIONS_BEHAVIOR => CodexLifecycleBehavior::ArchiveRestoreNotifications,
         DESCENDANT_ARCHIVE_BEHAVIOR => CodexLifecycleBehavior::BestEffortDescendantArchive,
         HARD_DELETE_BEHAVIOR => CodexLifecycleBehavior::StrictDescendantHardDelete,
+        DESCENDANT_RESTORE_BEHAVIOR => CodexLifecycleBehavior::BestEffortDescendantRestore,
         _ => return None,
     };
     Some(CodexLifecycleAssessment {
@@ -167,8 +179,14 @@ pub fn codex_app_server_lifecycle_claim() -> InterfaceCompatibilityClaim {
             ),
             segment(
                 "0.140.0",
-                CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION,
+                "0.165.0",
                 HARD_DELETE_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.166.0",
+                CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION,
+                DESCENDANT_RESTORE_BEHAVIOR,
                 InterfaceSupportStatus::Maintained,
             ),
         ],

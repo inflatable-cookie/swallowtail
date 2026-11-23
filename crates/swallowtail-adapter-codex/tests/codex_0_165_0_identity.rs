@@ -167,18 +167,32 @@ fn decision_retains_previous_claims_until_gaps_close() {
     };
     assert_eq!(matched.behavior_revision().as_str(), "codex.exec.jsonl-v1");
     assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
-    let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+    let InterfaceCompatibilityAssessment::Qualified(app_matched) =
         codex_app_server_claim().assess(&version("0.165.0"))
     else {
-        panic!("app-server 0.165.0 stays unverified newer");
+        panic!("app-server 0.165.0 is qualified after Research 488");
     };
-    assert_eq!(newer.latest_qualified().as_str(), "0.164.0");
-    let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+    assert_eq!(
+        app_matched.behavior_revision().as_str(),
+        "codex.app-server.v2.protected-aws-workspace-roots"
+    );
+    assert_eq!(
+        app_matched.support_status(),
+        InterfaceSupportStatus::Maintained
+    );
+    let InterfaceCompatibilityAssessment::Qualified(lifecycle_matched) =
         codex_app_server_lifecycle_claim().assess(&version("0.165.0"))
     else {
-        panic!("lifecycle 0.165.0 stays unverified newer");
+        panic!("lifecycle 0.165.0 is qualified after Research 488");
     };
-    assert_eq!(newer.latest_qualified().as_str(), "0.164.0");
+    assert_eq!(
+        lifecycle_matched.behavior_revision().as_str(),
+        "codex.app-server.lifecycle.v1.strict-descendant-hard-delete"
+    );
+    assert_eq!(
+        lifecycle_matched.support_status(),
+        InterfaceSupportStatus::Maintained
+    );
 }
 
 #[test]

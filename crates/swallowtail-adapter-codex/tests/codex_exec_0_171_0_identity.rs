@@ -181,18 +181,18 @@ fn exec_claim_extends_to_0_171_0_while_app_server_stays_at_0_164_0() {
     }
 
     let InterfaceCompatibilityAssessment::UnverifiedNewer(app_newer) =
-        codex_app_server_claim().assess(&version("0.165.0"))
+        codex_app_server_claim().assess(&version("0.171.1"))
     else {
-        panic!("codex.app-server 0.165.0 must stay unverified newer in exec-only task");
+        panic!("codex.app-server 0.171.1 must remain unverified newer");
     };
-    assert_eq!(app_newer.latest_qualified().as_str(), "0.164.0");
+    assert_eq!(app_newer.latest_qualified().as_str(), "0.171.0");
 
     let InterfaceCompatibilityAssessment::UnverifiedNewer(lifecycle_newer) =
-        codex_app_server_lifecycle_claim().assess(&version("0.165.0"))
+        codex_app_server_lifecycle_claim().assess(&version("0.171.1"))
     else {
-        panic!("codex.app-server lifecycle 0.165.0 must stay unverified newer in exec-only task");
+        panic!("codex.app-server lifecycle 0.171.1 must remain unverified newer");
     };
-    assert_eq!(lifecycle_newer.latest_qualified().as_str(), "0.164.0");
+    assert_eq!(lifecycle_newer.latest_qualified().as_str(), "0.171.0");
 }
 
 #[test]

@@ -1,0 +1,1 @@
+- Qualify `codex.app-server` (`codex.cli`) through official stable `0.171.0` on `codex.app-server.v2.protected-aws-workspace-roots` and extend `codex.app-server` lifecycle through `0.171.0` with the `0.166.0..=0.171.0` `codex.app-server.lifecycle.v1.best-effort-descendant-restore` private milestone (Research 488), preserving all existing qualified segments and excluded gaps.

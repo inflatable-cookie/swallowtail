@@ -69,8 +69,8 @@ select billing, read an auth store, or infer a writable workspace. Exec admits
 from `0.122.0`. App-server admits
 `0.80.0..=0.81.0`, `0.84.0..=0.107.0`, `0.110.0..=0.130.0`,
 `0.131.0..=0.155.1`, `0.156.0..=0.156.1`, `0.157.0..=0.157.1`, `0.158.0`,
-and `0.159.0..=0.164.0`; `0.131.0..=0.155.1` retains its maintained status,
-`0.156.0..=0.158.0` is deprecated, and `0.159.0..=0.164.0` is maintained.
+and `0.159.0..=0.171.0`; `0.131.0..=0.155.1` retains its maintained status,
+`0.156.0..=0.158.0` is deprecated, and `0.159.0..=0.171.0` is maintained.
 Earlier supported statuses remain unchanged. Exact feature milestones remain
 narrower.
 Unpublished `0.149.2`, `0.150.2`, `0.151.1`, `0.152.2`, `0.154.1`, and
@@ -97,10 +97,16 @@ ten published hops `0.165.0`–`0.171.0`, and keeps the exec and app-server clai
 separate (`0.171.1` is `UnverifiedNewer`). Research 452 and Research 410 remain
 the earlier `0.164.0` and `0.161.0` records.
 
-The app-server claim independently qualifies `0.164.0` on
-`codex.app-server.v2.protected-aws-workspace-roots`. Research 388 remains the
-`0.161.0` inventory. The claim ID, older behavior revisions, feature bounds,
-and exclusions stay independent of the exec qualification.
+The app-server claim independently qualifies `0.171.0` on
+`codex.app-server.v2.protected-aws-workspace-roots` (Research 488), reusing
+Research 487's trusted Sigstore Linux `bwrap` provenance and classifying all
+ten hops (`0.165.0`–`0.171.0`). The lifecycle claim keeps `0.140.0..=0.165.0`
+on `codex.app-server.lifecycle.v1.strict-descendant-hard-delete` and adds
+`0.166.0..=0.171.0` on
+`codex.app-server.lifecycle.v1.best-effort-descendant-restore` (`Restore`
+remains `TargetOnly`). Research 388 remains the `0.161.0` inventory. The claim
+ID, older behavior revisions, feature bounds, and exclusions stay independent
+of the exec qualification (`0.171.1` is `UnverifiedNewer`).
 
 The app-server sends one host-approved writable root, keeps read-only defaults,
 and sends no trust, config, permission, proxy, Windows sandbox, or
@@ -334,6 +340,7 @@ Codex lifecycle support remains version-specific:
 - matching archive and restore notifications are expected from `0.104.0`
 - best-effort descendant archive from `0.123.0` does not widen the guarantee
 - hard delete starts at `0.140.0` and reports provider-defined descendants
+- best-effort descendant restore from `0.166.0` does not widen the `TargetOnly` restore guarantee (Research 488)
 
 Unknown and repeatedly fully deleted targets remain failures. Swallowtail does
 not turn them into already-absent success. A response lost after dispatch,

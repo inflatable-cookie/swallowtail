@@ -10,7 +10,7 @@ fn lifecycle_corpus_freezes_every_method_and_behavior_boundary() {
     assert_eq!(corpus["axis"], "codex.cli");
     assert_eq!(corpus["facade"], "codex-app-server-v2");
     assert_eq!(corpus["claim"], "codex.app-server.lifecycle-window-1");
-    assert_eq!(corpus["qualified_range"], "0.80.0..=0.164.0");
+    assert_eq!(corpus["qualified_range"], "0.80.0..=0.171.0");
 
     let boundaries = &corpus["method_boundaries"];
     assert_eq!(boundaries["thread/archive"]["present"], "0.80.0");
@@ -35,6 +35,12 @@ fn lifecycle_corpus_freezes_every_method_and_behavior_boundary() {
         "0.123.0",
     );
     assert_boundary(boundaries, "thread/delete", "0.139.0", "0.140.0");
+    assert_boundary(
+        boundaries,
+        "best-effort-descendant-restore",
+        "0.165.0",
+        "0.166.0",
+    );
 }
 
 #[test]
@@ -43,7 +49,7 @@ fn lifecycle_segments_keep_capabilities_independent() {
     let segments = corpus["segments"]
         .as_array()
         .expect("segments are an array");
-    assert_eq!(segments.len(), 7);
+    assert_eq!(segments.len(), 8);
 
     assert_segment(&segments[0], "0.80.0..=0.81.0", &["archive"], "none");
     assert_segment(&segments[1], "0.84.0..=0.91.0", &["archive"], "none");
@@ -73,10 +79,17 @@ fn lifecycle_segments_keep_capabilities_independent() {
     );
     assert_segment(
         &segments[6],
-        "0.140.0..=0.164.0",
+        "0.140.0..=0.165.0",
         &["archive", "delete", "restore"],
         "best-effort",
     );
+    assert_segment(
+        &segments[7],
+        "0.166.0..=0.171.0",
+        &["archive", "delete", "restore"],
+        "best-effort",
+    );
+    assert_eq!(segments[7]["restore_descendants"], "best-effort");
 
     assert_eq!(strings(&segments[2]["notifications"]), BTreeSet::new());
     assert_eq!(
@@ -101,7 +114,8 @@ fn wire_contract_does_not_overclaim_idempotency_or_descendant_archive() {
 
     assert_eq!(wire["restore"]["guaranteed_scope"], "target-only");
     assert_eq!(wire["restore"]["unarchived_target"], "error");
-    assert_eq!(wire["restore"]["descendants"], "not-restored");
+    assert_eq!(wire["restore"]["descendants_through_0_165"], "not-restored");
+    assert_eq!(wire["restore"]["descendants_from_0_166"], "best-effort");
 
     assert_eq!(wire["delete"]["strength"], "provider-hard-deleted");
     assert_eq!(
@@ -215,7 +229,7 @@ fn lifecycle_exclusions_preserve_existing_app_server_window() {
     assert_eq!(exclusions["0.152.2"], "unpublished-stable");
     assert_eq!(exclusions["0.154.1"], "unpublished-stable");
     assert_eq!(exclusions["0.155.2"], "unpublished-stable");
-    assert_eq!(corpus["unverified_newer"]["example"], "0.164.1");
+    assert_eq!(corpus["unverified_newer"]["example"], "0.171.1");
     assert_eq!(
         corpus["unverified_newer"]["execution"],
         "permitted-with-explicit-unverified-status"

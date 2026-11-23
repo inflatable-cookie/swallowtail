@@ -1,0 +1,120 @@
+{
+  "route": "codex.app-server",
+  "selectedInvocation": [
+    "app-server",
+    "--listen",
+    "stdio://"
+  ],
+  "selectedMappedWireShapeUnchanged": true,
+  "noPrompt": true,
+  "noLiveSession": true,
+  "noHostMutation": true,
+  "downloadedBinariesExecuted": false,
+  "bwrapGateResolution": {
+    "research463GateClosed": true,
+    "reusedFromResearch487": true,
+    "allElevenHopsTrustedSigstoreVerified": true,
+    "allElevenHopsEmbeddedInLinuxCodex": true,
+    "bwrapSourceAndVendorCByteIdentical": true,
+    "protectedMetadataPathNames": [
+      ".git",
+      ".agents",
+      ".codex",
+      ".aws"
+    ]
+  },
+  "attachedChildLifecycleResolution": {
+    "research467Baseline": "0.165.0",
+    "threadDeleteProcessorByteIdenticalThrough0_171_0": true,
+    "rolloutReferenceIndexByteIdenticalThrough0_171_0": true,
+    "historyRevisionByteIdenticalThrough0_171_0": true,
+    "deleteStoreAddsDiagnosticLogsFailClosedGuard": true,
+    "ordinaryListKeepsExcludeAttachedThreads": true,
+    "adapterSendsNoAttachedRelationFilter": true,
+    "refusalMapsToFailedBeforeEffect": true,
+    "deleteAffectedScopeRemainsProviderDefinedDescendants": true
+  },
+  "bestEffortDescendantRestoreMilestone": {
+    "introducedIn": "0.166.0",
+    "behaviorRevision": "codex.app-server.lifecycle.v1.best-effort-descendant-restore",
+    "previousBehaviorRevision": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
+    "previousSegmentCeiling": "0.165.0",
+    "restoreAffectedScopeRemainsTargetOnly": true,
+    "wireRequestAndResponseUnchanged": true,
+    "emitsThreadUnarchivedPerRestoredId": true,
+    "precedent": "Research 037 best-effort-descendant-archive (0.123.0)"
+  },
+  "managedConfigServerClassification": {
+    "introducedInCloudConfig": "0.165.0",
+    "wiredIntoAppServerStartup": "0.166.0",
+    "firstTurnEffectiveConfigProviderCheckVersions": [
+      "0.166.0",
+      "0.167.0",
+      "0.167.1",
+      "0.167.2"
+    ],
+    "firstTurnManagedOnlyProviderCheckVersions": [
+      "0.164.0",
+      "0.165.0",
+      "0.168.0",
+      "0.169.0",
+      "0.169.1",
+      "0.170.0",
+      "0.171.0"
+    ],
+    "turnStartProviderMismatchMapsToRequestFailed": true,
+    "nonInteractiveAuth": true,
+    "requiresOperatorRuling": false
+  },
+  "paginatedResumeAndAccountCheck": {
+    "resumeModelContextReuseEquivalentOnSelectedPath": true,
+    "cliResumeAccountCheckClients": [
+      "codex-tui",
+      "codex_exec"
+    ],
+    "swallowtailClientNameExempt": true,
+    "adapterSendsNoHistoryOrPathOrPage": true
+  },
+  "byteIdenticalThroughAllTenHops": {
+    "codex-rs/thread-store/src/local/history_revision.rs": "78bcb769bc390342580d27f01a2e557468f43ed94fa0f26f39ddbd873e01be00",
+    "codex-rs/linux-sandbox/src/bundled_bwrap.rs": "f2825debef7272c72ae039d94d8bec7ca9e84e3ab534c3d59a9c26ae02a2ed80"
+  },
+  "byteIdenticalFrom0_165To0_171": {
+    "codex-rs/app-server/src/request_processors/thread_delete.rs": "5090073a863a47189dba2ff697b3a0cfd39de9d1797cd3a6e1b84039753b1275",
+    "codex-rs/rollout/src/rollout_reference_index.rs": "0400f418a8a472cfbda3f65308fb18924582a8a497f917413ff84cdbe5b3a45f",
+    "codex-rs/state/migrations/0062_threads_attached_parent.sql": "d0ea9bbff023692fb2076bd9b3ba9f750f6382161a01a4b51a19bd84b65358bd"
+  },
+  "classifiedDeltas": {
+    "codex-rs/app-server/src/main.rs": "Adds hidden PluginMcpLaunchArgs; selected `app-server --listen stdio://` argv unchanged.",
+    "codex-rs/app-server/src/transport.rs": "Drops optional ThreadSearchPartial progress under backpressure; selected RPC methods unaffected.",
+    "codex-rs/app-server/src/startup_config.rs": "Switches startup config to load_managed_startup_config and update_managed_config_loader (0.166.0 config_server); system/MDM requirements.toml only.",
+    "codex-rs/app-server/src/in_process_bootstrap.rs": "Retains active config_server loader across auth updates (0.166.0-0.171.0).",
+    "codex-rs/app-server/src/application_network.rs": "Reads current_managed_config_loader() for application.network refresh.",
+    "codex-rs/app-server/src/config_manager.rs": "Manages config_server loader; 0.166.0-0.167.2 check_thread_model_provider_for_input reverted to managed-only check_thread_model_provider in 0.168.0.",
+    "codex-rs/app-server/src/message_processor.rs": "Replaces thread_list_state_permit semaphore with ThreadListState and adds unmapped RPC arms (ThreadMemoryRead, ThreadSearchStream, ThreadGuardianReview, ThreadPrepareApprovedPlan, ModelProvider*, GcpSetup, AccountSessions*); all selected RPC arms preserved.",
+    "codex-rs/app-server/src/outgoing_message.rs": "Adds resolve_server_request helper still emitting ServerNotification::ServerRequestResolved and optional human_approval_connections gated on unselected requiredHumanApproval capability.",
+    "codex-rs/app-server/src/bespoke_event_handling.rs": "Adopts ItemStartedNotification::new / ItemCompletedNotification::new with flat wire payload and optional contentTokenCount; maps realtime/humanCommand events (unselected); selected turn/item/approval/user-input notifications preserved.",
+    "codex-rs/app-server-protocol/src/protocol/v1.rs": "Adds optional InitializeCapabilities.requiredHumanApproval (default false, unselected).",
+    "codex-rs/app-server-protocol/src/protocol/v2/model.rs": "Adds optional ModelListParams.modelProvider (unselected); Model fields unchanged.",
+    "codex-rs/app-server-protocol/src/protocol/v2/thread.rs": "Adds optional unmapped fields (attachToSource, includeAttachedThreads, currentAccountOnly, environments, responsesapiClientMetadata, deferOutput, ThreadPrepareApprovedPlan); selected request/response structs preserved.",
+    "codex-rs/app-server-protocol/src/protocol/v2/thread_data.rs": "Adds optional experimental Thread.attachedToThreadId; selected id/cwd/source/updatedAt/status/name/preview/turns preserved.",
+    "codex-rs/app-server-protocol/src/protocol/v2/turn.rs": "Adds optional TurnSettingsUpdateParams.environments, AdditionalContextEntry.name, AudioReference on UserInput::Audio; selected UserInput::Text and TurnStartParams fields unchanged.",
+    "codex-rs/app-server-protocol/src/protocol/v2/item.rs": "Flattens ThreadItemPayload into ThreadItem with optional startedAtMs/completedAtMs, optional AgentMessage.moderation, optional McpToolCall.environmentId, optional ItemCompletedNotification.contentTokenCount, and HumanCommand approval kind (gated on unselected capability); all mapped ThreadItem type tags unchanged.",
+    "codex-rs/app-server-protocol/src/protocol/v2/shared.rs": "Adds CodexErrorInfo variants (ModelNotFound, PolicyCapacityUnavailable, InferenceHookDenied, BioPolicy); adapter does not match CodexErrorInfo.",
+    "codex-rs/app-server-protocol/src/protocol/v2/hook.rs": "Changes HookRunSummary.source_path Rust type to LegacyAppPathString (still serializes as string; adapter only projects hook id/event/status).",
+    "codex-rs/app-server/src/request_processors/initialize_processor.rs": "Registers human_approval_connection only when requiredHumanApproval is requested; removes startup config_warnings replay; initialize handshake unchanged.",
+    "codex-rs/app-server/src/request_processors/catalog_processor.rs": "Handles optional ModelListParams.modelProvider and HooksListParams.threadId (unselected); model/list default path unchanged.",
+    "codex-rs/app-server/src/request_processors/thread_processor.rs": "Introduces shared/exclusive ResumePermit, CLI-only thread_resume_account::check (exempts swallowtail), paginated resume reuse (0.165.0+), and best-effort descendant unarchive_threads (0.166.0+); preserves selected thread/start, thread/resume, thread/list, thread/read, thread/archive, thread/unarchive wire contracts.",
+    "codex-rs/app-server/src/request_processors/thread_lifecycle.rs": "Uses outgoing.resolve_server_request (still sends serverRequest/resolved), restores evicted agent text from store on resume, and hardens closing-thread listener races.",
+    "codex-rs/app-server/src/request_processors/turn_processor.rs": "Uses check_thread_model_provider_for_input in 0.166.0-0.167.2 (reverted in 0.168.0) and adds unmapped thread_guardian_review; selected turn/start and turn/interrupt preserved.",
+    "codex-rs/thread-store/src/local/delete_thread.rs": "Adds attached-child guard in 0.165.0 (Research 467) and ensure_diagnostic_logs_available fail-closed guard before destructive cleanup.",
+    "codex-rs/thread-store/src/local/unarchive_thread.rs": "Switches to unarchive_threads in 0.166.0: parent restore remains strict, spawned descendants restored best-effort with per-id ThreadUnarchived notifications.",
+    "codex-rs/thread-store/src/local/list_threads.rs": "Adds direct SQLite State page projection while preserving ordinary listing exclusion of attached threads.",
+    "codex-rs/thread-store/src/local/live_writer.rs": "Maintains history_revision recheck under writer lock across 0.165.0-0.171.0 and tracks model_id ordinals.",
+    "codex-rs/state/src/runtime/threads.rs": "Retains EXCLUDE_ATTACHED_THREADS for all ordinary listings (when relation_filter is None).",
+    "codex-rs/protocol/src/permissions.rs": "Refactors enforcement helpers while keeping PROTECTED_METADATA_PATH_NAMES = [.git, .agents, .codex, .aws] unchanged.",
+    "codex-rs/linux-sandbox/src/bwrap.rs": "Replaces external rg with in-process ignore walk, adopts resolve_for_enforcement, adds unselected transparent-tcp mode; preserves protected metadata and workspace-write bounds.",
+    "codex-rs/sandboxing/src/bwrap.rs": "Adds pidfd_open+poll wait on system bwrap probe and denies TIOCSTI on ProcessWithInheritedTerminal.",
+    "codex-rs/sandboxing/src/seatbelt.rs": "Adopts resolve_for_enforcement and preserves workspace-write / read-only seatbelt policies."
+  }
+}

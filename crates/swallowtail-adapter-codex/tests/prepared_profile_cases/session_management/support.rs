@@ -14,7 +14,8 @@ pub(crate) fn lifecycle_binding(
         "codex.app-server.lifecycle.v1.archive-response" => {
             vec![Capability::ProviderSessionArchive]
         }
-        "codex.app-server.lifecycle.v1.strict-descendant-hard-delete" => vec![
+        "codex.app-server.lifecycle.v1.strict-descendant-hard-delete"
+        | "codex.app-server.lifecycle.v1.best-effort-descendant-restore" => vec![
             Capability::ProviderSessionArchive,
             Capability::ProviderSessionRestore,
             Capability::ProviderSessionDelete,

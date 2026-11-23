@@ -134,8 +134,7 @@ tag contents, or evidence.
 
 ## Version And Toolchains
 
-All packages in the current source candidate share coordinated version `0.6.0`.
-Workspace package version remains Effigy-owned until authorized prepare.
+All packages in the current source candidate share coordinated version `0.7.0`.
 
 - unified MSRV: Rust `1.97.1` for the source after `v0.6.0` (the next
   pre-1.0 minor, `0.7.0`); `v0.2.0` through `v0.6.0` keep Rust `1.95.0`
@@ -176,7 +175,7 @@ in a Rust source tag.
 
 ## Candidate Shape
 
-The prepared candidate version is `0.6.0`. Its package order places
+The `0.7.0` candidate's package order places
 core and protocols first, idioms before runtime, then host support, testkit,
 transport, and adapters. This keeps the
 runtime-to-idioms dependency resolvable from independently packaged source.
@@ -198,9 +197,8 @@ The candidate is one clean canonical commit plus deterministic evidence:
   the immutable 40-package `v0.6.0`, `v0.5.4` and `v0.3.3`, 30-package
   `v0.3.2`, 28-package `v0.2.0` / `v0.3.1` and 27-package `v0.1.x` evidence
 - frozen 41-package current-source semantic API inventory and 51-route
-  inventory, including `opencode.acp`; historical `v0.6.0`, `v0.5.4` and
-  `v0.3.3` files stay immutable, with removals from the immutable `v0.5.4`
-  baseline forbidden
+  inventory, including `opencode.acp`; semantic changes compare against the
+  tagged `v0.6.0` baseline under Contract 036's minor-release rules
 - documented public API
 - dependency and security policy
 - MSRV and current-stable checks

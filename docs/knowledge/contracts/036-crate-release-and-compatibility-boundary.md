@@ -68,6 +68,7 @@ Support:
 
 Protocols and transport:
 
+- `swallowtail-acp-client`
 - `swallowtail-protocol-acp`
 - `swallowtail-protocol-openai-chat`
 - `swallowtail-transport-acp-remote`
@@ -107,9 +108,9 @@ Opt-in adapters:
 - `swallowtail-adapter-xai`
 - `swallowtail-adapter-zcode`
 
-The current source set is 39 packages and 51 production routes; `v0.6.0`
-remains the immutable 40-package tag that still carries the unwired
-`swallowtail-adapter-openhands` package.
+The `0.7.0` candidate contains 41 packages and preserves the 51 production
+routes from `v0.6.0`. The immutable `v0.6.0` tag contains 40 packages,
+including the unwired `swallowtail-adapter-openhands` package.
 
 There is no umbrella crate or intentionally private implementation crate.
 Every package remains separately selectable. Selecting one grants no authority

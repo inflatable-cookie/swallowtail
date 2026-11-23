@@ -1,1 +1,0 @@
-- Record Claude Agent ACP artifact identities through 0.109.1 and the trusted-runner proof needed to extend guarded qualification beyond 0.106.0.

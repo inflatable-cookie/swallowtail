@@ -211,11 +211,6 @@ pub struct swallowtail_adapter_alibaba_model_studio::SseDecoder
 impl swallowtail_adapter_alibaba_model_studio::SseDecoder
 pub fn swallowtail_adapter_alibaba_model_studio::SseDecoder::finish(self) -> core::result::Result<(), swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
 pub fn swallowtail_adapter_alibaba_model_studio::SseDecoder::push(&mut self, &[u8]) -> core::result::Result<alloc::vec::Vec<swallowtail_adapter_alibaba_model_studio::SseFrame>, swallowtail_adapter_alibaba_model_studio::AlibabaProtocolFailure>
-impl swallowtail_transport_http::stream::BodyDecoder for swallowtail_adapter_alibaba_model_studio::SseDecoder
-pub type swallowtail_adapter_alibaba_model_studio::SseDecoder::Error = swallowtail_runtime::failure::RuntimeFailure
-pub type swallowtail_adapter_alibaba_model_studio::SseDecoder::Item = swallowtail_adapter_alibaba_model_studio::SseFrame
-pub fn swallowtail_adapter_alibaba_model_studio::SseDecoder::finish(self) -> core::result::Result<(), Self::Error>
-pub fn swallowtail_adapter_alibaba_model_studio::SseDecoder::push(&mut self, &[u8]) -> core::result::Result<alloc::vec::Vec<Self::Item>, Self::Error>
 pub struct swallowtail_adapter_alibaba_model_studio::SseFrame
 impl swallowtail_adapter_alibaba_model_studio::SseFrame
 pub fn swallowtail_adapter_alibaba_model_studio::SseFrame::name(&self) -> &str

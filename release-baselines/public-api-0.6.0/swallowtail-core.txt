@@ -458,7 +458,6 @@ pub swallowtail_core::PreflightDimension::OperationShape
 pub swallowtail_core::PreflightDimension::Ownership
 pub swallowtail_core::PreflightDimension::PlannedConnectionRollover
 pub swallowtail_core::PreflightDimension::RealtimeMedia
-pub swallowtail_core::PreflightDimension::RemoteAcp
 pub swallowtail_core::PreflightDimension::Role
 pub swallowtail_core::PreflightDimension::SessionAccess
 pub swallowtail_core::PreflightDimension::SessionProviderState

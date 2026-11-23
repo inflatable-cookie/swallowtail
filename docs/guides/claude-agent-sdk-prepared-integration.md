@@ -269,20 +269,13 @@ new `.294` and `.295` artifacts and proves only those new pairs through the
 prepared facade and shipped sidecar, including rejection of mismatched,
 missing and unreadable identities before SDK construction.
 
-`ClaudeAgentSdkPackageNativePair` and `with_package_native_pair` are additive
-APIs of the `0.6.0` candidate. Existing preparation calls remain
-source-compatible and continue to select `.293` by default. The pair type is a
-static-table-backed struct rather than a 35-variant enum, so a caller that
-named one variant moves to the equivalent lookup: `V0_3_284Native2_1_284`
-becomes `ClaudeAgentSdkPackageNativePair::from_package_version("0.3.284")`,
-and `MAINTAINED` keeps its length and order. `DEFAULT`, `MAINTAINED`,
-`package_version`, and `native_version` keep their names and meanings. The
-resulting entries appear only in
-`release-baselines/public-api-0.6.0/swallowtail-adapter-claude-agent.txt`;
-`public-api-0.5.1` and every other older version-labelled baseline again record
-their own tagged source byte-for-byte, as
-[Contract 036](../knowledge/contracts/036-crate-release-and-compatibility-boundary.md)
-requires.
+In `0.7.0`, `ClaudeAgentSdkPackageNativePair` is a struct backed by a static
+table. To migrate a variant reference from tagged `v0.6.0`, replace
+`V0_3_284Native2_1_284` with
+`ClaudeAgentSdkPackageNativePair::from_package_version("0.3.284")` and handle
+the optional result. `with_package_native_pair` retains its selection
+semantics. `DEFAULT` still selects `.293`, and `MAINTAINED` preserves the
+tagged pairs and their order.
 
 The point moved three times already: `0.3.258` was qualified first, Research 280
 rebound both coupled axes to `0.3.259` after a full package-tree inventory,

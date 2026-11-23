@@ -155,12 +155,10 @@ if current_routes != expected_routes:
     fail(f"current source route inventory drifted; missing={missing}, extra={extra}")
 immutable_relative = f"release-baselines/production-routes-{previous_version}.txt"
 immutable_routes = set(read(immutable_relative).splitlines())
-if not immutable_routes < current_routes:
+if not immutable_routes <= current_routes:
     fail(
-        "current source route inventory must strictly extend the frozen tagged "
-        f"v{previous_version} inventory; post-tag additions "
-        f"{sorted(current_routes - immutable_routes)} must stay declared while "
-        f"v{previous_version} stays frozen, otherwise the split collapses"
+        f"current source route inventory drops tagged v{previous_version} "
+        f"routes: {sorted(immutable_routes - current_routes)}"
     )
 release_route_section = section(release, "## Production Routes", "## Highlights")
 documented_routes = set(re.findall(r"^- `([^`]+)`$", release_route_section, re.MULTILINE))

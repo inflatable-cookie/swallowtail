@@ -1,1 +1,0 @@
-Added Contract 029 flagship version-currentness checkpoint Research 484 for Codex, Claude (Code, Agent SDK, Agent ACP), OpenCode (HTTP, ACP, 2.x), Pi (RPC, SDK sidecar), and Grok (ACP, catalogue); no compatibility claims, fixtures, or matrices changed.

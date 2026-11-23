@@ -1,4 +1,3 @@
-swallowtail-acp-client
 swallowtail-adapter-alibaba-model-studio
 swallowtail-adapter-anthropic
 swallowtail-adapter-antigravity
@@ -25,6 +24,7 @@ swallowtail-adapter-oh-my-pi
 swallowtail-adapter-ollama
 swallowtail-adapter-openai
 swallowtail-adapter-opencode
+swallowtail-adapter-openhands
 swallowtail-adapter-pi
 swallowtail-adapter-qoder
 swallowtail-adapter-qwen
@@ -38,4 +38,3 @@ swallowtail-protocol-openai-chat
 swallowtail-runtime
 swallowtail-testkit
 swallowtail-transport-acp-remote
-swallowtail-transport-http

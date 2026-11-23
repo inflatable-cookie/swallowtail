@@ -1,0 +1,47 @@
+pub mod swallowtail_adapter_openhands
+pub struct swallowtail_adapter_openhands::OpenHandsAgentServerDriver
+impl swallowtail_adapter_openhands::OpenHandsAgentServerDriver
+pub const fn swallowtail_adapter_openhands::OpenHandsAgentServerDriver::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_openhands::OpenHandsAgentServerDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_openhands::OpenHandsAgentServerDriver
+pub fn swallowtail_adapter_openhands::OpenHandsAgentServerDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_openhands::OpenHandsAgentServerDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_openhands::OpenHandsAgentServerDriver
+pub fn swallowtail_adapter_openhands::OpenHandsAgentServerDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_openhands::OpenHandsAgentServerPreparationInput
+impl swallowtail_adapter_openhands::OpenHandsAgentServerPreparationInput
+pub const fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_openhands::OpenHandsAgentServerPreparationProbe
+impl swallowtail_adapter_openhands::OpenHandsAgentServerPreparationProbe
+pub const fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_openhands::OpenHandsAgentServerPreparedIntegration
+impl swallowtail_adapter_openhands::OpenHandsAgentServerPreparedIntegration
+pub const fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_openhands::OpenHandsAgentServerDriver
+pub const fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_openhands::OpenHandsAgentServerPreparedIntegration
+pub fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedIntegration::prepare_run(&self, swallowtail_adapter_openhands::OpenHandsAgentServerRunProfileInput) -> core::result::Result<swallowtail_adapter_openhands::OpenHandsAgentServerPreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_openhands::OpenHandsAgentServerPreparedRun
+impl swallowtail_adapter_openhands::OpenHandsAgentServerPreparedRun
+pub const fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedRun::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedRun::low_level_driver(&self) -> swallowtail_adapter_openhands::OpenHandsAgentServerDriver
+pub const fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_openhands::OpenHandsAgentServerPreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_openhands::OpenHandsAgentServerRunProfileInput
+impl swallowtail_adapter_openhands::OpenHandsAgentServerRunProfileInput
+pub const fn swallowtail_adapter_openhands::OpenHandsAgentServerRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
+pub const swallowtail_adapter_openhands::OPENHANDS_LOCAL_ACCOUNT_AUDIENCE: &str
+pub const swallowtail_adapter_openhands::OPENHANDS_PACKAGE_AXIS: &str
+pub const swallowtail_adapter_openhands::OPENHANDS_PACKAGE_VERSION: &str
+pub fn swallowtail_adapter_openhands::openhands_agent_server_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_openhands::openhands_agent_server_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_openhands::openhands_local_config_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_openhands::openhands_package_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub async fn swallowtail_adapter_openhands::prepare_openhands_agent_server(swallowtail_adapter_openhands::OpenHandsAgentServerPreparationInput, swallowtail_adapter_openhands::OpenHandsAgentServerPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_openhands::OpenHandsAgentServerPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

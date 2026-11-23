@@ -1,6 +1,7 @@
 [profile.default]
 final-status-level = "fail"
 status-level = "fail"
+slow-timeout = { period = "60s", terminate-after = 3 }
 
 # Keep process-spawning binaries out of the count-partitioned shards. They run
 # once in the dedicated CI process shard below, so every test remains covered

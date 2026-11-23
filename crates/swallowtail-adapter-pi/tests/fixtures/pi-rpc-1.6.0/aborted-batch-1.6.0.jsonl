@@ -1,0 +1,5 @@
+{"type":"tool_execution_start","toolCallId":"tool-1","toolName":"read","args":{"path":"one.txt"}}
+{"type":"tool_execution_end","toolCallId":"tool-1","toolName":"read","isError":true,"result":{"content":[{"type":"text","text":"Operation aborted"}],"details":{}}}
+{"type":"tool_execution_start","toolCallId":"tool-2","toolName":"read","args":{"path":"two.txt"}}
+{"type":"tool_execution_end","toolCallId":"tool-2","toolName":"read","isError":true,"result":{"content":[{"type":"text","text":"Operation aborted"}],"details":{}}}
+{"type":"agent_settled","aborted":true}

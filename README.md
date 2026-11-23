@@ -19,15 +19,15 @@ New here? Two short reads get you from zero to a working run:
 
 ## Release Posture
 
-`0.7.0` is the current source candidate. See the
-[0.7.0 release notes](docs/releases/0.7.0.md). The current source tag is
-`v0.6.0` at `8fe3bcbd90419debd075068f1dddfeac4626ba0f`. Releases are distributed as
+`v0.7.0` is the current source tag, an immutable tag identifying reviewed
+source `6ef3252faefcd2c9cbfd4debedd28d3dea51c7dc`. See the
+[0.7.0 release notes](docs/releases/0.7.0.md). Releases are distributed as
 annotated Git tags from the
 [canonical repository](https://github.com/inflatable-cookie/swallowtail).
 There is no crates.io publication, GitHub Release object, binary bundle, or
 installer in this release line.
 
-The 41 candidate packages share version `0.7.0` and require Rust `1.97.1`.
+The 41 packages share version `0.7.0` and require Rust `1.97.1`.
 They provide the same 51 production routes as `v0.6.0`, including
 `pi.sdk-sidecar`, `claude-agent.sdk`, `grok-build.catalogue`, and `opencode.acp`.
 
@@ -50,8 +50,7 @@ management, and other portable features without hiding route differences.
 ## Install From The Source Tag
 
 Use the same Git URL and exact tag for every direct Swallowtail dependency.
-This example shows the candidate's pin for use once `v0.7.0` exists. Until
-then, use `v0.6.0` for tagged installs.
+This example pins every direct dependency to the immutable `v0.7.0` source tag.
 
 <!-- source-install:start -->
 ```toml

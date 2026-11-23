@@ -565,6 +565,23 @@ or live work. Candidate QA, independent review, manual release/MSRV CI and
 canonical merged-source CI passed; the immutable source identities and
 receipts are in the [release note](../../releases/0.6.0.md).
 
+## Approved v0.7.0 Tag Authority
+
+Tom answered “Authorised” on 2026-11-23 to the Contract 036 Tag Request
+naming exact commit `6ef3252faefcd2c9cbfd4debedd28d3dea51c7dc`. Authority
+covers local annotated `v0.7.0` tag creation and its push to
+`git@github.com:inflatable-cookie/swallowtail.git` at exactly that commit.
+The tag object is `0bbd29be50d91bc2f6957c3450a9f31f23781046`.
+
+The qualifying canonical hosted `main` push CI run was `45145539150`; all 12
+jobs passed at the authorized source commit. Post-tag `git ls-remote --tags`
+verified the tag object and peeled commit, and `effigy
+package:source-consumer` passed against the exact source commit. The immutable
+source identities and receipts are recorded in the [release note](../../releases/0.7.0.md).
+
+Authority does not cover registry publication, a GitHub Release object,
+consumer repins, new provider claims, or live work.
+
 ## Acceptance
 
 - all 40 `v0.3.3` packages are separately consumable from one exact source

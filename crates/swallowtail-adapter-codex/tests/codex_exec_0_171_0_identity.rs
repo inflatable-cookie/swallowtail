@@ -204,7 +204,7 @@ fn protocol_managed_config_and_per_hop_inventories_are_mutation_sensitive() {
     );
     assert_eq!(
         sha256_hex(SOURCE.as_bytes()),
-        "3f9efd59650e8d1d30f574e77c95e9891126a0e0f00ee5838d1746098ee8b1b1"
+        "de963fa3c51a53eb51df7459e57b3992af2ee1b97833b2e3505e5d7ae50cae35"
     );
 
     let protocol = json(PROTOCOL);
@@ -224,6 +224,25 @@ fn protocol_managed_config_and_per_hop_inventories_are_mutation_sensitive() {
     );
     assert_eq!(managed["nonInteractiveAuth"], true);
     assert_eq!(managed["requiresOperatorRuling"], false);
+    assert_eq!(
+        managed["embeddedBootstrapRetainsConfigServer"],
+        "0.166.0..=0.171.0"
+    );
+    assert_eq!(
+        managed["applicationNetworkConsumesManagedLoader"],
+        "0.166.0..=0.171.0"
+    );
+    assert_eq!(managed["startupCacheIdentityMatched"], true);
+    assert_eq!(
+        managed["firstTurnEffectiveConfigProviderCheckVersions"],
+        serde_json::json!(["0.166.0", "0.167.0", "0.167.1", "0.167.2"])
+    );
+    assert_eq!(
+        managed["firstTurnManagedOnlyProviderCheckVersions"],
+        serde_json::json!([
+            "0.164.0", "0.165.0", "0.168.0", "0.169.0", "0.169.1", "0.170.0", "0.171.0"
+        ])
+    );
 
     let bwrap_gate = &protocol["bwrapGateResolution"];
     assert_eq!(bwrap_gate["research463GateClosed"], true);
@@ -258,7 +277,7 @@ fn protocol_managed_config_and_per_hop_inventories_are_mutation_sensitive() {
     let deltas = protocol["classifiedDeltas"]
         .as_object()
         .expect("classifiedDeltas");
-    assert_eq!(deltas.len(), 16);
+    assert_eq!(deltas.len(), 21);
     for key in [
         "codex-rs/exec/src/cli.rs",
         "codex-rs/exec/src/event_processor_with_jsonl_output.rs",
@@ -266,10 +285,15 @@ fn protocol_managed_config_and_per_hop_inventories_are_mutation_sensitive() {
         "codex-rs/exec/src/lib.rs",
         "codex-rs/cloud-config/src/bundle_loader.rs",
         "codex-rs/cloud-config/src/config_server.rs",
+        "codex-rs/cloud-config/src/service.rs",
         "codex-rs/cloud-config/src/validation.rs",
         "codex-rs/config/src/config_server.rs",
         "codex-rs/login/src/outbound_proxy.rs",
         "codex-rs/http-client/src/network_policy.rs",
+        "codex-rs/app-server/src/in_process_bootstrap.rs",
+        "codex-rs/app-server/src/application_network.rs",
+        "codex-rs/app-server/src/config_manager.rs",
+        "codex-rs/app-server/src/request_processors/turn_processor.rs",
         "codex-rs/linux-sandbox/src/bwrap.rs",
         "codex-rs/linux-sandbox/src/linux_run_main.rs",
         "codex-rs/linux-sandbox/src/launcher.rs",
@@ -284,7 +308,7 @@ fn protocol_managed_config_and_per_hop_inventories_are_mutation_sensitive() {
     let feeding = source["selectedFeedingFiles"]
         .as_array()
         .expect("selectedFeedingFiles");
-    assert_eq!(feeding.len(), 18);
+    assert_eq!(feeding.len(), 23);
     let hashes = source["selectedFeedingFileSha256"]
         .as_object()
         .expect("selectedFeedingFileSha256");
@@ -316,7 +340,26 @@ fn protocol_managed_config_and_per_hop_inventories_are_mutation_sensitive() {
             "codex-rs/cloud-config/src/config_server.rs",
             "codex-rs/config/src/config_requirements.rs",
             "codex-rs/http-client/src/network_policy.rs",
+            "codex-rs/app-server/src/in_process_bootstrap.rs",
+            "codex-rs/app-server/src/application_network.rs",
+            "codex-rs/app-server/src/config_manager.rs",
+            "codex-rs/app-server/src/request_processors/turn_processor.rs",
             "codex-rs/linux-sandbox/src/bwrap.rs"
+        ])
+    );
+    assert_eq!(
+        per_hop["0.167.2->0.168.0"],
+        serde_json::json!([
+            "codex-rs/exec/src/lib.rs",
+            "codex-rs/exec/src/event_processor.rs",
+            "codex-rs/exec/src/event_processor_with_jsonl_output.rs",
+            "codex-rs/cloud-config/src/bundle_loader.rs",
+            "codex-rs/cloud-config/src/config_server.rs",
+            "codex-rs/app-server/src/config_manager.rs",
+            "codex-rs/app-server/src/request_processors/turn_processor.rs",
+            "codex-rs/linux-sandbox/src/bwrap.rs",
+            "codex-rs/linux-sandbox/src/linux_run_main.rs",
+            "codex-rs/sandboxing/src/seatbelt.rs"
         ])
     );
 

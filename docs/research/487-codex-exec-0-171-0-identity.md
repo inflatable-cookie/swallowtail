@@ -45,9 +45,10 @@ Computed recursive public-tag source inventories (`SHA-256` over sorted
 `path\tmode\tblob`) for all eleven tags (reproducing Research 463's exact
 `0.165.0` digest `c39481bcf4c96bb514d1fe54047c78e451a66067d0e833874287f6b07f8a3eb0`
 across 9507 files), froze per-version SHA-256 digests and per-hop changed-file
-sets for all 18 selected feeding files across `exec`, `cloud-config`, `config`,
-`login`, `http-client`, `linux-sandbox`, and `sandboxing`, and classified every
-delta.
+sets for all 23 selected feeding files across `exec`, `cloud-config`, `config`,
+`login`, `http-client`, embedded `app-server` (`in_process_bootstrap.rs`,
+`application_network.rs`, `config_manager.rs`, `turn_processor.rs`),
+`linux-sandbox`, and `sandboxing`, and classified every delta.
 
 ## Identity
 
@@ -148,10 +149,42 @@ In `0.166.0`, `codex-rs/exec/src/lib.rs` replaced
   fails `codex exec` closed before turn start, mapping to
   `swallowtail.codex.exec.process_failed` with private stderr omitted and joined
   cleanup.
+- **Identity-matched startup cache (`codex-rs/cloud-config/src/service.rs`):**
+  `load_startup_bundle` checks `source.auth()` first and prefers a valid,
+  identity-matched cached bundle keyed by `source.identity(&auth)` (for
+  `ConfigServerSource`: `(authorization_id_or_"anonymous", sha256(config_bundle_url, credential_id))`)
+  that passes `validate_bundle(&signed_payload.bundle, &codex_home)`, falling
+  back to remote `fetch_remote_bundle_and_update_cache_with_retries` on miss or
+  invalid cache contents.
+- **Embedded-server retention and `application_network` refresh (`0.166.0`–`0.171.0`):**
+  In `0.166.0`, `codex-rs/app-server/src/in_process_bootstrap.rs` replaces both
+  `replace_cloud_config_bundle_loader` calls in `configure()` with
+  `config_manager.update_managed_config_loader(auth_manager, config)`
+  (`codex-rs/app-server/src/config_manager.rs`), which returns early (revoking
+  MCP EMA) when an administrator-enrolled `[config_server]` loader is already
+  active so ChatGPT/API-key auth updates do not overwrite it.
+  `codex-rs/app-server/src/application_network.rs` switches
+  `refresh_application_network_policy` to `current_managed_config_loader()`,
+  consuming the active ChatGPT or `[config_server]` snapshot.
+- **First-turn provider revalidation (`0.166.0`–`0.167.2` vs `0.168.0`–`0.171.0`):**
+  In `0.166.0`, `0.167.0`, `0.167.1`, and `0.167.2`,
+  `codex-rs/app-server/src/request_processors/turn_processor.rs` (`turn_start_inner`)
+  switches from `check_thread_model_provider` to
+  `check_thread_model_provider_for_input` (`config_manager.rs`), which reloads
+  effective configuration via `load_latest_config` and rejects the turn with
+  `InvalidInput(ModelProviderMismatch)` if `configured.model_provider_id != current.model_provider_id`
+  — even without `[config_server]`. In `0.168.0`–`0.171.0`, upstream removes
+  `check_thread_model_provider_for_input` and restores managed-requirements-only
+  `check_thread_model_provider`. On selected one-shot `codex.exec`
+  (`--ephemeral --ignore-user-config --ignore-rules`), `thread/start` and the
+  sole `turn/start` run back-to-back in the same process without user config;
+  any concurrent provider-selection change that triggers this refusal fails
+  before turn start via `config_load_error` and exits non-zero, which
+  `CodexExecDriver` maps to bounded `swallowtail.codex.exec.process_failed`
+  with private stderr omitted and joined cleanup.
 - **Per-hop feeding-file ledger:** Exact SHA-256 hashes across all eleven
-  versions and per-hop changed sets (`0.164.0->0.165.0`, `0.165.0->0.166.0`,
-  `0.167.2->0.168.0`, `0.170.0->0.171.0`; zero selected changes on `0.167.1`,
-  `0.167.2`, `0.169.1`, `0.170.0`) are frozen in `source-inventory.json`.
+  versions and per-hop changed sets for all 23 feeding files (including the
+  embedded-server and `service.rs` files) are frozen in `source-inventory.json`.
 
 ## Selected `codex.exec` Protocol Classification
 

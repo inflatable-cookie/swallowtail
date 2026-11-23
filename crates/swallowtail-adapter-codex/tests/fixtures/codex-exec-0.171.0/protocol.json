@@ -60,7 +60,12 @@
     "codex-rs/cloud-config/src/validation.rs": "0.171.0 redacts raw TOML and model-provider parse details in CloudConfigBundleLoadErrorCode::InvalidBundle messages; fail-closed validation preserved",
     "codex-rs/config/src/config_server.rs": "validates administrator-enrolled [config_server] URLs as HTTPS-only without userinfo, fragments, or base_url query strings",
     "codex-rs/login/src/outbound_proxy.rs": "http_client_factory_for_bootstrap uses local_bootstrap_factory (local admin network rules) restricted via restrict_to_endpoints to declared bootstrap endpoints",
-    "codex-rs/http-client/src/network_policy.rs": "restrict_to_endpoints intersects existing endpoint restrictions with the supplied endpoint set without widening"
+    "codex-rs/http-client/src/network_policy.rs": "restrict_to_endpoints intersects existing endpoint restrictions with the supplied endpoint set without widening",
+    "codex-rs/cloud-config/src/service.rs": "0.165.0 generalizes CloudConfigBundleService over BundleSource; load_startup_bundle checks source.auth() and prefers a valid, identity-matched cached bundle keyed by source.identity(&auth) (for ConfigServerSource: authorization_id_or_anonymous + sha256(config_bundle_url, credential_id)) passing validate_bundle before falling back to remote fetch_remote_bundle_and_update_cache_with_retries; unchanged from 0.165.0 through 0.171.0",
+    "codex-rs/app-server/src/in_process_bootstrap.rs": "0.166.0 replaces both replace_cloud_config_bundle_loader calls in embedded configure() with config_manager.update_managed_config_loader(auth_manager, config) so an administrator-enrolled [config_server] loader and its refresh worker survive ChatGPT/API-key auth updates; unchanged 0.166.0 through 0.171.0",
+    "codex-rs/app-server/src/application_network.rs": "0.166.0 switches refresh_application_network_policy from current_cloud_config_bundle() to current_managed_config_loader(), consuming the active ChatGPT or [config_server] loader snapshot; unchanged 0.166.0 through 0.171.0",
+    "codex-rs/app-server/src/config_manager.rs": "0.166.0 adds update_managed_config_loader (preserving active [config_server] loader across auth updates) and check_thread_model_provider_for_input (reloading effective config via load_latest_config and returning InvalidInput(ModelProviderMismatch) if configured.model_provider_id != current.model_provider_id, even without [config_server]); 0.168.0 removes check_thread_model_provider_for_input and restores managed-requirements-only check_thread_model_provider",
+    "codex-rs/app-server/src/request_processors/turn_processor.rs": "0.166.0 through 0.167.2 call check_thread_model_provider_for_input in turn_start_inner; 0.168.0 through 0.171.0 revert turn_start_inner to check_thread_model_provider; on selected one-shot codex.exec (--ephemeral --ignore-user-config --ignore-rules), any provider-mismatch refusal fails before turn start with non-zero exit mapped to swallowtail.codex.exec.process_failed"
   },
   "boundedUnmappedAdditions": [
     "--remote",
@@ -94,6 +99,25 @@
     "bootstrapDestinations": "HTTPS-only validated base_url/token_url/device_authorization_url, restricted via AuthRouteConfig::http_client_factory_for_bootstrap + NetworkPolicy::restrict_to_endpoints",
     "nonInteractiveAuth": true,
     "boundedFailure": "missing OAuth grant, invalid token, network timeout, or invalid bundle fails closed before turn start with non-zero exit mapped to swallowtail.codex.exec.process_failed",
-    "requiresOperatorRuling": false
+    "requiresOperatorRuling": false,
+    "embeddedBootstrapRetainsConfigServer": "0.166.0..=0.171.0",
+    "applicationNetworkConsumesManagedLoader": "0.166.0..=0.171.0",
+    "startupCacheIdentityMatched": true,
+    "firstTurnEffectiveConfigProviderCheckVersions": [
+      "0.166.0",
+      "0.167.0",
+      "0.167.1",
+      "0.167.2"
+    ],
+    "firstTurnManagedOnlyProviderCheckVersions": [
+      "0.164.0",
+      "0.165.0",
+      "0.168.0",
+      "0.169.0",
+      "0.169.1",
+      "0.170.0",
+      "0.171.0"
+    ],
+    "firstTurnProviderMismatchBoundedFailure": "turn_start_inner rejects before turn start via config_load_error -> non-zero exec exit -> swallowtail.codex.exec.process_failed with private stderr omitted and joined cleanup"
   }
 }

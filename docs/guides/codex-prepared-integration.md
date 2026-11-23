@@ -89,10 +89,13 @@ Linux `bwrap` provenance gate via trusted Sigstore TUF verification (Fulcio CA
 chain, trusted Rekor SET key, OIDC extensions) and embedded
 `CODEX_BWRAP_SHA256`, classifies the `0.166.0` administrator-enrolled
 `[config_server]` managed-configuration path (system/MDM `requirements.toml`
-only, endpoint-restricted bootstrap policy, non-interactive OAuth, fail-closed
-startup), walks all ten published hops `0.165.0`–`0.171.0`, and keeps the exec
-and app-server claims separate (`0.171.1` is `UnverifiedNewer`). Research 452
-and Research 410 remain the earlier `0.164.0` and `0.161.0` records.
+only, identity-matched startup cache, endpoint-restricted bootstrap policy,
+non-interactive OAuth, embedded-server retention across auth updates,
+`0.166.0`–`0.167.2` first-turn effective-config provider revalidation reverted
+to managed-only from `0.168.0`, fail-closed startup/turn refusal), walks all
+ten published hops `0.165.0`–`0.171.0`, and keeps the exec and app-server claims
+separate (`0.171.1` is `UnverifiedNewer`). Research 452 and Research 410 remain
+the earlier `0.164.0` and `0.161.0` records.
 
 The app-server claim independently qualifies `0.164.0` on
 `codex.app-server.v2.protected-aws-workspace-roots`. Research 388 remains the

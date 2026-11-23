@@ -115,9 +115,6 @@ pub struct swallowtail_idioms::LintIssue
 impl swallowtail_idioms::LintIssue
 pub const fn swallowtail_idioms::LintIssue::index(&self) -> usize
 pub const fn swallowtail_idioms::LintIssue::reason(&self) -> swallowtail_idioms::LintReason
-impl core::error::Error for swallowtail_idioms::LintIssue
-impl core::fmt::Display for swallowtail_idioms::LintIssue
-pub fn swallowtail_idioms::LintIssue::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_idioms::MergeSummary
 pub swallowtail_idioms::MergeSummary::lowered: usize
 pub swallowtail_idioms::MergeSummary::new: usize
@@ -177,5 +174,3 @@ pub fn swallowtail_idioms::prepare_session_idioms(&dyn swallowtail_idioms::Idiom
 pub fn swallowtail_idioms::pull_package(&[swallowtail_idioms::Idiom], &swallowtail_idioms::RegistryPackage, swallowtail_idioms::MonotonicInstant) -> swallowtail_idioms::RegistryMergeOutcome
 pub fn swallowtail_idioms::push_merge(&[swallowtail_idioms::Idiom], &[swallowtail_idioms::Idiom], swallowtail_idioms::MonotonicInstant) -> swallowtail_idioms::RegistryMergeOutcome
 pub fn swallowtail_idioms::select_bounded(alloc::vec::Vec<swallowtail_idioms::Idiom>, swallowtail_idioms::MonotonicInstant, usize) -> swallowtail_idioms::IdiomSet
-pub type swallowtail_idioms::BoundedTextError = swallowtail_idioms::bounded::BoundedTextError
-pub type swallowtail_idioms::ConfidenceErrorKind = swallowtail_idioms::confidence::ConfidenceErrorKind

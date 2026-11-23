@@ -70,8 +70,8 @@ unverified-newer point:
   upstream `>=22.19.0` requirement; Research 396)
 - `pi.sdk-sidecar.wire`: exact `swallowtail-pi-sdk-jsonl-v1` (opaque)
 - `pi.sdk-sidecar.sidecar`: the exact source tag that derives from the
-  coordinated package version, `swallowtail-pi-sdk-sidecar@0.6.0` for the
-  `0.6.0` candidate; Research 400 freezes the shipped sidecar asset's content
+  coordinated package version, `swallowtail-pi-sdk-sidecar@0.7.0` for the
+  `0.7.0` candidate. Research 400 freezes the shipped sidecar asset's content
   hash
 
 Unlisted package points, including unpublished gaps and prereleases, do not

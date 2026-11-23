@@ -4,7 +4,12 @@ Release notes describe candidate or tagged source compatibility. They do not
 authorize registry, tag, push, GitHub Release, workflow, consumer, or provider
 mutations.
 
-## Current Release
+## Current Release Candidate
+
+- [Swallowtail 0.7.0](0.7.0.md) — source-only candidate with 41 packages,
+  51 production routes, and a unified Rust `1.97.1` floor
+
+## Tagged Releases
 
 - [Swallowtail 0.6.0](0.6.0.md) — tagged `v0.6.0` at `8fe3bcbd`; tag object `0fcda93c`; tagged 2026-10-23; source-only currentness minor over immutable `v0.5.4`, 40 packages, 51 production routes and restored public lease API
 

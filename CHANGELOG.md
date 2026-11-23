@@ -5,6 +5,10 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-11-23
+
+See the [0.7.0 release notes](docs/releases/0.7.0.md) for compatibility, upgrade, and rollback.
+
 ### Compatibility
 - qualify `qwen.headless` through official npm `latest` `0.26.6`, walking the
   four published stable hops `0.26.3` through `0.26.6` after Research 465's
@@ -353,6 +357,921 @@ annotated Git tags from the canonical repository.
   packages. No Swallowtail source uses `AsyncFd`, so the deprecation of those
   four constructors changes no call site and no public API. No advisory is
   ignored.
+
+### Development changes
+
+Claude Code response-only now qualifies through 2.1.319 on stream-json.v3. Headless stays at 2.1.317 because 2.1.319 changes its selected permission flow; Research 477 records the decision needed.
+
+#### 223: Qualify corrected Bedrock SDK graph and remove pin-utils
+
+##### Compatibility
+
+- qualify `bedrock.runtime` through official crates.io stable
+  `aws-sdk-bedrockruntime 1.153.0` and `bedrock.catalogue` through
+  `aws-sdk-bedrock 1.166.0` as compatible extensions, walking the five
+  published stable hops `1.149.0`–`1.153.0` and `1.162.0`–`1.166.0` after the
+  Research 381/386 ceilings. Both SDK crates ride one
+  awslabs/aws-sdk-rust release train; the coordinated move crosses the Smithy
+  compatibility line (`aws-smithy-schema` `0.2.x` → `1.x`,
+  `aws-smithy-json` `0.63.x` → `0.65.x`) that removes `pin-utils 0.1.0`
+  (RUSTSEC-2026-0441) from the resolved workspace lock, and moves the
+  `aws-smithy-http-client` test fake exact pin to `1.5.2`. The maintained
+  segments extend to `1.139.0..=1.153.0` (Runtime) and `1.157.0..=1.166.0`
+  (catalogue) on the existing claim ids and behavior revisions; exact
+  `1.136.0` and `1.148.0`, the `1.137.0`/`1.138.0`/`1.149.0` holes, and
+  yanked `1.144.0`/`1.156.0` stay excluded, and later stables remain
+  `UnverifiedNewer`. Selected ConverseStream and ListFoundationModels
+  surfaces stay byte-identical with frozen complete tree inventories,
+  per-hop classifications, and real-SDK fake-transport wire proofs; exact
+  service revisions, access profiles, endpoint audiences, one-attempt retry,
+  and credential custody are unchanged. `deny.toml` advisory ignores stay
+  empty and `effigy security:dependencies` passes. No operation,
+  capability, authority, or lifecycle change. Research 381, 386, 476.
+
+Preserve the Claude Code response-only ceiling at `2.1.319`: changed native binaries at `2.1.321` and `2.1.322` leave selected behavior unresolved. Keep `2.1.320` as an excluded gap.
+
+Goose ACP now qualifies official stable releases through `1.59.0` on the
+existing `goose.acp.stdio-v2.auth-required` claim. Research 479 records exact
+release and source identities, complete hop inventories, and the compatible
+interrupted-tool and permission behavior. The baseline, existing points,
+interstitial gaps, and emission-only HTTP MCP boundary remain unchanged.
+
+- Freeze Claude Agent ACP0.101.0–0.106.0 identities, module graphs and permission
+  changes. Retain the0.100.0 qualified ceiling and all earlier points.
+- Add a separately guarded launch with captured module bytes, host-owned
+  runtime/native custody, checked arguments, revocation through bootstrap
+  admission and fail-closed startup controls.
+  Veto unsolicited idle work while preserving inherited permission settings.
+- Declare the distinct guarded permission behavior and prove the prepared
+  driver and confined component harness with first-party fakes. Support installed
+  compatible Node through explicit host user/group and dependency custody.
+- Record the separately authorized eight-hop Darwin original idle-class
+  checks: each control armed6 timers/fired5 compactions and each guard0/0,
+  with unchanged settings and joined cleanup. Full-route/native permission
+  behavior and execution authority remain separate qualification gates.
+- Exercise actual guarded prepared new/load/resume/prompt, permission ordering,
+  denial/continued activity and cancellation/cleanup through owned ACP, SDK,
+  child, endpoint and settings fakes. Keep shared native supervision and
+  administrator-fixture admission separate from this software proof.
+- Prepare the ACP-private binding to task234's reviewed software entry and
+  caller-bound launch facade, preserving the actual Rust sibling process graph.
+  Keep original execution, kernel settlement and administrator admission closed.
+- Bound the private shared-test fixture lifetime and retain process/helper
+  ownership through stop/wait on failure, timeout and abandoned startup.
+  Prove actual sibling actors with owned fakes and separate descriptor EOF
+  counterexamples; retain the original/kernel/native qualification gates.
+- Record exact selected launch-edge requirements and a bounded Python/framework
+  input inventory. Add mutation-sensitive proposal checks while keeping opaque
+  native, actual shared-host and separate original-execution gates closed.
+
+Claude Agent SDK currentness evidence now freezes official `0.3.322` (native
+`2.1.322`) and the hops `0.3.318`, `0.3.319`, and `0.3.321`. Every hop changes
+the bundled native binary without selected native behavior proof, so the
+package and native claims stay qualified through `0.3.317`/`2.1.317`.
+
+The SDK sidecar identity proof now checks that its reported Node version matches
+the executable it launched, while production Node admission remains bounded to
+the qualified runtime window.
+
+Affected-package proof allocates its temporary workspace beneath the configured
+scratch root, including on BSD `mktemp`, and keeps cleanup bounded to that
+workspace.
+
+#### 231: Copilot prepared-open cleanup proof
+
+- Settle fake preparation under its own finite budget before starting the
+  measured session-open clock, so real-child discovery latency under
+  parallel QA scheduling can no longer starve the intended
+  `session-open-failed` / `session-open-timeout` oracle.
+- Add a deterministic slow-discovery regression (`2s` fixed fixture sleep)
+  proving the intended failure and joined cleanup are still reached.
+- Surface the allowlisted failure stage/class/diagnostic and elapsed time
+  when the run reports an unexpected status.
+
+Add bounded Claude Agent SDK wrapper-flow evidence and a fake-backed native
+proof harness. The comparison preserves minified token boundaries, rejects
+empty windows and tests complete-window mutations through extraction. The
+harness covers the real prepared-driver/sidecar path, callback allow and deny,
+managed denial without a fabricated callback, interrupt and observed cleanup.
+A detached checksum record binds the final runner, admission and plan without
+circular hashes. Identity substitution fails before import, and the
+normal-completion join-timeout regression verifies the kill and no surviving
+child.
+
+Record Tom’s settled `d5a14f90` v2 ruling: preserve managed denial under a
+distinct SDK revision. A denied tool does not itself end the turn. Earlier
+claims and pair maps stay unchanged; newer tuples have fake-only probe
+admission. The harness has no OS egress, filesystem or process confinement,
+so original mode is refused unconditionally. Exact native proof, a confined
+launcher and execution authority remain open.
+
+Qualify `qwen.headless` through official npm `latest` `0.27.2`, walking the
+six published stable hops `0.26.7` through `0.27.2` after Research 475's
+`0.26.6` ceiling on the existing `qwen-code.headless.package-window-2` claim
+and `qwen-code.headless.v0.21.15-reasoning-control` behavior. The maintained
+segment becomes `0.22.0..=0.27.2`; there are no interior gaps in the window,
+and unpublished `0.20.2`, `0.21.16`, `0.22.4`, `0.23.5`, and `0.25.4` stay
+excluded. Every hop keeps selected argv, the stream-json schema, approval
+mode, permission flow, Plan policy, reasoning, and the SSH workspace store
+byte-identical, and npm SLSA provenance binds each tarball to its release
+checkout. The `0.26.9` build was cut from a later `main` than its tag; that
+divergence is recorded file by file and its shipped hooks-watcher and
+`.title.json` migration changes remain behind the route's `--safe-mode`
+accessor gates. New Mods, project-hooks approval, LSP opt-in, and
+post-result memory-drain changes are sized against the safe-mode, opt-in,
+and joined-cleanup bounds, with mutation-checked evidence; a fake child that
+writes its result and then keeps running proves cancellation still
+force-stops, waits and cleans up. Baseline
+`0.19.11`, the deprecated segments, exact `0.21.15`, plan through `0.22.3`,
+and the reasoning and budget selections stay put, and Node `>=22.0.0`
+remains unchanged. See Research 481.
+
+The shared nextest shards no longer guess where a nested Cargo put the
+`grok-acp-echo-mcp` probe example: the test helper asks Cargo for the built
+artifact path, so the probe resolves in any target directory.
+
+Register the exact approved SDK234 administrator fixture-only workflow on the
+default branch so GitHub recognizes it. The workflow file is byte-identical to
+donor `bfd9341` and to the approved proposal-patch reconstruction
+(`16a02b1e`); the routing guard admits exactly this non-Cargo workflow and
+keeps every other workflow on the plain-Cargo boundary. Manual dispatch only,
+read-only contents permission, six OS/state jobs with five-minute limits,
+pinned Node checks and `originalActivation: false` throughout, with
+identity-checked always-cleanup. No activation, no dispatch, no canonical
+fixture provisioning and no qualification ceiling change; privileged execution
+still needs authority naming the resulting workflow/source SHA.
+
+Register the exact approved SDK234 namespace-only manual workflow on the
+default branch so GitHub recognizes it. The workflow file is byte-identical to
+the approved proposal (SHA256 `07a24539`, from donor `36fc153a`, patch SHA256
+`5b804c06`). The routing guard admits exactly this file by digest; every other
+workflow stays on the plain-Cargo boundary. Manual dispatch only, `contents:
+read`, one fresh Ubuntu job with a five-minute limit and pinned Node 22.23.2
+checks. Its privileged helper calls stay dormant source. No activation, no
+dispatch, no namespace or kernel setup and no qualification ceiling change;
+privileged execution still needs authority naming the resulting workflow/source
+SHA.
+
+Register the exact approved SDK234 combined owned-fake manual workflow on the
+default branch so GitHub recognizes it. The workflow file is byte-identical to
+the approved packet (SHA256 `6dfe800d`, from donor `f9025d21`, patch SHA256
+`f1c34613`); the routing guard admits exactly this file by digest and keeps
+every other workflow on the plain-Cargo boundary. Manual dispatch only,
+`contents: read`, three fresh Linux absent/disabled/managed-deny jobs with
+five-minute limits, 35s setup plus 2s kill grace, 30s inner wall and
+independent 5s checked cleanup, with pinned Node 22.23.2 checks and fixed
+source/record inputs. No activation, no dispatch, no kernel/cgroup/PID/netns
+setup and no qualification ceiling change; privileged execution still needs
+authority naming the resulting workflow/source SHA.
+
+Register the exact reviewed SDK234 read-only preflight diagnostic workflow so
+GitHub recognizes it. The manual-only workflow preserves the approved input
+envelope, read-only permission, bounded job and diagnostic limits; its routing
+guard admits only the pinned workflow digest. Registration does not activate,
+dispatch or admit the diagnostic, execute candidate code, or change SDK/native
+qualification. A separate exact-source authority is required for any attempt.
+
+- Qualify guarded Claude Agent ACP through 0.106.0 on Linux x64/Darwin arm64.
+  Preserve earlier segments/exclusions and distinguish inherited user/managed
+  no-prompt denial from 0.101.1 under v8;0.101.0 retains callback semantics.
+- Add bounded frozen-original ACP tests through the real prepared Rust route on
+  trusted disposable Linux/macOS runners, using owned loopback peers and no live
+  provider. Preserve the T3-to-Paseo handoff and consumed historical evidence.
+- Preserve inherited permission settings and require checked guarded launches for
+  the eight frozen ACP hops. Keep startup fallback narrowly absence-only.
+- Repair informational auth notifications, the v1 registry ps policy, joined
+  native-child shutdown, cancelled turns without usage, and queued cancellation/error tails. Normal
+  idle updates still refuse and finished turns grant no callback authority.
+- Archive the abandoned provenance/admission project and duplicate catalogues;
+  retain exact artifact identities, production guards and focused regressions.
+- Keep native suggestion/background model traffic separate from the owned Read
+  test turn; advertised tools alone do not select a fixture tool call.
+
+Reuse the reviewed shared dependency repair: libz-sys 1.1.33 and the exact,
+version-bound chrono maintenance disposition expiring 2026-12-17. Preserve the
+112-case ACP original qualification proof; no original tests are replayed.
+
+Keep a timed-out SDK turn as the connection event recipient until its exact
+native abort terminal is drained and the owned correlated interrupt command has settled.
+Refuse new queries while either is pending; serialize expiry, event dispatch
+and replacement under the existing connection lock. Preserve one public
+TimedOut outcome and bounded close/wait when a terminal never arrives.
+
+Cover held, missing, duplicate and racing terminals plus normal reuse with
+controlled owned peers. Refresh only affected original prepared lifecycle cases
+on disposable Linux/Mac runners; retain accepted component evidence, frozen
+identities, security fixes and the trimmed source scope.
+
+Reject a terminal before the replacement turn has actually started, so a stale
+record cannot supply its public outcome. Duplicate starts and terminals refuse.
+
+After GitHub failed to acquire a macos-latest arm64 runner before any command,
+select the standard macos-15 arm64 image in the existing qualification job.
+Keep frozen artifacts, observed OS metadata, isolated peers and all bounds.
+
+Make the owned deadline tests synchronize native-start and terminal dispatch
+before virtual expiry and close, retaining the same strict cleanup assertions.
+
+Passed 30 original lifecycle cases across Linux x64 and Darwin arm64, covering60
+turns with actual native/driver waits and genuine reuse after deadline/cancel.
+Keep earlier full-matrix evidence at its accepted heads and all exclusions.
+
+Fix SDK session recovery when deadline-task reservation or worker creation
+fails before query submission. Roll back the exact unsubmitted recipient under
+the connection lock; retain all timeout drain protections. Cover both transient
+refusals and genuine subsequent completion with owned regression tests.
+Query commitment precedes enqueue/write and cannot be undone on send errors.
+Preserve both SDK and landed ACP claims during normal main integration.
+Report actual driver wait and bounded output if a prepared observer receipt is malformed; retain strict refusal.
+Passed 30 refreshed original lifecycle cases across Linux and Darwin after the fix/main integration; earlier proof keeps its own scope.
+Use standard macos-15 for unchanged process CI after repeated latest-runner acquisition failures.
+
+Close the original-proof gaps through the real Rust prepared route, separate
+selected user-tier semantics and typed caller deadlines, with strict per-case
+permission/activity/result/cleanup assertions. Prior140 observations remain
+component evidence; qualification requires new exact-head Linux/Darwin proof.
+Map an explicitly requested native aborted_streaming result to Cancelled while
+preserving real API errors as ProviderFailed; keep caller deadlines TimedOut.
+Use the standard Trixie Python container so the runner-built Rust consumer can
+start against its glibc ABI; preserve network-none and all case/resource bounds.
+Retain a timed-out turn through cooperative close to drain exactly one native
+abort terminal and obtain its actual wait; duplicates and other late events
+still fail closed without projecting new activity or granting permission.
+
+Passed 200 original cases across Linux x64 and Darwin arm64, including 70 actual
+Rust prepared-route cases and distinct typed cancellation/deadline outcomes.
+Record exact artifacts and retained failures; preserve root-only cleanup limits,
+Node/live/platform exclusions and the independent review/merge hold.
+
+Update libz-sys to patched1.1.33. Bound the transitive chrono maintenance-only
+exception to its single advisory and2026-12-17 expiry, with an explicit upstream
+migration/risk disposition; keep all vulnerability and source/license gates.
+
+Qualify frozen standalone Claude Agent SDK/native pairs318,319,321 and322 on
+trusted disposable Linux x64 and Darwin arm64 runners using originals and owned
+model peers. Preserve v1 through318 and adopt managed-denial v2 from319; retain
+older/default pairs, missing320, independent Node range and live-proof limits.
+
+Refresh the current fake-harness source binding, next-unqualified-pair refusal
+and additive working API snapshot after the qualified ceiling changed. Consumed
+host packets keep their historical bindings and are not reactivated.
+
+Remove the abandoned host/custody/namespace/administrator prototype chains,
+packets, selectors and manual entrypoints under brief18. Retain frozen identity,
+focused permission/lifecycle regressions and historical commit/proof provenance.
+
+Register the exact reviewed SDK240 manual host preparation job on Paseo's
+GitHub host. This adds the approved workflow for manual dispatch only; it does
+not activate or dispatch the job, qualify SDK240, or authorize a host attempt.
+The Oxide routing guard admits only the exact reviewed workflow bytes by
+SHA-256; other workflows retain the plain-Cargo check. A separate ruling is
+required before the same-source job runs.
+
+Register the reviewed SDK240 host workflow correction and update its exact-byte
+Oxide routing guard. This prepares source only; it does not dispatch or activate
+the workflow, qualify SDK240, or authorize a host attempt.
+
+Register the reviewed SDK240 bounded configuration evidence workflow for manual
+use. The job captures inert OpenSSL configuration evidence and refuses before
+candidate opening or runtime entry. Registration does not activate or dispatch
+the workflow, qualify SDK240, or authorize a host attempt.
+
+#### 245: Claude Agent adapter Drop, lease, scope, and NDJSON framing
+
+- The Claude Code pump awaits watcher completion and cleanup. Dropping an
+  unclosed binding hands cleanup off without waiting for a pending completion
+  gate. A panicking gate leaves its lease available for cleanup, and a refused
+  reap task falls back to detached cleanup.
+- A refused task spawn releases the response-only launch-directory lease
+  instead of leaving the operation-scoped resource held.
+- The ACP turn, run, and run-cleanup scopes are derived and bounded before the
+  first provider side effect, so an overlong turn id can neither leave an
+  active turn bound to the connection nor leave a prompt on the wire.
+- `ClaudeCodeRunHandle::close` cancels a run that is still active and reports
+  the pump's `CleanupOutcome::Failed(..)` instead of always returning clean.
+- The three NDJSON framers check their length bound before copying, scan each
+  chunk once, and reject an oversized trailing partial line.
+
+OpenCode and Pi adapters now fail closed instead of hanging or leaking. OpenCode HTTP bounds connect and whole-response time so an oversized body aborts with the response-limit failure, a dropped SSE subscription stops its blocking worker, and an early session-resource failure releases the credential lease it already holds. OpenCode ACP rechecks closure under the pending lock, validates the turn task service and scope before claiming the active-turn slot, cleans up the child process and pump when a runtime session id is rejected, and redacts stdio MCP environment values from `Debug`. Pi RPC rechecks closure under the pending lock, joins every callback task after a failure, aborts the sidecar when session binding fails, releases materialization and joins the deadline task when a turn cannot be established, and derives runtime session ids without panicking. The Pi sidecar keeps its record-write chain usable after a failed write.
+
+Close verified correctness, safety, and lifecycle defects in core, idioms, and
+runtime.
+
+Core: reject non-canonical integer (`+123`, `0123`) and calendar (`2026-+1-+2`)
+version text, and compare exclusions at the scheme's version point so a
+build-metadata spelling cannot bypass one. Preflight now validates remote ACP
+requirements (interactive harness role, task/blocking-work/time/network
+services, unauthenticated first proof) under a new
+`PreflightDimension::RemoteAcp`; session-access and provider-state checks read
+every matching capability declaration instead of only the first;
+`ModelManifestDigest` normalizes hex to lowercase.
+
+Idioms: a registry merge keeps fresh incoming `as_of` and provenance on an
+unchanged confidence outcome; `BoundedTextError`, `ConfidenceErrorKind`, and
+`LintIssue` are re-exported and implement `Display` and `Error`.
+
+Runtime: `SecretLease` zeroizes through `Zeroize`; the registered-tool kernel
+releases its call slot through an RAII guard so a dropped `issue` future cannot
+jam it, while a dispatch the host had already started stays counted as an
+abandoned, unjoined call so teardown still reports `TeardownFailed` instead of
+a clean close; duration bounds convert through the one documented monotonic-
+tick boundary (`MonotonicInstant::saturating_add_duration`); event-channel,
+terminal-outcome, and cancellation notifications wake outside their locks,
+single-consumer waits hold one waker, and drop paths recover poisoned locks;
+late-event quarantine evidence is bounded; installed-executable discovery
+bounds its process-exit wait with the request deadline and cancellation; the
+idioms fold never exceeds its byte bound and adds no leading newline on a
+first-line overflow, with new `resolve_idiom_instructions` and discovery
+coverage.
+
+Public API: additive `PreflightDimension::RemoteAcp`,
+`MonotonicInstant::saturating_add_duration`, `MAX_QUARANTINED_LATE_EVENTS`, and
+the two re-exported error enums; no existing item changed shape.
+
+Fix concurrency, timer, deadlock, leak, and decoder bugs across
+`swallowtail-host-local`, `swallowtail-protocol-acp`, and
+`swallowtail-transport-acp-remote`:
+
+- `swallowtail-host-local`: replace thread-per-wait deadlines with
+  `async_io::Timer`, prune finished reaper handles and settle reservations via a
+  `Drop` guard, retry `EINTR` in `process_reader`, and close on HTTP `401`,
+  reject duplicate sensitive headers with `400`, and preserve pipelined bytes in
+  the operation bridge listener.
+- `swallowtail-transport-acp-remote`: use non-blocking worker failure reporting
+  and close `events` during `close()`, join `connection_task` on `deadline_task`
+  spawn failure and signal close on connect timeout, honor configured
+  `maximum_frame_bytes` with `CapacityExceeded`, and deliver valid JSON-RPC
+  `Err` responses to `session/new`.
+- `swallowtail-protocol-acp`: classify invalid `AcpSessionListRequest::new`
+  cursors as `RequestInvalid`, treat `"line": null` in `tool_locations` as
+  `None`, measure encoded JSON byte lengths with a zero-allocation `Write` sink,
+  and add `encode_message_with_limits` and `decode_message_with_limits`.
+
+#### 249: Harden the Codex adapter's panic, bound, and teardown paths
+
+##### Fixes
+
+- Plan-mode sessions without a preflight-bound model now return
+  `swallowtail.codex.app_server.model_missing` instead of panicking.
+- Stdout lines and streamed turn output are bounded (16 MiB each). Exceeding
+  a bound fails the stream with `swallowtail.codex.exec.line_too_large`,
+  `swallowtail.codex.app_server.line_too_large`, or
+  `swallowtail.codex.app_server.turn_output_too_large`.
+- App-server shutdown escalates from stdin EOF to graceful stop to forced
+  stop before joining the pump. When a caller supplies a deadline, escalation
+  starts at the midpoint and three-quarter point of the remaining budget.
+  Without a deadline, EOF and graceful stop each get 250 ms to work.
+- A Codex CLI version lookup now selects the Codex CLI axis rather than the
+  first interface-version binding, which could be another axis.
+- Registered-tool leases are returned when a turn fails before `turn/start`,
+  when a dispatch never spawns, and at close, where every dispatch is joined
+  before the lease is taken.
+- Turn deadlines freeze registered-tool admission before the interrupt.
+- A failed session open after `thread/start` aborts the started session.
+- Cancellation claims are made inside the async body and released when the
+  stop or interrupt fails, so a retry can run.
+- RPC requests cannot register after the connection closes: the closed flag
+  is set under the pending-response lock.
+- Public protocol diagnostics no longer carry the raw inbound wire excerpt or
+  the stderr tail. The public message keeps the bounded method name; the raw
+  excerpt and stderr tail go only to the opt-in `DiagnosticObserver`.
+
+##### Compatibility
+
+- Consumer-facing diagnostic message change: `swallowtail.codex.app_server.malformed_notification` and `malformed_message` messages no longer include `excerpt` or `; stderr:` text. Consumers that matched those fragments must read the observer.
+- Behavior of Bovine Desktop (`AppServer`, `prepare_codex`, registered
+  editing) and Soundcheck (`CodexExecProfileInput`, `CodexPreparedDriver`,
+  `CODEX_CLI_AXIS`) is unchanged on the success path. No public shape changes.
+- `merge_cleanup` and `wait_controlled` are single crate-internal helpers.
+
+Fixed static gate soundness and CI coverage. The literal-version `.expect()` scanner no longer skips to end of file on raw strings, judges a constant by its whole argument, and gained a `--self-test` that CI runs. The docs-link gate checks every `docs/releases/*.md` note, not only those through 0.3.3. The research-number gate covers `.json` records; five pre-existing JSON evidence families are pinned by exact slug set, and any other collision still fails. The archive audit detects inline-table and target-specific `path`/`git` dependencies, rejects host paths under `/home/` and `/Users/`, except on the exact pre-existing lines listed in `scripts/validation/host-path-debt.tsv`, and prints the lines it rejects. The MSRV check passes `--all-features` as CI does. Process-spawning tests run on Linux pull requests as well as macOS, and the process job builds its test archive in the cached workspace target. Public API baseline extraction runs its per-package invocations concurrently with unchanged output. The per-package format pass no longer repeats `cargo fmt --check`; the workspace check is `effigy format:check`. The `sdk-usage`, `current-codex-app-server`, `current-pi-sdk-sidecar` and `pi-replay-cleanup` nextest profiles now inherit one shared profile. Package metadata failures name the assertion that failed.
+
+Moved the Desktop Grok ACP client-MCP probe out of provider-neutral
+`swallowtail-testkit` and into `swallowtail-adapter-grok`, behind that crate's
+`live-probes` feature: the probe module, its fixture test target and both
+harness examples. `swallowtail-testkit` no longer depends on
+`swallowtail-protocol-acp` and carries `serde_json` only as a dev-dependency,
+so non-ACP adapter test builds stop compiling the probe, `serde_json` and the
+ACP protocol crate. The probe's offline fixture tests keep running through
+`validate:grok-mcp-probe-helper-path`, which now selects the Grok package with
+that feature. The `0.6.0` public-API baseline records the removal from
+`swallowtail-testkit` and the additive probe module in
+`swallowtail-adapter-grok`.
+
+`run_all_synthetic_profiles()` proves the shared conformance contract once and
+records it on every profile report, instead of repeating the same fourteen
+assertions in each of the thirteen profile runs. Every individual
+`run_*_profile()` entry point still proves and reports it.
+
+`scripts/check-public-api.sh` now applies its zero-removal rule only on patch
+bumps, where the previous tag's items are immutable. A pre-1.0 minor bump may
+remove public items under Contract 036, and the gate's exact working-baseline
+snapshot diff is what reviews each removal.
+
+#### 252: Fix runtime sign-in async poll_now panic, DiscoveryCancellation deadlock, and waker leaks
+
+##### Fixes
+
+- `swallowtail-runtime`: remove `poll_now()` panics from `connection_lifecycle/sign_in.rs`, add async sign-in entry points (`start_sign_in_async`, `poll_sign_in_async`, `complete_sign_in_async`, `cancel_sign_in_async`), preserve pending poll futures without panicking in synchronous `poll_sign_in`, and release `session.loopback` plus stop and reap `session.process` on timeout, `start_interactive` URL-open failure, `complete_sign_in` error paths, and `cancel_sign_in`.
+- `swallowtail-runtime`: deduplicate `DiscoveryCancellation` over `ImmediateCancellation` so waiter notifications wake outside the lock and recover from poisoned locks.
+- `swallowtail-runtime`: track `ImmediateCancellation::wait_requested()` registrations by waiter id and remove them on drop so abandoned wait futures do not accumulate wakers.
+- `swallowtail-runtime`: signal `active.cancelled` on revocation in `RegisteredToolOperationKernel::require_current` and on `abandon_dispatched_call`.
+- `swallowtail-runtime`: recover poisoned `WatcherRegistry` locks in `ModelWatcherRole` and `OperatorWatcherRole`, use a counting waker in `dropped_sender_wakes_a_pending_stream_consumer`, and implement `Display` and `std::error::Error` for `TerminalAlreadySet`.
+
+#### 253: Fix Codex close blocking, secret redaction, and cleanup precedence
+
+##### Fixes
+
+- App-server shutdown without a caller deadline no longer blocks a scoped
+  task-service worker. The 250 ms EOF and graceful-stop grace now runs on the
+  host's blocking pool, and an EOF exit ends the wait at once. A host with
+  neither a time nor a blocking service escalates straight to stop and kill,
+  with no grace.
+- Active `CodexExecRunHandle::close` requests cancellation before joining, so
+  closing an exec run that is still running no longer waits for the child to
+  exit on its own. A run that already finished is not cancelled.
+- Stderr excerpts redact the value that follows a secret label. Discovery
+  failure messages carry these excerpts publicly, so `Authorization: Bearer
+  <secret>`, `token: <value>`, `api-key: <value>` and `password: <value>` no
+  longer leak the value into a `SafeDiagnostic` message.
+- Exec cleanup merges materialization cleanup with `merge_cleanup`, so a
+  failed materialization release after a degraded process cleanup is reported
+  as `Failed`, not `Degraded`.
+- Thread history and reconciliation share the catalogue and import teardown
+  and precedence: a cleanup failure or degradation replaces a projected result,
+  including a projected error. Their RPC, lease and teardown boilerplate is
+  consolidated in the thread-catalogue execution module.
+- Stdout line buffers check the line bound before copying a chunk, so an
+  oversized chunk cannot grow the pending line past the cap. Dynamic-tool and
+  user-input callbacks check capacity before reserving a provider call id, so a
+  capacity refusal no longer leaves a reserved id behind.
+- Unsupported-input messages no longer call the app-server driver a proof
+  driver.
+
+OpenCode and Pi image attachments now read at most one MiB plus one byte, so an oversized materialized file is rejected from a bounded buffer instead of exhausting memory first; a missing blocking-work service fails before any file lease is taken, and every post-acquire failure releases the lease it held. OpenCode HTTP session open, load, resume and structured run release their credential and working-resource leases on identity and replay errors, and a failed `Started` event closes its SSE subscription instead of detaching the worker. OpenCode ACP `session/close` and Pi SDK-sidecar `close` no longer hold shutdown behind a silent harness: stdin closes and the stop request always runs, a Pi sidecar record that cannot be encoded no longer consumes a pending slot, and both pumps close command admission and drain pending waiters before force-stop or process wait. A timed-out OpenCode HTTP lifecycle request now returns its bound instead of re-polling an abandoned request.
+
+Fixed remaining shell-gate, CI, and `swallowtail-testkit` hygiene issues.
+
+- `scripts/check-release-floor.sh` captures `rustup toolchain list`, escapes dots in `SWALLOWTAIL_MSRV`, and matches with `grep -Eq` (matching `scripts/check-msrv.sh`, avoiding `pipefail`/SIGPIPE races and `rg`).
+- `scripts/validation/archive.sh` distinguishes `rg` exit codes `0`, `1`, and `>= 2` in `validation_archive_member_list_is_safe` and escapes regex metacharacters in `$validation_repo_root`.
+- `scripts/check-public-api.sh` treats only `grep` exit code `1` as empty removals and fails on `>= 2`.
+- `scripts/check-provider-route-matrix.sh` permits `immutable_routes <= current_routes` when routes do not grow on patch/same-route states while still requiring strict extension when candidate routes add entries.
+- `scripts/tests/validation-selectors.sh` uses `${TMPDIR:-/tmp}`, cleans up temporary directories with an `EXIT` trap, resolves `mktemp` and `tar` via `PATH` rather than `/usr/bin/*`, and covers the `rg` failure and regex-escaping paths.
+- `scripts/tests/oxide-selector-routing.py` uses stdlib `tomllib` when available (with a Python `< 3.11` parser fallback for hosts on Python 3.9) and removes the dead `sdk240-host-setup.yml` workflow check.
+- `scripts/verify-source-consumer.sh` updates its stale workspace crate count comment.
+- `.github/workflows/ci.yml` adds explicit `timeout-minutes` to every job and uses `dtolnay/rust-toolchain@stable` consistently instead of `@master`.
+- `crates/swallowtail-testkit` runs `BoundSelection` preflight checks per profile while keeping profile-independent shared-contract assertions single-pass, records process I/O calls internally and honors `RecordingOutcome::Fail` in `RecordingProcessHandle::{write_stdin,close_stdin,read_output}` without altering the `RecordedHostCall` public API, aligns `assert_extension_policies` docstring and common-event rejection coverage with `swallowtail_core::ExtensionPolicy` (`Preserve` and `Reject`), and shares `run_all_synthetic_profiles()` via `OnceLock` in `tests/conformance_profiles.rs`.
+
+Migrated the Effigy bootstrap manifest to v0.15 syntax with
+`[bootstrap].setup = ["hooks:install"]`.
+
+Remove `swallowtail-adapter-openhands`. It contributed no production route:
+`start_run` failed closed and live HTTP/WebSocket conversation never arrived, so
+the package added release, metadata, API and QA weight for a route the matrix
+does not carry. The workspace drops to 39 packages and 89 internal dependency
+edges; all 51 production routes stay intact, and every tag that released the
+package keeps its inventory.
+
+Centralize the shared external crate requirements (`base64`, `curl`,
+`futures-channel`, `futures-core`, `futures-executor`, `futures-util`,
+`semver`, `serde_json`, `sha2`, `tokio`, `tungstenite`, `url`, `zeroize`) in
+root `[workspace.dependencies]` and inherit them with `workspace = true`, so
+`sha2 = "0.10.9"` versus `"0.10"` and `url = "2.5"` versus `"2"` drift cannot
+recur. Crate-local feature selections stay local. The shared `tokio` entry
+keeps Tokio's default feature set, which is empty in every 1.x release, so
+Bedrock keeps the defaults its own declaration inherited while `claude-agent`
+and `transport-acp-remote`, which spelled `default-features = false`, resolve
+to the same features. No locked version moves.
+
+#### 258: Retire spent card proof scripts and trim architecture history
+
+- Remove the spent one-off proof scripts and their exclusive fixtures:
+  `copilot-acp-offline-proof.py`, `copilot-acp-host-permission-proof.py`,
+  `copilot-acp-no-child-diagnostic.py`,
+  `copilot-acp-no-child-original-diagnostic.py`,
+  `kiro-acp-owner-state-offline-proof.py`,
+  `stage-copilot-acp-offline-artifacts.py`, the compiled fake and launcher
+  sources, the Kiro Dockerfile, and `scripts/release/backports/sdk-v0.5.2/`.
+  About 17k lines leave `scripts/`.
+- Remove their 33 dead card, ticket, hop, and backport selectors from
+  `effigy.toml`, plus the removed `sdk-v0.5.2` script class and frozen route
+  digests in the Oxide routing guard. Active QA, CI, release, docs, route,
+  routing, `validate:focused`, and `package:*` selectors stay unchanged.
+- Trim `docs/knowledge/architecture/system-architecture.md` from 2373 to 233
+  lines: keep the crate families, dependency direction, cross-cutting role
+  ownership, and durable session-role separations, and delegate routes,
+  version windows, capability cells, and the package roster to the provider
+  route matrix and release topology.
+- Record the retirement in `docs/guides/validation-tiers.md`,
+  `docs/releases/sdk-v0.5.2-backport.md`, `docs/knowledge/questions.md`
+  (Q-008), `scripts/README.md`, and the two retained Copilot fixture READMEs.
+  No `docs/research/` record changed; every retained record keeps its bytes,
+  including the frozen plans, authority, fake-pass, original, and consumed
+  guard records.
+
+Every package now builds one `tests/integration` binary instead of one binary
+per test file, and each package carries only the version-identity fixtures its
+current claim still needs. The workspace declares 42 test targets, down from 263:
+35 `integration` binaries plus the seven process-spawning binaries that
+`.config/nextest.toml` already isolates. Superseded per-hop identity suites were
+retired, removing about 32,900 lines of static JSON and digest assertions whose
+current boundary, exclusion set and latest hop stay covered by the retained
+table-driven suites. `effigy.toml` selectors now name `--test integration` with
+module-path filters, and the frozen selector digests were refreshed for the five
+routes whose package, profile and filter scope did not change.
+
+The twelve `curl` HTTP/SSE adapters now share one bounded `swallowtail-transport-http`
+crate. Its single exchange owns SSE framing, backpressure that blocks instead of
+abandoning a live stream, connect and finite-transfer timeouts, `Ok(0)` response-bound
+aborts, cancellation on close and drop, and zeroized secret headers; the adapters keep
+their provider protocols and public surfaces unchanged.
+
+#### 261: Shared runtime cleanup, line framing, and attachment reads
+
+- `swallowtail-runtime` now owns the three helpers the adapters copied:
+  `CleanupOutcome::merge` composes sequential releases, `scan_lines` frames
+  bounded LF-delimited streams in one linear pass, and
+  `read_bounded_attachment` reads one host-materialized file without exceeding
+  its byte bound. Each refusal keeps the calling adapter's own code and
+  message.
+- `claude-agent`, `codex`, `opencode`, and `pi` adopt them: eleven private
+  `merge_cleanup` copies, four hand-rolled line framers, and three
+  `read_bounded_image` copies are gone. `pi`'s two wire decoders now share one
+  framer.
+- Inside `claude-agent`, the headless and response-only routes share pump
+  mechanics, plan checks, the stream-JSON invocation prefix, and the
+  `claude --version` shape check through `claude_code_pump_common`,
+  `claude_code_plan_checks`, `claude_code_invocation`, and
+  `claude_code_discovery`. Route labels, stage names, and failure codes stay
+  distinct, so every existing diagnostic is unchanged.
+- Breaking public API change:
+  `ClaudeAgentSdkPackageNativePair` is now an opaque struct over one static
+  maintained row, replacing the 35-variant enum. `DEFAULT`, `MAINTAINED`,
+  `package_version`, `native_version`, and `with_package_native_pair` keep
+  their names and meanings; a caller that named a variant moves to
+  `from_package_version` or `from_versions`. The `0.6.0` public API baseline is
+  updated with the reviewed removal.
+
+- Added `swallowtail-acp-client`, a shared ACP v1 client engine, activity projection, and bounded HTTP MCP placement crate abstracted over both stdio `ProcessHandle` and `RemoteAcpConnection` (via additive `RemoteAcpConnection::sender()` / `RemoteAcpSender` in `swallowtail-transport-acp-remote`).
+- Replaced hand-rolled oneshot waker channels with `futures-channel::oneshot` and fixed the TOCTOU shutdown race, `start_turn` session-wedging on preflight failure, and `start_session` process cleanup leak in the shared engine.
+- Migrated all 11 ACP adapters (`kiro`, `goose`, `deepagents`, `copilot-cli`, `cline`, `grok`, `cursor`, `kimi`, `gemini`, `claude-agent`, `opencode`) onto `swallowtail-acp-client` while preserving all 51 production routes, provider-specific capabilities/diagnostics, and Bovine Desktop (`grok`, `claude-agent`) compatibility.
+
+#### 263: Close claude-agent and grok host-local boundary leaks
+
+- `swallowtail-adapter-claude-agent` and `swallowtail-adapter-grok` no longer
+  depend on `swallowtail-host-local` in `[dependencies]`; it stays a
+  dev-dependency for tests that compose a real local host. `futures-executor`
+  also moves from `swallowtail-adapter-claude-agent`'s `[dependencies]` to
+  `[dev-dependencies]`. No adapter now has a normal internal edge into host
+  support.
+- `swallowtail-runtime` gains the provider-neutral ports both routes needed:
+  `RegisteredToolCourierService` and `RegisteredToolCourierLaunch` for the
+  mediated-stdio courier, and `ExpectedSource` plus `FrozenGuardedNodeCapture`
+  for a frozen guarded capture. `REGISTERED_TOOL_PROXY_SERVER_NAME` and
+  `REGISTERED_TOOL_PROXY_MCP_PROTOCOL_VERSION` move beside the existing wire
+  tag; `swallowtail-host-local::wire` re-exports both unchanged.
+- `GrokRegisteredToolBinding::with_host`,
+  `ClaudeAgentSdkRegisteredToolBinding::with_host`,
+  `ClaudeAgentSdkRegisteredOnlyBinding::with_host`,
+  `ClaudeAgentSdkSessionPreparation::with_registered_tools` and
+  `::with_registered_only` accept any `RegisteredToolCourierService`
+  implementation, so an existing `LocalHostServices` argument still compiles.
+  Their `host()` accessors return the port instead of a local-host type.
+- `claude_agent_acp_guarded_v1_frozen` replaces
+  `capture_claude_agent_acp_guarded_v1`: the adapter returns the frozen
+  manifest, loader and digests it owns, and
+  `swallowtail_host_local::capture_frozen_guarded_recipe` performs the capture
+  under host custody. `claude_agent_acp_guard_v1_source_manifest` returns
+  runtime `ExpectedSource` values.
+- `LocalExpectedSource` is now a re-export of `ExpectedSource`, and
+  `LocalHostServices` implements the courier port, so host-local call sites keep
+  working.
+
+#### 264: Pin the development toolchain to Rust 1.100.0
+
+- The root `rust-toolchain.toml` pins Rust `1.100.0` with rustfmt and clippy,
+  so bare `cargo` commands in the checkout use that compiler. The unified MSRV
+  stays `1.95`, and `rust-version`, the MSRV check and the public API baseline
+  are unchanged.
+- The CI jobs that run Cargo in the repository no longer install a stable
+  toolchain that the pin would bypass. The docs and public API job now names
+  `nightly-2026-08-05` explicitly for `cargo doc`, and `external-source` keeps
+  its stable install because its consumer build runs outside the repository.
+- Rust 1.100.0 clippy and rustfmt report no warnings across the workspace, and
+  clippy with `-D warnings` still passes on the `1.95.0` floor.
+
+#### 265: Raise unified workspace MSRV to Rust 1.97.1
+
+- Breaking: the unified workspace Rust floor rises from `1.95` to `1.97.1`
+  (`[workspace.package].rust-version`). Consumers that build the workspace need
+  Rust `1.97.1` or newer. Because this is a breaking MSRV raise, it belongs to
+  the next pre-1.0 minor (`0.7.0`); the package version stays `0.6.0` until
+  that release task.
+- The MSRV gates, the CI pinned-floor jobs, the sdk240 trusted-native workflow
+  and the effigy pins now target `1.97.1` through the new active baseline
+  `release-baselines/rust-toolchains-0.7.0.env`, which also records
+  `SWALLOWTAIL_CURRENT_STABLE=1.100.0`. The `0.1.0` and `0.2.0` toolchain
+  baselines stay immutable, and `v0.2.0` through `v0.6.0` keep their `1.95.0`
+  floor.
+
+#### 266: Round 3 sweep 1A: shared HTTP/ACP engine fixes and 41-crate docs
+
+- `swallowtail-transport-http` now fuses `Subscription::poll_next`: after a
+  terminal outcome every later poll returns `None` instead of repeating
+  `TransportError::Transport`.
+- `Method::Put` and `Method::Patch` requests attach their body, so non-POST
+  write verbs no longer silently send an empty payload.
+- `SseFramer::push` checks each complete frame and any partial frame against
+  the per-event byte limit. A chunk can carry several events that each fit.
+- `SseFramer` and `SseFrame` zeroize retained and decoded bytes with
+  `zeroize::Zeroize` instead of a dead-store-eliminable `Vec::fill(0)`.
+- `swallowtail-adapter-openai` migrates its Responses SSE decoder onto the
+  shared `swallowtail_transport_http::SseDecoder`, inheriting one delimiter
+  authority (mixed `\r\n\r\n` and `\n\n` boundaries) and redacted, zeroized
+  frames while keeping its own `sse_limit`, `sse_disconnected`, and malformed
+  failure codes.
+- `swallowtail-acp-client` reaps the spawned stdio process or remote
+  connection on early open-session validation failures instead of only closing
+  the write side.
+- `swallowtail-acp-client` gates `swallowtail-transport-acp-remote` behind an
+  off-by-default `remote` feature, so stdio-only ACP adapters no longer
+  compile Tokio, `reqwest`, and `tungstenite`.
+- `docs/knowledge/architecture/system-architecture.md` and
+  `release-and-package-topology.md` describe the exact 41-package workspace,
+  including `swallowtail-acp-client`, `swallowtail-transport-http`, and the
+  current `swallowtail-runtime` and `swallowtail-protocol-acp` dependencies.
+
+#### 267: Round 3 sweep 1B: runtime, Codex, OpenCode, and Pi cleanup and lifecycle fixes
+
+- `swallowtail-runtime` delegated CLI sign-in keeps its pending process wait
+  across polls instead of re-polling once with a no-op waker and dropping the
+  future.
+- Breaking (pre-1.0): `swallowtail-runtime` `complete_sign_in` and
+  `cancel_sign_in` return `(SignInFailure, SignInSession)` on failure, through
+  the `SignInFinishFailure` alias. When host cleanup returns `Poll::Pending` the
+  session comes back with its in-flight loopback release and process stop, so
+  `complete_sign_in_async` or `cancel_sign_in_async` finishes them instead of
+  the cleanup being abandoned. Map the error with
+  `.map_err(|(failure, _)| failure)` to keep the old shape.
+- `swallowtail-runtime` admission gate deregisters a cancelled waiter's waker
+  when its future is dropped, and wakes one waiter on release instead of every
+  queued waiter. A waiter dropped after being woken passes the wake-up on.
+- `swallowtail-runtime` installed-executable discovery starts its deadline and
+  cancellation watchers before spawning the probe, races stdin close against
+  them, and bounds child teardown so a stopped child that never settles reports
+  `cleanup_failed` instead of stalling discovery.
+- `swallowtail-adapter-codex` bounds the `initialize` handshake of model
+  discovery and thread-catalogue, import, history, and reconciliation
+  operations by the caller deadline, and by cancellation where the caller has
+  it. Cancelled or timed-out handshakes report
+  `swallowtail.codex.app_server.initialize_cancelled` or
+  `initialize_timed_out`. Session open, load, and resume keep their existing
+  handshake.
+- `swallowtail-adapter-codex` bounds `model/list` pagination to 64 pages and
+  rejects a repeated `nextCursor` with
+  `swallowtail.codex.app_server.catalog_cursor_repeated` or
+  `catalog_page_limit`.
+- `swallowtail-adapter-codex` turn close finishes the turn when the provider
+  refuses `turn/interrupt`, so the deadline watcher exits instead of waiting for
+  the full turn deadline, and reports the refusal as a cleanup failure.
+- `swallowtail-adapter-opencode` closes the SSE subscription before returning
+  when the turn task spawn is refused, instead of leaving the worker detached.
+- `swallowtail-adapter-opencode` and `swallowtail-adapter-pi` merge task,
+  attachment, and cancellation failures into the `CleanupOutcome` returned by
+  `close()` instead of discarding them. Pi session and sidecar close report a
+  deadline task that fails to join.
+- `swallowtail-adapter-opencode` session-history cancellation and timeout report
+  `swallowtail.opencode.session_history.{cancelled,timed_out}` instead of the
+  `session_reconciliation.*` codes.
+- `swallowtail-adapter-opencode` SSE event boundaries split at the earliest of
+  an LF or CRLF boundary, so a CRLF frame followed by an LF frame in one buffer
+  no longer merges into one event.
+- `swallowtail-adapter-pi` structured-run close escalates to a forced stop when
+  a native abort is refused, so the run can join. A refused abort is no longer
+  acknowledged, and a retry uses a fresh command id.
+
+Closed CI/local QA parity gaps, pinned CI action tools, verified nextest `ci`/`ci-process` complement symmetry, and tightened public API gate scripts.
+
+- `.github/workflows/ci.yml`: pinned `cargo-nextest@0.9.145`, `cargo-deny@0.19.4`, and `ripgrep@15.2.0` on `taiki-e/install-action@v2`, removed the unused `actions/setup-node` step from `stable-nextest`, wrapped `rust-floor-test` with `scripts/run-with-owned-cargo-target.sh`, and added pinned `effigy` plus `scripts/check-docs-links.py` and the five routing/selector gate test scripts to `stable-contracts`.
+- `.config/nextest.toml`, `effigy.toml`, `scripts/tests/oxide-selector-routing.py`, `scripts/tests/oxide-rust-routing.sh`, and `scripts/tests/validation-selectors.sh`: removed the four no-op alias profiles (`sdk-usage`, `current-codex-app-server`, `current-pi-sdk-sidecar`, `pi-replay-cleanup`) in favor of `process-unfiltered`, updated the frozen `validate:current-claude-agent-sdk-node` digest, kept `oxide-selector-routing.py` allowing the two CI routing-proof test invocations while rejecting other Oxide references in `ci.yml`, isolated `GITHUB_ACTIONS`/`EFFIGY_OXIDE_ESCAPE` inside hermetic local-branch test fixtures, and added a deterministic `profile.ci` / `profile.ci-process` complement and `stable-process-nextest` archive `-p` ownership check with mutation fixtures.
+- `scripts/check-public-api.sh` and `scripts/generate-public-api-baseline.sh`: unioned current and immutable `packages.txt` during patch-release removal checks so removing an entire crate fails closed, and derived the expected package count from `packages.txt` rather than hardcoding `41`.
+
+#### 269: Bound runtime and transport state, and share Codex description handling
+
+##### Fixes
+
+- Activity lifecycle tracking is bounded at 1024 activities. Completed
+  activities are evicted to admit new ones; when every tracked activity is
+  still in flight, a new activity fails with the existing semantic-overflow
+  failure instead of growing the tracker.
+- Installed-executable discovery and the local host now share one
+  `EXECUTABLE_NOT_FOUND_CODE` constant rather than repeating the diagnostic
+  string.
+- Route resolution rejects a relative route that climbs above the endpoint
+  base path, for example `../../other`.
+- ACP remote error responses are sent as a constructed response instead of a
+  re-encode and decode round trip.
+- HTTP MCP header values containing a carriage return or line feed are
+  rejected, as the HTTP transport's secret headers already are.
+- Codex callback call ids are released when their callback is answered or
+  abandoned, so the set is bounded by pending callbacks rather than the
+  session length.
+- Codex lifecycle notification retention keeps the most recent 256 entries.
+- Codex lifecycle cancellation and timeout paths return the cleanup outcome
+  from closing the connection instead of discarding it.
+- OpenCode SSE framing finds the first blank line whether the framing is LF,
+  CRLF, or mixed, so a CRLF line before an LF blank line no longer leaves a
+  carriage return in event data.
+- OpenCode attachment input and Pi attachment input share one runtime
+  materialization path (`materialize_bounded_attachment`), so the lease,
+  bounded read, and release-on-refusal rules exist once. Each driver still
+  reports its own diagnostic namespace.
+- OpenCode's cancellation and deadline waits share one race helper. A
+  deadline-only wait abandons the work, and a drained wait keeps the result
+  while reporting the interrupt.
+- OpenCode session history returns the runtime's provider-neutral
+  `swallowtail.provider_session_history.cleanup_incomplete` code, instead of an
+  adapter-namespaced copy of it.
+- Pi's SDK-sidecar and RPC drivers both fail a non-zero process exit at
+  cleanup. The RPC driver previously reported it clean.
+- Pi close reports a failed native abort as a cleanup failure, instead of
+  discarding it.
+- Codex thread catalogue, history, import, and reconciliation share one
+  controlled-RPC lifecycle. Each keeps its own diagnostic codes; a pre-dispatch
+  cancellation or timeout in import, history, or reconciliation now reports
+  that operation's codes rather than the catalogue's.
+
+##### Compatibility
+
+- Additive public API: `swallowtail_runtime::EXECUTABLE_NOT_FOUND_CODE`,
+  `swallowtail_runtime::{AttachmentMaterializationFailure,
+  SharedAttachmentMaterialization, materialize_bounded_attachment}`, and
+  `swallowtail_protocol_acp::RpcError::new`. No public item is removed or
+  changed.
+- An event buffer whose activity tracker is full of in-flight activities now
+  reports the `SemanticOverflow` failure kind where the tracker previously grew
+  without bound.
+
+##### Fixed
+
+- `swallowtail-runtime`:
+  - `poll_delegated_async` now reuses a retained `PendingSignInPoll::Delegated` future matching `poll_interactive_async` and `poll_device_async`.
+  - Bounded `cleanup_session_async` teardown, preserved `LoopbackCallbackLease` when `services.loopback_callback()` is absent, and retained pending process stop futures in `cleanup_session_now`.
+  - `installed_discovery` now races `services.process().start(...)` against the probe deadline and cancellation signals.
+- `swallowtail-host-local`:
+  - `LocalProcessHandle::write_stdin` no longer holds the `stdin` mutex across blocking writes, preventing executor stalls and deadlocks with concurrent `close_stdin()` / `force_stop()`.
+- `swallowtail-transport-acp-remote`:
+  - Preserved terminal `WorkerEvent::Failed` errors when the bounded events channel is full so `next_event()` observes `Err(error)` instead of clean EOF.
+  - Configured tungstenite `WebSocketConfig` (`max_message_size`, `max_frame_size`) from `maximum_frame_bytes` and forwarded `validate_connection_id` / cookie storage failures on the `ready` channel.
+  - Added a bounded close grace period on `WorkerCommand::Deadline` in HTTP and WebSocket transports and validated `maximum_frame_bytes` at config time.
+- `swallowtail-transport-http`:
+  - Removed `line.clear()` in `append_secret_header` so `Zeroizing::drop` zeroizes the formatted secret header bytes.
+  - Validated non-secret HTTP header names (RFC 7230 tokens) and values (no `\r`/`\n`) before passing them to libcurl.
+  - Cleared captured response headers on each `HTTP/` status line (for `100 Continue`) and emitted `StreamItem::Headers` for empty-body `2xx` streaming responses.
+  - Checked `SseFramer` `event_limit` before growing `pending` when no frame boundary is present and stripped at most one leading space in `data:` fields.
+- `swallowtail-acp-client`:
+  - Stored `AcpRemoteMcpPlacement` URL in `Zeroizing<String>` and zeroized secret URL and header values on `Drop`.
+
+Harden the four flagship adapters (`swallowtail-adapter-claude-agent`, `swallowtail-adapter-codex`, `swallowtail-adapter-opencode`, and `swallowtail-adapter-pi`) by bounding per-session ID/activity/ignored-response tracking structures, clearing Claude ACP attach phase on early error, preventing turn-close deadline-watcher stalls in Codex and Pi, eliminating Codex lifecycle double-stop and discovery cleanup false positives, enforcing OpenCode `session_id` path safety, `session_history.*` replay diagnostics, and `prompt_async` deadlines, and enforcing Pi startup deadlines and `event_content_invalid` diagnostics.
+
+Pinned CI GitHub Actions to commit SHAs, closed remaining CI/local QA parity gaps, fixed the canonical research-collision `.json` regex, centralized remaining shared workspace dependencies, and updated the topology boundary sentence.
+
+- `scripts/canonical_main_authority.py` and `scripts/tests/research-number-collision.sh`: included `.json` in `NUMBERED_RESEARCH` to match `scripts/check-research-number-collision.py` and added a canonical-authority `.json` collision regression test.
+- `.github/workflows/ci.yml` and `scripts/verify-source-consumer.sh`: pinned `actions/checkout`, `Swatinem/rust-cache`, `taiki-e/install-action`, `actions/setup-node`, and `dtolnay/rust-toolchain` to full commit SHAs with version comments, added `persist-credentials: false` to every checkout, added the six remaining `effigy qa:docs:*` checks to `stable-contracts`, and pinned `RUSTUP_TOOLCHAIN="$SWALLOWTAIL_CURRENT_STABLE"` in `scripts/verify-source-consumer.sh`.
+- `effigy.toml`, `scripts/check-release-floor.sh`, `scripts/tests/oxide-selector-routing.py`, and `docs/guides/validation-tiers.md`: aligned `lint:rust`, `test:rust`, `qa:code:version-expects`, and `scripts/check-release-floor.sh` with CI (`--all-features --locked` / `--no-default-features --locked`, `run-with-owned-cargo-target.sh`, and `--self-test`), refreshed the frozen `test:rust` selector digest, and updated the validation guide's private-target custody section for `test:rust` and the floor test step.
+- `scripts/verify-source-consumer.sh`, `scripts/tests/research-number-collision.sh`, `scripts/check-package-metadata.sh`, and `scripts/tests/release-version-identity.sh`: switched options-only `mktemp` calls to explicit `TMPDIR`-rooted templates so macOS runs keep fixture creation and cleanup inside run scratch.
+- `Cargo.toml`, `crates/*/Cargo.toml`, and `docs/knowledge/architecture/release-and-package-topology.md`: centralized `serde`, `nix`, and `async-tungstenite` into `[workspace.dependencies]` with `workspace = true` inheritance across affected crates, and updated the stale 40-package boundary sentence to match the 41-package current source roster.
+
+#### 273: Runtime and shared HTTP/ACP engine defect fixes
+
+- `swallowtail-runtime` (`sign_in.rs`): Await cleanup futures directly when no
+  `TimeService` is registered instead of failing on the first `Poll::Pending`,
+  avoid re-polling a completed teardown budget timer when it resolves before
+  the deadline instant, and surface `RuntimeFailure` errors returned by
+  `request_stop`, `force_stop`, and `wait` during sync and async sign-in
+  teardown.
+- `swallowtail-runtime` (`installed_discovery.rs`): Do not misclassify bounded
+  child teardown as `DiscoveryStatus::CleanupFailed` when `request_stop` and
+  `wait` succeed but `force_stop` errors on an already-exited process.
+- `swallowtail-transport-http` (`stream.rs`, `request.rs`): Release the channel
+  state mutex before calling `Waker::wake` in `ChannelSender::send` and
+  `ChannelSender::drop`, use poison-safe recovery in channel `Drop` impls,
+  align `SecretHeader` name validation with RFC 9110 `is_header_name_token`,
+  and reject `#` fragments in embedded query strings as well as routes.
+- `swallowtail-acp-client` (`connection.rs`): Check
+  `pending.requests.contains_key(&id)` before inserting into `pending.requests`
+  so a duplicate correlation ID never clobbers a live waiter's oneshot sender.
+
+#### 274: Fix remaining Codex, OpenCode, and Pi adapter defects
+
+##### Fixes
+
+- **Codex (`swallowtail-adapter-codex`):**
+  - Accept all workspace-roots behavior revisions (`CodexAppServerBehavior::supports_workspace_roots()`, covering `0.156.0`–`0.164.0` and newer) when preparing bounded-workspace sessions and provider-session imports.
+  - Populate `extension_namespaces` from `access_policy.provider_requests()` during provider-session import preparation.
+  - Route the remaining four app-server cancellation/abort teardown sites (`thread_catalogue`, `session_open`, `app_server::continuity`, and `session_management` init error) through the shared abort-safe `cancel_connection` path so a refused `force_stop()` with open stdout cannot hang `task.join()`.
+  - Bound `ExecActivityProjection` tracked item state with fixed-size SHA-256 keys, FIFO completed-item eviction, minted-ID fallback for oversized provider item IDs, and optional `ProviderActivityRef` attachment when the provider ID exceeds 512 bytes.
+- **OpenCode (`swallowtail-adapter-opencode`):**
+  - Advance the pagination cursor in `project_opencode_page` whenever a full page (`raw_len == limit`) is returned and scan past fully directory-filtered pages in `execute_provider_session_catalogue` under an explicit page-scan bound so `ProviderSessionCatalogueOutcome` never receives an empty page with a continuation cursor.
+  - Track receiver-stream abandonment locally so final `Activity` or `Usage` send failures preserve the authentic `TerminalStatus` (`Completed`, `Cancelled`, `TimedOut`, `ProviderFailed`) when the consumer dropped the event stream, while continuing to surface real buffer overflow failures on a still-attached stream.
+- **Pi (`swallowtail-adapter-pi`):**
+  - Track in-flight turn `abort` separately from acknowledged cancellation so a failed, rejected, or EOF-interrupted `abort` on both the RPC and SDK sidecar routes resolves with the `cancel_rejected` `RuntimeFailed` diagnostic instead of `TerminalStatus::Cancelled`.
+  - Close open activities in `fail_connection` before `events.mark_terminal()` on both the RPC and SDK sidecar routes so mid-tool or mid-reasoning disconnects do not leave open activities unclosed.
+  - Keep `start_turn` as the sole deadline owner during `prompt` dispatch (retiring dropped pending commands, closing and force-stopping on prompt timeout) and bound `spawn_deadline` abort acknowledgement before escalating via `close_on_rejected_abort` and `force_stop` on both the RPC and SDK sidecar routes.
+
+#### 275: Close final Codex, OpenCode, and Pi asymmetries
+
+##### Fixes
+
+- **Codex (`swallowtail-adapter-codex`):**
+  - Hash provider IDs into fixed 32-byte SHA-256 keys (`ItemKey`) across `AppServerActivityProjection` (`TrackedItemTable` and `BoundedMap`) and omit `provider_activity_ref` when `ProviderActivityRef::new` rejects IDs over 512 bytes instead of failing with `malformed_notification()`.
+  - Guard late non-tool server requests (`item/tool/requestUserInput`, approvals) on stopping turns in `rpc/pump.rs` so a late request racing `turn/interrupt` is rejected on the wire without tearing down the session.
+  - Bound `CodexExecRunHandle::close` and `exec_pump::force_cleanup` with a shared teardown budget and pump abort signal across stop and reap so pending, refused, or accepted-but-open-stdout stops cannot hang `close()`.
+- **OpenCode (`swallowtail-adapter-opencode`):**
+  - Use abandon semantics on deadline/cancellation (`ProbeInterrupt::Abandon`) for `network.authorize(...)` and `credential_service.acquire(...)` during `prepare_opencode_attached` so stalled host calls do not hang past the probe deadline or cancellation.
+  - Use `cancellation.request_bounded()` in `OpenCodeTurnHandle::close` and `close_active` so a stalled `/abort` cannot hang cleanup.
+- **Pi (`swallowtail-adapter-pi`):**
+  - Align `PiRunCancellation` with `TurnCancellation` (`mark_abort_in_flight()`, `connection.abort_command(...)`, `mark_abort_acknowledged()`, and `reconcile_abort_response(false)`) so rejected or failed aborts do not misreport `TerminalStatus::Cancelled`, while an acknowledged abort retry supersedes an earlier refusal on subsequent EOF (preserving deadline precedence).
+  - Escalate `PiRunHandle::close` to `connection.force_stop()` on any abort error (including transport/write errors) as well as `abort_rejected`.
+
+- Fixed `swallowtail-transport-http` `perform_stream` to return `Err(StreamError::Transport(TransportError::Cancelled))` on external cancellation instead of reporting a clean EOF, and updated `swallowtail-adapter-alibaba-model-studio` turn pumping to classify cancelled/timed-out stream errors symmetrically.
+- Pruned dropped `PendingResponse` correlation slots in `swallowtail-acp-client` `AcpConnection::begin_request_with_id` so cancelled callers cannot exhaust `MAXIMUM_PENDING_REQUESTS`.
+- Deduplicated `ActiveTurn` boilerplate across `swallowtail-adapter-gemini`, `swallowtail-adapter-copilot-cli`, and `swallowtail-adapter-grok` via composition over `swallowtail-acp-client::ActiveTurn` (adding `ActiveTurn::finish_with_status` and `ActiveTurn::emit_event`), removing dead duplicate `"cancelled"` match arms.
+- Removed unused `futures-channel` and `futures-core` dependencies from `swallowtail-adapter-kiro` and `swallowtail-adapter-goose`.
+
+- Fix `swallowtail-adapter-pi` `usage_missing` ordering on both `pi.rpc` and
+  `pi.sdk-sidecar` so missing token usage does not increment `completed_prompts`
+  or close open activities as `Completed` (closing them as `Failed` instead).
+- Poll the worker future in `swallowtail-transport-http`
+  `Subscription::poll_next` so lazy `BlockingWorkService` futures cannot
+  deadlock and completed worker futures are driven cleanly.
+- Serialize `swallowtail-acp-client` `ActiveTurn` update projection, output
+  accumulation, sequence allocation, and terminal publication without holding
+  the turn lock across user closures or channel wakes, add
+  `AcpTurnSink::observe_permission_with_tool_call`, and remove the duplicated
+  permission rejection hook and shadow turn slot from
+  `swallowtail-adapter-copilot-cli`.
+
+- Give OpenCode HTTP and Pi RPC structured runs a fresh cleanup grace so timeout
+  can still be followed by session or process cleanup and lease release.
+- Close open OpenCode activities as failed when an idle turn lacks usage, and
+  cancel in-flight callback replies with their turn.
+- Preserve Pi SDK sidecar cancellation on disconnect and bound OpenCode and Pi
+  close waits for native acknowledgements.
+
+Fixed long-tail adapter correctness, cleanup, and manifest issues across Bedrock, ACP adapters, Alibaba Model Studio, and Anthropic:
+
+- `swallowtail-adapter-copilot-cli`, `swallowtail-adapter-gemini`, `swallowtail-adapter-grok`, `swallowtail-adapter-kimi`: validate `HostServices::task()` and turn `ScopeId` before registering an active turn or sending `session/prompt` so pre-flight errors cannot wedge the session; close the Gemini ACP connection and join its pump task if `RuntimeSessionId::new` fails during session open.
+- `swallowtail-adapter-bedrock`: distinguish internal abort signals from external cancellation and check `stream_failure` before `cancellation.is_requested()` so internal failures report `TerminalStatus::ProviderFailed`; poll the host blocking-work future alongside the update receiver so lazy `BlockingWorkService` hosts cannot deadlock; drop the update receiver before awaiting blocking SDK work and race `updates.send(...)` against `cancelled.changed()` to prevent channel-full deadlocks; validate `maximum_output_tokens` and `RuntimeRunId` before acquiring `AccessLease` and release the lease on any early error path in `start_run`; bound accumulated output to 4 MiB, handle `OperationContent::new` fallibly, and call `events_sender.mark_terminal()` before `terminal_sender.complete(outcome)`.
+- `swallowtail-adapter-alibaba-model-studio`: delegate SSE framing and decoding to `swallowtail_transport_http::SseDecoder` (enforcing per-event limits and zeroizing on drop), preserve HTTP status classification (401/403/404) in `stream_failure`, and restrict captured response headers to `x-request-id`.
+- Manifest hygiene: removed duplicate `serde_json` dev-dependency from `swallowtail-adapter-anthropic`, removed unused `futures-channel` and `futures-core` dependencies from `swallowtail-adapter-copilot-cli`, and inherited `libc` from `[workspace.dependencies]`.
+
+- OpenCode HTTP now signals stalled structured-run session deletes to stop and releases both session leases after the deletion deadline. Session cancellation during prompt setup aborts and joins the turn before returning an error.
+- Pi RPC and Pi SDK sidecar now escalate stalled session shutdown to force-stop, reap the child, and release session leases. Both routes report terminal event buffer overflow to attached consumers and count completed prompts only after activity completion succeeds.
+
+- Pi RPC and SDK sidecar model discovery now enforce the request deadline during launch and bound graceful shutdown. Failed session startups use the same force-stop escalation and reap the child before releasing leases.
+- Pi SDK sidecar load and resume now enforce the request deadline during bootstrap and state verification.
+- Pi SDK sidecar provider errors fail open activities, and both Pi routes reject duplicate message and reasoning starts.
+
+Fixed five `swallowtail-adapter-pi` issues: `PiSdkSidecarSessionPreparation::with_image_attachments()` now adds `HostServiceKind::Attachment` and `HostServiceKind::BlockingWork` to the prepared plan; `PiRunHandle::close()` surfaces `session.close_run()` cleanup failures instead of masking them as `Clean`; `ActiveTurn` and `SidecarActiveTurn` synchronize `abort_in_flight` and `pending_settled` under one mutex; `reap_finished` always releases attachment leases even when `deadline_task.join()` fails; and outbound sidecar wire command IDs are allocated in a bounded connection-owned namespace within `MAXIMUM_COMMAND_ID_BYTES` with independent caller-level duplicate tracking.
+
+Added Contract 029 flagship version-currentness checkpoint Research 484 for Codex, Claude (Code, Agent SDK, Agent ACP), OpenCode (HTTP, ACP, 2.x), Pi (RPC, SDK sidecar), and Grok (ACP, catalogue); no compatibility claims, fixtures, or matrices changed.
+
+Recorded exact Pi RPC release evidence through 1.6.0 in Research 485. The qualified ceiling stays at 1.4.0 pending adaptation for idle cache warming and cancelled tool-batch activity.
+
+Recorded the OpenCode HTTP release evidence through 1.19.6. The qualified ceiling stays at 1.19.4 pending GitLab selected-path proof and adaptation for overflow recovery.
+
+- Qualified `codex.exec` through official stable `0.171.0` (`0.156.0..=0.171.0` on `codex.exec.jsonl-v1`), closing the Research 463/467 Linux `bwrap` provenance gate via trusted Sigstore TUF verification (Fulcio CA chain at Rekor `integratedTime`, trusted Rekor SET key, OIDC extensions) and embedded `CODEX_BWRAP_SHA256`, and classifying the `0.166.0` administrator-enrolled `[config_server]` managed-configuration path across all ten published hops (`0.165.0`–`0.171.0`), while keeping `codex.app-server` untouched at `0.164.0` (Research 487).
+
+- Qualify `codex.app-server` (`codex.cli`) through official stable `0.171.0` on `codex.app-server.v2.protected-aws-workspace-roots` and extend `codex.app-server` lifecycle through `0.171.0` with the `0.166.0..=0.171.0` `codex.app-server.lifecycle.v1.best-effort-descendant-restore` private milestone (Research 488), preserving all existing qualified segments and excluded gaps.
+
+Recorded OpenCode ACP release evidence through 1.19.6. The qualified ceiling stays at 1.19.4 pending GitLab and overflow-recovery proof on the ACP path.
+
+- Record Claude Agent ACP artifact identities through 0.109.1 and the trusted-runner proof needed to extend guarded qualification beyond 0.106.0.
+
+- Extend the Grok Build catalogue's `QualifiedOnly` window through `1.0.92` on `models-text-v2` (Research 491).
+
+Set `slow-timeout = { period = "60s", terminate-after = 3 }` on
+`[profile.default]` in `.config/nextest.toml` so a deadlocked local unit test
+inside `effigy validate:focused` or `oxide nextest run` fails fast with the
+exact test name instead of hanging indefinitely and holding the Effigy lock.
+`[profile.ci]` and `[profile.ci-process]` keep their existing two-period
+termination bounds.
+
+The checked-revocation test in `acp_guard_prepared_child.rs` now counts only the
+Node process and group owner that its own fixture started, instead of every
+child of the test process. Sibling tests in the same libtest binary spawn
+children too, so the old count failed under default parallel threads. The
+observation no longer depends on test scheduling, and the revocation and
+child-joining assertions are unchanged.
+
+- Prepare the coordinated `0.7.0` source candidate with 41 packages and all
+  51 routes from `v0.6.0`. Restore the `0.6.0` baselines to the exact
+  tagged bytes and freeze the candidate's own inventories.
+
+Removed `docs/knowledge/retired.toml` and the Northstar retired-concepts check; agents reimplementing retired ideas proved rare enough not to justify the check.
+
+Retired the Northstar language-quality package: removed the Rust quality profile, deviations and activation files and the `northstar:rust-quality` AGENTS.md block. Workspace lints and normal validation are unchanged.
 
 ## [0.6.0] - 2026-10-23
 

@@ -1,4 +1,0 @@
-- Fixed `swallowtail-transport-http` `perform_stream` to return `Err(StreamError::Transport(TransportError::Cancelled))` on external cancellation instead of reporting a clean EOF, and updated `swallowtail-adapter-alibaba-model-studio` turn pumping to classify cancelled/timed-out stream errors symmetrically.
-- Pruned dropped `PendingResponse` correlation slots in `swallowtail-acp-client` `AcpConnection::begin_request_with_id` so cancelled callers cannot exhaust `MAXIMUM_PENDING_REQUESTS`.
-- Deduplicated `ActiveTurn` boilerplate across `swallowtail-adapter-gemini`, `swallowtail-adapter-copilot-cli`, and `swallowtail-adapter-grok` via composition over `swallowtail-acp-client::ActiveTurn` (adding `ActiveTurn::finish_with_status` and `ActiveTurn::emit_event`), removing dead duplicate `"cancelled"` match arms.
-- Removed unused `futures-channel` and `futures-core` dependencies from `swallowtail-adapter-kiro` and `swallowtail-adapter-goose`.

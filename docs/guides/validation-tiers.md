@@ -15,6 +15,8 @@ Briefs name Effigy selectors for tests of the changed behaviour and a compile
 of the touched code, plus relevant static checks below. Use a test target or
 filter that proves the change; package selection alone is not a test filter.
 If no selector covers that scope, add a narrow selector as part of the task.
+`effigy test:rust` runs the workspace suite with fixed arguments. Put focused
+nextest arguments such as `--test` and `-E` in a named `validate:*` selector.
 
 Workers run those checks once, open the PR and report. Reviewers read the diff,
 run the same checks and exercise the behaviour. Neither runs whole suites or
@@ -69,6 +71,8 @@ Run only the relevant static truth:
 - `effigy qa:docs` for docs
 - `effigy qa:routes` for route, lifecycle, feature, or activity matrices
 - `effigy format:check` for Rust formatting across the workspace
+- `effigy format:check:current-claude-agent-acp` for a read-only format check
+  of the Claude Agent adapter package
 - `effigy format:package <pkg>...` for Rust formatting of one to four exact
   workspace packages; runs `cargo fmt` for that scope only. The check-only
   workspace gate is `effigy format:check`, which CI runs too

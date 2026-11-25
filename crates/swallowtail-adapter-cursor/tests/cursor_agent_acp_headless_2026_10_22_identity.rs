@@ -326,6 +326,7 @@ fn identity_freezes_registry_hops_and_keeps_the_routes_separate() {
 #[test]
 fn hop_ledgers_are_mutation_sensitive_and_claims_follow_the_decision() {
     let inventory = json(DIST_INVENTORY);
+    let identity = json(IDENTITY);
     assert_eq!(
         inventory["compared"],
         serde_json::json!([
@@ -348,7 +349,40 @@ fn hop_ledgers_are_mutation_sensitive_and_claims_follow_the_decision() {
     );
     assert_eq!(inventory["not_a_complete_semantic_changelog"], true);
 
-    for platform in ["darwin-arm64", "linux-x64"] {
+    for (platform, tree_field, identical_count, identical_digest) in [
+        (
+            "darwin-arm64",
+            "darwin_arm64_tree_manifest_sha256",
+            275,
+            "0ce7f6407718042d19881e9c7fbe88b81b40b946ce14a02e8a76fc8a24931325",
+        ),
+        (
+            "linux-x64",
+            "linux_x64_tree_manifest_sha256",
+            310,
+            "d8d74792866e00525172e85b510a149e61809bb93cd4c6427bbb798e0e0a1dfc",
+        ),
+    ] {
+        let identical = &inventory["identical_through_qualified"][platform];
+        let paths = identical["paths"].as_array().expect("identical path set");
+        assert_eq!(paths.len(), identical_count, "{platform}");
+        assert_eq!(identical["count"], identical_count, "{platform}");
+        assert_eq!(identical["sha256"], identical_digest, "{platform}");
+        assert_eq!(
+            sha256(&serde_json::to_vec(paths).expect("identical path set encodes")),
+            identical_digest,
+            "{platform}"
+        );
+
+        for hop in identity["hops"].as_array().expect("identity hops") {
+            let build = hop["version"].as_str().expect("build version");
+            let digest = hop[tree_field].as_str().expect("tree manifest digest");
+            assert_eq!(
+                inventory["archive_trees"][platform][build]["tree_manifest_sha256"], digest,
+                "{platform} {build}"
+            );
+        }
+
         let hops = inventory["hop_deltas"][platform]
             .as_object()
             .expect("platform hop ledger");

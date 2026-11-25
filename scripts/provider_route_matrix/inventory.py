@@ -34,8 +34,10 @@ actual_no_counts = Counter()
 no_cells = []
 matrix_columns = list(rows[0])
 audited_columns = matrix_columns[
-    matrix_columns.index("unverified_newer_allowed")
-    : matrix_columns.index("planned_connection_rollover") + 1
+    matrix_columns.index("unverified_newer_allowed") : matrix_columns.index(
+        "planned_connection_rollover"
+    )
+    + 1
 ]
 for row in rows:
     for feature in audited_columns:

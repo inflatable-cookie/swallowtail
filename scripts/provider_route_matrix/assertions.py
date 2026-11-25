@@ -1,5 +1,7 @@
 if len(residual_feature_classifications) != 115:
-    raise SystemExit("residual feature starting inventory must contain exactly 115 cells")
+    raise SystemExit(
+        "residual feature starting inventory must contain exactly 115 cells"
+    )
 if Counter(residual_feature_classifications.values()) != Counter(
     {
         "interface_axis_not_runtime_ordered": 10,
@@ -110,7 +112,9 @@ retained_execution_values = {
     ]
 }
 if len(retained_execution_classifications) != 115:
-    raise SystemExit("retained-execution starting inventory must contain exactly 115 cells")
+    raise SystemExit(
+        "retained-execution starting inventory must contain exactly 115 cells"
+    )
 if Counter(retained_execution_classifications.values()) != Counter(
     {
         "operation_shape_not_applicable": 68,
@@ -155,7 +159,9 @@ working_resource_write_values = {
     for feature in ["working_resource", "bounded_workspace_text_write"]
 }
 if len(working_resource_write_classifications) != 49:
-    raise SystemExit("working-resource/write starting inventory must contain exactly 49 cells")
+    raise SystemExit(
+        "working-resource/write starting inventory must contain exactly 49 cells"
+    )
 if Counter(working_resource_write_classifications.values()) != Counter(
     {
         "operation_shape_not_applicable": 24,
@@ -192,7 +198,9 @@ runtime_rollover_values = {
     ]
 }
 if len(runtime_rollover_classifications) != 75:
-    raise SystemExit("runtime-ownership/rollover inventory must contain exactly 75 cells")
+    raise SystemExit(
+        "runtime-ownership/rollover inventory must contain exactly 75 cells"
+    )
 if Counter(runtime_rollover_classifications.values()) != Counter(
     {
         "operation_shape_not_applicable": 74,
@@ -202,9 +210,7 @@ if Counter(runtime_rollover_classifications.values()) != Counter(
     raise SystemExit("runtime-ownership/rollover classification counts changed")
 for cell, classification in runtime_rollover_classifications.items():
     expected = (
-        "Not applicable"
-        if classification == "operation_shape_not_applicable"
-        else "No"
+        "Not applicable" if classification == "operation_shape_not_applicable" else "No"
     )
     if runtime_rollover_values.get(cell) != expected:
         raise SystemExit(
@@ -212,8 +218,7 @@ for cell, classification in runtime_rollover_classifications.items():
             f"{cell} expected {expected}"
         )
 if Counter(
-    runtime_rollover_values[cell]
-    for cell in runtime_rollover_classifications
+    runtime_rollover_values[cell] for cell in runtime_rollover_classifications
 ) != Counter({"Not applicable": 74, "No": 1}):
     raise SystemExit("runtime-ownership/rollover final counts changed")
 
@@ -228,19 +233,13 @@ if len(generation_control_no_cells) != 88:
 if generation_control_no_cells != set(generation_control_classifications):
     raise SystemExit("generation-control No classifications changed")
 
-reasoning_by_route = {
-    row["route_id"]: row["reasoning_selection"]
-    for row in rows
-}
+reasoning_by_route = {row["route_id"]: row["reasoning_selection"] for row in rows}
 if reasoning_by_route.get("gemini.live") != "Yes":
     raise SystemExit("Gemini Live reasoning selection is not realized")
 if reasoning_by_route.get("openai.realtime") != "Yes":
     raise SystemExit("OpenAI Realtime reasoning selection is not realized")
 
-output_limit_by_route = {
-    row["route_id"]: row["output_token_limit"]
-    for row in rows
-}
+output_limit_by_route = {row["route_id"]: row["output_token_limit"] for row in rows}
 if output_limit_by_route.get("gemini.live") != "Yes":
     raise SystemExit("Gemini Live output-token maximum is not realized")
 
@@ -313,9 +312,7 @@ if classification_counts != Counter(
     )
 
 route_ids = [
-    route
-    for row in rows
-    for route in re.split(r"\s*(?:;|\+)\s*", row["route_id"])
+    route for row in rows for route in re.split(r"\s*(?:;|\+)\s*", row["route_id"])
 ]
 if len(route_ids) != 51 or len(set(route_ids)) != 51:
     raise SystemExit("provider solution matrix must cover 51 unique route identities")

@@ -3,10 +3,14 @@
 Brief v4 (2026-11-17) removes the abandoned static-provenance/test-host chain
 from active source. It is not required to run trusted disposable qualification.
 
-Exact archived source: commit `98067e2e2e49f946f9eeac6d386e946c749c48ad`. The Nucleus proof archive contains
-51 original files and an `archive-index.json` with each path, byte size,
-SHA-256 and Git head. Archive SHA-256: `58335cc9a18e532ab17bad24640b802f0a10f52236a5849837d96e684da96ecf`; compressed size:
-332,243 bytes. No runtime, build or CI depends on that archive.
+Exact archived source is at commit `98067e2e2e49f946f9eeac6d386e946c749c48ad`.
+The historical archive was 332,243 bytes with SHA-256
+`58335cc9a18e532ab17bad24640b802f0a10f52236a5849837d96e684da96ecf`.
+The [retained reconstruction](https://github.com/inflatable-cookie/swallowtail/pull/558)
+contains the same 51 Git source files and an `archive-index.json` with each
+path, byte size, SHA-256 and Git head. It is 332,378 bytes with SHA-256
+`a6bc700855d4a3a064d0265b5e9e2afa7eedfd85a8047a28f98dbea391e48369`.
+No runtime, build or CI depends on either archive.
 Use `git show <head>:<path>` to reproduce an original file without a new loader.
 
 Removed: exhaustive import/callsite catalogues, static admission/invocation/

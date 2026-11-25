@@ -35,7 +35,7 @@
   "qualified_exact_builds_added": [],
   "superseded_same_date_build_rejected": {
     "version": "2026.10.14-0f9edde",
-    "reason": "The release-date claim accepts one opaque build per calendar date. 2026-10-14 stays bound to the later registry build 2026.10.14-941492e. The earlier registry build remains rejected at binding. Its selected ACP and headless surfaces match the qualified build."
+    "reason": "The release-date binding accepts one opaque build per calendar date. 2026-10-14 stays bound to the later registry build 2026.10.14-941492e. The earlier registry build remains rejected at binding."
   },
   "general_installer_channel": {
     "url": "https://cursor.com/install",

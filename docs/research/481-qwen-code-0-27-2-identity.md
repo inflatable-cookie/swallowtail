@@ -122,11 +122,13 @@ recomputes those path sets from the inventories.
 
 The last column names only the *mapped* selected source keys whose frozen
 hash moves on that hop. Reviewed boundary files that change without touching
-a mapped key are named in the prose instead: `nonInteractiveCli.ts` moves at
+a mapped key are tracked separately. `nonInteractiveCli.ts` moves at
 `0.26.7 → 0.26.8` (Mods queued prompts, TEXT-only i18n), `0.26.9 → 0.27.0`
-(stacked-skill warning), and `0.27.0 → 0.27.1` (post-result memory drain);
-`mod-session.ts`, `autofix-pr.ts`, core `config.ts`, and `settingsSchema.ts`
-move at the hops the review bullets name.
+(stacked-skill warning), and `0.27.0 → 0.27.1` (post-result memory drain).
+`mod-session.ts` moves at `0.26.6 → 0.26.7`, `0.26.7 → 0.26.8`, and
+`0.27.1 → 0.27.2`. `settingsSchema.ts` moves at every hop except
+`0.26.9 → 0.27.0`. `autofix-pr.ts` moves at `0.26.8 → 0.26.9`, and core
+`config.ts` moves at the same five hops as `settingsSchema.ts`.
 
 | Hop | Added | Removed | Changed | Identical | Changed selected mapped source files |
 | --- | ---: | ---: | ---: | ---: | --- |

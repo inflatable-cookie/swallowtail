@@ -95,6 +95,11 @@ qualification gating, not product permission/mapping or the actual route. The
 public claim now carries the qualified points and the runner's private override
 has been removed. Normal current-head CI verifies that public selection.
 
+The final [qualification run](https://github.com/inflatable-cookie/swallowtail/actions/runs/44115269615)
+at `6805191d75d629ee453f09fb8608b6cc7231111d` passed all 112 cases with the
+public claim and no private override. It uploaded nine proof packets across
+the two platforms. The table below records the earlier run.
+
 | Platform | Exact hops | Behavior results | CI source job | Packet SHA-256 prefix |
 | --- | --- | --- | --- | --- |
 | Darwin arm64 | 0.101.0 / 0.101.1 | 14/14; upload deadline | [job134104413586](https://github.com/inflatable-cookie/swallowtail/actions/runs/44102066351/job/134104413586) | `d1c98ec98ad7381b` |

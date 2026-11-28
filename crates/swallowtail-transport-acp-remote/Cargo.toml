@@ -13,7 +13,7 @@ description = "Remote ACP HTTP/SSE and WebSocket client transport for Swallowtai
 doctest = false
 
 [dependencies]
-agent-client-protocol = "=2.0.0"
+agent-client-protocol = "=5.6.1"
 async-tungstenite.workspace = true
 cookie_store = { version = "=0.22.1", default-features = false }
 futures-channel.workspace = true
@@ -28,7 +28,7 @@ tokio = { workspace = true, features = ["macros", "net", "rt", "sync", "time"] }
 url.workspace = true
 
 [dev-dependencies]
-agent-client-protocol-http = { version = "=2.0.0", features = ["server"] }
+agent-client-protocol-http = { version = "=5.6.1", features = ["server"] }
 axum = "0.8"
 bytes = "1"
 futures-executor.workspace = true

@@ -67,7 +67,7 @@ swallowtail-transport-http = { path = "crates/swallowtail-transport-http", versi
 
 # Shared external crates carry one version requirement here and are inherited
 # with `workspace = true`, so no crate manifest can drift from another.
-async-tungstenite = { version = "=0.34.1", default-features = false, features = ["tokio-rustls-webpki-roots"] }
+async-tungstenite = { version = "=0.35.0", default-features = false, features = ["tokio-rustls-webpki-roots"] }
 base64 = "0.22"
 curl = "0.4.50"
 futures-channel = "0.3"

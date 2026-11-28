@@ -1343,3 +1343,148 @@ process.stdout.write(JSON.stringify({{ allowedNative, allowedPs, denied }}));
     }
     std::fs::remove_dir_all(root).expect("remove only own fixture");
 }
+
+#[test]
+fn native_child_allows_only_crash_reporting_disable_zero() {
+    let root = fixture();
+    let native_path = root.join("fake-native");
+    let native_source = b"#!/bin/sh\nprintf \"%s\" \"$BUN_ENABLE_CRASH_REPORTING\"";
+    std::fs::write(&native_path, native_source).expect("owned native fake");
+    use std::os::unix::fs::PermissionsExt;
+    std::fs::set_permissions(&native_path, std::fs::Permissions::from_mode(0o700))
+        .expect("executable fake");
+    let native = LocalTrustedRuntime::capture(&native_path, Sha256::digest(native_source).into())
+        .expect("held fake native");
+    let ps_path = if cfg!(target_os = "macos") {
+        Path::new("/bin/ps")
+    } else {
+        Path::new("/usr/bin/ps")
+    };
+    let ps = LocalTrustedRuntime::capture(
+        ps_path,
+        Sha256::digest(std::fs::read(ps_path).expect("system ps")).into(),
+    )
+    .expect("held system ps");
+
+    let live_registry = r#"
+import { execFileSync } from 'node:child_process';
+export function psWithBunZero() {
+  return execFileSync('ps', ['-o', 'pid=,lstart=', '-p', String(process.pid)], {
+    timeout: 1000,
+    env: { PATH: '/usr/bin:/bin', BUN_ENABLE_CRASH_REPORTING: '0' },
+  });
+}
+"#;
+    let entry = format!(
+        r#"
+import './idle.mjs';
+import {{ spawnSync }} from 'node:child_process';
+import {{ psWithBunZero }} from './acp/dist/session-index/live-registry.js';
+const nativePath = {native_path};
+const baseEnv = {{ PATH: '/usr/bin:/bin' }};
+const allowed = spawnSync(nativePath, [], {{
+  env: {{ ...baseEnv, BUN_ENABLE_CRASH_REPORTING: '0' }},
+  encoding: 'utf8',
+}});
+const refused = {{}};
+for (const [label, extra] of [
+  ['bunEnableOne', {{ BUN_ENABLE_CRASH_REPORTING: '1' }}],
+  ['bunEnableEmpty', {{ BUN_ENABLE_CRASH_REPORTING: '' }}],
+  ['bunCrashUrl', {{ BUN_CRASH_REPORT_URL: 'http://127.0.0.1' }}],
+  ['bunOptions', {{ BUN_OPTIONS: '--preload' }}],
+  ['bunLower', {{ bun_enable_crash_reporting: '0' }}],
+]) {{
+  try {{
+    spawnSync(nativePath, [], {{ env: {{ ...baseEnv, ...extra }}, encoding: 'utf8' }});
+    refused[label] = 'unexpected-allow';
+  }} catch (error) {{
+    refused[label] = error.message;
+  }}
+}}
+try {{
+  psWithBunZero();
+  refused.psBunZero = 'unexpected-allow';
+}} catch (error) {{
+  refused.psBunZero = error.message;
+}}
+process.stdout.write(JSON.stringify({{ allowedStatus: allowed.status, allowedStdout: allowed.stdout, refused }}));
+"#,
+        native_path = serde_json::to_string(&native_path).expect("native path JSON"),
+    );
+
+    std::fs::create_dir_all(root.join("acp/dist/session-index")).expect("dirs");
+    let inputs = [
+        ("entry.mjs", entry.as_str()),
+        ("idle.mjs", IDLE),
+        ("acp/dist/session-index/live-registry.js", live_registry),
+    ];
+    let mut files = serde_json::Map::new();
+    for (name, source) in inputs {
+        std::fs::write(root.join(name), source).expect("write fixture");
+        files.insert(
+            name.into(),
+            serde_json::json!({"sha256": hex::encode(Sha256::digest(source.as_bytes())), "format": "module"}),
+        );
+    }
+    let native_record = serde_json::json!({
+        "sha256": hex::encode(Sha256::digest(native_source)),
+        "bytes": native_source.len(),
+        "specifier": "@fake/native/claude"
+    });
+    let manifest = serde_json::json!({
+        "vendor": "11".repeat(32),
+        "entry": "entry.mjs",
+        "idle": "idle.mjs",
+        "files": files,
+        "imports": [
+            {"parent": "entry.mjs", "specifier": "./idle.mjs", "target": "idle.mjs"},
+            {"parent": "entry.mjs", "specifier": "./acp/dist/session-index/live-registry.js", "target": "acp/dist/session-index/live-registry.js"}
+        ],
+        "builtins": [
+            {"parent": "entry.mjs", "specifier": "node:child_process", "target": "node:child_process"},
+            {"parent": "acp/dist/session-index/live-registry.js", "specifier": "node:child_process", "target": "node:child_process"}
+        ],
+        "require_parents": [],
+        "native_parents": [],
+        "native": {"darwin-arm64": native_record, "linux-x64": native_record},
+        "platform_programs": [{"parent": "acp/dist/session-index/live-registry.js", "name": "ps", "arguments": "live-process-starts-v1"}],
+        "denied_dynamic": [],
+        "source_cautions": []
+    });
+    let platform = if cfg!(target_os = "macos") {
+        "darwin-arm64"
+    } else {
+        "linux-x64"
+    };
+    let graph = LocalCapturedGraph::capture_manifest(
+        &root,
+        &serde_json::to_vec(&manifest).expect("manifest"),
+        platform,
+        &native,
+        Some(&ps),
+    )
+    .expect("admitted manifest");
+    let output = guarded(&graph);
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let observed: serde_json::Value = serde_json::from_slice(&output.stdout).expect("output JSON");
+    assert_eq!(observed["allowedStatus"], 0);
+    assert_eq!(observed["allowedStdout"], "0");
+    for label in [
+        "bunEnableOne",
+        "bunEnableEmpty",
+        "bunCrashUrl",
+        "bunOptions",
+        "bunLower",
+        "psBunZero",
+    ] {
+        assert_eq!(
+            observed["refused"][label], "unsafe native startup environment",
+            "{label}"
+        );
+    }
+    std::fs::remove_dir_all(root).expect("remove only own fixture");
+}

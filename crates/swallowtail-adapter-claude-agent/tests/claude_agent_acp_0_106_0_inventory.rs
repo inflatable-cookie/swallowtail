@@ -147,7 +147,7 @@ fn frozen_acp_dependencies_and_idle_evidence_stay_pinned() {
         hex::encode(Sha256::digest(
             swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.as_bytes()
         )),
-        "d1e0e8071f9e559b33df85318d6db1a00d42a897f5fc0141f09eed802a03cfd7"
+        "7259262fafb71b8660ce6d80adb8748feafba459c1a1c425b9538ad34415f3c8"
     );
 }
 

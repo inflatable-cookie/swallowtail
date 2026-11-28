@@ -4,8 +4,12 @@ const { registerHooks, isBuiltin } = nodeModule;
 let files;
 let edges;
 let idleUrl;
+let mcpRefusalUrl;
+let remoteControlUrl;
+let deniedChildParents = new Set();
 const moduleFacades = new Map();
 const childFacades = new Map();
+const deniedChildFacades = new Set();
 let requireParents;
 let native;
 let platformPrograms;
@@ -48,6 +52,15 @@ export function initialize(config) {
   }
   idleUrl = config.idleUrl;
   if (!files.has(idleUrl)) throw new Error('missing idle module');
+  mcpRefusalUrl = config.mcpRefusalUrl ?? null;
+  if (mcpRefusalUrl !== null && (typeof mcpRefusalUrl !== 'string' || !files.has(mcpRefusalUrl))) throw new Error('missing mcp refusal module');
+  remoteControlUrl = config.remoteControlUrl ?? null;
+  if (remoteControlUrl !== null && (typeof remoteControlUrl !== 'string' || !files.has(remoteControlUrl))) throw new Error('missing remote control module');
+  deniedChildParents = new Set();
+  for (const parent of config.deniedChildParents ?? []) {
+    if (typeof parent !== 'string' || !files.has(parent) || deniedChildParents.has(parent)) throw new Error('invalid denied child parent');
+    deniedChildParents.add(parent);
+  }
   if (config.platform && config.platform !== `${process.platform}-${process.arch}`) throw new Error('runtime platform mismatch');
   native = config.native;
   platformPrograms = new Map((config.platformPrograms ?? []).map(program => [program.parent, program.binding]));
@@ -90,6 +103,11 @@ export function resolve(specifier, context) {
     return { url, shortCircuit: true };
   }
   if (target === 'node:child_process') {
+    if (deniedChildParents.has(context.parentURL)) {
+      const url = `swallowtail-child-denied:${encodeURIComponent(context.parentURL)}`;
+      deniedChildFacades.add(url);
+      return { url, shortCircuit: true };
+    }
     const url = `swallowtail-child:${encodeURIComponent(context.parentURL)}`;
     childFacades.set(url, context.parentURL);
     return { url, shortCircuit: true };
@@ -99,6 +117,7 @@ export function resolve(specifier, context) {
 
 export function load(url, context, nextLoad) {
   if (isBuiltin(url) || url === import.meta.url) return nextLoad(url, context);
+  if (deniedChildFacades.has(url)) return deniedChildFacade();
   if (childFacades.has(url)) return childFacade(native, platformPrograms.get(childFacades.get(url)));
   if (moduleFacades.has(url)) {
     const parent = JSON.stringify(moduleFacades.get(url));
@@ -153,7 +172,56 @@ Object.freeze(IdleCompaction.prototype);
 IdleCompaction = SwallowtailIdleGuard;
 Object.freeze(IdleCompaction);
 `;
+  if (url === mcpRefusalUrl) source += `
+if (typeof startAroundRefusedMcpServers !== 'function' || typeof refusedMcpServers !== 'function') throw new Error('missing mcp refusal guard target');
+startAroundRefusedMcpServers = async function startAroundRefusedMcpServers(_hasMcpServers, start) {
+  return await start(false);
+};
+refusedMcpServers = function refusedMcpServers() {
+  throw new Error('silent MCP server drop refused');
+};
+Object.freeze(startAroundRefusedMcpServers);
+Object.freeze(refusedMcpServers);
+`;
+  if (url === remoteControlUrl) source += `
+if (typeof RemoteControlAtStartup !== 'function') throw new Error('missing remote control guard target');
+Object.defineProperty(RemoteControlAtStartup.prototype, 'connect', { value() {}, writable: false, configurable: false });
+const SwallowtailRemoteControlOriginal = RemoteControlAtStartup;
+let SwallowtailRemoteControlGuard;
+SwallowtailRemoteControlGuard = new Proxy(SwallowtailRemoteControlOriginal, {
+  construct(target, _args, newTarget) {
+    if (newTarget !== SwallowtailRemoteControlGuard) throw new Error('remote control subclass refused');
+    return Object.preventExtensions(Reflect.construct(target, [false]));
+  }
+});
+Object.defineProperty(RemoteControlAtStartup.prototype, 'constructor', { value: SwallowtailRemoteControlGuard, writable: false, configurable: false });
+Object.freeze(RemoteControlAtStartup.prototype);
+RemoteControlAtStartup = SwallowtailRemoteControlGuard;
+Object.freeze(RemoteControlAtStartup);
+if (typeof startsWithRemoteControl === 'function') {
+  startsWithRemoteControl = function startsWithRemoteControl() { return false; };
+  Object.freeze(startsWithRemoteControl);
+}
+if (typeof startRemoteControl === 'function') {
+  startRemoteControl = async function startRemoteControl() { throw new Error('remote control at startup refused'); };
+  Object.freeze(startRemoteControl);
+}
+`;
   return { format: file.format, source, shortCircuit: true };
+}
+
+function deniedChildFacade() {
+  return { format: 'module', shortCircuit: true, source: `
+function refused() { throw new Error('child process invocation refused'); }
+export function spawn() { refused(); }
+export function spawnSync() { refused(); }
+export function execFile() { refused(); }
+export function execFileSync() { refused(); }
+const custom = Symbol.for('nodejs.util.promisify.custom');
+Object.defineProperty(execFile, custom, { value: refused, writable: false, configurable: false });
+Object.freeze(spawn); Object.freeze(spawnSync); Object.freeze(execFile); Object.freeze(execFileSync);
+export default Object.freeze({ spawn, spawnSync, execFile, execFileSync });
+` };
 }
 
 function childFacade(binding, processStarts) {
@@ -169,7 +237,8 @@ function check(command, args, options) {
   let binding = native;
   if (command === 'ps' && ps && args.length === 4 && args[0] === '-o' && args[1] === 'pid=,lstart=' && args[2] === '-p' && /^[0-9]+(,[0-9]+)*$/.test(args[3]) && args[3].length <= 4096 && options?.timeout === 1000) { command = ps.path; binding = ps; }
   if (command !== binding.path) throw new Error('unapproved native invocation');
-  if (Object.keys(options?.env ?? process.env).some(key => /^(NODE_|LD_|DYLD_|BUN_|OPENSSL_)/i.test(key))) throw new Error('unsafe native startup environment');
+  const childEnv = options?.env ?? process.env;
+  if (Object.keys(childEnv).some(key => /^(NODE_|LD_|DYLD_|BUN_|OPENSSL_)/i.test(key) && !(binding === native && key === 'BUN_ENABLE_CRASH_REPORTING' && childEnv[key] === '0'))) throw new Error('unsafe native startup environment');
   for (const parent of binding.ancestors) {
     const info = lstatSync(parent.path, {bigint:true});
     if (!info.isDirectory() || info.dev.toString() !== parent.dev || info.ino.toString() !== parent.ino || info.uid.toString() !== String(parent.uid) || info.mode.toString() !== String(parent.mode)) throw new Error('native ancestor custody changed');

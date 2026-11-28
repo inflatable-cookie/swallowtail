@@ -6,6 +6,9 @@ on:
       - 'crates/swallowtail-adapter-claude-agent/src/**'
       - 'crates/swallowtail-adapter-claude-agent/sidecar/**'
       - 'crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-acp-0.106.0/**'
+      - 'crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-acp-0.113.0/**'
+      - 'crates/swallowtail-host-local/src/captured_manifest.rs'
+      - 'crates/swallowtail-host-local/src/captured_source.rs'
       - 'scripts/claude-acp-trusted-*'
       - '.github/workflows/acp239-trusted-native.yml'
       - 'effigy.toml'
@@ -26,12 +29,26 @@ jobs:
           - {os: ubuntu-24.04, first: '0.102.0', second: '0.103.0'}
           - {os: ubuntu-24.04, first: '0.104.0', second: '0.104.1'}
           - {os: ubuntu-24.04, first: '0.105.0', second: '0.106.0'}
+          - {os: ubuntu-24.04, first: '0.107.0', second: '0.107.1'}
+          - {os: ubuntu-24.04, first: '0.107.2', second: '0.107.3'}
+          - {os: ubuntu-24.04, first: '0.108.0', second: '0.108.1'}
+          - {os: ubuntu-24.04, first: '0.109.0', second: '0.109.1'}
+          - {os: ubuntu-24.04, first: '0.110.0', second: '0.110.1'}
+          - {os: ubuntu-24.04, first: '0.111.0', second: '0.112.0'}
+          - {os: ubuntu-24.04, first: '0.113.0', second: ''}
           # The older Mac pair reaches the20-minute cap during artifact upload.
           - {os: macos-15, first: '0.101.0', second: ''}
           - {os: macos-15, first: '0.101.1', second: ''}
           - {os: macos-15, first: '0.102.0', second: '0.103.0'}
           - {os: macos-15, first: '0.104.0', second: '0.104.1'}
           - {os: macos-15, first: '0.105.0', second: '0.106.0'}
+          - {os: macos-15, first: '0.107.0', second: '0.107.1'}
+          - {os: macos-15, first: '0.107.2', second: '0.107.3'}
+          - {os: macos-15, first: '0.108.0', second: '0.108.1'}
+          - {os: macos-15, first: '0.109.0', second: '0.109.1'}
+          - {os: macos-15, first: '0.110.0', second: '0.110.1'}
+          - {os: macos-15, first: '0.111.0', second: '0.112.0'}
+          - {os: macos-15, first: '0.113.0', second: ''}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7

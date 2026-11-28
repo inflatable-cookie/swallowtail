@@ -21,6 +21,10 @@ FIXTURE = (
     ROOT
     / "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-acp-0.106.0"
 )
+FIXTURE_0113 = (
+    ROOT
+    / "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-acp-0.113.0"
+)
 GRAPHS = (
     ROOT
     / "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-graphs"
@@ -34,6 +38,19 @@ HOPS = (
     "0.104.1",
     "0.105.0",
     "0.106.0",
+    "0.107.0",
+    "0.107.1",
+    "0.107.2",
+    "0.107.3",
+    "0.108.0",
+    "0.108.1",
+    "0.109.0",
+    "0.109.1",
+    "0.110.0",
+    "0.110.1",
+    "0.111.0",
+    "0.112.0",
+    "0.113.0",
 )
 
 
@@ -120,8 +137,19 @@ def selected_files(archive, selected, output, maximum=64 * 1024 * 1024):
 
 def prepare(root, hops):
     trusted_ci()
-    registry = json.loads((FIXTURE / "registry.json").read_text())["versions"]
-    dependencies = json.loads((FIXTURE / "dependencies.json").read_text())
+    registry = {
+        **json.loads((FIXTURE / "registry.json").read_text())["versions"],
+        **json.loads((FIXTURE_0113 / "registry.json").read_text())["versions"],
+    }
+    deps_0106 = json.loads((FIXTURE / "dependencies.json").read_text())
+    deps_0113 = json.loads((FIXTURE_0113 / "dependencies.json").read_text())
+    dependencies = {
+        "artifacts": {**deps_0106["artifacts"], **deps_0113["artifacts"]},
+        "native_manifests": {
+            **deps_0106["native_manifests"],
+            **deps_0113["native_manifests"],
+        },
+    }
     extras = json.loads((FIXTURE / "import-edge-artifacts.json").read_text())
     platform_name = {
         ("Linux", "x86_64"): "linux-x64",

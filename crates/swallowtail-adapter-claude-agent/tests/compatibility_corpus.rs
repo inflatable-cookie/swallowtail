@@ -87,7 +87,7 @@ fn corpus_keeps_new_upstream_options_outside_swallowtail_authority() {
 
 #[test]
 fn production_claim_keeps_the_frozen_corpus_inside_the_raised_window() {
-    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.106.0");
+    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.113.0");
     let claim = claude_agent_acp_claim();
     for candidate in [
         "0.62.0", "0.63.0", "0.64.0", "0.69.0", "0.70.0", "0.71.0", "0.72.0", "0.73.0", "0.74.0",
@@ -99,7 +99,7 @@ fn production_claim_keeps_the_frozen_corpus_inside_the_raised_window() {
         assert!(claim.supports(&version(candidate)));
     }
     assert!(matches!(
-        claim.assess(&version("0.107.0")),
+        claim.assess(&version("0.114.0")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

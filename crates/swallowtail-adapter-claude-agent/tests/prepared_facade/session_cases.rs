@@ -331,8 +331,8 @@ fn unsupported_options_fail_before_session_process_effects() {
 
 #[test]
 fn prepared_unverified_session_cancels_then_joins_cleanup() {
-    let host_id = ExecutionHostId::new("fixture.prepared.cancel-107").expect("valid host");
-    let preparation_host = FixtureHost::new(Scenario::Version, "0.107.0");
+    let host_id = ExecutionHostId::new("fixture.prepared.cancel-114").expect("valid host");
+    let preparation_host = FixtureHost::new(Scenario::Version, "0.114.0");
     let prepared = block_on(prepare_claude_agent(
         preparation_input(host_id.clone()),
         probe(),
@@ -341,7 +341,7 @@ fn prepared_unverified_session_cancels_then_joins_cleanup() {
     .expect("unverified Claude Agent prepares");
     let profile = prepared
         .prepare_session(ClaudeAgentSessionProfileInput::new(
-            RequestId::new("claude-agent-cancel-107").expect("request"),
+            RequestId::new("claude-agent-cancel-114").expect("request"),
             ClaudeAgentModelSelection::new(
                 ModelRouteId::new("claude-agent.prepared.route").expect("route"),
                 ModelRouteRevision::new("1").expect("revision"),
@@ -351,7 +351,7 @@ fn prepared_unverified_session_cancels_then_joins_cleanup() {
             SessionOptions::default(),
         ))
         .expect("session profile");
-    let host = FixtureHost::new(Scenario::Cancellation, "0.107.0");
+    let host = FixtureHost::new(Scenario::Cancellation, "0.114.0");
     let services = host.services(host_id);
     let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
     let mut turn = block_on(session.start_turn(
@@ -387,7 +387,7 @@ fn prepared_unverified_session_cancels_then_joins_cleanup() {
 #[test]
 fn prepared_idle_update_without_turn_stops_connection_and_joins_cleanup() {
     let host_id = ExecutionHostId::new("fixture.prepared.idle-clock").expect("host");
-    let preparation_host = FixtureHost::new(Scenario::Version, "0.107.0");
+    let preparation_host = FixtureHost::new(Scenario::Version, "0.114.0");
     let prepared = block_on(prepare_claude_agent(
         preparation_input(host_id.clone()), probe(), preparation_host.services(host_id.clone()),
     )).expect("prepares");
@@ -401,7 +401,7 @@ fn prepared_idle_update_without_turn_stops_connection_and_joins_cleanup() {
         WorkingResourceRef::new("claude-agent.prepared.workspace").expect("resource"),
         SessionOptions::default(),
     )).expect("session profile");
-    let host = FixtureHost::new(Scenario::SimulatedIdleCompaction, "0.107.0");
+    let host = FixtureHost::new(Scenario::SimulatedIdleCompaction, "0.114.0");
     let services = host.services(host_id);
     let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
     let mut turn = block_on(session.start_turn(

@@ -199,12 +199,14 @@ present, and the terminal outcome concurrently. Cancellation stops only the
 active operation. Always close and join the turn, session or run; retain
 terminal, native provider close/delete, and local cleanup as separate truth.
 
-Claude Agent ACP is qualified through 0.106.0. The eight published hops after
+Claude Agent ACP is qualified through 0.113.0. The 21 published hops after
 0.100.0 require a host-bound checked guarded launch; a stock process refuses
 before credential acquisition or launch. The guard vetoes unsolicited idle
-compaction and preserves inherited permission security settings. Existing
-qualified segments and exclusions remain unchanged. The seven frozen points from
-0.101.1 through 0.106.0 use `claude-agent.acp.guarded-permission-inheritance-v8`
+compaction, fails closed on the 0.111+ silent MCP drop fallback, vetoes 0.113
+`RemoteControlAtStartup`, denies 0.113 `plugin-command.js` `child_process`
+invocation, and preserves inherited permission security settings. Existing
+qualified segments and exclusions remain unchanged. The 20 frozen points from
+0.101.1 through 0.113.0 use `claude-agent.acp.guarded-permission-inheritance-v8`
 to preserve native
 user/managed no-prompt denial. Exact 0.101.0 retains v7: its native version does
 not support that key and still requests consumer permission.
@@ -223,13 +225,14 @@ Node >=22 with the synchronous module-hook APIs is supported; the exact compatib
 runtime is captured by the host. CI's Node 22.23.2 is evidence provenance, not a
 consumer prerequisite or a standalone SDK/Node claim extension.
 
-[Research 483](../research/483-claude-agent-acp-0-106-0-evidence.md) records original
+[Research 483](../research/483-claude-agent-acp-0-106-0-evidence.md) and
+[Research 493](../research/493-claude-agent-acp-0-113-0-evidence.md) record original
 new/load/resume, two-turn permissions and denial, model/options, activity,
 results/errors, cancellation/deadline/native exit, native close and joined child
 cleanup on trusted disposable Linux/macOS runners. These tests use owned
 loopback model peers, dummy keys and isolated settings; they make no live
 provider or broader HTTP MCP claim. The consumed idle-component pairs retain
-their separate historical scope. 0.107.0 and later remain unverified.
+their separate historical scope. 0.114.0 and later remain unverified.
 
 Run `effigy validate:claude-agent-acp-trusted-native-self-test` for the owned
 Rust-route harness; the PR-triggered disposable workflow runs the originals.
@@ -246,7 +249,7 @@ The provider can also deny a tool without emitting a permission request. In
 that case the adapter does not invent a callback or a `ProviderRequestObserved`
 outcome. Tom's 2026-11-12 ruling preserves the inherited
 `permissions.denyInsteadOfPrompting` setting under a distinct revision for
-ACP 0.101.1 through 0.106.0. Denied calls produce no fabricated consumer callback;
+ACP 0.101.1 through 0.113.0. Denied calls produce no fabricated consumer callback;
 the provider can continue the same turn. Exact 0.101.0 retains its prior callback
 semantics because its bundled native version does not support the key.
 
@@ -618,7 +621,9 @@ See the compile-tested
 The root `package.json` pins `@agentclientprotocol/claude-agent-acp` to exact
 `0.106.0` for development and live probes (Research 492). Research 460, 469,
 470, and 471 retain qualification through `0.100.0`; Research 483 adds the eight
-exact guarded points through `0.106.0`. The local dependency pin is not itself
+exact guarded points through `0.106.0`, and Research 493 adds the 13 exact
+guarded points `0.107.0` through `0.113.0`. Moving the local pin to `0.113.0`
+requires a separately authorized live turn. The local dependency pin is not itself
 currentness evidence for versions outside the qualified window.
 Development and live probes use:
 
@@ -642,13 +647,14 @@ integration.
 
 Discovery records the exact Claude Agent ACP wrapper version. The existing
 `0.53.0..=0.100.0` segments and unpublished `0.58.0` exclusion remain intact.
-Eight exact frozen points through `0.106.0` are also qualified on the checked
-guarded Linux x64/Darwin arm64 route (Research 483). Exact `0.101.0` retains
-v7; the seven points from `0.101.1` use inherited-permission v8. Unpublished
-interior versions are not added. Stable `0.107.0` and later remain visible
-`UnverifiedNewer` and must identify the same exact version during initialization.
-Excluded and older versions do not prepare. HTTP MCP live honouring remains
-exact to `0.79.0`, `0.81.2`, and guarded `0.106.0` (Research 361, 364, 492).
+Twenty-one exact frozen points through `0.113.0` are also qualified on the checked
+guarded Linux x64/Darwin arm64 route (Research 483, Research 493). Exact `0.101.0`
+retains v7; the 20 points from `0.101.1` through `0.113.0` use
+inherited-permission v8. Unpublished interior versions are not added. Stable
+`0.114.0` and later remain visible `UnverifiedNewer` and must identify the same
+exact version during initialization. Excluded and older versions do not prepare.
+HTTP MCP live honouring remains exact to `0.79.0`, `0.81.2`, and guarded `0.106.0`
+(Research 361, 364, 492).
 
 Declared session-scoped metadata remains passive and does not become consumer
 tools, commands or turn output. Informational `auth/status_update` cannot change

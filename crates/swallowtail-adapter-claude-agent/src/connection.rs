@@ -10,7 +10,10 @@ use swallowtail_acp_client::{
     default_permission_namespace,
 };
 use swallowtail_core::{ResourceAccess, SafeDiagnostic, SessionRef};
-use swallowtail_protocol_acp::{FramingLimits, RpcError, is_session_scoped_metadata_update_kind};
+use swallowtail_protocol_acp::{
+    AcpSessionUpdate, FramingLimits, RpcError, decode_session_update,
+    is_session_scoped_metadata_update_kind,
+};
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, HostServices, OperationContent, ProcessHandle, ResourceLease,
     RuntimeFailure, SessionReplayItem, SessionReplayKind, WorkingResourceIoService,
@@ -191,6 +194,7 @@ enum AttachPhase {
 struct ClaudeAgentHooks {
     resource: ResourceLease,
     resource_io: Arc<dyn WorkingResourceIoService>,
+    session_id: Mutex<Option<String>>,
     phase: Mutex<Option<AttachPhase>>,
     turn: Mutex<Option<Arc<ActiveTurn>>>,
 }
@@ -234,6 +238,36 @@ impl AcpConnectionHooks for ClaudeAgentHooks {
     ) -> Result<SessionUpdateDisposition, RuntimeFailure> {
         let mut phase = self.phase.lock().expect("ACP phase lock poisoned");
         let Some(phase) = phase.as_mut() else {
+            let has_active_turn = self
+                .turn
+                .lock()
+                .expect("ACP active lock poisoned")
+                .is_some();
+            if !has_active_turn
+                && params
+                    .get("update")
+                    .and_then(|update| update.get("sessionUpdate"))
+                    .and_then(Value::as_str)
+                    == Some("session_info_update")
+            {
+                let bound = self
+                    .session_id
+                    .lock()
+                    .expect("ACP session lock poisoned")
+                    .clone();
+                let session_id = params
+                    .get("sessionId")
+                    .and_then(Value::as_str)
+                    .ok_or_else(malformed)?;
+                if bound.as_deref() != Some(session_id) {
+                    return Err(session_mismatch());
+                }
+                let decoded = decode_session_update(params).map_err(|_| malformed())?;
+                if !matches!(decoded.update, AcpSessionUpdate::SessionInfo { .. }) {
+                    return Err(malformed());
+                }
+                return Ok(SessionUpdateDisposition::Handled);
+            }
             return Ok(SessionUpdateDisposition::RouteToActiveTurn);
         };
         let session_id = params
@@ -257,7 +291,7 @@ impl AcpConnectionHooks for ClaudeAgentHooks {
                     return Err(session_mismatch());
                 }
                 if *response_seen {
-                    passive_update(kind)?;
+                    passive_update(kind, params)?;
                     return Ok(SessionUpdateDisposition::Handled);
                 }
                 let item = replay_item(session.clone(), replay.len() as u64, kind, update)?;
@@ -283,7 +317,7 @@ impl AcpConnectionHooks for ClaudeAgentHooks {
                     return Err(session_mismatch());
                 }
                 if *response_seen {
-                    passive_update(kind)?;
+                    passive_update(kind, params)?;
                     Ok(SessionUpdateDisposition::Handled)
                 } else {
                     Err(failure(
@@ -429,6 +463,7 @@ impl AcpConnection {
         let hooks = Arc::new(ClaudeAgentHooks {
             resource: resource.clone(),
             resource_io,
+            session_id: Mutex::new(None),
             phase: Mutex::new(None),
             turn: Mutex::new(None),
         });
@@ -673,7 +708,13 @@ impl AcpConnection {
     }
 
     pub(crate) fn set_session_id(&self, session_id: String) -> Result<(), RuntimeFailure> {
-        self.inner.set_session_id(session_id)
+        self.inner.set_session_id(session_id.clone())?;
+        *self
+            .hooks
+            .session_id
+            .lock()
+            .expect("ACP session lock poisoned") = Some(session_id);
+        Ok(())
     }
 
     pub(crate) fn set_active_turn(&self, turn: Arc<ActiveTurn>) -> Result<(), RuntimeFailure> {
@@ -760,9 +801,16 @@ fn replay_item(
     }
 }
 
-fn passive_update(kind: &str) -> Result<(), RuntimeFailure> {
+fn passive_update(kind: &str, params: &Value) -> Result<(), RuntimeFailure> {
     if is_session_scoped_metadata_update_kind(kind) {
         Ok(())
+    } else if kind == "session_info_update" {
+        let decoded = decode_session_update(params).map_err(|_| malformed())?;
+        if matches!(decoded.update, AcpSessionUpdate::SessionInfo { .. }) {
+            Ok(())
+        } else {
+            Err(malformed())
+        }
     } else {
         Err(failure(
             "swallowtail.claude_agent.acp.update_without_turn",
@@ -947,6 +995,92 @@ mod tests {
                 .expect("ACP phase lock poisoned")
                 .is_none(),
             "resume_session must clear hooks.phase on early error"
+        );
+    }
+
+    #[test]
+    fn passive_session_info_update_validates_session_and_payload_without_admitting_other_idle_updates()
+     {
+        let host = swallowtail_core::ExecutionHostId::new("claude-agent.session-info-test")
+            .expect("host id is valid");
+        let lease = ResourceLease::consumer_owned(
+            swallowtail_runtime::ScopeId::new("claude-agent.session-info-test")
+                .expect("scope is valid"),
+            swallowtail_runtime::WorkingResourceRef::new("workspace:session-info-test")
+                .expect("resource ref is valid"),
+            swallowtail_core::ResourceAccess::Read,
+            swallowtail_core::ResourceRepresentation::Filesystem,
+        );
+        let connection = AcpConnection::new(
+            Arc::new(RefusingStdinProcess),
+            lease,
+            Arc::new(DummyResourceIo),
+            HostServices::new(host),
+        );
+        let valid = json!({
+            "sessionId": "session-1",
+            "update": {
+                "sessionUpdate": "session_info_update",
+                "title": "Generated title",
+                "updatedAt": "2026-11-28T16:50:00Z"
+            }
+        });
+        assert_eq!(
+            connection
+                .hooks
+                .on_session_update(&valid)
+                .expect_err("unbound session must fail closed")
+                .diagnostic()
+                .code(),
+            "swallowtail.claude_agent.acp.session_mismatch"
+        );
+        connection
+            .set_session_id("session-1".to_owned())
+            .expect("session binds");
+        assert_eq!(
+            connection
+                .hooks
+                .on_session_update(&valid)
+                .expect("bound session_info_update is passive"),
+            SessionUpdateDisposition::Handled
+        );
+        let wrong_session = json!({
+            "sessionId": "session-other",
+            "update": { "sessionUpdate": "session_info_update", "title": "Other" }
+        });
+        assert_eq!(
+            connection
+                .hooks
+                .on_session_update(&wrong_session)
+                .expect_err("mismatched session must fail closed")
+                .diagnostic()
+                .code(),
+            "swallowtail.claude_agent.acp.session_mismatch"
+        );
+        let malformed_payload = json!({
+            "sessionId": "session-1",
+            "update": { "sessionUpdate": "session_info_update", "title": 123 }
+        });
+        assert!(
+            connection
+                .hooks
+                .on_session_update(&malformed_payload)
+                .is_err(),
+            "malformed session_info_update must fail closed"
+        );
+        let non_metadata = json!({
+            "sessionId": "session-1",
+            "update": {
+                "sessionUpdate": "agent_message_chunk",
+                "content": { "type": "text", "text": "unsolicited" }
+            }
+        });
+        assert_eq!(
+            connection
+                .hooks
+                .on_session_update(&non_metadata)
+                .expect("non-metadata routes to active-turn gate"),
+            SessionUpdateDisposition::RouteToActiveTurn
         );
     }
 }

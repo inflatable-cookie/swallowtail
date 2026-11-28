@@ -1,6 +1,8 @@
 use serde_json::Value;
 use sha2::{Digest, Sha256};
-use swallowtail_adapter_claude_agent::claude_agent_acp_claim;
+use swallowtail_adapter_claude_agent::{
+    CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR, claude_agent_acp_claim,
+};
 use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
 const INVENTORY: &str = include_str!("fixtures/claude-agent-acp-0.109.1/artifact-inventory.json");
@@ -18,22 +20,27 @@ fn frozen_newer_hops_still_require_guarded_qualification() {
     let inventory: Value = serde_json::from_str(INVENTORY).expect("ACP artifact inventory");
     let claim = claude_agent_acp_claim();
     assert_eq!(claim.axis().as_str(), inventory["axis"].as_str().unwrap());
-    assert_eq!(claim.latest_qualified().as_str(), "0.106.0");
+    assert_eq!(claim.latest_qualified().as_str(), "0.113.0");
 
     let hops = inventory["published_stables_after_ceiling"]
         .as_array()
         .expect("published ACP hops");
-    for version in hops.iter().chain(std::iter::once(
-        &inventory["first_unpublished_stable_after_latest"],
-    )) {
+    for version in hops {
         let version = version.as_str().expect("ACP adapter version");
         let assessed = InterfaceVersion::new(version).expect("valid ACP adapter version");
-        assert!(
-            matches!(
-                claim.assess(&assessed),
-                InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-            ),
-            "ACP {version} requires separate qualification"
+        let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&assessed) else {
+            panic!("ACP {version} is now a qualified guarded hop");
+        };
+        assert_eq!(
+            matched.behavior_revision().as_str(),
+            CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR
         );
     }
+    let gap = inventory["first_unpublished_stable_after_latest"]
+        .as_str()
+        .expect("unpublished gap");
+    assert!(
+        !claim.permits(&InterfaceVersion::new(gap).expect("valid ACP gap")),
+        "unpublished interior gap {gap} must remain rejected"
+    );
 }

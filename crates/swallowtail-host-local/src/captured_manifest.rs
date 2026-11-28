@@ -14,6 +14,12 @@ struct Manifest {
     vendor: String,
     entry: PathBuf,
     idle: PathBuf,
+    #[serde(default)]
+    mcp_refusal_fallback: Option<PathBuf>,
+    #[serde(default)]
+    remote_control: Option<PathBuf>,
+    #[serde(default)]
+    denied_child_process_parents: Vec<PathBuf>,
     files: BTreeMap<PathBuf, Source>,
     imports: Vec<Edge>,
     builtins: Vec<Edge>,
@@ -79,6 +85,7 @@ impl LocalCapturedGraph {
             > 8192
             || manifest.require_parents.len() > 1024
             || manifest.native_parents.len() > 1024
+            || manifest.denied_child_process_parents.len() > 1024
             || manifest.source_cautions.len() > 4096
         {
             return Err(invalid("guarded manifest limit"));
@@ -256,9 +263,67 @@ impl LocalCapturedGraph {
                 serde_json::json!({"parent":url(&program.parent)?,"name":"ps","binding":binding}),
             );
         }
-        let configuration = serde_json::to_vec(
-            &serde_json::json!({"vendor":manifest.vendor,"idleUrl":url(&manifest.idle)?,"files":files,"edges":edges,"requireParents":require_parents,"native":native_binding,"platform":platform,"platformPrograms":platform_programs}),
-        )?;
+        if let Some(mcp_refusal) = &manifest.mcp_refusal_fallback
+            && manifest
+                .files
+                .get(mcp_refusal)
+                .is_none_or(|row| row.format != "module")
+        {
+            return Err(invalid("missing mcp refusal module"));
+        }
+        if let Some(remote_control) = &manifest.remote_control
+            && manifest
+                .files
+                .get(remote_control)
+                .is_none_or(|row| row.format != "module")
+        {
+            return Err(invalid("missing remote control module"));
+        }
+        let mut denied_child_parents = Vec::new();
+        let mut denied_child_set = BTreeSet::new();
+        for parent in &manifest.denied_child_process_parents {
+            if !manifest.files.contains_key(parent)
+                || !denied_child_set.insert(parent.clone())
+                || manifest
+                    .platform_programs
+                    .iter()
+                    .any(|program| &program.parent == parent)
+                || !manifest
+                    .builtins
+                    .iter()
+                    .any(|edge| &edge.parent == parent && edge.target == "node:child_process")
+            {
+                return Err(invalid("invalid denied child parent"));
+            }
+            denied_child_parents.push(url(parent)?);
+        }
+        if manifest
+            .files
+            .contains_key(Path::new("acp/dist/plugin-command.js"))
+            && !denied_child_set.contains(Path::new("acp/dist/plugin-command.js"))
+        {
+            return Err(invalid("unclassified plugin child process"));
+        }
+        let mut config_value = serde_json::json!({"vendor":manifest.vendor,"idleUrl":url(&manifest.idle)?,"files":files,"edges":edges,"requireParents":require_parents,"native":native_binding,"platform":platform,"platformPrograms":platform_programs});
+        let config_object = config_value
+            .as_object_mut()
+            .expect("configuration value is a JSON object");
+        if let Some(mcp_refusal) = &manifest.mcp_refusal_fallback {
+            config_object.insert("mcpRefusalUrl".into(), serde_json::json!(url(mcp_refusal)?));
+        }
+        if let Some(remote_control) = &manifest.remote_control {
+            config_object.insert(
+                "remoteControlUrl".into(),
+                serde_json::json!(url(remote_control)?),
+            );
+        }
+        if !denied_child_parents.is_empty() {
+            config_object.insert(
+                "deniedChildParents".into(),
+                serde_json::json!(denied_child_parents),
+            );
+        }
+        let configuration = serde_json::to_vec(&config_value)?;
         let mut hash = Sha256::new();
         hash.update(b"swallowtail-captured-graph-v1\0");
         hash.update(&configuration);

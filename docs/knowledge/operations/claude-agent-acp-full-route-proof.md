@@ -1,7 +1,9 @@
 # Guarded ACP full-route evidence
 
-[Research 483](../../research/483-claude-agent-acp-0-106-0-evidence.md) records the
-actual frozen-original selected-route qualification on Linux x64/Darwin arm64.
+[Research 483](../../research/483-claude-agent-acp-0-106-0-evidence.md) and
+[Research 493](../../research/493-claude-agent-acp-0-113-0-evidence.md) record the
+actual frozen-original selected-route qualification on Linux x64/Darwin arm64
+through `0.113.0`.
 The [current procedure](claude-agent-acp-admission-preparation.md) implements
 Tom's trusted disposable-runner ruling, decision 1ec44a26 v2. No shared SDK task
 completion or retired Python/kernel/caller-catalogue admission is required.

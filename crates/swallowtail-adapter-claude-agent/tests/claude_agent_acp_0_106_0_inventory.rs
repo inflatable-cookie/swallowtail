@@ -126,7 +126,7 @@ fn frozen_acp_dependencies_and_idle_evidence_stay_pinned() {
         ),
         (
             GUARD_MANIFEST,
-            "d057fcb97d4a7a514b6b14dcb4548d61bbda47b1067b31da90bbd4be4f620141",
+            "1c7e5d8ece8ae53acc7a49a35aa92d8269b37f0b55d1217c49aaa4e31decb61f",
         ),
         (
             GUARD_EDGES,
@@ -147,7 +147,7 @@ fn frozen_acp_dependencies_and_idle_evidence_stay_pinned() {
         hex::encode(Sha256::digest(
             swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.as_bytes()
         )),
-        "f2a728819aa9f68815e3255c0c1a8d547337f102b352c5c730051d1799c5c56b"
+        "7259262fafb71b8660ce6d80adb8748feafba459c1a1c425b9538ad34415f3c8"
     );
 }
 
@@ -232,7 +232,7 @@ fn qualified_frozen_hops_preserve_the_native_permission_boundary() {
     };
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
     let claim = claude_agent_acp_claim();
-    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.106.0");
+    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.113.0");
     for hop in [
         "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0", "0.106.0",
     ] {
@@ -255,7 +255,7 @@ fn qualified_frozen_hops_preserve_the_native_permission_boundary() {
         assert!(!claim.permits(&InterfaceVersion::new(gap).expect("version")));
     }
     assert!(matches!(
-        claim.assess(&InterfaceVersion::new("0.107.0").expect("version")),
+        claim.assess(&InterfaceVersion::new("0.114.0").expect("version")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

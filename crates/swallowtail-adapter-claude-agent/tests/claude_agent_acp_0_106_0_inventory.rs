@@ -232,7 +232,7 @@ fn qualified_frozen_hops_preserve_the_native_permission_boundary() {
     };
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
     let claim = claude_agent_acp_claim();
-    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.106.0");
+    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.113.0");
     for hop in [
         "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0", "0.106.0",
     ] {
@@ -255,7 +255,7 @@ fn qualified_frozen_hops_preserve_the_native_permission_boundary() {
         assert!(!claim.permits(&InterfaceVersion::new(gap).expect("version")));
     }
     assert!(matches!(
-        claim.assess(&InterfaceVersion::new("0.107.0").expect("version")),
+        claim.assess(&InterfaceVersion::new("0.114.0").expect("version")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

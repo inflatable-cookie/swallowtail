@@ -16,19 +16,22 @@ are authorized. Administrator settings fixtures exist only on disposable jobs.
 
 ## Current route
 
-The eight frozen published ACP points after 0.100.0 through 0.106.0 use checked
+The 21 frozen published ACP points after 0.100.0 through 0.113.0 use checked
 guarded launches on Linux x64/Darwin arm64. The adapter refuses their stock
 launch before credential acquisition or effects. The host binds the exact
 runtime, captured source graph, native image and guard to a revocable opaque
 checked-process reference. Product custody/drift/startup checks remain enabled.
 There is no unchecked fallback or hostile same-user sandbox claim.
 
-The guard vetoes idle compaction while preserving inherited permission security
-settings. Exact 0.101.0 retains v7 callback semantics: its native does not support
-`denyInsteadOfPrompting`. The seven frozen 0.101.1–0.106.0 points use the distinct
+The guard vetoes idle compaction, fails closed on the 0.111+ silent MCP drop
+fallback (`startAroundRefusedMcpServers`), vetoes 0.113 `RemoteControlAtStartup`,
+and denies 0.113 `plugin-command.js` `child_process` invocation while preserving
+inherited permission security settings. Exact 0.101.0 retains v7 callback
+semantics: its native does not support `denyInsteadOfPrompting`. The 20 frozen
+0.101.1–0.113.0 points use the distinct
 `claude-agent.acp.guarded-permission-inheritance-v8` behavior. User/managed denial
 can continue the turn without a fabricated callback. Unpublished interior points
-are not added;0.107.0 and later remain unverified. Earlier segments/exclusions,
+are not added; 0.114.0 and later remain unverified. Earlier segments/exclusions,
 standalone SDK/Node/native claims and exact HTTP MCP live points stay separate.
 
 The local host parents a process-group owner and checked ACP Node as siblings;
@@ -60,7 +63,8 @@ The older Mac 0.101 hops use separate jobs so setup, proof and artifact upload
 fit the same 20-minute limit. Each behavior has 45 seconds plus 5 seconds stop/join; jobs have 20 minutes,
 output 1 MiB/case and evidence 16 MiB. Record actual exits, waits, cancellation
 and close cleanup. Job teardown or PID disappearance does not replace a wait.
-[Research 483](../../research/483-claude-agent-acp-0-106-0-evidence.md) owns the
+[Research 483](../../research/483-claude-agent-acp-0-106-0-evidence.md) and
+[Research 493](../../research/493-claude-agent-acp-0-113-0-evidence.md) own the
 frozen inputs, selected-route results, repairs and exact proof-source scopes.
 
 ## Preserved history

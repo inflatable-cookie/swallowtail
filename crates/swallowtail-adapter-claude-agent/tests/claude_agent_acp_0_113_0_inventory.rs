@@ -286,3 +286,41 @@ fn guarded_graphs_0_107_0_through_0_113_0_pin_ruling_targets_and_digests() {
         }
     }
 }
+
+#[test]
+fn qualified_0_107_0_through_0_113_0_hops_preserve_v8_and_gaps() {
+    use swallowtail_adapter_claude_agent::{
+        CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR, CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION,
+        claude_agent_acp_claim,
+    };
+    use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
+
+    let claim = claude_agent_acp_claim();
+    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.113.0");
+    assert_eq!(claim.latest_qualified().as_str(), "0.113.0");
+    for hop in [
+        "0.107.0", "0.107.1", "0.107.2", "0.107.3", "0.108.0", "0.108.1", "0.109.0", "0.109.1",
+        "0.110.0", "0.110.1", "0.111.0", "0.112.0", "0.113.0",
+    ] {
+        let v = InterfaceVersion::new(hop).expect("frozen version");
+        let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&v) else {
+            panic!("frozen original hop must be qualified: {hop}")
+        };
+        assert_eq!(
+            matched.behavior_revision().as_str(),
+            CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR
+        );
+    }
+    for gap in [
+        "0.106.1", "0.107.4", "0.108.2", "0.109.2", "0.110.2", "0.111.1", "0.112.1",
+    ] {
+        assert!(
+            !claim.permits(&InterfaceVersion::new(gap).expect("gap version")),
+            "unpublished interior gap {gap} must not be admitted"
+        );
+    }
+    assert!(matches!(
+        claim.assess(&InterfaceVersion::new("0.114.0").expect("newer version")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
+}

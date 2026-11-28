@@ -22,6 +22,8 @@ use swallowtail_runtime::{
 fn guarded_versions_refuse_stock_process_before_credentials_or_effects() {
     for version in [
         "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0", "0.106.0",
+        "0.107.0", "0.107.1", "0.107.2", "0.107.3", "0.108.0", "0.108.1", "0.109.0", "0.109.1",
+        "0.110.0", "0.110.1", "0.111.0", "0.112.0", "0.113.0",
     ] {
         let host_id = ExecutionHostId::new("fixture.guarded.host").expect("host");
         let selected = selection(host_id.clone(), version);

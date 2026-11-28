@@ -13,7 +13,7 @@ pub const CLAUDE_AGENT_ACP_AXIS: &str = "claude-agent.acp-adapter";
 /// Oldest qualified Claude Agent ACP version.
 pub const CLAUDE_AGENT_ACP_BASELINE_VERSION: &str = "0.53.0";
 /// Most recent qualified Claude Agent ACP version.
-pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.106.0";
+pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.113.0";
 
 const BASELINE_BEHAVIOR: &str = "claude-agent.acp.baseline-v1";
 const SESSION_CONFIG_BEHAVIOR: &str = "claude-agent.acp.session-config-v2";
@@ -187,6 +187,84 @@ pub fn claude_agent_acp_claim() -> InterfaceCompatibilityClaim {
                 crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
                 InterfaceSupportStatus::Maintained,
             ),
+            segment(
+                "0.107.0",
+                "0.107.0",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.107.1",
+                "0.107.1",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.107.2",
+                "0.107.2",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.107.3",
+                "0.107.3",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.108.0",
+                "0.108.0",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.108.1",
+                "0.108.1",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.109.0",
+                "0.109.0",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.109.1",
+                "0.109.1",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.110.0",
+                "0.110.0",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.110.1",
+                "0.110.1",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.111.0",
+                "0.111.0",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.112.0",
+                "0.112.0",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.113.0",
+                "0.113.0",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
         ],
         [
             version("0.52.0").expect("static Claude Agent version is valid"),
@@ -224,10 +302,6 @@ pub(crate) fn select_claude_agent_plan(
         ));
     }
     let qualified = matches!(assessment, InterfaceCompatibilityAssessment::Qualified(_));
-    // Private unit-runner admission is set only after the frozen graph/native
-    // capture succeeds. It changes no production claim or permission mapping.
-    #[cfg(all(test, unix))]
-    let qualified = qualified || crate::trusted_native_tests::admitted(binding.version().as_str());
     let revision = assessment
         .behavior_revision()
         .expect("permitted assessment has a behavior revision");
@@ -297,8 +371,8 @@ mod tests {
     fn claim_preserves_historical_milestones_and_guarded_permission_boundary() {
         let claim = claude_agent_acp_claim();
         assert_eq!(claim.baseline().as_str(), "0.53.0");
-        assert_eq!(claim.latest_qualified().as_str(), "0.106.0");
-        assert_eq!(claim.milestones().len(), 15);
+        assert_eq!(claim.latest_qualified().as_str(), "0.113.0");
+        assert_eq!(claim.milestones().len(), 28);
         for qualified in [
             "0.53.0", "0.54.1", "0.58.1", "0.59.0", "0.61.0", "0.62.0", "0.63.0", "0.64.0",
             "0.64.1", "0.65.0", "0.66.0", "0.69.0", "0.70.0", "0.71.0", "0.72.0", "0.73.0",
@@ -307,7 +381,8 @@ mod tests {
             "0.86.0", "0.87.0", "0.88.0", "0.89.0", "0.89.1", "0.90.0", "0.91.0", "0.92.0",
             "0.93.0", "0.94.0", "0.95.0", "0.96.0", "0.97.0", "0.98.0", "0.99.0", "0.99.1",
             "0.100.0", "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0",
-            "0.106.0",
+            "0.106.0", "0.107.0", "0.107.1", "0.107.2", "0.107.3", "0.108.0", "0.108.1", "0.109.0",
+            "0.109.1", "0.110.0", "0.110.1", "0.111.0", "0.112.0", "0.113.0",
         ] {
             assert!(claim.supports(&version(qualified)));
         }
@@ -316,12 +391,18 @@ mod tests {
             "0.58.0",
             "0.61.0-rc.1",
             "0.86.1-preview.3",
+            "0.107.4",
+            "0.108.2",
+            "0.109.2",
+            "0.110.2",
+            "0.111.1",
+            "0.112.1",
             "invalid",
         ] {
             assert!(!claim.permits(&version(incompatible)));
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.107.0"))
+            claim.assess(&version("0.114.0"))
         else {
             panic!("newer stable version remains unverified");
         };

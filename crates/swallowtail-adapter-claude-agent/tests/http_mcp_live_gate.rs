@@ -37,10 +37,10 @@ use swallowtail_runtime::{
 
 const LIVE_GATE: &str = "SWALLOWTAIL_LIVE_CLAUDE_AGENT_ACP_HTTP_MCP";
 const LIVE_MODEL: &str = "claude-sonnet-4-6";
-/// Research 361 accepted honouring on exact `0.79.0`, and Research 364 accepted
-/// exact `0.81.2`. This gate tests the separately authorized guarded point,
-/// exact `0.106.0`.
-const HTTP_MCP_HONOURING_VERSION: &str = "0.106.0";
+/// Research 361 accepted honouring on exact `0.79.0`, Research 364 accepted
+/// exact `0.81.2`, and Research 492 accepted exact guarded `0.106.0`. This gate
+/// tests the separately authorized guarded point, exact `0.113.0`.
+const HTTP_MCP_HONOURING_VERSION: &str = "0.113.0";
 
 const PACKAGE_PREFIXES: [(&str, &str); 5] = [
     ("acp", "@agentclientprotocol/claude-agent-acp"),
@@ -51,7 +51,7 @@ const PACKAGE_PREFIXES: [(&str, &str); 5] = [
 ];
 
 #[test]
-#[ignore = "requires SWALLOWTAIL_LIVE_CLAUDE_AGENT_ACP_HTTP_MCP=1, repo-local claude-agent-acp 0.106.0, and local Claude subscription auth"]
+#[ignore = "requires SWALLOWTAIL_LIVE_CLAUDE_AGENT_ACP_HTTP_MCP=1, repo-local claude-agent-acp 0.113.0, and local Claude subscription auth"]
 fn one_authorized_claude_agent_acp_http_mcp_live_attempt() {
     assert_eq!(
         std::env::var(LIVE_GATE).as_deref(),
@@ -587,10 +587,10 @@ mod tests {
     use swallowtail_core::{ExtensionNamespace, ProviderExtension};
 
     #[test]
-    fn guarded_live_gate_manifest_maps_every_frozen_0_106_0_entry() {
+    fn guarded_live_gate_manifest_maps_every_frozen_0_113_0_entry() {
         for platform in ["darwin-arm64", "linux-x64"] {
             let frozen = claude_agent_acp_guarded_v1_frozen(HTTP_MCP_HONOURING_VERSION, platform)
-                .expect("0.106.0 frozen guarded manifest exists");
+                .expect("0.113.0 frozen guarded manifest exists");
             let (files, native_specifier) =
                 manifest_entries(frozen.manifest(), platform).expect("manifest parses");
             assert!(!files.is_empty(), "manifest contains captured source files");

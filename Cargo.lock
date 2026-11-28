@@ -4,33 +4,27 @@ version = 4
 
 [[package]]
 name = "agent-client-protocol"
-version = "2.0.0"
+version = "5.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d87bc7769eba641753ba5dc52f73ec3765d51022c6753bf040967125ddc86a8"
+checksum = "e2889673b9bc92e57857cb780f5431b684840c78a95a8edaa4afc00293d10dda"
 dependencies = [
  "agent-client-protocol-derive",
  "agent-client-protocol-schema",
- "async-io",
- "async-process",
- "blocking",
+ "anyhow",
  "futures",
  "futures-concurrency",
  "rustc-hash",
- "rustix",
- "schemars 1.2.3",
  "serde",
  "serde_json",
- "shell-words",
  "tracing",
  "uuid",
- "windows-sys 0.61.2",
 ]
 
 [[package]]
 name = "agent-client-protocol-derive"
-version = "2.2.0"
+version = "5.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f4893bfb11e0e193aa5a64611a126ee87567acb1879556519c902722899229de"
+checksum = "28022fad62329e9d350c3ddf818b6966b91196ef948e772d9a4d27f441f955f3"
 dependencies = [
  "quote",
  "syn 3.0.10",
@@ -38,9 +32,9 @@ dependencies = [
 
 [[package]]
 name = "agent-client-protocol-http"
-version = "2.0.0"
+version = "5.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b4d8db045bc66b84526dfe4ef2ffb87d651b81c4ff945f91c63a2bc677a582c"
+checksum = "887435469649c7a1e596c6a82589b2157c60152af5c72bfa0c0ba306b982a969"
 dependencies = [
  "agent-client-protocol",
  "async-stream",
@@ -55,18 +49,17 @@ dependencies = [
 
 [[package]]
 name = "agent-client-protocol-schema"
-version = "1.5.0"
+version = "1.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d5c231915b4ab578c722eca2d1bd7df4d300bfd6cac3b8e9f0d1e3ddc95b187c"
+checksum = "650e76dae0c8d3e772acb35184e6dd4defa0e15e130c96bf4c4586597f1f2d91"
 dependencies = [
  "anyhow",
  "derive_more",
- "schemars 1.2.3",
+ "indexmap 2.14.2",
  "serde",
  "serde_json",
  "serde_with",
  "strum",
- "tracing",
 ]
 
 [[package]]
@@ -104,18 +97,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "async-channel"
-version = "2.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "924ed96dd52d1b75e9c1a3e6275715fd320f5f9439fb5a4a11fa51f4221158d2"
-dependencies = [
- "concurrent-queue",
- "event-listener-strategy",
- "futures-core",
- "pin-project-lite",
-]
-
-[[package]]
 name = "async-io"
 version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -129,53 +110,6 @@ dependencies = [
  "parking",
  "polling",
  "rustix",
- "slab",
- "windows-sys 0.61.2",
-]
-
-[[package]]
-name = "async-lock"
-version = "3.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0876700b0d007ad25d5508865a4259c3af9af6d296bf663a0d586d0bc3369f6f"
-dependencies = [
- "event-listener",
- "event-listener-strategy",
- "pin-project-lite",
-]
-
-[[package]]
-name = "async-process"
-version = "2.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fc50921ec0055cdd8a16de48773bfeec5c972598674347252c0399676be7da75"
-dependencies = [
- "async-channel",
- "async-io",
- "async-lock",
- "async-signal",
- "async-task",
- "blocking",
- "cfg-if",
- "event-listener",
- "futures-lite",
- "rustix",
-]
-
-[[package]]
-name = "async-signal"
-version = "0.2.14"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "52b5aaafa020cf5053a01f2a60e8ff5dccf550f0f77ec54a4e47285ac2bab485"
-dependencies = [
- "async-io",
- "async-lock",
- "atomic-waker",
- "cfg-if",
- "futures-core",
- "futures-io",
- "rustix",
- "signal-hook-registry",
  "slab",
  "windows-sys 0.61.2",
 ]
@@ -203,16 +137,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "async-task"
-version = "4.7.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b75356056920673b02621b35afd0f7dda9306d03c79a30f5c56c44cf256e3de"
-
-[[package]]
 name = "async-tungstenite"
-version = "0.34.1"
+version = "0.35.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8447f02eaa65412035e2d3eeaa3fc82bbb8d7137c84c5976b4af685136012ee9"
+checksum = "d6ab5b7664abf9ccae07576888c72bc93750c7090c1ff4ffee9317cc05d11618"
 dependencies = [
  "atomic-waker",
  "futures-core",
@@ -223,7 +151,7 @@ dependencies = [
  "rustls-pki-types",
  "tokio",
  "tokio-rustls",
- "tungstenite 0.29.0",
+ "tungstenite 0.30.0",
  "webpki-roots",
 ]
 
@@ -370,7 +298,7 @@ dependencies = [
  "hmac",
  "http 1.5.0",
  "percent-encoding",
- "sha2 0.11.2",
+ "sha2",
  "time",
  "tracing",
 ]
@@ -593,7 +521,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "31b698c5f9a010f6573133b09e0de5408834d0c82f8d7475a89fc1867a71cd90"
 dependencies = [
  "axum-core",
- "axum-macros",
  "base64 0.22.1",
  "bytes",
  "form_urlencoded",
@@ -643,17 +570,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "axum-macros"
-version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7aa268c23bfbbd2c4363b9cd302a4f504fb2a9dfe7e3451d66f35dd392e20aca"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.119",
-]
-
-[[package]]
 name = "base64"
 version = "0.22.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -697,19 +613,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d2f6c7dbe95a6ed67ad9f18e57daf93a2f034c524b99fd2b76d18fdfeb6660aa"
 dependencies = [
  "hybrid-array",
-]
-
-[[package]]
-name = "blocking"
-version = "1.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a70e4329df6cb94385eed412ec92375c3cdd8a6e502493d1229b6414e4036dfa"
-dependencies = [
- "async-channel",
- "async-task",
- "futures-io",
- "futures-lite",
- "piper",
 ]
 
 [[package]]
@@ -1174,27 +1077,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e35d6e78f4cebb90e51d543db8fe41528851d6deeef6ef21ebd4bfdc1e784776"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
-]
-
-[[package]]
-name = "event-listener"
-version = "5.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5a23add41df1562121a9393cb065eab5146a1242410f23a644851e90cfd669d2"
-dependencies = [
- "parking",
- "pin-project-lite",
-]
-
-[[package]]
-name = "event-listener-strategy"
-version = "0.5.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8be9f3dfaaffdae2972880079a491a1a8bb7cbed0b8dd7a347f668b4150a3b93"
-dependencies = [
- "event-listener",
- "pin-project-lite",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1244,7 +1127,6 @@ checksum = "9a31d2a3fbaaeb2af2368bbdd904aa8e812d3c04a1ee10d3171f52d556e5d0a3"
 dependencies = [
  "futures-channel",
  "futures-core",
- "futures-executor",
  "futures-io",
  "futures-sink",
  "futures-task",
@@ -1920,9 +1802,9 @@ dependencies = [
 
 [[package]]
 name = "nix"
-version = "0.31.4"
+version = "0.32.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2bc81ce8148d3b4f3274da811f11cdd824ae661ee4ef732cdb229825cf5be7f7"
+checksum = "77730ed34f01f4990cb2ea67fec715ecebc6fab9a6396cf83c5529b13f581bdc"
 dependencies = [
  "bitflags",
  "cfg-if",
@@ -2060,17 +1942,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c938015719552d665fd0553b90d96cd7ff58e83e4c061ca99e6bb78865a72752"
 
 [[package]]
-name = "piper"
-version = "0.2.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c835479a4443ded371d6c535cbfd8d31ad92c5d23ae9770a61bc155e4992a3c1"
-dependencies = [
- "atomic-waker",
- "fastrand",
- "futures-io",
-]
-
-[[package]]
 name = "pkg-config"
 version = "0.3.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2187,7 +2058,7 @@ dependencies = [
  "once_cell",
  "socket2",
  "tracing",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2381,7 +2252,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2438,7 +2309,7 @@ dependencies = [
  "security-framework",
  "security-framework-sys",
  "webpki-root-certs",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2509,21 +2380,8 @@ checksum = "ab508826f74a77ca9d5aba6ff19b522583ee3eaf28a19384ff3d0e5835fadf6e"
 dependencies = [
  "dyn-clone",
  "ref-cast",
- "schemars_derive",
  "serde",
  "serde_json",
-]
-
-[[package]]
-name = "schemars_derive"
-version = "1.2.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e1c3a92094fa7d61aa124645844facb6b554dfc797136d0f5fd1f890e2bffc69"
-dependencies = [
- "proc-macro2",
- "quote",
- "serde_derive_internals",
- "syn 3.0.10",
 ]
 
 [[package]]
@@ -2585,17 +2443,6 @@ name = "serde_derive"
 version = "1.0.229"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e7a5d71263a5a7d47b41f6b3f06ba276f10cc18b0931f1799f710578e2309348"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 3.0.10",
-]
-
-[[package]]
-name = "serde_derive_internals"
-version = "0.30.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f852137cce035d6a4df67ccce505ff6b3e9fd3a10e3e52b24dc71e650bb1a9bd"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2695,17 +2542,6 @@ dependencies = [
 
 [[package]]
 name = "sha2"
-version = "0.10.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a7507d819769d01a365ab707794a4084392c824f54a7a6a7862f8c3d0892b283"
-dependencies = [
- "cfg-if",
- "cpufeatures 0.2.17",
- "digest 0.10.7",
-]
-
-[[package]]
-name = "sha2"
 version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5b0e5c7d67bc53f435386b2130fdc900488c5703770f6d8a4633060e34288a27"
@@ -2716,26 +2552,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "shell-words"
-version = "1.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dc6fe69c597f9c37bfeeeeeb33da3530379845f10be461a66d16d03eca2ded77"
-
-[[package]]
 name = "shlex"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f8fadd59c855ef2080decdef8ff161eb6661b86933c9d82e5ba29dc602a55aba"
-
-[[package]]
-name = "signal-hook-registry"
-version = "1.4.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c4db69cba1110affc0e9f7bcd48bbf87b3f4fc7c61fc9155afd4c469eb3d6c1b"
-dependencies = [
- "errno",
- "libc",
-]
 
 [[package]]
 name = "simd_cesu8"
@@ -2851,7 +2671,7 @@ dependencies = [
 name = "swallowtail-adapter-anthropic"
 version = "0.7.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "futures-channel",
  "futures-core",
  "futures-executor",
@@ -2891,8 +2711,9 @@ dependencies = [
  "futures-core",
  "futures-executor",
  "futures-util",
+ "hex",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-core",
  "swallowtail-host-local",
  "swallowtail-runtime",
@@ -2909,10 +2730,11 @@ dependencies = [
  "futures-core",
  "futures-executor",
  "futures-util",
+ "hex",
  "nix",
  "semver",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-host-local",
@@ -2928,14 +2750,15 @@ dependencies = [
 name = "swallowtail-adapter-cline"
 version = "0.7.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "futures-channel",
  "futures-core",
  "futures-executor",
  "futures-util",
+ "hex",
  "semver",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-protocol-acp",
@@ -2951,9 +2774,10 @@ dependencies = [
  "futures-core",
  "futures-executor",
  "futures-util",
+ "hex",
  "semver",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-core",
  "swallowtail-host-local",
  "swallowtail-idioms",
@@ -2985,7 +2809,7 @@ dependencies = [
  "libc",
  "semver",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-host-local",
@@ -3001,8 +2825,9 @@ dependencies = [
  "futures-channel",
  "futures-executor",
  "futures-util",
+ "hex",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-protocol-acp",
@@ -3051,8 +2876,9 @@ dependencies = [
  "futures-channel",
  "futures-executor",
  "futures-util",
+ "hex",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-core",
  "swallowtail-host-local",
  "swallowtail-runtime",
@@ -3066,14 +2892,15 @@ dependencies = [
 name = "swallowtail-adapter-gemini"
 version = "0.7.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "futures-channel",
  "futures-core",
  "futures-executor",
  "futures-util",
+ "hex",
  "semver",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-host-local",
@@ -3092,9 +2919,10 @@ version = "0.7.0"
 dependencies = [
  "futures-executor",
  "futures-util",
+ "hex",
  "semver",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-protocol-acp",
@@ -3110,9 +2938,10 @@ dependencies = [
  "futures-core",
  "futures-executor",
  "futures-util",
+ "hex",
  "semver",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-host-local",
@@ -3129,9 +2958,10 @@ dependencies = [
  "futures-core",
  "futures-executor",
  "futures-util",
+ "hex",
  "semver",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-protocol-acp",
@@ -3200,9 +3030,10 @@ dependencies = [
  "futures-core",
  "futures-executor",
  "futures-util",
+ "hex",
  "semver",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-core",
  "swallowtail-runtime",
  "swallowtail-testkit",
@@ -3226,14 +3057,14 @@ dependencies = [
 name = "swallowtail-adapter-oh-my-pi"
 version = "0.7.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "futures-channel",
  "futures-core",
  "futures-executor",
  "futures-util",
  "semver",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-core",
  "swallowtail-host-local",
  "swallowtail-runtime",
@@ -3249,7 +3080,7 @@ dependencies = [
  "futures-util",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-core",
  "swallowtail-host-local",
  "swallowtail-runtime",
@@ -3261,7 +3092,7 @@ dependencies = [
 name = "swallowtail-adapter-openai"
 version = "0.7.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "futures-channel",
  "futures-core",
  "futures-executor",
@@ -3281,15 +3112,16 @@ dependencies = [
 name = "swallowtail-adapter-opencode"
 version = "0.7.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "futures-channel",
  "futures-core",
  "futures-executor",
  "futures-util",
+ "hex",
  "semver",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-host-local",
@@ -3304,14 +3136,15 @@ dependencies = [
 name = "swallowtail-adapter-pi"
 version = "0.7.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "futures-channel",
  "futures-core",
  "futures-executor",
  "futures-util",
+ "hex",
  "semver",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-core",
  "swallowtail-host-local",
  "swallowtail-runtime",
@@ -3340,9 +3173,10 @@ dependencies = [
  "futures-channel",
  "futures-executor",
  "futures-util",
+ "hex",
  "semver",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-core",
  "swallowtail-runtime",
  "swallowtail-testkit",
@@ -3371,8 +3205,9 @@ version = "0.7.0"
 dependencies = [
  "futures-executor",
  "futures-util",
+ "hex",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-core",
  "swallowtail-host-local",
  "swallowtail-runtime",
@@ -3392,11 +3227,12 @@ dependencies = [
  "async-io",
  "futures-executor",
  "futures-lite",
- "getrandom 0.2.17",
+ "getrandom 0.4.3",
+ "hex",
  "nix",
  "serde",
  "serde_json",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-core",
  "swallowtail-runtime",
  "swallowtail-testkit",
@@ -3434,7 +3270,7 @@ dependencies = [
  "futures-channel",
  "futures-core",
  "semver",
- "sha2 0.10.9",
+ "sha2",
  "swallowtail-core",
  "swallowtail-idioms",
  "zeroize",
@@ -3775,8 +3611,6 @@ dependencies = [
  "httparse",
  "log",
  "rand 0.9.5",
- "rustls",
- "rustls-pki-types",
  "sha1 0.10.7",
  "thiserror",
 ]
@@ -4032,7 +3866,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]

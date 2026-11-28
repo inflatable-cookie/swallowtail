@@ -11,7 +11,7 @@ use zeroize::{Zeroize, Zeroizing};
 /// events, diagnostics, or formatting.
 pub(crate) fn generate_operation_secret() -> Result<Zeroizing<String>, RuntimeFailure> {
     let mut bytes = [0_u8; WATCHER_BRIDGE_BEARER_BYTE_LEN];
-    getrandom::getrandom(&mut bytes).map_err(|_| {
+    getrandom::fill(&mut bytes).map_err(|_| {
         failure(
             "swallowtail.operation_bridge.entropy_failed",
             "Operation bridge could not create operation-private authority",

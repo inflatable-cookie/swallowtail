@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-07-24
+Updated: 2026-11-28
 
 ## Purpose
 
@@ -18,8 +18,8 @@ The first boundary binds:
 - ACP wire version 1
 - the Active Streamable HTTP and WebSocket transport RFD as observed
   2026-07-24
-- `agent-client-protocol-http = 2.0.0`
-- the matching `agent-client-protocol = 2.0.0` compile-time SDK
+- `agent-client-protocol-http = 5.6.1`
+- the matching `agent-client-protocol = 5.6.1` compile-time SDK
 - `ExperimentalObserved` support authority
 
 An official SDK release does not make every remote ACP deployment
@@ -45,13 +45,22 @@ Rust SDK, Tokio, HTTP, TLS, SSE, WebSocket, and cookie implementations.
 `swallowtail-protocol-acp` retains provider-neutral ACP wire records and
 fixtures without those runtime dependencies.
 
-The maintained `agent-client-protocol-http = 2.0.0` client is not the
-production transport actor for the first proof. Its HTTP/SSE and core channel
-paths contain unbounded queues, its reqwest dependency does not enable HTTP/2,
-and its WebSocket path does not retain upgrade-response cookie state. The
+The maintained `agent-client-protocol-http` client is not the production
+transport actor. At `2.0.0`, the first proof's SDK, its HTTP/SSE and core
+channel paths contained unbounded queues, its reqwest dependency did not
+enable HTTP/2, and its WebSocket path did not retain upgrade-response cookie
+state. The
 shared crate uses the exact maintained core schema privately, owns bounded
 physical transport actors for both selected transports, and retains the HTTP
 crate as an exact cross-check dependency and server oracle.
+
+The `5.6.1` SDK keeps that role: frame normalization and the test server
+oracle only. Against `2.0.0`, its normalization omits absent or `null`
+request and notification `params` instead of writing `"params": null`, and
+keeps error-object `data: null` and extension members. Batch rejection,
+`null` ids, and non-integer id rejection are unchanged. ACP wire version,
+advertised capabilities, and protocol negotiation stay Swallowtail's own.
+The frozen `acp-v1-remote-transport-2.0.0` fixtures stay as captured.
 
 SDK types, executors, clients, errors, endpoint values, headers, cookies, raw
 frames, and provider payloads do not enter core, runtime, testkit, or stable

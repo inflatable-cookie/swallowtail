@@ -102,9 +102,9 @@ fn capture_native_graph_at(root: &Path, entry: &str, registry_parent: &str) -> L
         std::fs::create_dir_all(root.join(name).parent().expect("parent"))
             .expect("owned source directory");
         std::fs::write(root.join(name), source).expect("fake graph member");
-        files.insert(name.into(),serde_json::json!({"sha256":format!("{:x}",Sha256::digest(source.as_bytes())),"format":format}));
+        files.insert(name.into(),serde_json::json!({"sha256":hex::encode(Sha256::digest(source.as_bytes())),"format":format}));
     }
-    let native_record = serde_json::json!({"sha256":format!("{:x}",Sha256::digest(native_source)),"bytes":native_source.len(),"specifier":"@fake/native/claude"});
+    let native_record = serde_json::json!({"sha256":hex::encode(Sha256::digest(native_source)),"bytes":native_source.len(),"specifier":"@fake/native/claude"});
     let manifest = serde_json::json!({"vendor":"11".repeat(32),"entry":"entry.mjs","idle":"idle.mjs","files":files,
         "imports":[{"parent":"entry.mjs","specifier":format!("./{registry_parent}"),"target":registry_parent},{"parent":"entry.mjs","specifier":"./idle.mjs","target":"idle.mjs"},{"parent":"entry.mjs","specifier":"./sdk.mjs","target":"sdk.mjs"},{"parent":"entry.mjs","specifier":"./data.json","target":"data.json"},{"parent":"sdk.mjs","specifier":"./bridge.cjs","target":"bridge.cjs"},{"parent":"bridge.cjs","specifier":"./leaf.cjs","target":"leaf.cjs"}],
         "builtins":[{"parent":registry_parent,"specifier":"node:child_process","target":"node:child_process"},{"parent":"entry.mjs","specifier":"node:module","target":"node:module"},{"parent":"entry.mjs","specifier":"node:child_process","target":"node:child_process"}],

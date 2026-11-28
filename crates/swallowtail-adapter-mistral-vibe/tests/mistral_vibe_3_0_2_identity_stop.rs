@@ -173,7 +173,7 @@ fn version(value: &str) -> InterfaceVersion {
 }
 
 fn sha256(text: &str) -> String {
-    format!("{:x}", Sha256::digest(text.as_bytes()))
+    hex::encode(Sha256::digest(text.as_bytes()))
 }
 
 fn tree_manifest(entries: &[Value]) -> String {

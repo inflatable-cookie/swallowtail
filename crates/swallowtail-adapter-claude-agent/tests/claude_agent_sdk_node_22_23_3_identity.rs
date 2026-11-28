@@ -40,7 +40,7 @@ fn object_keys(value: &Value) -> BTreeSet<&str> {
 }
 
 fn assert_sha256(bytes: &[u8], expected: &str) {
-    let actual = format!("{:x}", Sha256::digest(bytes));
+    let actual = hex::encode(Sha256::digest(bytes));
     assert_eq!(actual, expected);
 }
 

@@ -80,7 +80,7 @@ fn frozen_research_fixture_files_match_their_exact_digests() {
         ),
     ] {
         assert_eq!(
-            format!("{:x}", Sha256::digest(body.as_bytes())),
+            hex::encode(Sha256::digest(body.as_bytes())),
             expected,
             "{name}"
         );

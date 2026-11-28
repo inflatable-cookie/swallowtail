@@ -30,7 +30,7 @@ pub(super) fn digest_lines(items: &[String]) -> String {
     joined.push('\n');
     let mut hasher = Sha256::new();
     hasher.update(joined.as_bytes());
-    format!("{:x}", hasher.finalize())
+    hex::encode(hasher.finalize())
 }
 
 pub(super) fn version(value: &str) -> InterfaceVersion {

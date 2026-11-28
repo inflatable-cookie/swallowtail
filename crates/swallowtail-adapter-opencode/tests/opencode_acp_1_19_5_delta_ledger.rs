@@ -209,10 +209,7 @@ fn acp_1_19_6_stop_binds_selected_deltas_to_shared_release_identity() {
         ("native-inventory.json", SHARED_NATIVE),
         ("source-inventory.json", SHARED_SOURCE),
     ] {
-        assert_eq!(
-            ledger_hashes[name],
-            format!("{:x}", Sha256::digest(contents))
-        );
+        assert_eq!(ledger_hashes[name], hex::encode(Sha256::digest(contents)));
     }
 
     let sources = inventory["selected_source_sha256"].as_object().unwrap();

@@ -125,7 +125,7 @@ fn capture_route_graph(
         std::fs::write(root.join(name), source).expect("owned source");
         files.insert(
             name.into(),
-            json!({"format":"module","sha256":format!("{:x}",Sha256::digest(source.as_bytes()))}),
+            json!({"format":"module","sha256":hex::encode(Sha256::digest(source.as_bytes()))}),
         );
     }
     let native_record = json!({"sha256":node_bytes.iter().map(|b|format!("{b:02x}")).collect::<String>(),"bytes":native_bytes,"specifier":"@owned/native"});

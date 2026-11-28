@@ -23,7 +23,7 @@ fn version(value: &str) -> InterfaceVersion {
 }
 
 fn sha256_hex(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 
 fn assert_sha256(value: &Value) {

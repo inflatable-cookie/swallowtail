@@ -149,7 +149,7 @@ fn artifact_binding(reference: &str, revision: &str, bytes: &[u8]) -> ModelArtif
             ModelArtifactId::new("artifact-1").expect("artifact id is valid"),
             ModelArtifactFormat::new("gguf").expect("format is valid"),
             ModelArtifactRevision::new(revision).expect("revision is valid"),
-            ModelArtifactDigest::new(format!("sha256:{:x}", Sha256::digest(bytes)))
+            ModelArtifactDigest::new(format!("sha256:{}", hex::encode(Sha256::digest(bytes))))
                 .expect("digest is valid"),
         ),
     )

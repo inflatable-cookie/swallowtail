@@ -26,7 +26,7 @@ pub(crate) fn encode(
         TransportFrame::Single(frame) => TransportFrame::Single(frame)
             .to_json()
             .map_err(|_| protocol_error())?,
-        TransportFrame::Malformed { .. } | TransportFrame::Batch(_) => {
+        _ => {
             return Err(protocol_error());
         }
     };
@@ -44,7 +44,7 @@ pub(crate) fn decode(text: &str, maximum_frame_bytes: usize) -> Result<Message, 
         TransportFrame::Single(frame) => TransportFrame::Single(frame)
             .to_json()
             .map_err(|_| protocol_error())?,
-        TransportFrame::Malformed { .. } | TransportFrame::Batch(_) => {
+        _ => {
             return Err(protocol_error());
         }
     };

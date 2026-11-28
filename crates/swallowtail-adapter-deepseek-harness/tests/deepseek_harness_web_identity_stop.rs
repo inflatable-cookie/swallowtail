@@ -18,7 +18,7 @@ fn published_rc_inventory_preserves_qualified_points_and_the_exact_auth_stop() {
     // Pin the full artifact ledger so changed path/key sets cannot drift while
     // preserving only the headline package hashes below.
     assert_eq!(
-        format!("{:x}", Sha256::digest(CURRENTNESS_EVIDENCE.as_bytes())),
+        hex::encode(Sha256::digest(CURRENTNESS_EVIDENCE.as_bytes())),
         CURRENTNESS_EVIDENCE_SHA256
     );
     assert_eq!(

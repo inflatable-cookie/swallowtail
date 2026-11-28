@@ -136,10 +136,10 @@ fn recipe(config: &Value, root: &Path, node: &LocalTrustedRuntime) -> LocalCaptu
             std::fs::write(root.join(name), data).expect("owned source");
             inventory.insert(
                 name.into(),
-                json!({"format":"module","sha256":format!("{:x}",Sha256::digest(data.as_bytes()))}),
+                json!({"format":"module","sha256":hex::encode(Sha256::digest(data.as_bytes()))}),
             );
         }
-        let image = json!({"sha256":format!("{:x}",Sha256::digest(std::fs::read(&native_path).expect("owned runtime"))),"bytes":std::fs::metadata(&native_path).expect("runtime size").len(),"specifier":"@owned/native"});
+        let image = json!({"sha256":hex::encode(Sha256::digest(std::fs::read(&native_path).expect("owned runtime"))),"bytes":std::fs::metadata(&native_path).expect("runtime size").len(),"specifier":"@owned/native"});
         let manifest = json!({"vendor":"11".repeat(32),"entry":"entry.mjs","idle":"idle.mjs","files":inventory,"imports":[{"parent":"entry.mjs","specifier":"./sdk.mjs","target":"sdk.mjs"},{"parent":"entry.mjs","specifier":"./idle.mjs","target":"idle.mjs"}],"builtins":[{"parent":"entry.mjs","specifier":"node:fs","target":"node:fs"},{"parent":"sdk.mjs","specifier":"node:fs","target":"node:fs"},{"parent":"sdk.mjs","specifier":"node:child_process","target":"node:child_process"}],"require_parents":[],"native_parents":["sdk.mjs"],"native":{platform:image},"platform_programs":[],"source_cautions":[],"denied_dynamic":[]});
         LocalCapturedGraph::capture_manifest(
             root,

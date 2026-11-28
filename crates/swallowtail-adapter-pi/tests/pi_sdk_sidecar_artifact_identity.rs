@@ -254,7 +254,7 @@ const SELECTED_SOURCES: [&str; 29] = [
 ];
 
 fn sha256(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 
 fn adjacent_hops() -> Vec<String> {

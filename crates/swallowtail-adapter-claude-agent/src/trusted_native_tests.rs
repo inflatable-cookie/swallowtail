@@ -4,6 +4,7 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
+use std::cell::RefCell;
 use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
@@ -16,6 +17,19 @@ use swallowtail_runtime::*;
 #[allow(dead_code)]
 #[path = "../tests/acp_guard_scope.rs"]
 mod scope;
+
+thread_local! { static ADMITTED: RefCell<Option<String>> = const { RefCell::new(None) }; }
+
+pub(crate) fn admitted(version: &str) -> bool {
+    ADMITTED.with(|value| value.borrow().as_deref() == Some(version))
+}
+
+struct Admission;
+impl Drop for Admission {
+    fn drop(&mut self) {
+        ADMITTED.with(|value| *value.borrow_mut() = None);
+    }
+}
 
 fn hash(file: &Path) -> [u8; 32] {
     Sha256::digest(std::fs::read(file).expect("qualification source")).into()
@@ -101,17 +115,58 @@ fn recipe(config: &Value, root: &Path, node: &LocalTrustedRuntime) -> LocalCaptu
             "0.106.0" => {
                 include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.106.0.json").as_slice()
             }
+            "0.107.0" => {
+                include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.107.0.json").as_slice()
+            }
+            "0.107.1" => {
+                include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.107.1.json").as_slice()
+            }
+            "0.107.2" => {
+                include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.107.2.json").as_slice()
+            }
+            "0.107.3" => {
+                include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.107.3.json").as_slice()
+            }
+            "0.108.0" => {
+                include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.108.0.json").as_slice()
+            }
+            "0.108.1" => {
+                include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.108.1.json").as_slice()
+            }
+            "0.109.0" => {
+                include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.109.0.json").as_slice()
+            }
+            "0.109.1" => {
+                include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.109.1.json").as_slice()
+            }
+            "0.110.0" => {
+                include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.110.0.json").as_slice()
+            }
+            "0.110.1" => {
+                include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.110.1.json").as_slice()
+            }
+            "0.111.0" => {
+                include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.111.0.json").as_slice()
+            }
+            "0.112.0" => {
+                include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.112.0.json").as_slice()
+            }
+            "0.113.0" => {
+                include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.113.0.json").as_slice()
+            }
             _ => panic!("unlisted original version"),
         };
         let ps = runtime(Path::new("/bin/ps"));
-        LocalCapturedGraph::capture_manifest(
+        let graph = LocalCapturedGraph::capture_manifest(
             Path::new(config["sourceRoot"].as_str().expect("source root")),
             manifest,
             platform,
             &native,
             Some(&ps),
         )
-        .expect("frozen original graph and native hash")
+        .expect("frozen original graph and native hash");
+        ADMITTED.with(|value| *value.borrow_mut() = Some(version.to_owned()));
+        graph
     } else {
         let entry =
             include_str!("../tests/guard_full_route/entry.mjs").replace("0.106.0", "0.100.0");
@@ -281,6 +336,7 @@ fn prepare(
 }
 
 fn exercise(config: &Value) {
+    let _admission = Admission;
     let root = Path::new(config["caseRoot"].as_str().expect("owned case"));
     let mut binding = None;
     let scenario = config["scenario"].as_str().expect("scenario");

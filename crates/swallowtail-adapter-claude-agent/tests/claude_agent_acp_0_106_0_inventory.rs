@@ -126,7 +126,7 @@ fn frozen_acp_dependencies_and_idle_evidence_stay_pinned() {
         ),
         (
             GUARD_MANIFEST,
-            "d057fcb97d4a7a514b6b14dcb4548d61bbda47b1067b31da90bbd4be4f620141",
+            "1c7e5d8ece8ae53acc7a49a35aa92d8269b37f0b55d1217c49aaa4e31decb61f",
         ),
         (
             GUARD_EDGES,
@@ -147,7 +147,7 @@ fn frozen_acp_dependencies_and_idle_evidence_stay_pinned() {
         hex::encode(Sha256::digest(
             swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.as_bytes()
         )),
-        "f2a728819aa9f68815e3255c0c1a8d547337f102b352c5c730051d1799c5c56b"
+        "d1e0e8071f9e559b33df85318d6db1a00d42a897f5fc0141f09eed802a03cfd7"
     );
 }
 

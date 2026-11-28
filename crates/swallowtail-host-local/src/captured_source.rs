@@ -490,7 +490,7 @@ try {{
   }},writable:false,configurable:false}});
   install(data);
 }} catch (error) {{
-  const labels=['incomplete graph bootstrap','graph bootstrap too large','invalid bootstrap admission','invalid capture','invalid module','invalid module identity','missing idle module','invalid edge','duplicate edge','runtime platform mismatch','missing native custody'];
+  const labels=['incomplete graph bootstrap','graph bootstrap too large','invalid bootstrap admission','invalid capture','invalid module','invalid module identity','missing idle module','missing mcp refusal module','missing remote control module','invalid denied child parent','invalid edge','duplicate edge','runtime platform mismatch','missing native custody'];
   const label=error instanceof SyntaxError ? 'SyntaxError' : labels.includes(error?.message) ? error.message : 'guard bootstrap refused';
   writeSync(2,label+'\n');
   process.exit(78);
@@ -593,20 +593,39 @@ impl fmt::Debug for LocalCapturedNodeRecipe {
 }
 
 fn data_url(bytes: &[u8]) -> io::Result<String> {
-    use std::fmt::Write;
     const MAX_ENCODED_BYTES: usize = 128 * 1024;
-    let encoded_length = bytes
+    const PREFIX: &str = "data:text/javascript;base64,";
+    const TABLE: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    let base64_length = bytes
         .len()
-        .checked_mul(3)
-        .and_then(|size| size.checked_add(21))
+        .div_ceil(3)
+        .checked_mul(4)
+        .ok_or_else(|| invalid("loader argument size overflow"))?;
+    let encoded_length = base64_length
+        .checked_add(PREFIX.len())
         .ok_or_else(|| invalid("loader argument size overflow"))?;
     if encoded_length > MAX_ENCODED_BYTES {
         return Err(invalid("loader argument size limit"));
     }
     let mut output = String::with_capacity(encoded_length);
-    output.push_str("data:text/javascript,");
-    for byte in bytes {
-        write!(&mut output, "%{byte:02X}").map_err(|_| invalid("loader encoding failed"))?;
+    output.push_str(PREFIX);
+    for chunk in bytes.chunks(3) {
+        let b0 = u32::from(chunk[0]);
+        let b1 = u32::from(chunk.get(1).copied().unwrap_or(0));
+        let b2 = u32::from(chunk.get(2).copied().unwrap_or(0));
+        let triple = (b0 << 16) | (b1 << 8) | b2;
+        output.push(char::from(TABLE[((triple >> 18) & 0x3f) as usize]));
+        output.push(char::from(TABLE[((triple >> 12) & 0x3f) as usize]));
+        output.push(if chunk.len() > 1 {
+            char::from(TABLE[((triple >> 6) & 0x3f) as usize])
+        } else {
+            '='
+        });
+        output.push(if chunk.len() > 2 {
+            char::from(TABLE[(triple & 0x3f) as usize])
+        } else {
+            '='
+        });
     }
     Ok(output)
 }

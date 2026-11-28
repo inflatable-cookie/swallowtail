@@ -7,8 +7,10 @@ pub const CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR: &str =
     "claude-agent.acp.guarded-permission-inheritance-v8";
 
 const INVENTORY: &str = include_str!("../sidecar/claude-agent-acp-guard-v1-inventory.json");
-const HOPS: [&str; 8] = [
+const HOPS: [&str; 21] = [
     "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0", "0.106.0",
+    "0.107.0", "0.107.1", "0.107.2", "0.107.3", "0.108.0", "0.108.1", "0.109.0", "0.109.1",
+    "0.110.0", "0.110.1", "0.111.0", "0.112.0", "0.113.0",
 ];
 /// Platforms this frozen capture was inventoried for.
 const PLATFORMS: [&str; 2] = ["darwin-arm64", "linux-x64"];
@@ -68,6 +70,19 @@ pub fn claude_agent_acp_guarded_v1_frozen<'a>(
         "0.104.1" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.104.1.json"),
         "0.105.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.105.0.json"),
         "0.106.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.106.0.json"),
+        "0.107.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.107.0.json"),
+        "0.107.1" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.107.1.json"),
+        "0.107.2" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.107.2.json"),
+        "0.107.3" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.107.3.json"),
+        "0.108.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.108.0.json"),
+        "0.108.1" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.108.1.json"),
+        "0.109.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.109.0.json"),
+        "0.109.1" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.109.1.json"),
+        "0.110.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.110.0.json"),
+        "0.110.1" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.110.1.json"),
+        "0.111.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.111.0.json"),
+        "0.112.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.112.0.json"),
+        "0.113.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.113.0.json"),
         _ => return None,
     };
     let value: serde_json::Value = serde_json::from_slice(manifest).ok()?;

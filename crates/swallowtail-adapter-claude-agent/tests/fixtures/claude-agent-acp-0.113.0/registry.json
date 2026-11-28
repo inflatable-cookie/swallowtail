@@ -1,0 +1,202 @@
+{
+  "latest_at_observation": "0.113.0",
+  "package": "@agentclientprotocol/claude-agent-acp",
+  "versions": {
+    "0.106.0": {
+      "dependencies": {
+        "@agentclientprotocol/sdk": "2.6.0",
+        "@anthropic-ai/claude-agent-sdk": "0.3.322",
+        "diff": "9.0.0",
+        "zod": "4.6.7"
+      },
+      "gitHead": "51f514d73c8bfd786979c84adb7a8517dbc22695",
+      "integrity": "sha512-jfwcUc7J+KTIOqsPPSDzCgh4WI+QgvbPEACPtibMV1e41spmsR2Wb5xEeO1lh0el/kLxi7nF3zqZ1RYpdoVw7Q==",
+      "published": "2026-11-10T22:49:36.705Z",
+      "tag_commit_matches_gitHead": true,
+      "tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.106.0.tgz",
+      "tarball_sha256": "d00e52680d3aed564346acadddd4603de3f9178d385ef257283839c41d9da4b0"
+    },
+    "0.107.0": {
+      "dependencies": {
+        "@agentclientprotocol/sdk": "2.6.0",
+        "@anthropic-ai/claude-agent-sdk": "0.3.323",
+        "diff": "9.0.0",
+        "zod": "4.6.7"
+      },
+      "gitHead": "c5c120dba9c15bd88ea5d355fa3b77d1fc341392",
+      "integrity": "sha512-yOEYkKkomupue/lmkjlLy4C8ADlZ8ZZXX1ry3Ka6VTjtWHXowyoQ6+awjrfAc1Xkq3f37GA5fpTz9URyIfcb4g==",
+      "published": "2026-11-13T13:39:38.999Z",
+      "tag_commit_matches_gitHead": true,
+      "tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.107.0.tgz",
+      "tarball_sha256": "679099df56e011032d08c23ad9a06e32846840e10bf925fd738c5fffe9f2cdfe"
+    },
+    "0.107.1": {
+      "dependencies": {
+        "@agentclientprotocol/sdk": "2.7.0",
+        "@anthropic-ai/claude-agent-sdk": "0.3.323",
+        "diff": "9.0.0",
+        "zod": "4.6.7"
+      },
+      "gitHead": "3067a5db36c96121ae4f58bb8022ada45b7b3c49",
+      "integrity": "sha512-dRwRKkyEOaPP1EWTmt56zbzrllq5CnAmFsBG+4ncbp8HsKKkMHtsZF8CIPkxntoTC75d3WO19YfMn/dSgNGXng==",
+      "published": "2026-11-16T09:52:58.953Z",
+      "tag_commit_matches_gitHead": true,
+      "tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.107.1.tgz",
+      "tarball_sha256": "3e7e01d72776980788292fb0b4554746c69f49b3f02f2cc69c3b0f4a4200d913"
+    },
+    "0.107.2": {
+      "dependencies": {
+        "@agentclientprotocol/sdk": "2.7.0",
+        "@anthropic-ai/claude-agent-sdk": "0.3.325",
+        "diff": "9.0.0",
+        "zod": "4.6.7"
+      },
+      "gitHead": "b437e4ee16f68612e15e5780ffcf7d39fd9e1154",
+      "integrity": "sha512-7VY+4oeCJL65NRzL8Hmhhel5bYgVmns8Y5v2S0pc6rvNk1xkxOMHAhCOt59o62jf6v1h9uaS4UIqrXfOYvkdlw==",
+      "published": "2026-11-16T11:41:46.529Z",
+      "tag_commit_matches_gitHead": true,
+      "tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.107.2.tgz",
+      "tarball_sha256": "5dae7f79227d599ebb11464e507eb9ee49e7b9b5fa0dddd8bd71027b3363dfe3"
+    },
+    "0.107.3": {
+      "dependencies": {
+        "@agentclientprotocol/sdk": "2.7.0",
+        "@anthropic-ai/claude-agent-sdk": "0.3.325",
+        "diff": "9.0.0",
+        "zod": "4.6.7"
+      },
+      "gitHead": "7ad73cceb932a5d150dae30e26b8dd5a5ab2da0c",
+      "integrity": "sha512-GrDLX0wOcvTGsQwJgUpEp8PLERByV6/e25VioqRTg41JUkvATE1VOImg5L62mF8e78p+ODrvr5CfMU8ySVzbMA==",
+      "published": "2026-11-16T14:39:18.879Z",
+      "tag_commit_matches_gitHead": true,
+      "tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.107.3.tgz",
+      "tarball_sha256": "1a00de010b8f9b5eaa6f12c01845200935191712424a885a7438b480b62beb0c"
+    },
+    "0.108.0": {
+      "dependencies": {
+        "@agentclientprotocol/sdk": "2.7.0",
+        "@anthropic-ai/claude-agent-sdk": "0.3.326",
+        "diff": "9.0.0",
+        "zod": "4.6.7"
+      },
+      "gitHead": "a6ba98ff3cf065d681abfe21042a8ce7ee292a09",
+      "integrity": "sha512-Y0HI3CB0DfhpWItCn2RE3xgpen001V2U/bHm3G6ZVKXsElF5N4uYyjYlmgNzZBKcBtZK0JqiE96NMaeVXtgJjw==",
+      "published": "2026-11-17T13:43:51.377Z",
+      "tag_commit_matches_gitHead": true,
+      "tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.108.0.tgz",
+      "tarball_sha256": "a509b15777d6f87a6adf0b1be8a70af1e82e24b7879016cced6a8d459c59c83b"
+    },
+    "0.108.1": {
+      "dependencies": {
+        "@agentclientprotocol/sdk": "2.8.0",
+        "@anthropic-ai/claude-agent-sdk": "0.3.326",
+        "diff": "9.0.0",
+        "zod": "4.6.7"
+      },
+      "gitHead": "e62d084e9d86ff66c30e8d1fa7fec10017da172b",
+      "integrity": "sha512-Qn1EjtmqJtEhwvMLfeWPZXLv9++hfM5dkAiVOTJEp28TBcebLR7Gypm7KGWAf1g7/ei1R3w3teOlMIl9f3+j4Q==",
+      "published": "2026-11-18T17:21:24.324Z",
+      "tag_commit_matches_gitHead": true,
+      "tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.108.1.tgz",
+      "tarball_sha256": "f201ec6c88b51a7e87a1d1fd96730aade042712d1228cb06c85b908d7c3b6ed2"
+    },
+    "0.109.0": {
+      "dependencies": {
+        "@agentclientprotocol/sdk": "2.8.0",
+        "@anthropic-ai/claude-agent-sdk": "0.3.328",
+        "diff": "9.0.0",
+        "zod": "4.6.7"
+      },
+      "gitHead": "9f1ca6eb9c65c2f5d1bbf48335af42947ddb74d6",
+      "integrity": "sha512-6JkcDZg4Zx2FbTcQaUHUCGUwyvqJRM4oIw1+zA1xjOO+uB50BOZS3iNLK3wWZ6UKFrY7L31zqryqHM2DB+wU6Q==",
+      "published": "2026-11-19T13:36:23.668Z",
+      "tag_commit_matches_gitHead": true,
+      "tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.109.0.tgz",
+      "tarball_sha256": "ffcce80cedf0e36bb0e83ab9eee27a76450fc1bcf0a6382f3b365ab1c9464b07"
+    },
+    "0.109.1": {
+      "dependencies": {
+        "@agentclientprotocol/sdk": "2.9.1",
+        "@anthropic-ai/claude-agent-sdk": "0.3.330",
+        "diff": "9.0.0",
+        "zod": "4.6.7"
+      },
+      "gitHead": "4af4581ad510a85d5cdfa3b9100412479e1cfef4",
+      "integrity": "sha512-tGT3IH6ey3V7wvFRhxK+1XLYDC6FBUyIehvNBm06/as/HG2MWhC6r8hRffSpS7osnMjARZMfDeLyQB0Wjjm0uQ==",
+      "published": "2026-11-21T15:37:49.660Z",
+      "tag_commit_matches_gitHead": true,
+      "tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.109.1.tgz",
+      "tarball_sha256": "50afc29180c9c88618fa13170d314dbcfbff73e3fe9104fb77c26461f1c03548"
+    },
+    "0.110.0": {
+      "dependencies": {
+        "@agentclientprotocol/sdk": "2.9.1",
+        "@anthropic-ai/claude-agent-sdk": "0.3.330",
+        "diff": "9.0.0",
+        "zod": "4.6.7"
+      },
+      "gitHead": "f9c25404ecebd2da2604608ac3be368784962236",
+      "integrity": "sha512-d2/1RiTlHUJe/gsct3HflPvAmA3kMC6hhlAy36OrkAiO+XO285k3sqBDTvAEYOrPHxEM6e/3lkiYLBGoEPsj7w==",
+      "published": "2026-11-23T09:52:52.982Z",
+      "tag_commit_matches_gitHead": true,
+      "tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.110.0.tgz",
+      "tarball_sha256": "43749d62ec77cea5c60c203693bcc4bb03534a3aad593fefa9d3e01243a8daee"
+    },
+    "0.110.1": {
+      "dependencies": {
+        "@agentclientprotocol/sdk": "2.9.1",
+        "@anthropic-ai/claude-agent-sdk": "0.3.330",
+        "diff": "9.0.0",
+        "zod": "4.6.7"
+      },
+      "gitHead": "37241a9e288f1d9cf8e5820acfc9b786b5951e68",
+      "integrity": "sha512-zIPjFWEU4yit7NHSMFk3W8Coh05GP+S5YLMXZB+t4YF+oQMfxRS+WXWSKnUgWPMsS0BUQnEHTurAgHsgWBiHPQ==",
+      "published": "2026-11-23T23:34:48.855Z",
+      "tag_commit_matches_gitHead": true,
+      "tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.110.1.tgz",
+      "tarball_sha256": "bfd483cc095b951cd89642fb6a9dcbac8dc09194d412ae0b2f4e1a3ce064a435"
+    },
+    "0.111.0": {
+      "dependencies": {
+        "@agentclientprotocol/sdk": "2.11.0",
+        "@anthropic-ai/claude-agent-sdk": "0.3.331",
+        "diff": "9.0.0",
+        "zod": "4.6.7"
+      },
+      "gitHead": "743ae8dcd48f625704c831bbc11870673101b438",
+      "integrity": "sha512-620ZOUfrsG/PTPdrCryn+CP2ZHwDZF1rROZOvw45J5zOnAQ8IlX5WL4irHK81Kp64WoaSHStkPwAVzwbvAkKxA==",
+      "published": "2026-11-24T15:27:48.687Z",
+      "tag_commit_matches_gitHead": true,
+      "tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.111.0.tgz",
+      "tarball_sha256": "64f1097a37aa8b3337b1fa8be07e3648a02cd4fdf43e6125d3b7c051ff4de609"
+    },
+    "0.112.0": {
+      "dependencies": {
+        "@agentclientprotocol/sdk": "2.12.0",
+        "@anthropic-ai/claude-agent-sdk": "0.3.331",
+        "diff": "9.0.0",
+        "zod": "4.6.7"
+      },
+      "gitHead": "aa93ed06c1b0d54642727b9ab23b94f953c49cca",
+      "integrity": "sha512-T9FrKGd9eDKHNmZE/EfEf01v49UHKeKyGcu91O8sdVc7a9eMEDOGWT/0moWirGHJdBqJ9qPVfqu07IBegJuniA==",
+      "published": "2026-11-24T18:16:52.662Z",
+      "tag_commit_matches_gitHead": true,
+      "tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.112.0.tgz",
+      "tarball_sha256": "2bcd0b4a3f0c9372e907ce4ae1e8a2ed8f9823f92cd1e1b5c8682c29a6e67ba8"
+    },
+    "0.113.0": {
+      "dependencies": {
+        "@agentclientprotocol/sdk": "2.12.0",
+        "@anthropic-ai/claude-agent-sdk": "0.3.331",
+        "diff": "9.0.0",
+        "zod": "4.6.7"
+      },
+      "gitHead": "764fb84f9f668dc1b490aa726ee982c1e53ccd7e",
+      "integrity": "sha512-fXX8ulGhIg8qHNsy8iQgPV1ZtISwUSqIAmc0/CN2CgiAeMP1wOn0xbzwwOIKLXqoiNoOkvreT2dqvMhwSFKClw==",
+      "published": "2026-11-26T13:38:41.316Z",
+      "tag_commit_matches_gitHead": true,
+      "tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.113.0.tgz",
+      "tarball_sha256": "9d46d6327f2d6f17bcdd1c12a724cdb898bf56bc19946c3ac38b2a36d241fad1"
+    }
+  }
+}

@@ -907,3 +907,439 @@ fn guarded_parent_exit_waits_the_actual_async_native_child() {
     assert_eq!(output.stdout, b"waited");
     std::fs::remove_dir_all(root).expect("remove only own fixture");
 }
+
+#[test]
+fn mcp_refusal_fallback_fails_closed_without_retry_or_silent_drop() {
+    let root = fixture();
+    let mcp_servers = r#"
+export function refusedMcpServers(names) {
+  return { configs: {}, unserved: [...names].map(name => ({ name, status: 'failed' })) };
+}
+export async function startAroundRefusedMcpServers(hasMcpServers, start) {
+  try {
+    return await start(false);
+  } catch (error) {
+    if (!hasMcpServers || error?.data?.startupFailureReason !== 'sideload_flags_disabled') throw error;
+    return start(true);
+  }
+}
+"#;
+    let entry = r#"
+import './idle.mjs';
+import { refusedMcpServers, startAroundRefusedMcpServers } from './mcp-servers.mjs';
+let attempts = 0;
+let retriedWithoutMcp = false;
+let observedReason = null;
+try {
+  await startAroundRefusedMcpServers(true, async withoutMcpServers => {
+    attempts += 1;
+    if (withoutMcpServers) {
+      retriedWithoutMcp = true;
+      return { startedWithoutMcp: true };
+    }
+    const err = new Error('MCP servers refused by managed disableSideloadFlags');
+    err.data = { startupFailureReason: 'sideload_flags_disabled' };
+    throw err;
+  });
+} catch (error) {
+  observedReason = error?.data?.startupFailureReason ?? error.message;
+}
+let directDropRefused = false;
+try {
+  refusedMcpServers(['swallowtail-claude-agent-acp']);
+} catch (error) {
+  directDropRefused = error.message === 'silent MCP server drop refused';
+}
+process.stdout.write(JSON.stringify({ attempts, retriedWithoutMcp, observedReason, directDropRefused }));
+"#;
+    let native_path = root.join("fake-native");
+    let native_source = b"#!/bin/sh\nprintf fake-native";
+    std::fs::write(&native_path, native_source).expect("owned native fake");
+    use std::os::unix::fs::PermissionsExt;
+    std::fs::set_permissions(&native_path, std::fs::Permissions::from_mode(0o700))
+        .expect("executable fake");
+    let native = LocalTrustedRuntime::capture(&native_path, Sha256::digest(native_source).into())
+        .expect("held fake native");
+    let inputs = [
+        ("entry.mjs", entry),
+        ("idle.mjs", IDLE),
+        ("mcp-servers.mjs", mcp_servers),
+    ];
+    let mut files = serde_json::Map::new();
+    for (name, source) in inputs {
+        std::fs::write(root.join(name), source).expect("write fixture");
+        files.insert(
+            name.into(),
+            serde_json::json!({"sha256": hex::encode(Sha256::digest(source.as_bytes())), "format": "module"}),
+        );
+    }
+    // Plain unguarded execution silently drops MCP servers and retries start(true).
+    let plain = node(&[root.join("entry.mjs").to_str().expect("entry path")]);
+    assert!(
+        plain.status.success(),
+        "{}",
+        String::from_utf8_lossy(&plain.stderr)
+    );
+    assert_eq!(
+        plain.stdout,
+        br#"{"attempts":2,"retriedWithoutMcp":true,"observedReason":null,"directDropRefused":false}"#
+    );
+
+    let native_record = serde_json::json!({"sha256": hex::encode(Sha256::digest(native_source)), "bytes": native_source.len(), "specifier": "@fake/native/claude"});
+    let manifest = serde_json::json!({
+        "vendor": "11".repeat(32),
+        "entry": "entry.mjs",
+        "idle": "idle.mjs",
+        "mcp_refusal_fallback": "mcp-servers.mjs",
+        "files": files,
+        "imports": [
+            {"parent": "entry.mjs", "specifier": "./idle.mjs", "target": "idle.mjs"},
+            {"parent": "entry.mjs", "specifier": "./mcp-servers.mjs", "target": "mcp-servers.mjs"}
+        ],
+        "builtins": [],
+        "require_parents": [],
+        "native_parents": [],
+        "native": {"darwin-arm64": native_record, "linux-x64": native_record},
+        "platform_programs": [],
+        "denied_dynamic": [],
+        "source_cautions": []
+    });
+    let platform = if cfg!(target_os = "macos") {
+        "darwin-arm64"
+    } else {
+        "linux-x64"
+    };
+    // Missing mcp_refusal_fallback module must fail closed at capture.
+    let mut bad = manifest.clone();
+    bad["mcp_refusal_fallback"] = "missing.mjs".into();
+    assert!(
+        LocalCapturedGraph::capture_manifest(
+            &root,
+            &serde_json::to_vec(&bad).expect("bad manifest"),
+            platform,
+            &native,
+            None,
+        )
+        .is_err()
+    );
+
+    let graph = LocalCapturedGraph::capture_manifest(
+        &root,
+        &serde_json::to_vec(&manifest).expect("manifest"),
+        platform,
+        &native,
+        None,
+    )
+    .expect("admitted manifest");
+    let output = guarded(&graph);
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        output.stdout,
+        br#"{"attempts":1,"retriedWithoutMcp":false,"observedReason":"sideload_flags_disabled","directDropRefused":true}"#
+    );
+    std::fs::remove_dir_all(root).expect("remove only own fixture");
+}
+
+#[test]
+fn remote_control_at_startup_is_vetoed_like_idle_compaction() {
+    let root = fixture();
+    let remote_control = r#"
+export function startsWithRemoteControl(init) {
+  return init.remote_control_auto_enable === true;
+}
+export async function startRemoteControl(query) {
+  return await query.enableRemoteControl(true);
+}
+export class RemoteControlAtStartup {
+  asked;
+  turnedOff = false;
+  constructor(asked) { this.asked = asked; }
+  commandRan(command) { this.turnedOff = command.action === 'disconnect'; }
+  connect(session) {
+    if (!this.asked) return undefined;
+    this.asked = false;
+    return startRemoteControl(session.query());
+  }
+}
+"#;
+    let entry = r#"
+import './idle.mjs';
+import { RemoteControlAtStartup, startsWithRemoteControl, startRemoteControl } from './remote-control.mjs';
+let enabled = 0;
+const asked = startsWithRemoteControl({ remote_control_auto_enable: true });
+const rc = new RemoteControlAtStartup(true);
+const notice = rc.connect({ query: () => ({ enableRemoteControl: async () => { enabled += 1; return { session_url: 'https://example.invalid' }; } }) });
+if (notice) await notice;
+let subclassRefused = false;
+try { class Sub extends RemoteControlAtStartup {} new Sub(true); } catch (e) { subclassRefused = e.message === 'remote control subclass refused'; }
+let protoFrozen = false;
+try { RemoteControlAtStartup.prototype.connect = () => 'hijack'; } catch { protoFrozen = true; }
+let ownPropBlocked = false;
+try { rc.connect = () => 'hijack'; } catch { ownPropBlocked = true; }
+let directStartRefused = false;
+try { await startRemoteControl({ enableRemoteControl: async () => { enabled += 1; } }); } catch (e) { directStartRefused = e.message === 'remote control at startup refused'; }
+process.stdout.write(JSON.stringify({ asked, instanceAsked: rc.asked, enabled, noticeWasUndefined: notice === undefined, subclassRefused, protoFrozen, ownPropBlocked, directStartRefused }));
+"#;
+    let native_path = root.join("fake-native");
+    let native_source = b"#!/bin/sh\nprintf fake-native";
+    std::fs::write(&native_path, native_source).expect("owned native fake");
+    use std::os::unix::fs::PermissionsExt;
+    std::fs::set_permissions(&native_path, std::fs::Permissions::from_mode(0o700))
+        .expect("executable fake");
+    let native = LocalTrustedRuntime::capture(&native_path, Sha256::digest(native_source).into())
+        .expect("held fake native");
+    let inputs = [
+        ("entry.mjs", entry),
+        ("idle.mjs", IDLE),
+        ("remote-control.mjs", remote_control),
+    ];
+    let mut files = serde_json::Map::new();
+    for (name, source) in inputs {
+        std::fs::write(root.join(name), source).expect("write fixture");
+        files.insert(
+            name.into(),
+            serde_json::json!({"sha256": hex::encode(Sha256::digest(source.as_bytes())), "format": "module"}),
+        );
+    }
+    // Plain unguarded execution connects Remote Control at startup.
+    let plain = node(&[root.join("entry.mjs").to_str().expect("entry path")]);
+    assert!(
+        plain.status.success(),
+        "{}",
+        String::from_utf8_lossy(&plain.stderr)
+    );
+    let plain_val: serde_json::Value = serde_json::from_slice(&plain.stdout).expect("plain JSON");
+    assert_eq!(plain_val["asked"], true);
+    assert_eq!(plain_val["enabled"], 2);
+
+    let native_record = serde_json::json!({"sha256": hex::encode(Sha256::digest(native_source)), "bytes": native_source.len(), "specifier": "@fake/native/claude"});
+    let manifest = serde_json::json!({
+        "vendor": "11".repeat(32),
+        "entry": "entry.mjs",
+        "idle": "idle.mjs",
+        "remote_control": "remote-control.mjs",
+        "files": files,
+        "imports": [
+            {"parent": "entry.mjs", "specifier": "./idle.mjs", "target": "idle.mjs"},
+            {"parent": "entry.mjs", "specifier": "./remote-control.mjs", "target": "remote-control.mjs"}
+        ],
+        "builtins": [],
+        "require_parents": [],
+        "native_parents": [],
+        "native": {"darwin-arm64": native_record, "linux-x64": native_record},
+        "platform_programs": [],
+        "denied_dynamic": [],
+        "source_cautions": []
+    });
+    let platform = if cfg!(target_os = "macos") {
+        "darwin-arm64"
+    } else {
+        "linux-x64"
+    };
+    let mut bad = manifest.clone();
+    bad["remote_control"] = "missing.mjs".into();
+    assert!(
+        LocalCapturedGraph::capture_manifest(
+            &root,
+            &serde_json::to_vec(&bad).expect("bad manifest"),
+            platform,
+            &native,
+            None,
+        )
+        .is_err()
+    );
+
+    let graph = LocalCapturedGraph::capture_manifest(
+        &root,
+        &serde_json::to_vec(&manifest).expect("manifest"),
+        platform,
+        &native,
+        None,
+    )
+    .expect("admitted manifest");
+    let output = guarded(&graph);
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        output.stdout,
+        br#"{"asked":false,"instanceAsked":false,"enabled":0,"noticeWasUndefined":true,"subclassRefused":true,"protoFrozen":true,"ownPropBlocked":true,"directStartRefused":true}"#
+    );
+    std::fs::remove_dir_all(root).expect("remove only own fixture");
+}
+
+#[test]
+fn denied_plugin_command_child_process_edge_refuses_even_for_native_and_ps() {
+    use std::os::unix::fs::PermissionsExt;
+    let root = fixture();
+    let native_path = root.join("fake-native");
+    let native_source = b"#!/bin/sh\nprintf fake-native";
+    std::fs::write(&native_path, native_source).expect("owned native fake");
+    std::fs::set_permissions(&native_path, std::fs::Permissions::from_mode(0o700))
+        .expect("executable fake");
+    let native = LocalTrustedRuntime::capture(&native_path, Sha256::digest(native_source).into())
+        .expect("held fake native");
+    let ps_path = if cfg!(target_os = "macos") {
+        Path::new("/bin/ps")
+    } else {
+        Path::new("/usr/bin/ps")
+    };
+    let ps = LocalTrustedRuntime::capture(
+        ps_path,
+        Sha256::digest(std::fs::read(ps_path).expect("system ps")).into(),
+    )
+    .expect("trusted ps");
+
+    let plugin_cmd = r#"
+import { execFile, execFileSync, spawn, spawnSync } from 'node:child_process';
+import { promisify } from 'node:util';
+const execFileAsync = promisify(execFile);
+export async function probe(nativeBin) {
+  const results = {};
+  for (const [label, fn] of [
+    ['execFileNative', () => execFile(nativeBin, ['plugin', 'list'], { env: {} }, () => {})],
+    ['execFilePs', () => execFile('ps', ['-o', 'pid=,lstart=', '-p', String(process.pid)], { timeout: 1000, env: {} }, () => {})],
+    ['execFileSyncNative', () => execFileSync(nativeBin, ['plugin', 'list'], { env: {} })],
+    ['spawnNative', () => spawn(nativeBin, ['plugin', 'list'], { env: {} })],
+    ['spawnSyncNative', () => spawnSync(nativeBin, ['plugin', 'list'], { env: {} })],
+    ['promisifiedNative', () => execFileAsync(nativeBin, ['plugin', 'list'], { env: {} })],
+  ]) {
+    try {
+      await fn();
+      results[label] = 'allowed';
+    } catch (error) {
+      results[label] = error.message;
+    }
+  }
+  return results;
+}
+"#;
+    let registry = "import { execFile } from 'node:child_process'; export function starts() { return new Promise((resolve, reject) => execFile('ps', ['-o', 'pid=,lstart=', '-p', String(process.pid)], { timeout: 1000, env: {} }, (err, out) => err ? reject(err) : resolve(out))); }";
+    let entry = format!(
+        r#"
+import './idle.mjs';
+import {{ execFileSync }} from 'node:child_process';
+import {{ starts }} from './acp/dist/session-index/live-registry.js';
+import {{ probe }} from './acp/dist/plugin-command.js';
+const nativeBin = {};
+const allowedNative = execFileSync(nativeBin, ['--version'], {{ env: {{}} }}).toString();
+const allowedPs = (await starts()).includes(String(process.pid));
+const denied = await probe(nativeBin);
+process.stdout.write(JSON.stringify({{ allowedNative, allowedPs, denied }}));
+"#,
+        serde_json::to_string(&native_path).expect("native path JSON")
+    );
+    let inputs = [
+        ("entry.mjs", entry.as_str()),
+        ("idle.mjs", IDLE),
+        ("acp/dist/session-index/live-registry.js", registry),
+        ("acp/dist/plugin-command.js", plugin_cmd),
+    ];
+    let mut files = serde_json::Map::new();
+    for (name, source) in inputs {
+        std::fs::create_dir_all(root.join(name).parent().expect("parent")).expect("dir");
+        std::fs::write(root.join(name), source).expect("write fixture");
+        files.insert(
+            name.into(),
+            serde_json::json!({"sha256": hex::encode(Sha256::digest(source.as_bytes())), "format": "module"}),
+        );
+    }
+    let native_record = serde_json::json!({"sha256": hex::encode(Sha256::digest(native_source)), "bytes": native_source.len(), "specifier": "@fake/native/claude"});
+    let manifest = serde_json::json!({
+        "vendor": "11".repeat(32),
+        "entry": "entry.mjs",
+        "idle": "idle.mjs",
+        "denied_child_process_parents": ["acp/dist/plugin-command.js"],
+        "files": files,
+        "imports": [
+            {"parent": "entry.mjs", "specifier": "./idle.mjs", "target": "idle.mjs"},
+            {"parent": "entry.mjs", "specifier": "./acp/dist/session-index/live-registry.js", "target": "acp/dist/session-index/live-registry.js"},
+            {"parent": "entry.mjs", "specifier": "./acp/dist/plugin-command.js", "target": "acp/dist/plugin-command.js"}
+        ],
+        "builtins": [
+            {"parent": "entry.mjs", "specifier": "node:child_process", "target": "node:child_process"},
+            {"parent": "acp/dist/session-index/live-registry.js", "specifier": "node:child_process", "target": "node:child_process"},
+            {"parent": "acp/dist/plugin-command.js", "specifier": "node:child_process", "target": "node:child_process"},
+            {"parent": "acp/dist/plugin-command.js", "specifier": "node:util", "target": "node:util"}
+        ],
+        "require_parents": [],
+        "native_parents": [],
+        "native": {"darwin-arm64": native_record, "linux-x64": native_record},
+        "platform_programs": [{"parent": "acp/dist/session-index/live-registry.js", "name": "ps", "arguments": "live-process-starts-v1"}],
+        "denied_dynamic": [],
+        "source_cautions": []
+    });
+    let platform = if cfg!(target_os = "macos") {
+        "darwin-arm64"
+    } else {
+        "linux-x64"
+    };
+    // Omitting plugin-command.js from denied_child_process_parents must fail closed at capture.
+    let mut omitted = manifest.clone();
+    omitted["denied_child_process_parents"] = serde_json::json!([]);
+    assert!(
+        LocalCapturedGraph::capture_manifest(
+            &root,
+            &serde_json::to_vec(&omitted).expect("omitted manifest"),
+            platform,
+            &native,
+            Some(&ps),
+        )
+        .is_err(),
+        "plugin-command.js without denied_child_process_parents must fail closed"
+    );
+    // Denying a file that also holds platform_programs must fail closed.
+    let mut conflict = manifest.clone();
+    conflict["denied_child_process_parents"] = serde_json::json!([
+        "acp/dist/plugin-command.js",
+        "acp/dist/session-index/live-registry.js"
+    ]);
+    assert!(
+        LocalCapturedGraph::capture_manifest(
+            &root,
+            &serde_json::to_vec(&conflict).expect("conflict manifest"),
+            platform,
+            &native,
+            Some(&ps),
+        )
+        .is_err()
+    );
+
+    let graph = LocalCapturedGraph::capture_manifest(
+        &root,
+        &serde_json::to_vec(&manifest).expect("manifest"),
+        platform,
+        &native,
+        Some(&ps),
+    )
+    .expect("admitted manifest");
+    let output = guarded(&graph);
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let observed: serde_json::Value = serde_json::from_slice(&output.stdout).expect("output JSON");
+    assert_eq!(observed["allowedNative"], "fake-native");
+    assert_eq!(observed["allowedPs"], true);
+    for label in [
+        "execFileNative",
+        "execFilePs",
+        "execFileSyncNative",
+        "spawnNative",
+        "spawnSyncNative",
+        "promisifiedNative",
+    ] {
+        assert_eq!(
+            observed["denied"][label], "child process invocation refused",
+            "{label}"
+        );
+    }
+    std::fs::remove_dir_all(root).expect("remove only own fixture");
+}

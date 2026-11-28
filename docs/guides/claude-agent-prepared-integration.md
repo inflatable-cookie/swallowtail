@@ -132,15 +132,16 @@ live result; Research 361 later accepted the exact `0.79.0` point.
 
 The Contract 061 placement projection names `consumer-supplied-http` when an
 HTTP entry is bound. Research 361 accepted live honouring of that HTTP entry
-on exact `0.79.0`; Research 364 accepts exact `0.81.2` as well, so
-`client_mcp_servers` is Yes on those two exact points. On `0.81.2`, the
-persisted gate record confirms connection, tool listing, one successful tool
-call, a `Completed` turn, and `Clean` cleanup (class `clean`, no code or
-stage); the recorded model `claude-sonnet-4-6` is provenance. The first
-`0.81.2` attempt was spent but its output record was lost when cargo captured
-`eprintln`; its result is not reconstructed. The earlier exact `0.79.0`
-attempt history remains in Research 352/355/361. Other window points stay
-unqualified for honouring. stdio MCP live honouring is not that evidence.
+on exact `0.79.0`, Research 364 accepted exact `0.81.2`, and Research 492
+accepted exact guarded `0.106.0`, so `client_mcp_servers` is Yes on those three
+exact points. On both `0.81.2` and guarded `0.106.0`, the persisted gate record
+confirms connection, tool listing, one successful tool call, a `Completed` turn,
+and `Clean` cleanup (class `clean`, no code or stage); the recorded model
+`claude-sonnet-4-6` is provenance. The first `0.81.2` attempt was spent but its
+output record was lost when cargo captured `eprintln`; its result is not
+reconstructed. The earlier exact `0.79.0` attempt history remains in Research
+352/355/361. Other window points stay unqualified for honouring. stdio MCP live
+honouring is not that evidence.
 
 Local subscription access means the approved ACP process inherits the selected
 environment and uses authentication already held by the local Claude
@@ -614,11 +615,11 @@ See the compile-tested
 
 ## Repo-Local ACP Sidecar
 
-The root `package.json` keeps `@agentclientprotocol/claude-agent-acp` pinned to
-exact `0.81.2` for development and live probes. Research 460, 469, 470, and
-471 retain qualification through `0.100.0`; Research 483 adds the eight exact
-guarded points through `0.106.0`. The local dependency pin is not currentness
-or live MCP evidence and remains unchanged.
+The root `package.json` pins `@agentclientprotocol/claude-agent-acp` to exact
+`0.106.0` for development and live probes (Research 492). Research 460, 469,
+470, and 471 retain qualification through `0.100.0`; Research 483 adds the eight
+exact guarded points through `0.106.0`. The local dependency pin is not itself
+currentness evidence for versions outside the qualified window.
 Development and live probes use:
 
 ```sh
@@ -647,7 +648,7 @@ v7; the seven points from `0.101.1` use inherited-permission v8. Unpublished
 interior versions are not added. Stable `0.107.0` and later remain visible
 `UnverifiedNewer` and must identify the same exact version during initialization.
 Excluded and older versions do not prepare. HTTP MCP live honouring remains
-exact to `0.79.0` and `0.81.2`.
+exact to `0.79.0`, `0.81.2`, and guarded `0.106.0` (Research 361, 364, 492).
 
 Declared session-scoped metadata remains passive and does not become consumer
 tools, commands or turn output. Informational `auth/status_update` cannot change

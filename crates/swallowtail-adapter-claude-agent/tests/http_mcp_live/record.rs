@@ -108,7 +108,7 @@ pub struct HttpMcpLiveRecord {
 /// Named failure when the one authorized attempt did not honour the entry.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum HttpMcpLiveStop {
-    /// Host executable was not exact `0.106.0`.
+    /// Host executable was not exact `0.113.0`.
     HostVersion,
     /// No already-configured model was usable without a login.
     NoUsableModel,

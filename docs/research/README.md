@@ -9,6 +9,7 @@ Promote accepted findings into [knowledge](../knowledge/README.md). Do not
 leave implementation-critical rules here.
 
 ## Research Records
+- [492 Claude Agent ACP 0.106.0 HTTP MCP Live Honouring](./492-claude-agent-acp-0-106-0-http-mcp-live-honouring.md) — moves the repo-local `@agentclientprotocol/claude-agent-acp` pin to `0.106.0`, rewrites `http_mcp_live_gate` for the checked guarded launch, records one operator-authorized live `claude-sonnet-4-6` honouring pass with `Clean` cleanup, and extends `client_mcp_servers` live honouring to exact guarded `0.106.0` alongside `0.79.0` and `0.81.2`.
 - [491 Grok Build Catalogue 1.0.92 Identity and Qualification](./491-grok-build-catalogue-1-0-92-identity.md) — freezes all 22 stable hops after 1.0.70 and traces the existing catalogue invocation and formatter through 1.0.92 on exact Darwin ARM64 artifacts. Extends the `QualifiedOnly` catalogue window on `models-text-v2`.
 - [490 Claude Agent ACP 0.109.1 Identity and Qualification Stop](./490-claude-agent-acp-0-109-1-identity-stop.md) — freezes eight published ACP hops and both SDK dependencies. Guarded qualification stays at 0.106.0 pending exact native proof.
 - [489 OpenCode ACP 1.19.6 Identity](./489-opencode-acp-1-19-6-identity.md) — reuses the verified OpenCode payload ledger and traces the GitLab dependency and overflow-recovery gates through ACP. Qualification stays at `1.19.4`.

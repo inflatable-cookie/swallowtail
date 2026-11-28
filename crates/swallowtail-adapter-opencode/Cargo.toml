@@ -33,6 +33,7 @@ url.workspace = true
 [dev-dependencies]
 futures-executor.workspace = true
 futures-util.workspace = true
+hex.workspace = true
 sha2.workspace = true
 swallowtail-host-local.workspace = true
 swallowtail-testkit.workspace = true

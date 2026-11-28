@@ -243,7 +243,7 @@ fn verify_sha256(path: &Path, expected: &str) -> Result<(), RuntimeFailure> {
         }
         digest.update(&buffer[..count]);
     }
-    let actual = format!("{:x}", digest.finalize());
+    let actual = hex::encode(digest.finalize());
     if actual != expected {
         return Err(failure(
             "swallowtail.local_model_artifact.digest_mismatch",

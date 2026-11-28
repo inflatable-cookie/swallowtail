@@ -131,7 +131,7 @@ fn manifest_digest(body: &str) -> String {
         }
         canonical.push(b'\n');
     }
-    format!("{:x}", Sha256::digest(canonical))
+    hex::encode(Sha256::digest(canonical))
 }
 
 fn strings(value: &Value) -> BTreeSet<String> {

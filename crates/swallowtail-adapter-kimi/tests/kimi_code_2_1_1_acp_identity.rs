@@ -39,7 +39,7 @@ fn text<'a>(value: &'a Value, path: &[&str]) -> &'a str {
 }
 
 fn sha256(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 
 fn assert_sha256(bytes: &[u8], expected: &str) {

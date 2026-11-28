@@ -193,7 +193,7 @@ fn manifest_digest(body: &str) -> String {
         }
         canonical.push(b'\n');
     }
-    format!("{:x}", Sha256::digest(canonical))
+    hex::encode(Sha256::digest(canonical))
 }
 
 fn residual_category(path: &str) -> &'static str {
@@ -480,7 +480,7 @@ fn official_hops_and_complete_source_deltas_are_frozen() {
             );
         }
         let class_json = canonical_json(&hop_record["selected_changes"]);
-        let class_sha = format!("{:x}", Sha256::digest(class_json));
+        let class_sha = hex::encode(Sha256::digest(class_json));
         let expected_sha = EXPECTED_SELECTED_CLASSIFICATION_SHA256
             .iter()
             .find(|(key, _)| *key == hop)

@@ -17,7 +17,7 @@ fn json(source: &str) -> Value {
 }
 
 fn sha256(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 
 fn version(value: &str) -> swallowtail_core::InterfaceVersion {

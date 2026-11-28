@@ -204,7 +204,7 @@ fn json(body: &str) -> Value {
 }
 
 fn sha256(text: &str) -> String {
-    format!("{:x}", Sha256::digest(text.as_bytes()))
+    hex::encode(Sha256::digest(text.as_bytes()))
 }
 
 fn selected_input_digest(rows: &[Value]) -> String {

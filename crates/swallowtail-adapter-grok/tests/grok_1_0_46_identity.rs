@@ -38,7 +38,7 @@ fn exact_strings(value: &Value, expected: &[&str]) {
 fn sha256_lines(values: &[String]) -> String {
     let mut bytes = values.join("\n");
     bytes.push('\n');
-    format!("{:x}", Sha256::digest(bytes.as_bytes()))
+    hex::encode(Sha256::digest(bytes.as_bytes()))
 }
 
 #[test]

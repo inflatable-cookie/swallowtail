@@ -52,5 +52,5 @@ fn hop_identity_and_classified_file_sets_match_frozen_evidence() {
 }
 
 fn sha256(bytes: &str) -> String {
-    format!("{:x}", Sha256::digest(bytes.as_bytes()))
+    hex::encode(Sha256::digest(bytes.as_bytes()))
 }

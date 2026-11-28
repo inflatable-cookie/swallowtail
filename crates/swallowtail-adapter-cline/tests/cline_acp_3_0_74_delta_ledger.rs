@@ -585,7 +585,7 @@ fn tree_delta(
 }
 
 fn sha256(value: &str) -> String {
-    format!("{:x}", Sha256::digest(value.as_bytes()))
+    hex::encode(Sha256::digest(value.as_bytes()))
 }
 
 fn hex(bytes: &[u8]) -> String {

@@ -8,7 +8,7 @@ const INVENTORY: &str = include_str!("fixtures/claude-agent-acp-0.109.1/artifact
 #[test]
 fn frozen_hops_keep_their_exact_artifact_inventory() {
     assert_eq!(
-        format!("{:x}", Sha256::digest(INVENTORY.as_bytes())),
+        hex::encode(Sha256::digest(INVENTORY.as_bytes())),
         "384dcab73106e66854edfccfe25ac82ceda2a5fb5f92e1c8e6d30066813068f8"
     );
 }

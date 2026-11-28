@@ -30,7 +30,7 @@ fn frozen_hop_ledgers_retain_the_reviewed_artifact_and_path_sets() {
     ];
     for (name, contents, expected_sha256) in ledgers {
         assert_eq!(
-            format!("{:x}", Sha256::digest(contents)),
+            hex::encode(Sha256::digest(contents)),
             expected_sha256,
             "{name}"
         );

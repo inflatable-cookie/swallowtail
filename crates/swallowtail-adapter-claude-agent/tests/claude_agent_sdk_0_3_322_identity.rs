@@ -32,7 +32,7 @@ fn json(bytes: &[u8]) -> Value {
 }
 
 fn sha256_hex(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 
 fn is_sha256_hex(value: &str) -> bool {

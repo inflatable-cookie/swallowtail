@@ -31,7 +31,7 @@ fn current_acp_inventory_reconstructs_all_hops_without_qualifying_them() {
             "12406aa68ae19e9cce2664ebebf5ebe4300ce806f5b27973b744c06f75cbebe2",
         ),
     ] {
-        assert_eq!(format!("{:x}", Sha256::digest(text.as_bytes())), expected);
+        assert_eq!(hex::encode(Sha256::digest(text.as_bytes())), expected);
     }
     let inventory: Value = serde_json::from_str(INVENTORY).expect("inventory JSON");
     let versions = inventory["versions"].as_array().expect("versions");
@@ -141,15 +141,12 @@ fn frozen_acp_dependencies_and_idle_evidence_stay_pinned() {
             "674bfe4f5d73b62ac8c705107eb5cac3508d532bc332d80121fd68bd2bf8d690",
         ),
     ] {
-        assert_eq!(format!("{:x}", Sha256::digest(source.as_bytes())), expected);
+        assert_eq!(hex::encode(Sha256::digest(source.as_bytes())), expected);
     }
     assert_eq!(
-        format!(
-            "{:x}",
-            Sha256::digest(
-                swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.as_bytes()
-            )
-        ),
+        hex::encode(Sha256::digest(
+            swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.as_bytes()
+        )),
         "f2a728819aa9f68815e3255c0c1a8d547337f102b352c5c730051d1799c5c56b"
     );
 }
@@ -198,7 +195,7 @@ fn guarded_production_graphs_pin_every_source_format_and_edge() {
             "ec892ea5aa52fe6deb77d912d4c5747cfec41dcaff4fc966e40e1e20bd822080",
         ),
     ] {
-        assert_eq!(format!("{:x}", Sha256::digest(source.as_bytes())), expected);
+        assert_eq!(hex::encode(Sha256::digest(source.as_bytes())), expected);
         let graph: Value = serde_json::from_str(source).expect("frozen graph");
         if let Some(programs) = graph.get("platform_programs") {
             let programs = programs.as_array().expect("platform programs");

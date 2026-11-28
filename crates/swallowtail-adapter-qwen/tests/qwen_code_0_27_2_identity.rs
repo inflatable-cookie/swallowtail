@@ -117,7 +117,7 @@ fn file(relative: &str) -> &'static str {
 }
 
 fn sha256(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 
 fn inventory(version: &str) -> Value {

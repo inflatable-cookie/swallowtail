@@ -143,7 +143,7 @@ fn payload_sha256(value: &str) -> std::io::Result<String> {
         }
         digest.update(&buffer[..read]);
     }
-    Ok(format!("{:x}", digest.finalize()))
+    Ok(hex::encode(digest.finalize()))
 }
 
 fn axis() -> InterfaceVersionAxis {

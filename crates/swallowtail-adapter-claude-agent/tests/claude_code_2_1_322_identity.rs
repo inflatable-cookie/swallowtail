@@ -88,7 +88,7 @@ fn complete_package_inventories_and_hop_deltas_are_exact() {
             let manifest = files.as_object().unwrap().iter().map(|(path, hash)| {
                 format!("{}  {path}\n", hash.as_str().expect("file digest is text"))
             }).collect::<String>();
-            let digest = format!("{:x}", Sha256::digest(manifest.as_bytes()));
+            let digest = hex::encode(Sha256::digest(manifest.as_bytes()));
             assert_eq!(inventory["packages"][package][point]["files_manifest_sha256"], digest, "{package}@{point}");
         }
     }
@@ -147,7 +147,7 @@ fn complete_package_inventories_and_hop_deltas_are_exact() {
     let classification_bytes =
         serde_json::to_vec(&inventory["changed_file_classification"]).expect("classification serializes");
     assert_eq!(
-        format!("{:x}", Sha256::digest(&classification_bytes)),
+        hex::encode(Sha256::digest(&classification_bytes)),
         "6a6e602c047cdb6005f7cc931b62942bbfd0a94b871e83df0a9efc0d036c578f"
     );
 }
@@ -167,7 +167,7 @@ fn selected_behavior_stop_and_route_ledger_are_frozen() {
     let row = rows.iter().find(|row| row["version"] == "2.1.321" && row["package"] == "claude-code-darwin-arm64").unwrap();
     assert_eq!(json!(keys(&row["marker_counts"])), json!(sorted_selected_markers));
     let ledger_bytes = serde_json::to_vec(&surface["marker_presence_and_counts"]).expect("ledger serializes");
-    assert_eq!(format!("{:x}", Sha256::digest(&ledger_bytes)), "c2e3a3743324b99f87497220c38a27e73e6de87bea2f1bc9a58ff0d7906def7a");
+    assert_eq!(hex::encode(Sha256::digest(&ledger_bytes)), "c2e3a3743324b99f87497220c38a27e73e6de87bea2f1bc9a58ff0d7906def7a");
     for point in ["2.1.321", "2.1.322"] {
         for platform in ["claude-code-darwin-arm64", "claude-code-linux-x64"] {
             let row = rows.iter().find(|row| row["version"] == point && row["package"] == platform).expect("platform marker row");

@@ -30,6 +30,7 @@ swallowtail-runtime.workspace = true
 [dev-dependencies]
 futures-executor.workspace = true
 futures-util.workspace = true
+hex.workspace = true
 swallowtail-host-local.workspace = true
 swallowtail-testkit.workspace = true
 

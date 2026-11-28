@@ -33,7 +33,7 @@ const EXPECTED_CHANGED_COUNTS: &[usize] = &[8, 6, 6, 6, 7];
 const EXPECTED_IDENTICAL_COUNTS: &[usize] = &[536, 538, 538, 538, 537];
 
 fn digest(bytes: &[u8]) -> String {
-    format!("{:x}", Sha256::digest(bytes))
+    hex::encode(Sha256::digest(bytes))
 }
 
 fn json(value: &str) -> Value {

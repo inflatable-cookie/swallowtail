@@ -229,7 +229,7 @@ fn node_hop_freezes_exact_distribution_classes_and_default_tls_failure_boundary(
     let tree_diff: Value =
         serde_json::from_str(NODE_TREE_DIFF).expect("Node tree diff is valid JSON");
     assert_eq!(
-        format!("{:x}", Sha256::digest(NODE_TREE_DIFF.as_bytes())),
+        hex::encode(Sha256::digest(NODE_TREE_DIFF.as_bytes())),
         "7d27b45bd8822d0ce0dfd92191a3531b43f65d4e8a0e81601f4544fb3928d776"
     );
     assert_eq!(
@@ -262,7 +262,7 @@ fn node_hop_freezes_exact_distribution_classes_and_default_tls_failure_boundary(
     let root_diff: Value =
         serde_json::from_str(NODE_ROOT_DIFF).expect("Node root diff is valid JSON");
     assert_eq!(
-        format!("{:x}", Sha256::digest(NODE_ROOT_DIFF.as_bytes())),
+        hex::encode(Sha256::digest(NODE_ROOT_DIFF.as_bytes())),
         "e7d58cb8378359eb44646abfa925048a843b7a754af8704fc64ea27aa2ca7778"
     );
     assert_eq!(root_diff["baseline_count"], 145);
@@ -286,7 +286,7 @@ fn node_hop_freezes_exact_distribution_classes_and_default_tls_failure_boundary(
         review["pi_source_path"]["sidecar_asset_sha256"],
         "8ad07d388e6e974d25345c7b35afd26b76ab7b360308133de652d22ce1114b45"
     );
-    let qualified_sidecar_digest = format!("{:x}", Sha256::digest(SIDECAR.as_bytes()));
+    let qualified_sidecar_digest = hex::encode(Sha256::digest(SIDECAR.as_bytes()));
     assert!(SDK_QUALIFICATION.contains(&format!("`{qualified_sidecar_digest}`;")));
     assert_eq!(
         review["pi_source_path"]["commit"],
